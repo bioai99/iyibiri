@@ -1,69 +1,159 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import OnboardingRedirect from "@/components/onboarding-redirect";
+import WaitlistForm from "@/components/waitlist-form";
 
-export default function Home() {
+const HOW_IT_WORKS = [
+  { step: "01", icon: "🎯", title: "Görev Al",       desc: "STK'ların oluşturduğu, sana özel önerilen görevlerden birini seç."    },
+  { step: "02", icon: "✅", title: "Tamamla",         desc: "Görevi gerçekleştir, fotoğraf ya da kod ile doğrulat."                },
+  { step: "03", icon: "🎁", title: "Ödül Kazan",      desc: "XP biriktir, seviye atla ve sponsor markalardan ödüller al."         },
+];
+
+const DOMAINS = [
+  { emoji: "❤️",  title: "Finansal Destek",    desc: "Bağış, gıda bankası, maddi destek kampanyaları.",   color: "bg-rose-50    border-rose-100"    },
+  { emoji: "📚",  title: "Eğitim & Mentorluk", desc: "Ders verme, mentorluk, burs ve materyal desteği.",  color: "bg-blue-50    border-blue-100"    },
+  { emoji: "🌿",  title: "Doğa & Çevre",       desc: "Toplu taşıma, geri dönüşüm, temizlik etkinlikleri.", color: "bg-emerald-50 border-emerald-100" },
+  { emoji: "🤝",  title: "Sosyal Sorumluluk",  desc: "Kan bağışı, gönüllülük, komşu dayanışması.",        color: "bg-amber-50   border-amber-100"   },
+];
+
+const STATS = [
+  { value: "40+",   label: "Aktif Görev"     },
+  { value: "15+",   label: "STK Ortağı"      },
+  { value: "1.200", label: "Erken Kullanıcı" },
+];
+
+export default function LandingPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-background px-6 py-12">
+    <div className="min-h-screen bg-background flex flex-col">
       <OnboardingRedirect />
 
-      {/* Logo */}
-      <div className="w-24 h-24 rounded-3xl bg-primary flex items-center justify-center shadow-lg mb-6">
-        <span className="text-primary-foreground text-5xl font-bold select-none">İ</span>
-      </div>
+      {/* ── Navbar ── */}
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur border-b border-border px-5 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground text-sm font-bold">İ</span>
+          </div>
+          <span className="font-bold text-foreground">İyiBiri</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Giriş Yap
+          </Link>
+          <Link href="/auth/signup" className="text-sm font-semibold bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">
+            Üye Ol
+          </Link>
+        </div>
+      </header>
 
-      <h1 className="text-4xl font-bold text-foreground mb-2 tracking-tight">İyiBiri</h1>
-      <p className="text-muted-foreground text-center mb-10 max-w-xs">
-        Görevler yap, ödüller kazan, fark yarat.
-      </p>
+      <main className="flex-1">
+        {/* ── Hero ── */}
+        <section className="px-5 pt-16 pb-20 flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5">
+            <span className="text-xs font-semibold text-primary">✦ Yakında Geliyor</span>
+          </div>
 
-      {/* Badge'ler */}
-      <div className="flex gap-2 mb-10">
-        <Badge>Gamification</Badge>
-        <Badge variant="secondary">STK Ortaklıkları</Badge>
-        <Badge variant="outline">Beta</Badge>
-      </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight">
+            İyilik yapmak<br />
+            <span className="text-primary">hiç bu kadar</span><br />
+            eğlenceli olmamıştı.
+          </h1>
 
-      {/* Özellik kartları */}
-      <div className="grid grid-cols-1 gap-4 w-full max-w-sm mb-10">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Gerçek Görevler</CardTitle>
-            <CardDescription>
-              STK'larla ortaklık kurulmuş, gerçek etki yaratan görevler.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Badge variant="secondary">40+ aktif görev</Badge>
-          </CardContent>
-        </Card>
+          <p className="text-base text-muted-foreground leading-relaxed max-w-sm">
+            STK'larla ortaklık kurulmuş görevleri tamamla, XP kazan,
+            seviye atla — her iyilik seni ödüle bir adım daha yaklaştırır.
+          </p>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Kazan & İlerle</CardTitle>
-            <CardDescription>
-              Her görev XP ve ödül kazandırır. Seviye atla, rozetler topla.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Badge variant="secondary">1.240 aktif kullanıcı</Badge>
-          </CardContent>
-        </Card>
-      </div>
+          <WaitlistForm />
 
-      {/* Butonlar */}
-      <div className="w-full max-w-sm flex flex-col gap-3">
-        <Link href="/auth/signup" className="w-full">
-          <Button size="lg" className="w-full">Üye Ol</Button>
-        </Link>
-        <Link href="/auth/login" className="w-full">
-          <Button size="lg" variant="outline" className="w-full">Giriş Yap</Button>
-        </Link>
-      </div>
+          <p className="text-xs text-muted-foreground">
+            Spam yok. İstediğin zaman çıkabilirsin.
+          </p>
+        </section>
 
-      <p className="mt-10 text-xs text-muted-foreground">© 2026 İyiBiri. Tüm hakları saklıdır.</p>
-    </main>
+        {/* ── İstatistikler ── */}
+        <section className="bg-trust px-5 py-10">
+          <div className="max-w-lg mx-auto grid grid-cols-3 gap-4">
+            {STATS.map(({ value, label }) => (
+              <div key={label} className="flex flex-col items-center gap-1 text-center">
+                <span className="text-2xl font-bold text-white">{value}</span>
+                <span className="text-xs text-white/70">{label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Nasıl Çalışır ── */}
+        <section className="px-5 py-16 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-foreground text-center mb-10">Nasıl Çalışır?</h2>
+          <div className="flex flex-col gap-6">
+            {HOW_IT_WORKS.map(({ step, icon, title, desc }) => (
+              <div key={step} className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">
+                  {icon}
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-primary mb-0.5">ADIM {step}</p>
+                  <p className="text-base font-bold text-foreground mb-1">{title}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── 4 İyilik Alanı ── */}
+        <section className="px-5 py-16 bg-muted/40">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-foreground text-center mb-3">4 İyilik Alanı</h2>
+            <p className="text-sm text-muted-foreground text-center mb-10">
+              Hangi alanda iyilik yapmak istediğini sen seç.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {DOMAINS.map(({ emoji, title, desc, color }) => (
+                <div key={title} className={`rounded-2xl border p-5 flex gap-4 ${color}`}>
+                  <span className="text-3xl flex-shrink-0">{emoji}</span>
+                  <div>
+                    <p className="font-bold text-foreground mb-1">{title}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Final CTA ── */}
+        <section className="px-5 py-20 flex flex-col items-center text-center gap-6 max-w-lg mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center shadow-lg">
+            <span className="text-primary-foreground text-3xl font-bold">İ</span>
+          </div>
+          <h2 className="text-2xl font-bold text-foreground">
+            Fark yaratmaya hazır mısın?
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Erken erişim listesine katıl, İyiBiri'yi ilk kullananlardan ol.
+          </p>
+          <WaitlistForm />
+        </section>
+      </main>
+
+      {/* ── Footer ── */}
+      <footer className="border-t border-border px-5 py-8">
+        <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground text-xs font-bold">İ</span>
+            </div>
+            <span className="text-sm font-bold text-foreground">İyiBiri</span>
+          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            © 2026 İyiBiri. Tüm hakları saklıdır.
+          </p>
+          <div className="flex gap-4">
+            <Link href="/auth/login"  className="text-xs text-muted-foreground hover:text-foreground">Giriş</Link>
+            <Link href="/auth/signup" className="text-xs text-muted-foreground hover:text-foreground">Üye Ol</Link>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
