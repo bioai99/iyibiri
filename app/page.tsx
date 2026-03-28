@@ -97,13 +97,30 @@ const BRAND_LOGOS: LogoItem[] = [
     img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
     bg: "bg-white",
   },
-  { name: "Trendyol", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Trendyol_logo.svg/320px-Trendyol_logo.svg.png", bg: "bg-white" },
+  {
+    name: "Trendyol",
+    svg: (
+      <svg viewBox="0 0 140 36" className="h-7 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="4" y="27" fontFamily="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" fontWeight="800" fontSize="24" fill="#F27A1A" letterSpacing="-0.5">trendyol</text>
+      </svg>
+    ),
+    bg: "bg-white",
+  },
   {
     name: "Nike",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
     bg: "bg-white",
   },
-  { name: "Garanti BBVA", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Garanti_BBVA_2019.svg/320px-Garanti_BBVA_2019.svg.png", bg: "bg-white" },
+  {
+    name: "Garanti BBVA",
+    svg: (
+      <svg viewBox="0 0 160 36" className="h-7 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="4" y="26" fontFamily="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" fontWeight="800" fontSize="20" fill="#00A550" letterSpacing="-0.3">Garanti</text>
+        <text x="4" y="36" fontFamily="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" fontWeight="700" fontSize="11" fill="#00A550" letterSpacing="2">BBVA</text>
+      </svg>
+    ),
+    bg: "bg-white",
+  },
 ];
 
 const KARMA_HOW = [
