@@ -40,13 +40,13 @@ export default function CompleteClient({ mission }: { mission: Mission }) {
           <h1 className="text-2xl font-bold text-foreground mb-2">Harika iş!</h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Görevin doğrulama için gönderildi.<br />
-            Onaylandığında <span className="font-bold text-primary">+{mission.xp} XP</span> hesabına geçecek.
+            Onaylandığında <span className="font-bold text-primary">+{mission.karma} Karma</span> hesabına geçecek.
           </p>
         </div>
         <div className="bg-primary/10 border border-primary/20 rounded-2xl px-5 py-4 flex items-center gap-3 w-full max-w-xs">
           <Zap size={22} className="text-primary fill-primary/20 flex-shrink-0" />
           <div className="text-left">
-            <p className="text-sm font-bold text-foreground">+{mission.xp} XP geliyor</p>
+            <p className="text-sm font-bold text-foreground">+{mission.karma} Karma geliyor</p>
             <p className="text-xs text-muted-foreground">STK onayı bekleniyor</p>
           </div>
         </div>

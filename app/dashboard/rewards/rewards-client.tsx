@@ -5,23 +5,16 @@ import { Zap, Lock } from "lucide-react";
 import { REWARDS, MOCK_USER } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 
-const CATEGORY_LABELS = {
-  food:      "Yiyecek & İçecek",
-  education: "Eğitim",
-  culture:   "Kültür & Sanat",
-  shopping:  "Alışveriş",
-};
-
 type RewardFilter = "all" | "unlocked" | "locked";
 
 export default function RewardsClient() {
-  const userXp = MOCK_USER.totalXp;
+  const userKarma = MOCK_USER.totalKarma;
   const [filter, setFilter] = useState<RewardFilter>("all");
   const [redeemedId, setRedeemedId] = useState<string | null>(null);
 
   const filtered = REWARDS.filter((r) => {
-    if (filter === "unlocked") return userXp >= r.pointsRequired;
-    if (filter === "locked")   return userXp < r.pointsRequired;
+    if (filter === "unlocked") return userKarma >= r.karmaRequired;
+    if (filter === "locked")   return userKarma < r.karmaRequired;
     return true;
   });
 
@@ -31,8 +24,8 @@ export default function RewardsClient() {
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border px-5 py-4">
         <h1 className="text-base font-bold text-foreground">Ödüller</h1>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Toplam puanın:{" "}
-          <span className="font-bold text-primary">{userXp.toLocaleString("tr")} XP</span>
+          Toplam Karman:{" "}
+          <span className="font-bold text-primary">{userKarma.toLocaleString("tr")} Karma</span>
         </p>
       </header>
 
@@ -53,10 +46,10 @@ export default function RewardsClient() {
         ))}
       </div>
 
-      {/* Ödül grid */}
+      {/* Ödül listesi */}
       <div className="px-5 flex flex-col gap-3">
         {filtered.map((reward) => {
-          const unlocked = userXp >= reward.pointsRequired;
+          const unlocked = userKarma >= reward.karmaRequired;
           const redeemed = redeemedId === reward.id;
 
           return (
@@ -82,7 +75,7 @@ export default function RewardsClient() {
                 <div className="flex items-center justify-between mt-2">
                   <span className="flex items-center gap-1 text-xs font-bold text-primary">
                     <Zap size={12} className="fill-primary" />
-                    {reward.pointsRequired.toLocaleString("tr")} XP
+                    {reward.karmaRequired.toLocaleString("tr")} Karma
                   </span>
 
                   {unlocked ? (
@@ -102,7 +95,7 @@ export default function RewardsClient() {
                   ) : (
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Lock size={11} />
-                      {(reward.pointsRequired - userXp).toLocaleString("tr")} XP eksik
+                      {(reward.karmaRequired - userKarma).toLocaleString("tr")} Karma eksik
                     </span>
                   )}
                 </div>

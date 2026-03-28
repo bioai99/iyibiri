@@ -48,7 +48,7 @@ export default function MissionCard({ mission }: MissionCardProps) {
             </span>
             <span className="flex items-center gap-0.5 text-xs font-bold text-primary">
               <Zap size={12} className="fill-primary" />
-              {mission.xp} XP
+              +{mission.karma} Karma
             </span>
           </div>
         </div>

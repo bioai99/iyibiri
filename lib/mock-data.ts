@@ -1,11 +1,24 @@
+export const TIERS = [
+  { minLevel: 1,  maxLevel: 2,  name: "İyi Biri"                },
+  { minLevel: 3,  maxLevel: 4,  name: "Oldukça İyi Biri"        },
+  { minLevel: 5,  maxLevel: 7,  name: "Çok İyi Biri"            },
+  { minLevel: 8,  maxLevel: 10, name: "Gerçekten İyi Biri"      },
+  { minLevel: 11, maxLevel: 15, name: "Çoook İyi Biri"          },
+  { minLevel: 16, maxLevel: 99, name: "İyiliğin Öncüsü"         },
+];
+
+export function getTierName(level: number): string {
+  return TIERS.find((t) => level >= t.minLevel && level <= t.maxLevel)?.name ?? "İyi Biri";
+}
+
 export const MOCK_USER = {
   name: "Ada Yılmaz",
   level: 5,
-  xp: 2340,
-  xpToNext: 3000,
+  karma: 2340,
+  karmaToNext: 3000,
   completedMissions: 18,
   streak: 7,
-  totalXp: 12340,
+  totalKarma: 12340,
 };
 
 export type Category = "Hepsi" | "Çevre" | "Eğitim" | "Sağlık" | "Hayvanlar" | "Kültür" | "Finansal";
@@ -20,7 +33,7 @@ export interface Mission {
   ngo: string;
   category: Exclude<Category, "Hepsi">;
   difficulty: Difficulty;
-  xp: number;
+  karma: number;
   duration: string;
   participants: number;
   featured?: boolean;
@@ -40,7 +53,7 @@ export const MISSIONS: Mission[] = [
     ngo: "TEMA Vakfı",
     category: "Çevre",
     difficulty: "Kolay",
-    xp: 150,
+    karma: 150,
     duration: "2 saat",
     participants: 42,
     featured: true,
@@ -58,7 +71,7 @@ export const MISSIONS: Mission[] = [
     ngo: "ÇYDD",
     category: "Eğitim",
     difficulty: "Orta",
-    xp: 250,
+    karma: 250,
     duration: "1 saat/hafta",
     participants: 15,
     featured: true,
@@ -76,7 +89,7 @@ export const MISSIONS: Mission[] = [
     ngo: "Haytap",
     category: "Hayvanlar",
     difficulty: "Kolay",
-    xp: 100,
+    karma: 100,
     duration: "30 dakika",
     participants: 128,
     verifyMethod: "photo",
@@ -93,7 +106,7 @@ export const MISSIONS: Mission[] = [
     ngo: "TEMA Vakfı",
     category: "Çevre",
     difficulty: "Kolay",
-    xp: 75,
+    karma: 75,
     duration: "15 dakika",
     participants: 310,
     verifyMethod: "photo",
@@ -110,7 +123,7 @@ export const MISSIONS: Mission[] = [
     ngo: "Kızılay",
     category: "Sağlık",
     difficulty: "Kolay",
-    xp: 120,
+    karma: 120,
     duration: "1 saat",
     participants: 87,
     featured: true,
@@ -128,7 +141,7 @@ export const MISSIONS: Mission[] = [
     ngo: "İstanbul Kültür A.Ş.",
     category: "Kültür",
     difficulty: "Zor",
-    xp: 400,
+    karma: 400,
     duration: "4 saat",
     participants: 8,
     verifyMethod: "qr",
@@ -145,7 +158,7 @@ export const MISSIONS: Mission[] = [
     ngo: "Kodluyoruz",
     category: "Eğitim",
     difficulty: "Zor",
-    xp: 500,
+    karma: 500,
     duration: "2 saat/hafta",
     participants: 5,
     verifyMethod: "code",
@@ -162,7 +175,7 @@ export const MISSIONS: Mission[] = [
     ngo: "Gıda Bankası Derneği",
     category: "Finansal",
     difficulty: "Kolay",
-    xp: 80,
+    karma: 80,
     duration: "20 dakika",
     participants: 203,
     verifyMethod: "auto",
@@ -193,16 +206,16 @@ export interface Reward {
   title: string;
   brand: string;
   description: string;
-  pointsRequired: number;
+  karmaRequired: number;
   category: "food" | "education" | "culture" | "shopping";
   emoji: string;
 }
 
 export const REWARDS: Reward[] = [
-  { id: "r1", title: "%15 Kahve İndirimi",    brand: "Kahve Dünyası", description: "Tüm içeceklerde geçerli tek kullanımlık indirim kodu.",       pointsRequired: 300,  category: "food",      emoji: "☕" },
-  { id: "r2", title: "Ücretsiz Online Kurs",  brand: "Udemy",         description: "Seçili kurslardan birini ücretsiz al.",                       pointsRequired: 750,  category: "education", emoji: "🎓" },
-  { id: "r3", title: "Müze Giriş Bileti",     brand: "İstanbul Kültür", description: "Tüm İstanbul müzelerine 1 ücretsiz giriş.",                 pointsRequired: 1500, category: "culture",   emoji: "🏛️" },
-  { id: "r4", title: "%10 Market İndirimi",   brand: "Migros",        description: "Migros uygulama üzerinden geçerli indirim kuponu.",            pointsRequired: 500,  category: "shopping",  emoji: "🛒" },
-  { id: "r5", title: "Sinema Bileti",         brand: "Cinemaximum",   description: "Tüm salonlarda geçerli 1 ücretsiz sinema bileti.",            pointsRequired: 600,  category: "culture",   emoji: "🎬" },
-  { id: "r6", title: "Yemek Sepeti Kuponu",   brand: "Yemeksepeti",   description: "Minimum 150₺ siparişlerde 50₺ indirim.",                     pointsRequired: 400,  category: "food",      emoji: "🍔" },
+  { id: "r1", title: "%15 Kahve İndirimi",    brand: "Kahve Dünyası", description: "Tüm içeceklerde geçerli tek kullanımlık indirim kodu.",       karmaRequired: 300,  category: "food",      emoji: "☕" },
+  { id: "r2", title: "Ücretsiz Online Kurs",  brand: "Udemy",         description: "Seçili kurslardan birini ücretsiz al.",                       karmaRequired: 750,  category: "education", emoji: "🎓" },
+  { id: "r3", title: "Müze Giriş Bileti",     brand: "İstanbul Kültür", description: "Tüm İstanbul müzelerine 1 ücretsiz giriş.",                 karmaRequired: 1500, category: "culture",   emoji: "🏛️" },
+  { id: "r4", title: "%10 Market İndirimi",   brand: "Migros",        description: "Migros uygulama üzerinden geçerli indirim kuponu.",            karmaRequired: 500,  category: "shopping",  emoji: "🛒" },
+  { id: "r5", title: "Sinema Bileti",         brand: "Cinemaximum",   description: "Tüm salonlarda geçerli 1 ücretsiz sinema bileti.",            karmaRequired: 600,  category: "culture",   emoji: "🎬" },
+  { id: "r6", title: "Yemek Sepeti Kuponu",   brand: "Yemeksepeti",   description: "Minimum 150₺ siparişlerde 50₺ indirim.",                     karmaRequired: 400,  category: "food",      emoji: "🍔" },
 ];

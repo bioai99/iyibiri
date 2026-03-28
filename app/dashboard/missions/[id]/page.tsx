@@ -45,11 +45,11 @@ export default function MissionDetailPage({ params }: { params: { id: string } }
           </span>
         </div>
 
-        {/* XP */}
+        {/* Karma */}
         <div className="bg-primary/10 border border-primary/20 rounded-2xl px-4 py-3 flex items-center gap-3">
           <Zap size={20} className="text-primary fill-primary/30" />
           <div>
-            <p className="text-sm font-bold text-foreground">+{mission.xp} XP kazanacaksın</p>
+            <p className="text-sm font-bold text-foreground">+{mission.karma} Karma kazanacaksın</p>
             <p className="text-xs text-muted-foreground">Görev onaylandıktan sonra hesabına geçer</p>
           </div>
         </div>

@@ -59,7 +59,7 @@ export default function MyMissionsClient() {
                         <Clock size={11} /> {m.duration}
                       </span>
                       <span className="flex items-center gap-1 text-xs font-semibold text-primary">
-                        <Zap size={11} className="fill-primary" /> +{m.xp} XP
+                        <Zap size={11} className="fill-primary" /> +{m.karma} Karma
                       </span>
                     </div>
                   </div>

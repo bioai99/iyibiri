@@ -2,15 +2,15 @@ import { Bell, Flame } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase-server";
 import { MOCK_USER, MISSIONS } from "@/lib/mock-data";
-import XpBar from "@/components/xp-bar";
+import KarmaBar from "@/components/xp-bar";
 import MissionCard from "@/components/mission-card";
 
 const featured = MISSIONS.filter((m) => m.featured);
 
 const STATS = [
-  { label: "Tamamlanan",  value: MOCK_USER.completedMissions,                    unit: "görev" },
-  { label: "Seri",        value: MOCK_USER.streak,                                unit: "gün"   },
-  { label: "Toplam XP",   value: MOCK_USER.totalXp.toLocaleString("tr"), unit: "xp"    },
+  { label: "Tamamlanan",    value: MOCK_USER.completedMissions,                       unit: "görev" },
+  { label: "Seri",          value: MOCK_USER.streak,                                  unit: "gün"   },
+  { label: "Toplam Karma",  value: MOCK_USER.totalKarma.toLocaleString("tr"),         unit: "karma" },
 ];
 
 export default async function DashboardPage() {
@@ -37,10 +37,10 @@ export default async function DashboardPage() {
       <div className="px-5 py-5 flex flex-col gap-6">
         {/* ── Seviye kartı ── */}
         <div className="bg-card rounded-2xl border border-border p-4">
-          <XpBar
+          <KarmaBar
             level={MOCK_USER.level}
-            xp={MOCK_USER.xp}
-            xpToNext={MOCK_USER.xpToNext}
+            karma={MOCK_USER.karma}
+            karmaToNext={MOCK_USER.karmaToNext}
           />
         </div>
 
