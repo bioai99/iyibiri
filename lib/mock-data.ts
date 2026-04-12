@@ -17,7 +17,7 @@ export const MOCK_USER = {
   karma: 2340,
   karmaToNext: 3000,
   completedMissions: 18,
-  streak: 7,
+  streak: 3,
   totalKarma: 12340,
 };
 
@@ -72,7 +72,7 @@ export const MISSIONS: Mission[] = [
     category: "Eğitim",
     difficulty: "Orta",
     karma: 250,
-    duration: "1 saat/hafta",
+    duration: "4 saat/ay",
     participants: 15,
     featured: true,
     verifyMethod: "code",
@@ -159,7 +159,7 @@ export const MISSIONS: Mission[] = [
     category: "Eğitim",
     difficulty: "Zor",
     karma: 500,
-    duration: "2 saat/hafta",
+    duration: "8 saat/ay",
     participants: 5,
     verifyMethod: "code",
     verifyHint: "Seans sonunda platform tarafından gönderilen kodu gir.",

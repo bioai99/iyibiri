@@ -100,7 +100,7 @@ const BRAND_LOGOS: LogoItem[] = [
 
 const KARMA_HOW = [
   { icon: "🎯", label: "Görev tamamla",       karma: "+50 – 500 Karma" },
-  { icon: "🔥", label: "Günlük seri koru",    karma: "+10 Karma/gün"   },
+  { icon: "🔥", label: "Aylık görevi tamamla", karma: "+100 Karma/ay"   },
   { icon: "👥", label: "Arkadaşını davet et", karma: "+100 Karma"      },
   { icon: "⭐", label: "İlk görevini yap",    karma: "+50 Karma bonus" },
 ];
@@ -173,7 +173,7 @@ function AppMockup() {
             {/* Content */}
             <div className="px-4 py-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-800">Öne Çıkan Görevler</p>
+                <p className="text-xs font-bold text-gray-800">Bu Ayın Görevleri</p>
                 <span className="text-[10px] text-amber-500 font-semibold">Tümü →</span>
               </div>
 
@@ -185,7 +185,7 @@ function AppMockup() {
                 </div>
                 <p className="text-xs font-bold text-gray-900 leading-snug">Sahil temizliği etkinliğine katıl</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400">2 saat · 42 kişi</span>
+                  <span className="text-[10px] text-gray-400">Nisan · 42 kişi</span>
                   <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+150 Karma</span>
                 </div>
               </div>
@@ -198,7 +198,7 @@ function AppMockup() {
                 </div>
                 <p className="text-xs font-bold text-gray-900 leading-snug">İlkokul öğrencisine okuma desteği</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400">1 saat/hafta · Online</span>
+                  <span className="text-[10px] text-gray-400">Nisan · Online</span>
                   <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+250 Karma</span>
                 </div>
               </div>
@@ -603,7 +603,7 @@ export default function LandingPage() {
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { label: "Tamamlanan", value: "18 Görev" },
-                    { label: "Seri",       value: "7 gün 🔥" },
+                    { label: "Seri",       value: "3 ay" },
                     { label: "Bu hafta",   value: "+350"    },
                   ].map(({ label, value }) => (
                     <div key={label} className="bg-gray-50 rounded-2xl p-3 text-center">

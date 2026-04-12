@@ -9,7 +9,7 @@ const featured = MISSIONS.filter((m) => m.featured);
 
 const STATS = [
   { label: "Tamamlanan",    value: MOCK_USER.completedMissions,                       unit: "görev" },
-  { label: "Seri",          value: MOCK_USER.streak,                                  unit: "gün"   },
+  { label: "Seri",          value: MOCK_USER.streak,                                  unit: "ay"    },
   { label: "Toplam Karma",  value: MOCK_USER.totalKarma.toLocaleString("tr"),         unit: "karma" },
 ];
 
@@ -59,15 +59,15 @@ export default async function DashboardPage() {
         <div className="bg-primary/10 border border-primary/20 rounded-2xl px-4 py-3 flex items-center gap-3">
           <Flame size={22} className="text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-bold text-foreground">{MOCK_USER.streak} günlük seri!</p>
-            <p className="text-xs text-muted-foreground">Bugün bir görev yap, seriyi koru.</p>
+            <p className="text-sm font-bold text-foreground">{MOCK_USER.streak} aylık seri!</p>
+            <p className="text-xs text-muted-foreground">Bu ayın görevini tamamla, seriyi koru.</p>
           </div>
         </div>
 
         {/* ── Öne çıkan görevler ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-foreground">Öne Çıkan Görevler</h2>
+            <h2 className="text-sm font-bold text-foreground">Bu Ayın Görevleri</h2>
             <Link href="/dashboard/missions" className="text-xs text-primary font-medium hover:underline">
               Tümü →
             </Link>
