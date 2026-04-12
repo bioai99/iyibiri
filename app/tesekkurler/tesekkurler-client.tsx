@@ -1,15 +1,35 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import { Phone, Share2, MessageCircle } from "lucide-react";
+import { Phone, Share2, MessageCircle, Send, CheckCircle } from "lucide-react";
 import Logo from "@/components/logo";
+import { submitSupport } from "@/app/support-action";
 
 export default function TesekkurlerClient() {
   const params    = useSearchParams();
   const email     = params.get("email") ?? "";
   const fullName  = params.get("name")  ?? "";
   const firstName = fullName.split(" ")[0] || "İyiBiri";
+
+  const [message, setMessage]   = useState("");
+  const [sending, setSending]   = useState(false);
+  const [sent, setSent]         = useState(false);
+  const [formError, setFormError] = useState("");
+
+  async function handleFeedback() {
+    if (!message.trim()) return;
+    setSending(true);
+    setFormError("");
+    const fd = new FormData();
+    fd.set("message", message);
+    if (email) fd.set("email", email);
+    const result = await submitSupport(fd);
+    setSending(false);
+    if (result?.error) { setFormError(result.error); return; }
+    setSent(true);
+  }
 
   const shareText = encodeURIComponent(
     `İyiBiri'ye katıldım! Türkiye'nin ilk iyilik & Karma platformuna sen de katıl 👉 iyibiri.app`
@@ -125,6 +145,40 @@ export default function TesekkurlerClient() {
               <p className="text-xs text-gray-400 mt-0.5">iyibiri.app</p>
             </div>
           </button>
+        </section>
+
+        {/* ── Feedback ── */}
+        <section className="flex flex-col gap-4 mb-14">
+          <h2 className="font-headline text-lg font-bold text-gray-900">Sana bir sorum var</h2>
+          <p className="text-sm text-gray-400 leading-relaxed -mt-1">
+            İyiBiri'den ne bekliyorsun? Bir cümle bile yeter — her yorum bize yol gösterir.
+          </p>
+
+          {sent ? (
+            <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4">
+              <CheckCircle size={18} className="text-emerald-500 flex-shrink-0" />
+              <p className="text-sm font-medium text-emerald-700">Yorumun iletildi, teşekkürler!</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="İyiBiri sayesinde..."
+                rows={3}
+                className="w-full resize-none rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#1B3A5C] transition-colors"
+              />
+              {formError && <p className="text-xs text-red-500 pl-1">{formError}</p>}
+              <button
+                onClick={handleFeedback}
+                disabled={sending || !message.trim()}
+                className="self-end flex items-center gap-2 bg-[#1B3A5C] text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#1B3A5C]/90 disabled:opacity-40 transition-all"
+              >
+                <Send size={14} />
+                {sending ? "Gönderiliyor..." : "Gönder"}
+              </button>
+            </div>
+          )}
         </section>
 
         {/* ── Phone ── */}
