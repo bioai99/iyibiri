@@ -97,13 +97,13 @@ const BRAND_LOGOS: LogoItem[] = [
     img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
     bg: "bg-white",
   },
-  { name: "Trendyol", img: "https://logo.clearbit.com/trendyol.com", bg: "bg-white" },
+  { name: "Trendyol",     img: "/trendyol-logo.svg",     bg: "bg-white" },
   {
     name: "Nike",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
     bg: "bg-white",
   },
-  { name: "Garanti BBVA", img: "https://logo.clearbit.com/garantibbva.com.tr", bg: "bg-white" },
+  { name: "Garanti BBVA", img: "/garanti-bbva-logo.svg", bg: "bg-white" },
 ];
 
 const KARMA_HOW = [
@@ -443,8 +443,7 @@ export default function LandingPage() {
             <a href="#odüller" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">Ödüller</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/auth/login" className="hidden sm:block text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Giriş Yap</Link>
-            <Link href="/auth/signup" className="text-sm font-bold bg-[#1B3A5C] text-white px-5 py-2.5 rounded-xl hover:bg-[#1B3A5C]/90 transition-colors">Üye Ol</Link>
+            <a href="#erisim" className="text-sm font-bold bg-[#1B3A5C] text-white px-5 py-2.5 rounded-xl hover:bg-[#1B3A5C]/90 transition-colors">Erken Erişime Katıl</a>
           </div>
         </div>
       </header>
@@ -452,7 +451,7 @@ export default function LandingPage() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section id="waitlist" className="px-6 pt-16 pb-24 max-w-6xl mx-auto">
+        <section id="erisim" className="px-6 pt-16 pb-24 max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
             {/* Sol */}
@@ -769,8 +768,7 @@ export default function LandingPage() {
           <div className="flex gap-6">
             <a href="#karma" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Karma</a>
             <a href="#iyilik-oncüleri" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">İyilik Öncüleri</a>
-            <Link href="/auth/login"  className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Giriş</Link>
-            <Link href="/auth/signup" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Üye Ol</Link>
+            <a href="#erisim" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Erken Erişim</a>
           </div>
         </div>
       </footer>
