@@ -29,40 +29,36 @@ const HOW_IT_WORKS = [
 
 const DOMAINS = [
   {
-    emoji: "🌿",
     title: "Doğa & Çevre",
     partner: "TEMA Vakfı",
     desc: "Ağaç dikimi, geri dönüşüm ve temizlik etkinlikleri.",
-    color: "bg-emerald-50 border-emerald-200",
-    badge: "bg-emerald-600 text-white",
-    logo: "https://www.tema.org.tr/Content/Icons/tema-logo.png",
+    badge: "bg-emerald-500 text-white",
+    logo: "/tema-logo.png",
+    photo: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80&auto=format&fit=crop",
   },
   {
-    emoji: "📚",
     title: "Eğitim & Gençlik",
     partner: "TOG",
     desc: "Mentorluk, burs desteği ve toplum gönüllülüğü.",
-    color: "bg-blue-50 border-blue-200",
-    badge: "bg-blue-600 text-white",
-    logo: "https://www.tog.org.tr/images/marka/tog-logo.svg",
+    badge: "bg-blue-500 text-white",
+    logo: "/tog-logo.svg",
+    photo: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80&auto=format&fit=crop",
   },
   {
-    emoji: "❤️",
-    title: "Finansal Destek",
+    title: "Toplum Dayanışması",
     partner: "ÇYDD",
     desc: "Bağış kampanyaları, gıda bankası ve maddi destek.",
-    color: "bg-rose-50 border-rose-200",
-    badge: "bg-rose-600 text-white",
-    logo: "https://www.cydd.org.tr/store/file/files/CYDD_Logo_Mavi_PNG.png",
+    badge: "bg-rose-500 text-white",
+    logo: "/cydd-logo.png",
+    photo: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80&auto=format&fit=crop",
   },
   {
-    emoji: "🐾",
     title: "Hayvan Hakları",
     partner: "Haytap",
     desc: "Mama desteği, barınak gönüllülüğü ve sahiplendirme.",
-    color: "bg-amber-50 border-amber-200",
-    badge: "bg-amber-600 text-white",
-    logo: "https://www.haytap.org/images/logo.png",
+    badge: "bg-amber-500 text-white",
+    logo: "/haytap-logo.png",
+    photo: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80&auto=format&fit=crop",
   },
 ];
 
@@ -80,10 +76,10 @@ interface LogoItem {
 }
 
 const NGO_LOGOS: LogoItem[] = [
-  { name: "TEMA",   img: "https://www.tema.org.tr/Content/Icons/tema-logo.png",                bg: "bg-white" },
-  { name: "TOG",    img: "https://www.tog.org.tr/images/marka/tog-logo.svg",                  bg: "bg-white" },
-  { name: "ÇYDD",   img: "https://www.cydd.org.tr/store/file/files/CYDD_Logo_Mavi_PNG.png",   bg: "bg-white" },
-  { name: "Haytap", img: "https://www.haytap.org/images/logo.png",                            bg: "bg-white" },
+  { name: "TEMA",   img: "/tema-logo.png",   bg: "bg-white" },
+  { name: "TOG",    img: "/tog-logo.svg",    bg: "bg-white" },
+  { name: "ÇYDD",   img: "/cydd-logo.png",   bg: "bg-white" },
+  { name: "Haytap", img: "/haytap-logo.png", bg: "bg-white" },
 ];
 
 const BRAND_LOGOS: LogoItem[] = [
@@ -121,13 +117,13 @@ const TESTIMONIALS = [
     quote: "\"Hem iyilik yapıyorum hem Karma kazanıyorum — motivasyonum gerçekten ikiye katlandı. TEMA görevi çok keyifliydi!\"",
     name: "Zeynep A.",
     role: "Beta Kullanıcısı · İstanbul",
-    emoji: "🌟",
+    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80&auto=format&fit=crop&crop=face",
   },
   {
     quote: "\"TOG mentorluk görevinden 250 Karma kazandım, Starbucks kodum geldi. Böyle bir döngüyü hayal bile etmezdim.\"",
     name: "Berk T.",
     role: "Beta Kullanıcısı · Ankara",
-    emoji: "🎯",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80&auto=format&fit=crop&crop=face",
   },
 ];
 
@@ -667,6 +663,24 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Lifestyle photo strip ── */}
+        <section className="overflow-hidden">
+          <div className="flex gap-2" style={{ height: 220 }}>
+            {[
+              { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&q=80&auto=format&fit=crop", alt: "Gönüllüler", flex: 2 },
+              { src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80&auto=format&fit=crop", alt: "Topluluk", flex: 1.5 },
+              { src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80&auto=format&fit=crop", alt: "Dayanışma", flex: 1.5 },
+              { src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop", alt: "Doğa", flex: 2 },
+            ].map(({ src, alt, flex }) => (
+              <div key={alt} className="relative overflow-hidden group" style={{ flex }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={alt} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-[#1B3A5C]/20 group-hover:bg-[#1B3A5C]/10 transition-colors duration-500" />
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── İyilik Öncüleri ── */}
         <section id="iyilik-oncüleri" className="px-6 py-24 max-w-6xl mx-auto">
           <div className="text-center mb-6">
@@ -682,22 +696,33 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
-            {DOMAINS.map(({ emoji, title, partner, desc, color, logo }) => (
-              <div key={title} className={`rounded-3xl border p-7 flex gap-5 hover:shadow-sm transition-shadow ${color}`}>
-                {/* Logo yerine emoji + arka planda logo */}
-                <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center p-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={logo} alt={partner} className="max-h-10 max-w-[52px] object-contain" />
+            {DOMAINS.map(({ title, partner, desc, badge, logo, photo }) => (
+              <div key={title} className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-default" style={{ minHeight: 280 }}>
+                {/* Full-bleed photo */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photo}
+                  alt={title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
+
+                {/* Content */}
+                <div className="relative h-full flex flex-col justify-between p-6" style={{ minHeight: 280 }}>
+                  {/* Top: partner badge + logo */}
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full ${badge}`}>{partner}</span>
+                    <div className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center p-1.5 shadow">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={logo} alt={partner} className="max-h-6 max-w-[32px] object-contain" />
+                    </div>
                   </div>
-                  <span className="text-xl">{emoji}</span>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <div>
-                    <p className="text-xs text-gray-500 font-semibold">{partner}</p>
-                    <p className="font-bold text-[#1B3A5C] text-lg">{title}</p>
+                  {/* Bottom: title + desc */}
+                  <div className="flex flex-col gap-1.5">
+                    <p className="font-headline font-bold text-white text-xl leading-snug">{title}</p>
+                    <p className="text-white/70 text-sm leading-relaxed">{desc}</p>
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                 </div>
               </div>
             ))}
@@ -740,15 +765,16 @@ export default function LandingPage() {
         <section className="px-6 py-24 bg-amber-50">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#1B3A5C]">Beta kullanıcıları seviyor 💛</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#1B3A5C]">Beta kullanıcıları seviyor</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {TESTIMONIALS.map(({ quote, name, role, emoji }, i) => (
+              {TESTIMONIALS.map(({ quote, name, role, photo }, i) => (
                 <div key={i} className="bg-white rounded-3xl border border-amber-100 p-7 flex flex-col gap-5 shadow-sm">
                   <div className="flex gap-0.5">{[...Array(5)].map((_, s) => <span key={s} className="text-amber-400 text-lg">★</span>)}</div>
                   <p className="text-gray-700 leading-relaxed text-sm flex-1">{quote}</p>
                   <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-lg flex-shrink-0">{emoji}</div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={photo} alt={name} className="w-10 h-10 rounded-full object-cover flex-shrink-0 ring-2 ring-amber-100" />
                     <div>
                       <p className="font-bold text-[#1B3A5C] text-sm">{name}</p>
                       <p className="text-xs text-gray-400">{role}</p>
