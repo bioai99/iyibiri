@@ -7,27 +7,23 @@ import Logo from "@/components/logo";
 const HOW_IT_WORKS = [
   {
     step: "01",
-    icon: "🎯",
     title: "Görev Seç",
-    desc: "İyilik Öncülerimizin oluşturduğu görevlerden sana özel önerilenlerden birini seç.",
+    desc: "TEMA'dan sahil temizliği, Kızılay'dan komşu dayanışması — sana özel görevler seni bekliyor.",
   },
   {
     step: "02",
-    icon: "✅",
     title: "Tamamla & Doğrula",
-    desc: "Görevi gerçekleştir, fotoğraf veya katılım koduyla doğrula.",
+    desc: "Fotoğraf çek, QR tara veya kod gir. 60 saniyede tamamlandı.",
   },
   {
     step: "03",
-    icon: "⚡",
     title: "Karma Kazan",
-    desc: "Her tamamlanan görev Karma getirir. Karma biriktikçe unvanın yükselir.",
+    desc: "Her iyilik hesabına anında yansır. Karma biriktikçe seviye atlar, yeni görevler açılır.",
   },
   {
     step: "04",
-    icon: "🎁",
     title: "Ödül Al",
-    desc: "Birikmiş Karmanla Sponsor Markalardan gerçek indirim ve hediye kodları kazan.",
+    desc: "Starbucks, Nike, Migros — gerçek markalardan gerçek ödüller. Karma'nı harca.",
   },
 ];
 
@@ -139,88 +135,100 @@ const TESTIMONIALS = [
 
 function AppMockup() {
   return (
-    <div className="relative w-full max-w-[380px] mx-auto select-none pointer-events-none">
+    <div className="relative w-full max-w-[280px] sm:max-w-[360px] mx-auto select-none pointer-events-none">
+      {/* Glow */}
+      <div className="absolute inset-0 rounded-[2.5rem] bg-amber-400/10 blur-2xl scale-110 -z-10" />
+
       {/* Phone shell */}
-      <div className="bg-[#F5F5F7] rounded-[2.5rem] p-3 shadow-2xl border border-gray-200">
-        {/* Screen */}
-        <div className="bg-white rounded-[2rem] overflow-hidden" style={{ minHeight: 520 }}>
-          {/* Status bar */}
-          <div className="bg-[#1B3A5C] px-5 pt-4 pb-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-white/60 text-[10px]">Hoş geldin</p>
-                <p className="text-white font-bold text-sm">Ada ✦</p>
-              </div>
-              <div className="flex items-center gap-1 bg-amber-400 rounded-xl px-3 py-1.5">
-                <span className="text-amber-900 text-[10px] font-bold flex items-center gap-1"><KarmaToken size={12} /> 2.340 Karma</span>
-              </div>
-            </div>
-            {/* Karma bar */}
-            <div className="bg-white/10 rounded-2xl p-3">
-              <div className="flex justify-between text-[10px] text-white/70 mb-1.5">
-                <span className="font-bold text-white">Çok İyi Biri</span>
-                <span>2.340 / 3.000</span>
-              </div>
-              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                <div className="h-full w-[78%] bg-amber-400 rounded-full" />
-              </div>
-              <p className="text-[9px] text-white/50 mt-1">660 Karma → Gerçekten İyi Biri</p>
-            </div>
-          </div>
+      <div className="bg-[#1a1a2e] rounded-[2.5rem] p-[3px] shadow-2xl">
+        <div className="bg-[#F5F5F7] rounded-[2.4rem] p-2.5">
+          {/* Screen */}
+          <div className="bg-white rounded-[2rem] overflow-hidden" style={{ minHeight: 500 }}>
 
-          {/* Mission cards */}
-          <div className="px-4 py-4 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-bold text-gray-800">Öne Çıkan Görevler</p>
-              <span className="text-[10px] text-amber-600 font-semibold">Tümü →</span>
-            </div>
-
-            {/* Mission card 1 */}
-            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5 flex flex-col gap-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">🌿 Doğa & Çevre</span>
-                <span className="text-[10px] text-gray-400">TEMA</span>
+            {/* Header */}
+            <div className="bg-[#1B3A5C] px-5 pt-5 pb-5">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-white/50 text-[10px]">Hoş geldin</p>
+                  <p className="text-white font-bold text-sm font-headline">Ada ✦</p>
+                </div>
+                <div className="flex items-center gap-1.5 bg-amber-400 rounded-xl px-3 py-1.5">
+                  <KarmaToken size={11} />
+                  <span className="text-amber-900 text-[10px] font-bold">2.340 Karma</span>
+                </div>
               </div>
-              <p className="text-xs font-bold text-gray-900 leading-snug">Sahil temizliği etkinliğine katıl</p>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-gray-500">2 saat · 42 katılımcı</span>
-                <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+150 Karma</span>
+
+              {/* Karma bar */}
+              <div className="bg-white/10 rounded-2xl p-3">
+                <div className="flex justify-between text-[10px] text-white/60 mb-2">
+                  <span className="font-bold text-white">Çok İyi Biri</span>
+                  <span>2.340 / 3.000</span>
+                </div>
+                <div className="h-2 bg-white/15 rounded-full overflow-hidden">
+                  <div className="mockup-bar h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" />
+                </div>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span className="mockup-dot w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+                  <p className="text-[9px] text-white/40">660 Karma → Gerçekten İyi Biri</p>
+                </div>
               </div>
             </div>
 
-            {/* Mission card 2 */}
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-3.5 flex flex-col gap-2.5">
+            {/* Content */}
+            <div className="px-4 py-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">📚 Eğitim</span>
-                <span className="text-[10px] text-gray-400">TOG</span>
+                <p className="text-xs font-bold text-gray-800">Öne Çıkan Görevler</p>
+                <span className="text-[10px] text-amber-500 font-semibold">Tümü →</span>
               </div>
-              <p className="text-xs font-bold text-gray-900 leading-snug">İlkokul öğrencisine okuma desteği</p>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-gray-500">1 saat/hafta · Online</span>
-                <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+250 Karma</span>
+
+              {/* Mission card 1 */}
+              <div className="mockup-card-1 bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Doğa & Çevre</span>
+                  <span className="text-[10px] text-gray-400">TEMA</span>
+                </div>
+                <p className="text-xs font-bold text-gray-900 leading-snug">Sahil temizliği etkinliğine katıl</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-400">2 saat · 42 kişi</span>
+                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+150 Karma</span>
+                </div>
+              </div>
+
+              {/* Mission card 2 */}
+              <div className="mockup-card-2 bg-blue-50 border border-blue-100 rounded-2xl p-3.5 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Eğitim</span>
+                  <span className="text-[10px] text-gray-400">TOG</span>
+                </div>
+                <p className="text-xs font-bold text-gray-900 leading-snug">İlkokul öğrencisine okuma desteği</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-400">1 saat/hafta · Online</span>
+                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+250 Karma</span>
+                </div>
+              </div>
+
+              {/* Reward teaser */}
+              <div className="mockup-reward bg-[#1B3A5C]/5 border border-[#1B3A5C]/10 rounded-2xl p-3 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center text-base flex-shrink-0">☕</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] text-gray-400">Bir sonraki ödülün</p>
+                  <p className="text-xs font-bold text-gray-900">Starbucks %20 indirim</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[10px] text-amber-500 font-bold">660</p>
+                  <p className="text-[9px] text-gray-400">Karma kaldı</p>
+                </div>
               </div>
             </div>
 
-            {/* Reward teaser */}
-            <div className="bg-[#1B3A5C]/5 border border-[#1B3A5C]/10 rounded-2xl p-3 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center text-lg flex-shrink-0">☕</div>
-              <div className="flex-1">
-                <p className="text-[10px] text-gray-500">Bir sonraki ödülün</p>
-                <p className="text-xs font-bold text-gray-900">Starbucks %20 indirim</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-amber-600 font-bold">660 Karma</p>
-                <p className="text-[9px] text-gray-400">kaldı</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Floating notification */}
-      <div className="absolute -top-3 -right-6 bg-amber-400 text-amber-900 rounded-2xl px-4 py-2.5 shadow-xl">
-        <p className="text-[10px] font-semibold opacity-70">Az önce</p>
-        <p className="text-sm font-bold leading-tight flex items-center gap-1">+150 Karma <KarmaToken size={14} /></p>
+      {/* Floating notification badge */}
+      <div className="mockup-badge absolute -top-2 -right-4 sm:-right-8 bg-amber-400 text-amber-900 rounded-2xl px-3.5 py-2.5 shadow-xl shadow-amber-400/30">
+        <p className="text-[9px] font-semibold opacity-60 mb-0.5">Görev tamamlandı</p>
+        <p className="text-sm font-bold leading-none flex items-center gap-1">+150 <KarmaToken size={13} /></p>
       </div>
     </div>
   );
@@ -465,8 +473,8 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-lg text-gray-500 leading-relaxed max-w-md">
-                İyilik Öncüleri'nin görevlerini tamamla, <strong className="text-[#1B3A5C]">Karma</strong> kazan,
-                unvanını yükselt — her iyilik seni gerçek ödüllere bir adım daha yaklaştırır.
+                Bir görev seç, tamamla, <strong className="text-[#1B3A5C]">Karma</strong> kazan.
+                Her iyilik seni gerçek ödüllere yaklaştırır.
               </p>
 
               <div className="flex flex-col gap-3 max-w-md">
@@ -501,11 +509,11 @@ export default function LandingPage() {
 
         {/* ── Stats bar ── */}
         <section className="bg-[#1B3A5C] py-12 px-6">
-          <div className="max-w-3xl mx-auto grid grid-cols-3 gap-6">
+          <div className="max-w-3xl mx-auto flex justify-around gap-4">
             {STATS.map(({ value, label }) => (
-              <div key={label} className="flex flex-col items-center gap-1.5 text-center">
-                <span className="text-3xl sm:text-4xl font-bold text-white">{value}</span>
-                <span className="text-xs sm:text-sm text-white/60 font-medium">{label}</span>
+              <div key={label} className="flex flex-col items-center gap-1.5 text-center min-w-0">
+                <span className="text-2xl sm:text-4xl font-bold text-white leading-none">{value}</span>
+                <span className="text-[10px] sm:text-sm text-white/60 font-medium leading-tight">{label}</span>
               </div>
             ))}
           </div>
@@ -623,26 +631,35 @@ export default function LandingPage() {
         </section>
 
         {/* ── Nasıl Çalışır ── */}
-        <section id="nasil-calisir" className="px-6 py-24 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">Nasıl Çalışır?</p>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight">
-                4 adımda iyilik yap,<br className="hidden sm:block" /> Karma kazan, ödül al.
+        <section id="nasil-calisir" className="px-6 py-24 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-16">
+              <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4">Nasıl Çalışır?</p>
+              <h2 className="font-headline text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight max-w-lg">
+                Dört adım.<br />Gerçek etki.
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-              <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
-              {HOW_IT_WORKS.map(({ step, icon, title, desc }) => (
-                <div key={step} className="relative bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow p-7 flex flex-col gap-4">
-                  <div className="absolute -top-4 -left-4 w-9 h-9 rounded-full bg-amber-400 text-amber-900 font-bold text-sm flex items-center justify-center shadow-md">
-                    {step}
+            <div className="flex flex-col gap-0">
+              {HOW_IT_WORKS.map(({ step, title, desc }, i) => (
+                <div
+                  key={step}
+                  className={`flex gap-8 sm:gap-12 items-start py-10 ${i < HOW_IT_WORKS.length - 1 ? "border-b border-gray-100" : ""}`}
+                >
+                  {/* Step number */}
+                  <div className="flex-shrink-0 w-16 sm:w-20">
+                    <span className="font-headline text-5xl sm:text-6xl font-extrabold text-gray-100 leading-none select-none">
+                      {step}
+                    </span>
                   </div>
-                  <StepIcon step={step} />
-                  <div>
-                    <p className="text-base font-bold text-[#1B3A5C] mb-2">{title}</p>
-                    <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+
+                  {/* Content */}
+                  <div className="flex-1 pt-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <StepIcon step={step} />
+                      <p className="font-headline text-xl font-bold text-[#1B3A5C]">{title}</p>
+                    </div>
+                    <p className="text-gray-500 leading-relaxed max-w-md">{desc}</p>
                   </div>
                 </div>
               ))}
