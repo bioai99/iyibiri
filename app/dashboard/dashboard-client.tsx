@@ -15,7 +15,7 @@ interface Props {
 
 
 const discoverItems = [
-  { href: '/dashboard/ngos', Icon: Handshake, label: "STK'lar", gradient: 'from-blue-500 to-indigo-400' },
+  { href: '/dashboard/ngos', Icon: Handshake, label: 'Kuruluşlar', gradient: 'from-blue-500 to-indigo-400' },
   { href: '/dashboard/rewards', Icon: Gift, label: 'Ödüller', gradient: 'from-amber-500 to-orange-400' },
   { href: '/dashboard/missions', Icon: ClipboardList, label: 'Görevler', gradient: 'from-emerald-500 to-teal-400' },
   { href: '/dashboard/profile', Icon: User, label: 'Profil', gradient: 'from-rose-500 to-pink-400' },

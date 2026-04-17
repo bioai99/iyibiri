@@ -8,7 +8,7 @@ import { Home, ListChecks, Heart, Gift, User } from 'lucide-react'
 const navItems = [
   { href: '/dashboard', label: 'Ana Sayfa', icon: Home },
   { href: '/dashboard/missions', label: 'Görevler', icon: ListChecks },
-  { href: '/dashboard/ngos', label: "STK'lar", icon: Heart },
+  { href: '/dashboard/ngos', label: 'Kuruluşlar', icon: Heart },
   { href: '/dashboard/rewards', label: 'Ödüller', icon: Gift },
   { href: '/dashboard/profile', label: 'Profil', icon: User },
 ]
