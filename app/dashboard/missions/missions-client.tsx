@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Leaf, BookOpen, Heart, Coins, LayoutGrid, ClipboardX } from 'lucide-react'
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 
@@ -10,12 +11,12 @@ interface Props {
   userMissions: UserMission[]
 }
 
-const domains = [
-  { value: 'all', label: 'Tümü' },
-  { value: 'nature', label: '🌿 Doğa' },
-  { value: 'education', label: '📚 Eğitim' },
-  { value: 'social', label: '❤️ Sosyal' },
-  { value: 'financial', label: '💛 Finansal' },
+const filters = [
+  { value: 'all', label: 'Tümü', Icon: LayoutGrid, activeGradient: 'from-stone-700 to-stone-600' },
+  { value: 'nature', label: 'Doğa', Icon: Leaf, activeGradient: 'from-emerald-500 to-teal-400' },
+  { value: 'education', label: 'Eğitim', Icon: BookOpen, activeGradient: 'from-blue-500 to-indigo-400' },
+  { value: 'social', label: 'Sosyal', Icon: Heart, activeGradient: 'from-rose-500 to-pink-400' },
+  { value: 'financial', label: 'Finansal', Icon: Coins, activeGradient: 'from-amber-500 to-orange-400' },
 ]
 
 export function MissionsClient({ missions, userMissions }: Props) {
@@ -34,23 +35,34 @@ export function MissionsClient({ missions, userMissions }: Props) {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="bg-white border-b border-border px-4 pt-12 pb-4 sticky top-0 z-10">
-        <h1 className="font-display font-extrabold text-2xl text-text-primary mb-4">Görevler</h1>
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {domains.map(({ value, label }) => (
-            <motion.button
-              key={value}
-              onClick={() => setActiveFilter(value)}
-              className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-                activeFilter === value
-                  ? 'bg-primary text-white'
-                  : 'bg-stone-100 text-text-muted'
-              }`}
-              whileTap={{ scale: 0.93 }}
-            >
-              {label}
-            </motion.button>
-          ))}
+      {/* Sticky Header */}
+      <div className="bg-background px-4 pt-12 pb-4 sticky top-0 z-10">
+        <div className="flex items-center gap-3 mb-4">
+          <h1 className="font-display font-extrabold text-3xl text-stone-900">Görevler</h1>
+          <span className="bg-primary/15 text-primary font-bold text-sm px-2.5 py-0.5 rounded-full">
+            {missions.length}
+          </span>
+        </div>
+        {/* Filter chips */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
+          {filters.map(({ value, label, Icon, activeGradient }) => {
+            const isActive = activeFilter === value
+            return (
+              <motion.button
+                key={value}
+                onClick={() => setActiveFilter(value)}
+                whileTap={{ scale: 0.93 }}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  isActive
+                    ? `bg-gradient-to-r ${activeGradient} text-white shadow-md`
+                    : 'bg-white border border-stone-200 text-stone-500'
+                }`}
+              >
+                <Icon size={14} />
+                {label}
+              </motion.button>
+            )
+          })}
         </div>
       </div>
 
@@ -60,10 +72,10 @@ export function MissionsClient({ missions, userMissions }: Props) {
             <motion.div
               key={mission.id}
               layout
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.04 }}
             >
               <MissionCard
                 mission={mission}
@@ -73,10 +85,18 @@ export function MissionsClient({ missions, userMissions }: Props) {
             </motion.div>
           ))}
         </AnimatePresence>
+
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-text-muted">
-            Bu kategoride görev bulunamadı
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center py-16 gap-4"
+          >
+            <div className="bg-stone-100 rounded-3xl p-6">
+              <ClipboardX size={32} className="text-stone-400" />
+            </div>
+            <p className="text-stone-400 text-sm font-medium">Bu kategoride görev bulunamadı</p>
+          </motion.div>
         )}
       </div>
     </div>
