@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { Flame, Sparkles, Handshake, Gift, ClipboardList, User } from 'lucide-react'
 import type { Profile, Mission, UserMission } from '@/lib/supabase/types'
 import { KarmaCounter } from '@/components/ui/karma-counter'
 import { XPBar } from '@/components/ui/xp-bar'
-import { StreakFlame } from '@/components/ui/streak-flame'
-import { TierBadge, getTierFromKarma } from '@/components/ui/tier-badge'
+import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { MissionCard } from '@/components/ui/mission-card'
 
 interface Props {
@@ -15,7 +15,21 @@ interface Props {
   userMissions: UserMission[]
 }
 
+const tierName: Record<number, string> = {
+  1: 'İyi Biri',
+  2: 'Çok İyi Biri',
+  3: 'Gerçekten İyi Biri',
+  4: 'İyiliğin Öncüsü',
+}
+
 const tierThresholds: Record<number, number> = { 1: 500, 2: 1500, 3: 3000, 4: Infinity }
+
+const discoverItems = [
+  { href: '/dashboard/ngos', Icon: Handshake, label: "STK'lar", gradient: 'from-blue-500 to-indigo-400' },
+  { href: '/dashboard/rewards', Icon: Gift, label: 'Ödüller', gradient: 'from-amber-500 to-orange-400' },
+  { href: '/dashboard/missions', Icon: ClipboardList, label: 'Görevler', gradient: 'from-emerald-500 to-teal-400' },
+  { href: '/dashboard/profile', Icon: User, label: 'Profil', gradient: 'from-rose-500 to-pink-400' },
+]
 
 export function DashboardClient({ profile, missions, userMissions }: Props) {
   const tier = getTierFromKarma(profile.karma_total)
@@ -31,90 +45,102 @@ export function DashboardClient({ profile, missions, userMissions }: Props) {
 
   const featuredMissions = missions.filter(m => m.featured && !completedIds.has(m.id)).slice(0, 3)
   const inProgressMissions = missions.filter(m => takenIds.has(m.id) && !completedIds.has(m.id))
-
   const firstName = profile.name?.split(' ')[0] ?? 'Kullanıcı'
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="bg-white px-4 pt-12 pb-6 border-b border-border">
+      <div className="px-4 pt-12 pb-6">
+        {/* Hero Card */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl p-5 shadow-[0_8px_32px_rgba(251,146,60,0.35)]"
+          initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-start justify-between mb-4">
             <div>
-              <p className="text-text-muted text-sm">Merhaba,</p>
-              <h1 className="font-display font-extrabold text-2xl text-text-primary">
-                {firstName} 👋
+              <p className="text-white/70 text-sm font-medium">Merhaba,</p>
+              <h1 className="font-display font-extrabold text-white text-2xl leading-tight">
+                {firstName}
               </h1>
             </div>
-            <StreakFlame streak={profile.streak} />
+            {/* Streak pill */}
+            <div className="bg-white/20 rounded-full px-3 py-1.5 flex items-center gap-1.5">
+              <Flame size={16} className="text-white" />
+              <span className="text-white font-bold text-sm">{profile.streak}</span>
+              <span className="text-white/70 text-xs">gün</span>
+            </div>
           </div>
 
-          <div className="bg-primary/10 rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <p className="text-xs font-semibold text-primary/70 uppercase tracking-wide">Toplam Karma</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xl">✨</span>
-                  <KarmaCounter value={profile.karma_total} size="lg" className="text-primary" />
-                </div>
-              </div>
-              <TierBadge tier={tier} />
-            </div>
-            {nextThreshold !== Infinity && (
-              <XPBar
-                current={profile.karma_total - prevThreshold}
-                max={nextThreshold - prevThreshold}
-                label={`Tier ${tier + 1}'e`}
-                color="#F4B942"
-              />
-            )}
+          <div className="flex items-end gap-2 mb-1">
+            <Sparkles size={20} className="text-white/70 mb-1" />
+            <KarmaCounter
+              value={profile.karma_total}
+              size="lg"
+              className="text-white font-black !text-5xl"
+            />
           </div>
+          <p className="text-white/70 text-xs font-medium mb-4">toplam karma</p>
+
+          {/* Tier badge */}
+          <div className="inline-flex items-center bg-white/20 rounded-full px-3 py-1 mb-4">
+            <span className="text-white text-xs font-bold">{tierName[tier] ?? 'İyi Biri'} · Tier {tier}</span>
+          </div>
+
+          {/* XP Bar */}
+          {nextThreshold !== Infinity && (
+            <XPBar
+              current={profile.karma_total - prevThreshold}
+              max={nextThreshold - prevThreshold}
+              label={`${tierName[(tier + 1) as keyof typeof tierName] ?? 'Sonraki'}'e`}
+              color="#FFFFFF"
+            />
+          )}
         </motion.div>
       </div>
 
-      <div className="px-4 py-6 space-y-6">
+      <div className="px-4 space-y-7">
+        {/* In-Progress */}
         {inProgressMissions.length > 0 && (
           <section>
-            <h2 className="font-display font-bold text-lg text-text-primary mb-3">
-              Devam Eden Görevler
+            <h2 className="font-display font-extrabold text-xl text-stone-900 mb-3">
+              Devam Eden
             </h2>
-            <div className="space-y-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
               {inProgressMissions.map((mission, i) => (
                 <motion.div
                   key={mission.id}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.05 }}
                 >
-                  <MissionCard mission={mission} isTaken />
+                  <MissionCard mission={mission} isTaken compact />
                 </motion.div>
               ))}
             </div>
           </section>
         )}
 
+        {/* Featured */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display font-bold text-lg text-text-primary">Öne Çıkan Görevler</h2>
-            <Link href="/dashboard/missions" className="text-sm text-primary font-semibold">
+            <h2 className="font-display font-extrabold text-xl text-stone-900">Öne Çıkanlar</h2>
+            <Link href="/dashboard/missions" className="text-sm text-primary font-bold">
               Tümü →
             </Link>
           </div>
           <div className="space-y-3">
             {featuredMissions.length === 0 ? (
-              <div className="text-center py-8 text-text-muted text-sm">
-                Tüm öne çıkan görevleri tamamladın! 🎉
+              <div className="text-center py-10 text-stone-400 text-sm">
+                Tüm öne çıkan görevleri tamamladın!
               </div>
             ) : (
               featuredMissions.map((mission, i) => (
                 <motion.div
                   key={mission.id}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.07 }}
                 >
                   <MissionCard
                     mission={mission}
@@ -127,20 +153,24 @@ export function DashboardClient({ profile, missions, userMissions }: Props) {
           </div>
         </section>
 
+        {/* Discover Grid */}
         <section>
-          <h2 className="font-display font-bold text-lg text-text-primary mb-3">Keşfet</h2>
+          <h2 className="font-display font-extrabold text-xl text-stone-900 mb-3">Keşfet</h2>
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { href: '/dashboard/ngos', emoji: '🤝', label: "STK'lar", color: 'bg-blue-50 border-blue-100' },
-              { href: '/dashboard/rewards', emoji: '🎁', label: 'Ödüller', color: 'bg-amber-50 border-amber-100' },
-              { href: '/dashboard/missions', emoji: '📋', label: 'Tüm Görevler', color: 'bg-emerald-50 border-emerald-100' },
-              { href: '/dashboard/profile', emoji: '👤', label: 'Profil', color: 'bg-purple-50 border-purple-100' },
-            ].map(({ href, emoji, label, color }) => (
-              <motion.div key={href} whileTap={{ scale: 0.95 }}>
+            {discoverItems.map(({ href, Icon, label, gradient }, i) => (
+              <motion.div
+                key={href}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30, delay: 0.1 + i * 0.05 }}
+                whileTap={{ scale: 0.96 }}
+              >
                 <Link href={href}>
-                  <div className={`rounded-2xl border p-4 flex items-center gap-3 ${color}`}>
-                    <span className="text-2xl">{emoji}</span>
-                    <span className="font-semibold text-text-primary text-sm">{label}</span>
+                  <div className={`bg-gradient-to-br ${gradient} rounded-3xl p-5 flex flex-col gap-3`}>
+                    <div className="bg-white/20 rounded-xl p-2.5 w-fit">
+                      <Icon size={20} className="text-white" />
+                    </div>
+                    <span className="font-display font-bold text-white text-sm">{label}</span>
                   </div>
                 </Link>
               </motion.div>
