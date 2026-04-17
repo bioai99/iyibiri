@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Flame, Sparkles, Handshake, Gift, ClipboardList, User } from 'lucide-react'
-import type { Profile, Mission, UserMission } from '@/lib/supabase/types'
+import type { Profile, MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { KarmaCounter } from '@/components/ui/karma-counter'
 import { XPBar } from '@/components/ui/xp-bar'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
@@ -11,7 +11,7 @@ import { MissionCard } from '@/components/ui/mission-card'
 
 interface Props {
   profile: Profile
-  missions: Mission[]
+  missions: MissionWithNGO[]
   userMissions: UserMission[]
 }
 

@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Clock, ChevronRight, CheckCircle2 } from 'lucide-react'
 import { DomainIcon } from './domain-icon'
-import type { Mission } from '@/lib/supabase/types'
+import type { MissionWithNGO } from '@/lib/supabase/types'
 
 interface MissionCardProps {
-  mission: Mission
+  mission: MissionWithNGO
   isCompleted?: boolean
   isTaken?: boolean
   compact?: boolean
@@ -40,6 +40,7 @@ export function MissionCard({ mission, isCompleted, isTaken, compact = false }: 
   const gradient = domainGradient[domain] ?? domainGradient.default
   const label = domainLabel[domain] ?? domainLabel.default
   const difficulty = difficultyConfig[mission.difficulty ?? 'easy']
+  const ngo = mission.ngos
 
   return (
     <motion.div
@@ -74,8 +75,33 @@ export function MissionCard({ mission, isCompleted, isTaken, compact = false }: 
             <h3 className="font-display font-bold text-stone-900 text-base leading-snug line-clamp-1">
               {mission.title}
             </h3>
+
+            {/* NGO identity */}
+            {ngo && (
+              <div className="flex items-center gap-1.5 mt-1">
+                {ngo.logo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={ngo.logo_url}
+                    alt={ngo.name}
+                    className="w-4 h-4 rounded object-contain flex-shrink-0"
+                  />
+                ) : (
+                  <div
+                    className="w-4 h-4 rounded flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0"
+                    style={{ backgroundColor: ngo.color_accent ?? '#F4B942' }}
+                  >
+                    {(ngo.short_name ?? ngo.name)[0]}
+                  </div>
+                )}
+                <span className="text-xs text-stone-400 font-medium truncate">
+                  {ngo.short_name ?? ngo.name}
+                </span>
+              </div>
+            )}
+
             {!compact && (
-              <p className="text-sm text-stone-500 mt-0.5 line-clamp-1">
+              <p className="text-sm text-stone-500 mt-1 line-clamp-1">
                 {mission.description}
               </p>
             )}

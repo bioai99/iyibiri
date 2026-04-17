@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Leaf, BookOpen, Heart, Coins, LayoutGrid, ClipboardX } from 'lucide-react'
-import type { Mission, UserMission } from '@/lib/supabase/types'
+import type { MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 
 interface Props {
-  missions: Mission[]
+  missions: MissionWithNGO[]
   userMissions: UserMission[]
 }
 
