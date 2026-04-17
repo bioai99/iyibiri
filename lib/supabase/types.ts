@@ -8,6 +8,7 @@ export interface Database {
           id: string
           name: string | null
           avatar_url: string | null
+          avatar_type: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total: number
           level: number
           streak: number
@@ -18,6 +19,7 @@ export interface Database {
           id: string
           name?: string | null
           avatar_url?: string | null
+          avatar_type?: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total?: number
           level?: number
           streak?: number
@@ -28,6 +30,7 @@ export interface Database {
           id?: string
           name?: string | null
           avatar_url?: string | null
+          avatar_type?: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total?: number
           level?: number
           streak?: number
