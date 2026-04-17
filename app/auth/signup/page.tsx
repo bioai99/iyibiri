@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Sparkles, Mail, Lock, User } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const supabase = createClient()
@@ -42,62 +43,76 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-stone-900 flex flex-col">
+      {/* Brand area */}
       <motion.div
-        className="w-full max-w-sm"
-        initial={{ opacity: 0, y: 20 }}
+        className="flex-1 flex flex-col items-center justify-center px-6 pb-8"
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
       >
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-2xl">✨</span>
-          </div>
-          <h1 className="font-display font-extrabold text-2xl text-text-primary">İyilik Yolculuğuna Başla</h1>
-          <p className="text-text-muted text-sm mt-1">Hesap oluştur, ilk görevini al</p>
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-5 shadow-[0_8px_32px_rgba(251,146,60,0.4)]">
+          <Sparkles size={36} className="text-white" />
         </div>
+        <h1 className="font-display font-black text-white text-4xl tracking-tight">İyiBiri</h1>
+        <p className="text-stone-400 text-base mt-2 text-center">İyi şeyler yapmak, iyi hissettirir</p>
+      </motion.div>
 
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-text-primary mb-1.5">Adın</label>
+      {/* Form card */}
+      <motion.div
+        className="bg-white rounded-t-3xl px-6 pt-8 pb-10"
+        initial={{ y: 60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 0.1 }}
+      >
+        <h2 className="font-display font-extrabold text-stone-900 text-2xl mb-6">Hesap Oluştur</h2>
+
+        <form onSubmit={handleSignup} className="space-y-3">
+          {/* Name */}
+          <div className="relative">
+            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
               placeholder="Adın Soyadın"
+              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-text-primary mb-1.5">E-posta</label>
+
+          {/* Email */}
+          <div className="relative">
+            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
-              placeholder="ornek@email.com"
+              placeholder="E-posta adresin"
+              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
             />
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-text-primary mb-1.5">Şifre</label>
+
+          {/* Password */}
+          <div className="relative">
+            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
-              placeholder="En az 6 karakter"
+              placeholder="Şifre (en az 6 karakter)"
+              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
             />
           </div>
 
           {error && (
             <motion.p
-              className="text-sm text-danger text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-red-500 text-sm text-center pt-1"
             >
               {error}
             </motion.p>
@@ -106,16 +121,16 @@ export default function SignupPage() {
           <motion.button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-primary text-white font-display font-bold text-base rounded-xl shadow-md disabled:opacity-60"
             whileTap={{ scale: 0.97 }}
+            className="w-full py-4 mt-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-display font-bold text-base rounded-2xl shadow-[0_4px_20px_rgba(251,146,60,0.35)] disabled:opacity-60"
           >
             {loading ? 'Hesap oluşturuluyor...' : 'Başla'}
           </motion.button>
         </form>
 
-        <p className="text-center text-sm text-text-muted mt-6">
+        <p className="text-center text-sm text-stone-400 mt-6">
           Zaten hesabın var mı?{' '}
-          <Link href="/auth/login" className="text-primary font-semibold">
+          <Link href="/auth/login" className="text-primary font-bold">
             Giriş yap
           </Link>
         </p>
