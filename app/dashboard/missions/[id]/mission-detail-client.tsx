@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -17,10 +17,10 @@ interface Props {
 const difficultyLabel: Record<string, string> = { easy: 'Kolay', medium: 'Orta', hard: 'Zor' }
 const verifyMethodLabel: Record<string, string> = { auto: 'Otomatik', code: 'Kod girişi', photo: 'Fotoğraf', qr: 'QR kod' }
 
-const supabase = createClient()
-
 export function MissionDetailClient({ mission, userMission, userId }: Props) {
   const [loading, setLoading] = useState(false)
+  const [takeError, setTakeError] = useState<string | null>(null)
+  const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
   const isTaken = !!userMission
@@ -37,12 +37,15 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
 
   async function handleTakeMission() {
     setLoading(true)
+    setTakeError(null)
     const { error } = await supabase
       .from('user_missions')
       .insert({ user_id: userId, mission_id: mission.id, status: 'taken' })
     setLoading(false)
-    if (error) return
-    router.refresh()
+    if (error) {
+      setTakeError('Görev alınamadı, tekrar dene')
+      return
+    }
     router.push(`/dashboard/missions/${mission.id}/complete`)
   }
 
@@ -115,6 +118,16 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
           </div>
         )}
       </div>
+
+      {takeError && (
+          <motion.div
+            className="bg-red-50 border border-red-100 rounded-xl p-3 text-sm text-danger text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {takeError}
+          </motion.div>
+        )}
 
       <div className="fixed bottom-20 left-0 right-0 px-4">
         {isCompleted ? (
