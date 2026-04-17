@@ -1,66 +1,84 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Search } from "lucide-react";
-import { MISSIONS, type Category } from "@/lib/mock-data";
-import MissionCard from "@/components/mission-card";
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import type { Mission, UserMission } from '@/lib/supabase/types'
+import { MissionCard } from '@/components/ui/mission-card'
 
-const CATEGORIES: Category[] = ["Hepsi", "Çevre", "Eğitim", "Sağlık", "Hayvanlar", "Kültür"];
+interface Props {
+  missions: Mission[]
+  userMissions: UserMission[]
+}
 
-export default function MissionsClient() {
-  const [active, setActive] = useState<Category>("Hepsi");
-  const [query, setQuery] = useState("");
+const domains = [
+  { value: 'all', label: 'Tümü' },
+  { value: 'nature', label: '🌿 Doğa' },
+  { value: 'education', label: '📚 Eğitim' },
+  { value: 'social', label: '❤️ Sosyal' },
+  { value: 'financial', label: '💛 Finansal' },
+]
 
-  const filtered = MISSIONS.filter((m) => {
-    const matchCat = active === "Hepsi" || m.category === active;
-    const matchQ = m.title.toLowerCase().includes(query.toLowerCase()) ||
-                   m.ngo.toLowerCase().includes(query.toLowerCase());
-    return matchCat && matchQ;
-  });
+export function MissionsClient({ missions, userMissions }: Props) {
+  const [activeFilter, setActiveFilter] = useState('all')
+
+  const completedIds = new Set(
+    userMissions.filter(m => m.status === 'completed').map(m => m.mission_id)
+  )
+  const takenIds = new Set(
+    userMissions.filter(m => m.status === 'taken').map(m => m.mission_id)
+  )
+
+  const filtered = activeFilter === 'all'
+    ? missions
+    : missions.filter(m => m.domain === activeFilter)
 
   return (
-    <>
-      {/* Arama */}
-      <div className="px-5 pt-4 pb-2">
-        <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Görev veya STK ara…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-card border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-ring placeholder:text-muted-foreground"
-          />
+    <div className="min-h-screen bg-background pb-24">
+      <div className="bg-white border-b border-border px-4 pt-12 pb-4 sticky top-0 z-10">
+        <h1 className="font-display font-extrabold text-2xl text-text-primary mb-4">Görevler</h1>
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          {domains.map(({ value, label }) => (
+            <motion.button
+              key={value}
+              onClick={() => setActiveFilter(value)}
+              className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                activeFilter === value
+                  ? 'bg-primary text-white'
+                  : 'bg-stone-100 text-text-muted'
+              }`}
+              whileTap={{ scale: 0.93 }}
+            >
+              {label}
+            </motion.button>
+          ))}
         </div>
       </div>
 
-      {/* Kategori filtresi */}
-      <div className="flex gap-2 px-5 pb-4 overflow-x-auto scrollbar-hide">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActive(cat)}
-            className={`flex-shrink-0 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors ${
-              active === cat
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-secondary"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Görev listesi */}
-      <div className="px-5 flex flex-col gap-3">
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground text-sm">
-            Bu kategoride görev bulunamadı.
+      <div className="px-4 py-4 space-y-3">
+        <AnimatePresence mode="popLayout">
+          {filtered.map((mission, i) => (
+            <motion.div
+              key={mission.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <MissionCard
+                mission={mission}
+                isCompleted={completedIds.has(mission.id)}
+                isTaken={takenIds.has(mission.id)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        {filtered.length === 0 && (
+          <div className="text-center py-12 text-text-muted">
+            Bu kategoride görev bulunamadı
           </div>
-        ) : (
-          filtered.map((m) => <MissionCard key={m.id} mission={m} />)
         )}
       </div>
-    </>
-  );
+    </div>
+  )
 }
