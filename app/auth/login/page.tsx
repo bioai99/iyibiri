@@ -1,78 +1,100 @@
-import Link from "next/link";
-import { Suspense } from "react";
-import { signIn } from "../actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import AuthFeedback from "@/components/auth-feedback";
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setError('E-posta veya şifre hatalı')
+      setLoading(false)
+      return
+    }
+    router.push('/dashboard')
+    router.refresh()
+  }
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-background px-6">
-      {/* Logo */}
-      <Link href="/" className="flex flex-col items-center gap-2 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-md">
-          <span className="text-primary-foreground text-2xl font-bold">İ</span>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <motion.div
+        className="w-full max-w-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <span className="text-2xl">✨</span>
+          </div>
+          <h1 className="font-display font-extrabold text-2xl text-text-primary">İyiBiri'ne Hoşgeldin</h1>
+          <p className="text-text-muted text-sm mt-1">İyilik yapmaya devam et</p>
         </div>
-        <span className="text-xl font-bold text-foreground">İyiBiri</span>
-      </Link>
 
-      {/* Kart */}
-      <div className="w-full max-w-sm bg-card rounded-2xl shadow-sm border border-border p-6">
-        <h1 className="text-xl font-bold text-foreground mb-1">Tekrar hoş geldin</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Görevlerin seni bekliyor.
-        </p>
-
-        <form className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">E-posta</Label>
-            <Input
-              id="email"
-              name="email"
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-text-primary mb-1.5">E-posta</label>
+            <input
               type="email"
-              placeholder="ad@ornek.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="email"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              placeholder="ornek@email.com"
             />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Şifre</Label>
-              <Link
-                href="/auth/reset-password"
-                className="text-xs text-primary hover:underline"
-              >
-                Şifremi unuttum
-              </Link>
-            </div>
-            <Input
-              id="password"
-              name="password"
+          <div>
+            <label className="block text-sm font-semibold text-text-primary mb-1.5">Şifre</label>
+            <input
               type="password"
-              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              placeholder="••••••••"
             />
           </div>
 
-          <Suspense>
-            <AuthFeedback />
-          </Suspense>
+          {error && (
+            <motion.p
+              className="text-sm text-danger text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {error}
+            </motion.p>
+          )}
 
-          <Button formAction={signIn} className="w-full mt-1" size="lg">
-            Giriş Yap
-          </Button>
+          <motion.button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 bg-primary text-white font-display font-bold text-base rounded-xl shadow-md disabled:opacity-60"
+            whileTap={{ scale: 0.97 }}
+          >
+            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+          </motion.button>
         </form>
-      </div>
 
-      <p className="mt-6 text-sm text-muted-foreground">
-        Hesabın yok mu?{" "}
-        <Link href="/auth/signup" className="text-primary font-medium hover:underline">
-          Üye ol
-        </Link>
-      </p>
-    </main>
-  );
+        <p className="text-center text-sm text-text-muted mt-6">
+          Hesabın yok mu?{' '}
+          <Link href="/auth/signup" className="text-primary font-semibold">
+            Kayıt ol
+          </Link>
+        </p>
+      </motion.div>
+    </div>
+  )
 }
