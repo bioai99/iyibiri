@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Flame, Sparkles, Handshake, Gift, ClipboardList, User, CheckCircle2 } from 'lucide-react'
-import type { Profile, MissionWithNGO, UserMission } from '@/lib/supabase/types'
+import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
 import { KarmaCounter } from '@/components/ui/karma-counter'
 import { MissionCard } from '@/components/ui/mission-card'
 
@@ -11,6 +11,7 @@ interface Props {
   profile: Profile
   missions: MissionWithNGO[]
   userMissions: UserMission[]
+  ngos: NGO[]
 }
 
 
@@ -21,7 +22,7 @@ const discoverItems = [
   { href: '/dashboard/profile', Icon: User, label: 'Profil', gradient: 'from-rose-500 to-pink-400' },
 ]
 
-export function DashboardClient({ profile, missions, userMissions }: Props) {
+export function DashboardClient({ profile, missions, userMissions, ngos }: Props) {
   const completedIds = new Set(
     userMissions.filter(m => m.status === 'completed').map(m => m.mission_id)
   )
@@ -130,6 +131,68 @@ export function DashboardClient({ profile, missions, userMissions }: Props) {
             )}
           </div>
         </section>
+
+        {/* NGO Feed */}
+        {ngos.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display font-extrabold text-xl text-stone-900">Kuruluşlardan</h2>
+              <Link href="/dashboard/ngos" className="text-sm text-primary font-bold">
+                Tümü →
+              </Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+              {ngos.map((ngo, i) => {
+                const coverUrl = (ngo as NGO & { cover_image_url?: string | null }).cover_image_url
+                return (
+                  <motion.div
+                    key={ngo.id}
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.05 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex-shrink-0 w-[200px]"
+                  >
+                    <Link href={`/dashboard/ngos/${ngo.id}`}>
+                      <div className="rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+                        <div
+                          className="h-28 bg-cover bg-center"
+                          style={{
+                            backgroundImage: coverUrl ? `url(${coverUrl})` : undefined,
+                            backgroundColor: coverUrl ? undefined : (ngo.color_accent ?? '#F4B942'),
+                          }}
+                        />
+                        <div className="bg-white px-3 py-3">
+                          <div className="flex items-center gap-2">
+                            {ngo.logo_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={ngo.logo_url}
+                                alt={ngo.name}
+                                className="w-7 h-7 rounded-lg object-contain border border-stone-100 p-0.5 flex-shrink-0"
+                              />
+                            ) : (
+                              <div
+                                className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                style={{ backgroundColor: ngo.color_accent ?? '#F4B942' }}
+                              >
+                                {(ngo.short_name ?? ngo.name)[0]}
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="font-display font-bold text-stone-900 text-xs truncate">{ngo.short_name ?? ngo.name}</p>
+                              <p className="text-[10px] text-stone-400 truncate">{ngo.tagline}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Discover Grid */}
         <section>
