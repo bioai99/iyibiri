@@ -1,4 +1,4 @@
-import BottomNav from "@/components/bottom-nav";
+import { BottomNav } from "@/components/bottom-nav";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
