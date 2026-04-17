@@ -2,11 +2,17 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/supabase/queries/profiles'
 import { getUserMissions } from '@/lib/supabase/queries/missions'
-import { TierBadge, getTierFromKarma } from '@/components/ui/tier-badge'
+import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { XPBar } from '@/components/ui/xp-bar'
-import { StreakFlame } from '@/components/ui/streak-flame'
-import { KarmaCounter } from '@/components/ui/karma-counter'
+import { CheckCircle2, Sparkles, Flame, Trophy, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
+
+const tierName: Record<number, string> = {
+  1: 'İyi Biri',
+  2: 'Çok İyi Biri',
+  3: 'Gerçekten İyi Biri',
+  4: 'İyiliğin Öncüsü',
+}
 
 const tierThresholds: Record<number, number> = { 1: 500, 2: 1500, 3: 3000, 4: Infinity }
 
@@ -26,6 +32,8 @@ export default async function ProfilePage() {
   const tier = getTierFromKarma(profile.karma_total)
   const nextThreshold = tierThresholds[tier]
   const prevThreshold = tier === 1 ? 0 : tierThresholds[tier - 1]
+  const xpCurrent = profile.karma_total - prevThreshold
+  const xpMax = nextThreshold === Infinity ? prevThreshold : nextThreshold - prevThreshold
 
   async function handleLogout() {
     'use server'
@@ -34,72 +42,77 @@ export default async function ProfilePage() {
     redirect('/auth/login')
   }
 
+  const stats = [
+    { Icon: CheckCircle2, iconClass: 'bg-emerald-100 text-emerald-600', value: completedCount, label: 'Görev' },
+    { Icon: Sparkles, iconClass: 'bg-amber-100 text-amber-600', value: profile.karma_total, label: 'Karma' },
+    { Icon: Flame, iconClass: 'bg-orange-100 text-orange-600', value: profile.streak, label: 'Streak' },
+    { Icon: Trophy, iconClass: 'bg-purple-100 text-purple-600', value: tier, label: 'Tier' },
+  ]
+
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="bg-white border-b border-border px-4 pt-12 pb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center text-3xl">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.name ?? ''} className="w-full h-full object-cover rounded-2xl" />
-            ) : '👤'}
-          </div>
-          <div className="flex-1">
-            <h1 className="font-display font-extrabold text-xl text-text-primary">
-              {profile.name ?? 'İsimsiz Kullanıcı'}
-            </h1>
-            <TierBadge tier={tier} size="sm" className="mt-1" />
-          </div>
-          <Link href="/dashboard/profile/edit" className="text-sm text-primary font-semibold">
-            Düzenle
-          </Link>
+      {/* Dark Hero */}
+      <div className="bg-stone-900 rounded-b-3xl px-4 pt-12 pb-8 flex flex-col items-center text-center">
+        <div className="w-20 h-20 rounded-full ring-4 ring-primary bg-stone-700 flex items-center justify-center mb-3 overflow-hidden">
+          {profile.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={profile.avatar_url} alt={profile.name ?? ''} className="w-full h-full object-cover" />
+          ) : (
+            <User size={32} className="text-stone-400" />
+          )}
         </div>
+        <h1 className="font-display font-extrabold text-white text-2xl">
+          {profile.name ?? 'İsimsiz Kullanıcı'}
+        </h1>
+        <div className="inline-flex items-center bg-primary/20 rounded-full px-3 py-1 mt-1 mb-4">
+          <span className="text-primary text-xs font-bold">{tierName[tier]} · Tier {tier}</span>
+        </div>
+        <div className="flex items-end gap-2">
+          <Sparkles size={18} className="text-white/50 mb-0.5" />
+          <span className="font-display font-black text-white text-5xl leading-none">
+            {profile.karma_total.toLocaleString('tr-TR')}
+          </span>
+        </div>
+        <p className="text-stone-500 text-xs font-medium mt-1">toplam karma</p>
+        <Link href="/dashboard/profile/edit" className="text-primary text-sm font-semibold mt-3">
+          Profili Düzenle
+        </Link>
       </div>
 
       <div className="px-4 py-6 space-y-4">
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl border border-border p-4 text-center">
-            <KarmaCounter value={profile.karma_total} size="lg" className="text-primary block" />
-            <span className="text-xs text-text-muted mt-1 block">toplam karma</span>
-          </div>
-          <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-center">
-            <StreakFlame streak={profile.streak} />
-          </div>
+          {stats.map(({ Icon, iconClass, value, label }) => (
+            <div key={label} className="bg-white rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+              <div className={`w-fit rounded-xl p-2 mb-3 ${iconClass}`}>
+                <Icon size={18} />
+              </div>
+              <p className="font-display font-black text-stone-900 text-3xl leading-none">
+                {typeof value === 'number' ? value.toLocaleString('tr-TR') : value}
+              </p>
+              <p className="text-xs text-stone-400 mt-1">{label}</p>
+            </div>
+          ))}
         </div>
 
+        {/* Tier Progress */}
         {nextThreshold !== Infinity && (
-          <div className="bg-white rounded-2xl border border-border p-4">
-            <p className="text-sm font-semibold text-text-primary mb-3">Sonraki seviye</p>
-            <XPBar
-              current={profile.karma_total - prevThreshold}
-              max={nextThreshold - prevThreshold}
-              label={`Tier ${tier + 1}'e`}
-            />
+          <div className="bg-white rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-display font-bold text-stone-900 text-sm">Sonraki Tier</p>
+              <span className="text-xs text-stone-400 font-medium">{tierName[(tier + 1) as keyof typeof tierName]}</span>
+            </div>
+            <XPBar current={xpCurrent} max={xpMax} label={`${xpMax - xpCurrent} karma kaldı`} />
           </div>
         )}
 
-        <div className="bg-white rounded-2xl border border-border p-4">
-          <h2 className="font-display font-bold text-base text-text-primary mb-3">İstatistikler</h2>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="font-extrabold text-2xl font-display text-text-primary">{completedCount}</p>
-              <p className="text-xs text-text-muted">tamamlanan görev</p>
-            </div>
-            <div>
-              <p className="font-extrabold text-2xl font-display text-text-primary">{profile.level}</p>
-              <p className="text-xs text-text-muted">seviye</p>
-            </div>
-            <div>
-              <p className="font-extrabold text-2xl font-display text-primary">{profile.karma_total}</p>
-              <p className="text-xs text-text-muted">karma</p>
-            </div>
-          </div>
-        </div>
-
+        {/* Logout */}
         <form action={handleLogout}>
           <button
             type="submit"
-            className="w-full py-3 text-danger border border-danger/30 rounded-xl font-semibold text-sm"
+            className="w-full py-3 flex items-center justify-center gap-2 text-stone-400 font-semibold text-sm"
           >
+            <LogOut size={16} />
             Çıkış Yap
           </button>
         </form>
