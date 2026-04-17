@@ -2,6 +2,18 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // Admin koruma
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // /admin/login is always accessible
+    if (!request.nextUrl.pathname.startsWith('/admin/login')) {
+      const adminCookie = request.cookies.get('iyibiri_admin')
+      if (adminCookie?.value !== process.env.ADMIN_SECRET) {
+        const loginUrl = new URL('/admin/login', request.url)
+        return NextResponse.redirect(loginUrl)
+      }
+    }
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
