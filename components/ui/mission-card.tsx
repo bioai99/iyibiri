@@ -65,12 +65,12 @@ export function MissionCard({ mission, isCompleted, isTaken, compact = false }: 
                     <img
                       src={ngo.logo_url}
                       alt={ngo.name}
-                      className="w-7 h-7 rounded-lg object-contain bg-white/90 p-[3px] flex-shrink-0"
+                      className="w-9 h-9 rounded-xl object-contain bg-white/90 p-[3px] flex-shrink-0"
                       onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                     />
                   ) : null}
                   <div
-                    className="w-7 h-7 rounded-lg items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                    className="w-9 h-9 rounded-xl items-center justify-center text-xs font-bold text-white flex-shrink-0"
                     style={{ backgroundColor: ngo.color_accent ?? '#F4B942', display: ngo.logo_url ? 'none' : 'flex' }}
                   >
                     {(ngo.short_name ?? ngo.name)[0]}
