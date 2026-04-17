@@ -36,7 +36,7 @@ export default async function AdminMissionsPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {(mission.verify_method === 'qr' || mission.verify_method === 'code') && (
+              {(mission.verify_method === 'qr' || mission.verify_method === 'code') && mission.verify_code && (
                 <Link
                   href={`/admin/missions/${mission.id}/qr`}
                   className="text-sm font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary/5"

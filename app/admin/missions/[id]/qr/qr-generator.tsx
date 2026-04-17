@@ -14,6 +14,7 @@ export function QRGenerator({ missionId, verifyCode, missionTitle }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState(false)
   const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
@@ -39,12 +40,17 @@ export function QRGenerator({ missionId, verifyCode, missionTitle }: Props) {
     const canvas = canvasRef.current
     if (!canvas) return
     setSaving(true)
+    setSaveError(false)
     const dataUrl = canvas.toDataURL('image/png')
-    await supabase
+    const { error } = await supabase
       .from('missions')
       .update({ qr_code_data: dataUrl })
       .eq('id', missionId)
     setSaving(false)
+    if (error) {
+      setSaveError(true)
+      return
+    }
     setSaved(true)
   }
 
@@ -73,6 +79,10 @@ export function QRGenerator({ missionId, verifyCode, missionTitle }: Props) {
           {saved ? '✓ Kaydedildi' : saving ? 'Kaydediliyor...' : "DB'ye Kaydet"}
         </button>
       </div>
+
+      {saveError && (
+        <p className="text-danger text-sm text-center">Kaydedilemedi, tekrar dene</p>
+      )}
 
       <a href="/admin/missions" className="block text-center text-sm text-text-muted">
         ← Misyon listesine dön

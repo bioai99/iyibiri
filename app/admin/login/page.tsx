@@ -2,14 +2,20 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { setAdminCookie } from './actions'
 
 export default function AdminLoginPage() {
   const [secret, setSecret] = useState('')
+  const [error, setError] = useState(false)
   const router = useRouter()
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    document.cookie = `iyibiri_admin=${secret}; path=/; max-age=86400`
+    const ok = await setAdminCookie(secret)
+    if (!ok) {
+      setError(true)
+      return
+    }
     router.push('/admin/missions')
     router.refresh()
   }
@@ -24,10 +30,13 @@ export default function AdminLoginPage() {
           <input
             type="password"
             value={secret}
-            onChange={e => setSecret(e.target.value)}
+            onChange={e => { setSecret(e.target.value); setError(false) }}
             placeholder="Admin şifresi"
             className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
+          {error && (
+            <p className="text-danger text-sm text-center">Hatalı şifre</p>
+          )}
           <button
             type="submit"
             className="w-full py-3 bg-stone-900 text-white rounded-xl font-bold"
