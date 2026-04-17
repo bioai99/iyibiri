@@ -5,7 +5,7 @@ export async function getAllMissions(): Promise<MissionWithNGO[]> {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('missions')
-    .select('*, ngos(id, name, short_name, logo_url, color_accent)')
+    .select('*, ngos(id, name, short_name, logo_url, color_accent, cover_image_url)')
     .eq('active', true)
     .order('featured', { ascending: false })
   if (error) throw error

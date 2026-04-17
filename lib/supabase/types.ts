@@ -46,6 +46,7 @@ export interface Database {
           category: string | null
           color_accent: string | null
           logo_url: string | null
+          cover_image_url: string | null
           website: string | null
           member_count: number
           volunteer_count: number
@@ -60,6 +61,7 @@ export interface Database {
           category?: string | null
           color_accent?: string | null
           logo_url?: string | null
+          cover_image_url?: string | null
           website?: string | null
           member_count?: number
           volunteer_count?: number
@@ -74,6 +76,7 @@ export interface Database {
           category?: string | null
           color_accent?: string | null
           logo_url?: string | null
+          cover_image_url?: string | null
           website?: string | null
           member_count?: number
           volunteer_count?: number
@@ -102,6 +105,7 @@ export interface Database {
           steps: Json
           impact_statement: string | null
           qr_code_data: string | null
+          image_url: string | null
           participants: number
         }
         Insert: {
@@ -124,6 +128,7 @@ export interface Database {
           steps?: Json
           impact_statement?: string | null
           qr_code_data?: string | null
+          image_url?: string | null
           participants?: number
         }
         Update: {
@@ -146,6 +151,7 @@ export interface Database {
           steps?: Json
           impact_statement?: string | null
           qr_code_data?: string | null
+          image_url?: string | null
           participants?: number
         }
         Relationships: []
@@ -343,6 +349,7 @@ export type NGOBrief = {
   short_name: string | null
   logo_url: string | null
   color_accent: string | null
+  cover_image_url: string | null
 }
 
 export type MissionWithNGO = Mission & { ngos: NGOBrief | null }
