@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import type { Mission, UserMission } from '@/lib/supabase/types'
+import type { Mission, UserMission, Json } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { CelebrationOverlay } from '@/components/ui/celebration-overlay'
 import { QRScanner } from '@/components/ui/qr-scanner'
@@ -35,7 +35,7 @@ export function VerificationClient({ mission, userMission, userId, currentKarma 
       .update({
         status: 'completed',
         completed_at: new Date().toISOString(),
-        verification_data: verificationData,
+        verification_data: verificationData as Json,
         karma_awarded: mission.karma,
       })
       .eq('id', userMission.id)
