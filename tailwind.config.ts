@@ -14,14 +14,50 @@ const config: Config = {
           DEFAULT: '#F4B942',
           dark: '#E09B20',
           light: '#FDE68A',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         success: '#22C55E',
         danger: '#EF4444',
-        background: '#FAFAF9',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         surface: '#FFFFFF',
         'text-primary': '#1C1917',
         'text-muted': '#78716C',
-        border: '#E7E5E4',
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        trust: {
+          DEFAULT: 'hsl(var(--trust))',
+          foreground: 'hsl(var(--trust-foreground))',
+        },
+        impact: {
+          DEFAULT: 'hsl(var(--impact))',
+          foreground: 'hsl(var(--impact-foreground))',
+        },
         domain: {
           nature: '#10B981',
           education: '#3B82F6',
@@ -34,6 +70,9 @@ const config: Config = {
         display: ['var(--font-plus-jakarta)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
         '2xl': '1rem',
         '3xl': '1.5rem',
         '4xl': '2rem',
