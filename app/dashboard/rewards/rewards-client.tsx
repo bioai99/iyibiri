@@ -1,119 +1,206 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Zap, Lock } from "lucide-react";
-import { REWARDS, MOCK_USER } from "@/lib/mock-data";
-import { Button } from "@/components/ui/button";
+import { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import type { Reward, RewardRedemption } from '@/lib/supabase/types'
+import { KarmaCounter } from '@/components/ui/karma-counter'
+import { createClient } from '@/lib/supabase/client'
 
-type RewardFilter = "all" | "unlocked" | "locked";
+interface Props {
+  rewards: Reward[]
+  redemptions: RewardRedemption[]
+  currentKarma: number
+  userId: string
+}
 
-export default function RewardsClient() {
-  const userKarma = MOCK_USER.totalKarma;
-  const [filter, setFilter] = useState<RewardFilter>("all");
-  const [redeemedId, setRedeemedId] = useState<string | null>(null);
+export function RewardsClient({ rewards, redemptions, currentKarma, userId }: Props) {
+  const [karma, setKarma] = useState(currentKarma)
+  const [redeemedIds, setRedeemedIds] = useState<Set<string>>(
+    () => new Set<string>(redemptions.map(r => r.reward_id))
+  )
+  const [loading, setLoading] = useState<string | null>(null)
+  const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const supabase = useMemo(() => createClient(), [])
 
-  const filtered = REWARDS.filter((r) => {
-    if (filter === "unlocked") return userKarma >= r.karmaRequired;
-    if (filter === "locked")   return userKarma < r.karmaRequired;
-    return true;
-  });
+  async function handleRedeem(reward: Reward) {
+    if (karma < reward.karma_required) return
+    setLoading(reward.id)
+    setError(null)
+
+    const { error: redemptionError } = await supabase
+      .from('reward_redemptions')
+      .insert({ user_id: userId, reward_id: reward.id, karma_spent: reward.karma_required })
+
+    if (redemptionError) {
+      setError('Ödül kullanılamadı')
+      setLoading(null)
+      return
+    }
+
+    const { error: karmaError } = await supabase
+      .from('karma_transactions')
+      .insert({
+        user_id: userId,
+        amount: -reward.karma_required,
+        type: 'reward_redemption',
+        reference_id: reward.id,
+        description: `${reward.title} ödülü kullanıldı`,
+      })
+
+    if (karmaError) {
+      setError('Karma güncellenemedi')
+      setLoading(null)
+      return
+    }
+
+    setKarma(prev => prev - reward.karma_required)
+    setRedeemedIds(prev => new Set(Array.from(prev).concat(reward.id)))
+    setSelectedReward(null)
+    setLoading(null)
+  }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pb-24">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border px-5 py-4">
-        <h1 className="text-base font-bold text-foreground">Ödüller</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Toplam Karman:{" "}
-          <span className="font-bold text-primary">{userKarma.toLocaleString("tr")} Karma</span>
-        </p>
-      </header>
-
-      {/* Filtreler */}
-      <div className="flex gap-2 px-5 py-4">
-        {(["all", "unlocked", "locked"] as RewardFilter[]).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors ${
-              filter === f
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-secondary"
-            }`}
-          >
-            {f === "all" ? "Tümü" : f === "unlocked" ? "✅ Alınabilir" : "🔒 Kilitli"}
-          </button>
-        ))}
+    <div className="min-h-screen bg-background pb-24">
+      <div className="bg-white border-b border-border px-4 pt-12 pb-4">
+        <h1 className="font-display font-extrabold text-2xl text-text-primary">Ödüller</h1>
+        <div className="flex items-center gap-2 mt-2">
+          <span className="text-lg">✨</span>
+          <KarmaCounter value={karma} size="md" className="text-primary" />
+          <span className="text-sm text-text-muted">karma bakiyen</span>
+        </div>
       </div>
 
-      {/* Ödül listesi */}
-      <div className="px-5 flex flex-col gap-3">
-        {filtered.map((reward) => {
-          const unlocked = userKarma >= reward.karmaRequired;
-          const redeemed = redeemedId === reward.id;
+      <div className="px-4 py-4 space-y-3">
+        {rewards.map((reward, i) => {
+          const unlocked = karma >= reward.karma_required
+          const redeemed = redeemedIds.has(reward.id)
+          const progress = Math.min((karma / reward.karma_required) * 100, 100)
 
           return (
-            <div
+            <motion.div
               key={reward.id}
-              className={`bg-card rounded-2xl border p-4 flex gap-4 transition-opacity ${
-                unlocked ? "border-border" : "border-border opacity-60"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.07 }}
+              whileTap={unlocked && !redeemed ? { scale: 0.98 } : undefined}
+              onClick={() => unlocked && !redeemed && setSelectedReward(reward)}
+              className={`bg-white rounded-2xl border border-border overflow-hidden cursor-pointer ${
+                !unlocked ? 'opacity-70' : ''
               }`}
             >
-              {/* Emoji */}
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 ${
-                unlocked ? "bg-primary/10" : "bg-muted"
-              }`}>
-                {reward.emoji}
-              </div>
-
-              {/* İçerik */}
-              <div className="flex-1 flex flex-col gap-1">
-                <p className="text-xs text-trust font-semibold">{reward.brand}</p>
-                <p className="text-sm font-bold text-foreground leading-snug">{reward.title}</p>
-                <p className="text-xs text-muted-foreground">{reward.description}</p>
-
-                <div className="flex items-center justify-between mt-2">
-                  <span className="flex items-center gap-1 text-xs font-bold text-primary">
-                    <Zap size={12} className="fill-primary" />
-                    {reward.karmaRequired.toLocaleString("tr")} Karma
-                  </span>
-
-                  {unlocked ? (
-                    redeemed ? (
-                      <span className="text-xs font-bold text-impact bg-impact/10 px-3 py-1.5 rounded-xl">
-                        Alındı ✓
-                      </span>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => setRedeemedId(reward.id)}
-                        className="h-8 px-3 text-xs"
-                      >
-                        Kodu Al
-                      </Button>
-                    )
+              <div className="p-4">
+                <div className="flex items-center gap-3">
+                  {reward.brand_logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={reward.brand_logo}
+                      alt={reward.brand}
+                      className="w-12 h-12 rounded-xl object-contain border border-border p-1"
+                    />
                   ) : (
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Lock size={11} />
-                      {(reward.karmaRequired - userKarma).toLocaleString("tr")} Karma eksik
-                    </span>
+                    <div className="w-12 h-12 rounded-xl bg-stone-100 flex items-center justify-center font-bold text-sm text-text-muted">
+                      {reward.brand[0]}
+                    </div>
                   )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display font-bold text-text-primary truncate">{reward.title}</h3>
+                    <p className="text-sm text-text-muted">{reward.brand}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    {redeemed ? (
+                      <span className="text-success font-bold text-sm">✓ Kullanıldı</span>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-1 justify-end">
+                          <span>✨</span>
+                          <span className={`font-extrabold font-display ${unlocked ? 'text-primary' : 'text-text-muted'}`}>
+                            {reward.karma_required.toLocaleString('tr-TR')}
+                          </span>
+                        </div>
+                        {!unlocked && (
+                          <span className="text-xs text-text-muted">
+                            {(reward.karma_required - karma).toLocaleString('tr-TR')} daha
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
 
-                {/* Kod gösterimi */}
-                {redeemed && (
-                  <div className="mt-2 bg-muted rounded-xl px-3 py-2 text-center">
-                    <p className="text-xs text-muted-foreground mb-0.5">İndirim Kodun</p>
-                    <p className="font-mono font-bold text-foreground tracking-widest">
-                      IYIBIRI-{reward.id.toUpperCase()}2026
-                    </p>
+                {!redeemed && (
+                  <div className="mt-3 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                    <motion.div
+                      className={`h-full rounded-full ${unlocked ? 'bg-primary' : 'bg-stone-300'}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.8, delay: i * 0.07 + 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    />
                   </div>
                 )}
               </div>
-            </div>
-          );
+            </motion.div>
+          )
         })}
       </div>
+
+      {/* Redemption Confirmation Sheet */}
+      <AnimatePresence>
+        {selectedReward && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-end"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedReward(null)}
+          >
+            <div className="absolute inset-0 bg-black/50" />
+            <motion.div
+              className="relative w-full bg-white rounded-t-3xl p-6 pb-10"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-10 h-1 bg-stone-200 rounded-full mx-auto mb-6" />
+              <h2 className="font-display font-extrabold text-xl text-text-primary text-center mb-1">
+                {selectedReward.title}
+              </h2>
+              <p className="text-text-muted text-sm text-center mb-6">{selectedReward.description}</p>
+
+              <div className="bg-primary/10 rounded-2xl p-4 flex items-center justify-between mb-6">
+                <span className="text-sm font-semibold text-primary/80">Harcanacak karma</span>
+                <div className="flex items-center gap-1">
+                  <span>✨</span>
+                  <span className="font-extrabold text-xl text-primary font-display">
+                    -{selectedReward.karma_required.toLocaleString('tr-TR')}
+                  </span>
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-danger text-sm text-center mb-4">{error}</p>
+              )}
+
+              <motion.button
+                onClick={() => handleRedeem(selectedReward)}
+                disabled={!!loading}
+                className="w-full py-4 bg-primary text-white rounded-2xl font-display font-bold text-base disabled:opacity-60"
+                whileTap={{ scale: 0.97 }}
+              >
+                {loading === selectedReward.id ? 'İşleniyor...' : 'Ödülü Kullan'}
+              </motion.button>
+              <button
+                onClick={() => setSelectedReward(null)}
+                className="w-full py-3 mt-2 text-text-muted font-semibold text-sm"
+              >
+                Vazgeç
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
-  );
+  )
 }
