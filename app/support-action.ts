@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase-server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function submitSupport(formData: FormData) {
   const email      = (formData.get("email") as string)?.trim().toLowerCase();

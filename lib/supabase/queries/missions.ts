@@ -55,7 +55,7 @@ export async function completeMission(
     .update({
       status: 'completed',
       completed_at: new Date().toISOString(),
-      verification_data: verificationData,
+      verification_data: verificationData as import('../types').Json,
     })
     .eq('id', userMissionId)
   if (error) throw error

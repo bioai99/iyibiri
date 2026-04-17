@@ -25,13 +25,16 @@ export interface Database {
           created_at?: string
         }
         Update: {
+          id?: string
           name?: string | null
           avatar_url?: string | null
           karma_total?: number
           level?: number
           streak?: number
           last_active?: string | null
+          created_at?: string
         }
+        Relationships: []
       }
       ngos: {
         Row: {
@@ -48,8 +51,35 @@ export interface Database {
           volunteer_count: number
           founded: number | null
         }
-        Insert: Omit<Database['public']['Tables']['ngos']['Row'], never>
-        Update: Partial<Database['public']['Tables']['ngos']['Row']>
+        Insert: {
+          id?: string
+          name: string
+          short_name?: string | null
+          tagline?: string | null
+          description?: string | null
+          category?: string | null
+          color_accent?: string | null
+          logo_url?: string | null
+          website?: string | null
+          member_count?: number
+          volunteer_count?: number
+          founded?: number | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          short_name?: string | null
+          tagline?: string | null
+          description?: string | null
+          category?: string | null
+          color_accent?: string | null
+          logo_url?: string | null
+          website?: string | null
+          member_count?: number
+          volunteer_count?: number
+          founded?: number | null
+        }
+        Relationships: []
       }
       missions: {
         Row: {
@@ -74,13 +104,51 @@ export interface Database {
           qr_code_data: string | null
           participants: number
         }
-        Insert: Omit<Database['public']['Tables']['missions']['Row'], 'featured' | 'active' | 'steps' | 'participants'> & {
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          long_description?: string | null
+          ngo_id?: string | null
+          category?: string | null
+          difficulty?: 'easy' | 'medium' | 'hard' | null
+          karma?: number
+          duration?: string | null
+          domain?: 'nature' | 'education' | 'social' | 'financial' | null
+          style?: 'remote' | 'outside' | 'both' | null
+          verify_method?: 'auto' | 'code' | 'photo' | 'qr'
+          verify_code?: string | null
+          verify_hint?: string | null
           featured?: boolean
           active?: boolean
           steps?: Json
+          impact_statement?: string | null
+          qr_code_data?: string | null
           participants?: number
         }
-        Update: Partial<Database['public']['Tables']['missions']['Row']>
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          long_description?: string | null
+          ngo_id?: string | null
+          category?: string | null
+          difficulty?: 'easy' | 'medium' | 'hard' | null
+          karma?: number
+          duration?: string | null
+          domain?: 'nature' | 'education' | 'social' | 'financial' | null
+          style?: 'remote' | 'outside' | 'both' | null
+          verify_method?: 'auto' | 'code' | 'photo' | 'qr'
+          verify_code?: string | null
+          verify_hint?: string | null
+          featured?: boolean
+          active?: boolean
+          steps?: Json
+          impact_statement?: string | null
+          qr_code_data?: string | null
+          participants?: number
+        }
+        Relationships: []
       }
       rewards: {
         Row: {
@@ -93,8 +161,27 @@ export interface Database {
           category: string | null
           active: boolean
         }
-        Insert: Omit<Database['public']['Tables']['rewards']['Row'], 'active'> & { active?: boolean }
-        Update: Partial<Database['public']['Tables']['rewards']['Row']>
+        Insert: {
+          id?: string
+          title: string
+          brand: string
+          brand_logo?: string | null
+          description?: string | null
+          karma_required: number
+          category?: string | null
+          active?: boolean
+        }
+        Update: {
+          id?: string
+          title?: string
+          brand?: string
+          brand_logo?: string | null
+          description?: string | null
+          karma_required?: number
+          category?: string | null
+          active?: boolean
+        }
+        Relationships: []
       }
       user_missions: {
         Row: {
@@ -108,6 +195,7 @@ export interface Database {
           karma_awarded: number | null
         }
         Insert: {
+          id?: string
           user_id: string
           mission_id: string
           status?: 'taken' | 'completed'
@@ -117,11 +205,16 @@ export interface Database {
           karma_awarded?: number | null
         }
         Update: {
+          id?: string
+          user_id?: string
+          mission_id?: string
           status?: 'taken' | 'completed'
+          taken_at?: string
           completed_at?: string | null
           verification_data?: Json | null
           karma_awarded?: number | null
         }
+        Relationships: []
       }
       karma_transactions: {
         Row: {
@@ -134,6 +227,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
+          id?: string
           user_id: string
           amount: number
           type: 'mission_complete' | 'reward_redemption'
@@ -141,7 +235,16 @@ export interface Database {
           description?: string | null
           created_at?: string
         }
-        Update: never
+        Update: {
+          id?: string
+          user_id?: string
+          amount?: number
+          type?: 'mission_complete' | 'reward_redemption'
+          reference_id?: string | null
+          description?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
       reward_redemptions: {
         Row: {
@@ -153,6 +256,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
+          id?: string
           user_id: string
           reward_id: string
           karma_spent: number
@@ -160,9 +264,66 @@ export interface Database {
           created_at?: string
         }
         Update: {
+          id?: string
+          user_id?: string
+          reward_id?: string
+          karma_spent?: number
           status?: 'pending' | 'completed'
+          created_at?: string
         }
+        Relationships: []
       }
+      waitlist: {
+        Row: {
+          id: string
+          email: string
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          name: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          name?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      support_requests: {
+        Row: {
+          id: string
+          email: string | null
+          support_type: string[]
+          message: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email?: string | null
+          support_type?: string[]
+          message?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string | null
+          support_type?: string[]
+          message?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
     }
   }
 }

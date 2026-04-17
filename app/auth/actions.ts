@@ -1,7 +1,9 @@
 "use server";
 
-import { createClient } from "@/lib/supabase-server";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function signUp(formData: FormData) {
   const supabase = createClient();
@@ -16,12 +18,11 @@ export async function signUp(formData: FormData) {
   });
 
   if (error) {
-    const msg = encodeURIComponent(
-      error.message.includes("already registered")
-        ? "Bu e-posta adresi zaten kayıtlı."
-        : error.message
-    );
-    redirect(`/auth/signup?error=${msg}`);
+    let msg = error.message;
+    if (error.message.includes("already registered") || error.message.includes("User already registered")) {
+      msg = "Bu e-posta adresi zaten kayıtlı.";
+    }
+    redirect(`/auth/signup?error=${encodeURIComponent(msg)}`);
   }
 
   redirect("/auth/signup?success=1");
@@ -35,10 +36,31 @@ export async function signIn(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect("/auth/login?error=E-posta+veya+%C5%9Fifre+hatal%C4%B1.");
+    let msg = "E-posta veya şifre hatalı.";
+    if (error.message.includes("Email not confirmed")) {
+      msg = "E-postanı henüz doğrulamadın. Gelen kutunu kontrol et.";
+    }
+    redirect(`/auth/login?error=${encodeURIComponent(msg)}`);
   }
 
   redirect("/dashboard");
+}
+
+export async function signInWithGoogle() {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${SITE_URL}/auth/callback`,
+      queryParams: { prompt: "select_account" },
+    },
+  });
+
+  if (error || !data.url) {
+    redirect(`/auth/login?error=${encodeURIComponent("Google girişi başlatılamadı.")}`);
+  }
+
+  redirect(data.url);
 }
 
 export async function signOut() {
