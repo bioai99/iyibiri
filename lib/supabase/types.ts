@@ -335,3 +335,14 @@ export type Reward = Database['public']['Tables']['rewards']['Row']
 export type UserMission = Database['public']['Tables']['user_missions']['Row']
 export type KarmaTransaction = Database['public']['Tables']['karma_transactions']['Row']
 export type RewardRedemption = Database['public']['Tables']['reward_redemptions']['Row']
+
+// Extended types for joined queries
+export type NGOBrief = {
+  id: string
+  name: string
+  short_name: string | null
+  logo_url: string | null
+  color_accent: string | null
+}
+
+export type MissionWithNGO = Mission & { ngos: NGOBrief | null }

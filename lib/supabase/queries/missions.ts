@@ -1,15 +1,15 @@
 import { createClient } from '../server'
-import type { Mission, UserMission } from '../types'
+import type { Mission, MissionWithNGO, UserMission } from '../types'
 
-export async function getAllMissions(): Promise<Mission[]> {
+export async function getAllMissions(): Promise<MissionWithNGO[]> {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('missions')
-    .select('*')
+    .select('*, ngos(id, name, short_name, logo_url, color_accent)')
     .eq('active', true)
     .order('featured', { ascending: false })
   if (error) throw error
-  return data
+  return data as unknown as MissionWithNGO[]
 }
 
 export async function getMissionById(id: string): Promise<Mission | null> {
