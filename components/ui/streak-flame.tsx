@@ -20,7 +20,7 @@ export function StreakFlame({ streak, className = '' }: StreakFlameProps) {
         } : { scale: 1, rotate: 0 }}
         transition={{
           duration: 2,
-          repeat: Infinity,
+          repeat: isActive ? Infinity : 0,
           ease: 'easeInOut',
         }}
         style={{ filter: isActive ? undefined : 'grayscale(1)' }}

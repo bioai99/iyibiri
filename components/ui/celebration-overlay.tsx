@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 
@@ -12,6 +12,9 @@ interface CelebrationOverlayProps {
 }
 
 export function CelebrationOverlay({ show, karmaEarned, missionTitle, onClose }: CelebrationOverlayProps) {
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose }, [onClose])
+
   useEffect(() => {
     if (!show) return
     const fire = (particleRatio: number, opts: confetti.Options) => {
@@ -27,9 +30,9 @@ export function CelebrationOverlay({ show, karmaEarned, missionTitle, onClose }:
     fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
     fire(0.1, { spread: 120, startVelocity: 45 })
 
-    const timer = setTimeout(onClose, 3500)
+    const timer = setTimeout(() => onCloseRef.current(), 3500)
     return () => clearTimeout(timer)
-  }, [show, onClose])
+  }, [show])
 
   return (
     <AnimatePresence>

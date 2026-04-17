@@ -20,9 +20,9 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-40 pb-safe">
       <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
         {navItems.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+          const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href + '/'))
           return (
-            <Link key={href} href={href} className="flex-1">
+            <Link key={href} href={href} className="flex-1 block">
               <motion.div
                 className="flex flex-col items-center gap-0.5 py-1"
                 whileTap={{ scale: 0.85 }}

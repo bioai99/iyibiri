@@ -25,7 +25,7 @@ const domainColors: Record<string, string> = {
 
 export function MissionCard({ mission, isCompleted, isTaken }: MissionCardProps) {
   const difficulty = difficultyConfig[mission.difficulty ?? 'easy']
-  const domainColor = domainColors[mission.domain ?? 'social']
+  const domainColor = domainColors[mission.domain ?? 'social'] ?? 'border-l-stone-200'
 
   return (
     <motion.div
