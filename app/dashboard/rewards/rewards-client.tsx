@@ -25,19 +25,11 @@ export function RewardsClient({ rewards, redemptions, currentKarma, userId }: Pr
 
   async function handleRedeem(reward: Reward) {
     if (karma < reward.karma_required) return
+    if (redeemedIds.has(reward.id)) return
     setLoading(reward.id)
     setError(null)
 
-    const { error: redemptionError } = await supabase
-      .from('reward_redemptions')
-      .insert({ user_id: userId, reward_id: reward.id, karma_spent: reward.karma_required })
-
-    if (redemptionError) {
-      setError('Ödül kullanılamadı')
-      setLoading(null)
-      return
-    }
-
+    // 1. First: deduct karma
     const { error: karmaError } = await supabase
       .from('karma_transactions')
       .insert({
@@ -50,6 +42,17 @@ export function RewardsClient({ rewards, redemptions, currentKarma, userId }: Pr
 
     if (karmaError) {
       setError('Karma güncellenemedi')
+      setLoading(null)
+      return
+    }
+
+    // 2. Then: record redemption
+    const { error: redemptionError } = await supabase
+      .from('reward_redemptions')
+      .insert({ user_id: userId, reward_id: reward.id, karma_spent: reward.karma_required })
+
+    if (redemptionError) {
+      setError('Ödül kaydedilemedi')
       setLoading(null)
       return
     }
