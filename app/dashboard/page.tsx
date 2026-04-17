@@ -1,29 +1,27 @@
-import { Bell } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
-import DashboardClient from "./dashboard-client";
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { getProfile } from '@/lib/supabase/queries/profiles'
+import { getAllMissions, getUserMissions } from '@/lib/supabase/queries/missions'
+import { DashboardClient } from './dashboard-client'
 
 export default async function DashboardPage() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
 
-  const fullName  = user?.user_metadata?.full_name as string | undefined;
-  const firstName = fullName ? fullName.split(" ")[0] : "Kullanıcı";
+  const [profile, missions, userMissions] = await Promise.all([
+    getProfile(user.id),
+    getAllMissions(),
+    getUserMissions(user.id),
+  ])
+
+  if (!profile) redirect('/auth/login')
 
   return (
-    <div className="flex flex-col">
-      {/* Sticky header */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border px-5 py-4 flex items-center justify-between">
-        <div>
-          <p className="text-xs text-muted-foreground">Hoş geldin</p>
-          <h1 className="text-base font-bold text-foreground leading-tight">{firstName}</h1>
-        </div>
-        <button className="relative w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-secondary transition-colors">
-          <Bell size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
-        </button>
-      </header>
-
-      <DashboardClient firstName={firstName} />
-    </div>
-  );
+    <DashboardClient
+      profile={profile}
+      missions={missions}
+      userMissions={userMissions}
+    />
+  )
 }
