@@ -1,91 +1,116 @@
-import Link from "next/link";
-import { Suspense } from "react";
-import { signUp } from "../actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import AuthFeedback from "@/components/auth-feedback";
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export default function SignupPage() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
+  async function handleSignup(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    })
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+    router.push('/onboarding')
+  }
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-background px-6">
-      {/* Logo */}
-      <Link href="/" className="flex flex-col items-center gap-2 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-md">
-          <span className="text-primary-foreground text-2xl font-bold">İ</span>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <motion.div
+        className="w-full max-w-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <span className="text-2xl">✨</span>
+          </div>
+          <h1 className="font-display font-extrabold text-2xl text-text-primary">İyilik Yolculuğuna Başla</h1>
+          <p className="text-text-muted text-sm mt-1">Hesap oluştur, ilk görevini al</p>
         </div>
-        <span className="text-xl font-bold text-foreground">İyiBiri</span>
-      </Link>
 
-      {/* Kart */}
-      <div className="w-full max-w-sm bg-card rounded-2xl shadow-sm border border-border p-6">
-        <h1 className="text-xl font-bold text-foreground mb-1">Aramıza katıl</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Görevler yap, ödüller kazan, fark yarat.
-        </p>
-
-        <form className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="fullName">Ad Soyad</Label>
-            <Input
-              id="fullName"
-              name="fullName"
+        <form onSubmit={handleSignup} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-text-primary mb-1.5">Adın</label>
+            <input
               type="text"
-              placeholder="Ada Lovelace"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              autoComplete="name"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              placeholder="Adın Soyadın"
             />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">E-posta</Label>
-            <Input
-              id="email"
-              name="email"
+          <div>
+            <label className="block text-sm font-semibold text-text-primary mb-1.5">E-posta</label>
+            <input
               type="email"
-              placeholder="ad@ornek.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="email"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              placeholder="ornek@email.com"
             />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">Şifre</Label>
-            <Input
-              id="password"
-              name="password"
+          <div>
+            <label className="block text-sm font-semibold text-text-primary mb-1.5">Şifre</label>
+            <input
               type="password"
-              placeholder="En az 8 karakter"
-              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="new-password"
+              minLength={6}
+              className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              placeholder="En az 6 karakter"
             />
           </div>
 
-          <Suspense>
-            <AuthFeedback />
-          </Suspense>
+          {error && (
+            <motion.p
+              className="text-sm text-danger text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {error}
+            </motion.p>
+          )}
 
-          <Button formAction={signUp} className="w-full mt-1" size="lg">
-            Üye Ol
-          </Button>
+          <motion.button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 bg-primary text-white font-display font-bold text-base rounded-xl shadow-md disabled:opacity-60"
+            whileTap={{ scale: 0.97 }}
+          >
+            {loading ? 'Hesap oluşturuluyor...' : 'Başla'}
+          </motion.button>
         </form>
 
-        <p className="mt-4 text-xs text-muted-foreground text-center">
-          Üye olarak{" "}
-          <Link href="/terms" className="underline hover:text-foreground">
-            Kullanım Şartları
+        <p className="text-center text-sm text-text-muted mt-6">
+          Zaten hesabın var mı?{' '}
+          <Link href="/auth/login" className="text-primary font-semibold">
+            Giriş yap
           </Link>
-          'nı kabul etmiş olursunuz.
         </p>
-      </div>
-
-      <p className="mt-6 text-sm text-muted-foreground">
-        Zaten hesabın var mı?{" "}
-        <Link href="/auth/login" className="text-primary font-medium hover:underline">
-          Giriş yap
-        </Link>
-      </p>
-    </main>
-  );
+      </motion.div>
+    </div>
+  )
 }
