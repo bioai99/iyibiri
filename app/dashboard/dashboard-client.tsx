@@ -2,11 +2,9 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Flame, Sparkles, Handshake, Gift, ClipboardList, User } from 'lucide-react'
+import { Flame, Sparkles, Handshake, Gift, ClipboardList, User, CheckCircle2 } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { KarmaCounter } from '@/components/ui/karma-counter'
-import { XPBar } from '@/components/ui/xp-bar'
-import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { MissionCard } from '@/components/ui/mission-card'
 
 interface Props {
@@ -15,14 +13,6 @@ interface Props {
   userMissions: UserMission[]
 }
 
-const tierName: Record<number, string> = {
-  1: 'İyi Biri',
-  2: 'Çok İyi Biri',
-  3: 'Gerçekten İyi Biri',
-  4: 'İyiliğin Öncüsü',
-}
-
-const tierThresholds: Record<number, number> = { 1: 500, 2: 1500, 3: 3000, 4: Infinity }
 
 const discoverItems = [
   { href: '/dashboard/ngos', Icon: Handshake, label: "STK'lar", gradient: 'from-blue-500 to-indigo-400' },
@@ -32,10 +22,6 @@ const discoverItems = [
 ]
 
 export function DashboardClient({ profile, missions, userMissions }: Props) {
-  const tier = getTierFromKarma(profile.karma_total)
-  const nextThreshold = tierThresholds[tier]
-  const prevThreshold = tier === 1 ? 0 : tierThresholds[tier - 1]
-
   const completedIds = new Set(
     userMissions.filter(m => m.status === 'completed').map(m => m.mission_id)
   )
@@ -82,20 +68,12 @@ export function DashboardClient({ profile, missions, userMissions }: Props) {
           </div>
           <p className="text-white/70 text-xs font-medium mb-4">toplam karma</p>
 
-          {/* Tier badge */}
-          <div className="inline-flex items-center bg-white/20 rounded-full px-3 py-1 mb-4">
-            <span className="text-white text-xs font-bold">{tierName[tier] ?? 'İyi Biri'} · Tier {tier}</span>
+          {/* Completed missions pill */}
+          <div className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1.5 w-fit">
+            <CheckCircle2 size={14} className="text-white" />
+            <span className="text-white font-bold text-sm">{completedIds.size}</span>
+            <span className="text-white/70 text-xs">görev tamamlandı</span>
           </div>
-
-          {/* XP Bar */}
-          {nextThreshold !== Infinity && (
-            <XPBar
-              current={profile.karma_total - prevThreshold}
-              max={nextThreshold - prevThreshold}
-              label={`${tierName[(tier + 1) as keyof typeof tierName] ?? 'Sonraki'}'e`}
-              color="#FFFFFF"
-            />
-          )}
         </motion.div>
       </div>
 
