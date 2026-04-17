@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Upload, Zap } from "lucide-react";
+import { ArrowLeft, Upload, Zap, CheckCircle, Camera } from "lucide-react";
 import type { Mission } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 
@@ -34,15 +34,20 @@ export default function CompleteClient({ mission }: { mission: Mission }) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 text-center gap-6">
         <div className="w-24 h-24 rounded-3xl bg-impact/10 flex items-center justify-center">
-          <span className="text-5xl">✅</span>
+          <CheckCircle size={44} className="text-impact" strokeWidth={1.5} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Harika iş!</h1>
+          <h1 className="text-2xl font-headline font-bold text-foreground mb-2">Görev tamamlandı.</h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Görevin doğrulama için gönderildi.<br />
-            Onaylandığında <span className="font-bold text-primary">+{mission.karma} Karma</span> hesabına geçecek.
+            Doğrulaman incelemeye alındı.<br />
+            Onaylandığında <span className="font-bold text-primary">+{mission.karma} Karma</span> hesabına geçer.
           </p>
         </div>
+        {mission.impactStatement && (
+          <div className="bg-secondary border border-border rounded-2xl px-4 py-3 w-full max-w-xs">
+            <p className="text-xs text-muted-foreground text-center leading-relaxed italic">{mission.impactStatement}</p>
+          </div>
+        )}
         <div className="bg-primary/10 border border-primary/20 rounded-2xl px-5 py-4 flex items-center gap-3 w-full max-w-xs">
           <Zap size={22} className="text-primary fill-primary/20 flex-shrink-0" />
           <div className="text-left">
@@ -52,7 +57,7 @@ export default function CompleteClient({ mission }: { mission: Mission }) {
         </div>
         <div className="flex flex-col gap-3 w-full max-w-xs">
           <Button size="lg" className="w-full" onClick={() => router.push("/dashboard")}>
-            Dashboard'a Dön
+            Ana Sayfaya Dön
           </Button>
           <Link href="/dashboard/missions" className="text-sm text-center text-primary font-medium hover:underline">
             Yeni Görev Bul
@@ -118,7 +123,7 @@ export default function CompleteClient({ mission }: { mission: Mission }) {
         {mission.verifyMethod === "qr" && (
           <div className="flex flex-col items-center gap-4 bg-card border border-border rounded-2xl p-8">
             <div className="w-32 h-32 bg-muted rounded-2xl flex items-center justify-center">
-              <span className="text-4xl">📷</span>
+              <Camera size={36} className="text-muted-foreground" strokeWidth={1.5} />
             </div>
             <p className="text-sm text-muted-foreground text-center">
               Kamera ile etkinlik QR kodunu tara
