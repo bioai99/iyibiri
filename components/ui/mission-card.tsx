@@ -56,38 +56,43 @@ export function MissionCard({ mission, isCompleted, isTaken, compact = false }: 
         >
           {/* Gradient Band */}
           <div className={`bg-gradient-to-br ${gradient} px-4 pt-4 pb-3 relative`}>
+            {/* Top row: NGO identity (primary) + karma pill */}
             <div className="flex items-start justify-between">
-              <DomainIcon domain={domain} size="md" variant="onGradient" />
-              <div className="bg-white/20 rounded-full px-3 py-1 flex items-center gap-1">
-                <Sparkles size={11} className="text-white/90" />
-                <span className="text-white font-bold text-sm">{mission.karma}</span>
-              </div>
-            </div>
-            {/* Domain label + NGO identity */}
-            <div className="flex items-end justify-between mt-3">
-              <p className="text-white/70 text-xs font-semibold tracking-widest">{label}</p>
-              {ngo && (
-                <div className="flex items-center gap-1.5">
+              {ngo ? (
+                <div className="flex items-center gap-2">
                   {ngo.logo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={ngo.logo_url}
                       alt={ngo.name}
-                      className="w-5 h-5 rounded object-contain bg-white/90 p-[2px] flex-shrink-0"
+                      className="w-7 h-7 rounded-lg object-contain bg-white/90 p-[3px] flex-shrink-0"
                       onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                     />
                   ) : null}
                   <div
-                    className="w-5 h-5 rounded items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
+                    className="w-7 h-7 rounded-lg items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
                     style={{ backgroundColor: ngo.color_accent ?? '#F4B942', display: ngo.logo_url ? 'none' : 'flex' }}
                   >
                     {(ngo.short_name ?? ngo.name)[0]}
                   </div>
-                  <span className="text-white/80 text-xs font-medium max-w-[90px] truncate">
+                  <span className="text-white font-semibold text-sm max-w-[110px] truncate">
                     {ngo.short_name ?? ngo.name}
                   </span>
                 </div>
+              ) : (
+                <DomainIcon domain={domain} size="md" variant="onGradient" />
               )}
+              <div className="bg-white/20 rounded-full px-3 py-1 flex items-center gap-1 flex-shrink-0">
+                <Sparkles size={11} className="text-white/90" />
+                <span className="text-white font-bold text-sm">{mission.karma}</span>
+              </div>
+            </div>
+            {/* Bottom row: domain (secondary) */}
+            <div className="flex items-end justify-end mt-3">
+              <div className="flex items-center gap-1.5">
+                <DomainIcon domain={domain} size="sm" variant="onGradient" />
+                <p className="text-white/60 text-xs font-semibold tracking-widest">{label}</p>
+              </div>
             </div>
             {isCompleted && (
               <div className="absolute top-3 right-14">
