@@ -6,13 +6,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+const supabase = createClient()
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -24,6 +25,7 @@ export default function LoginPage() {
       setLoading(false)
       return
     }
+    setLoading(false)
     router.push('/dashboard')
     router.refresh()
   }

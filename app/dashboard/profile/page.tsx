@@ -20,7 +20,7 @@ export default async function ProfilePage() {
     getUserMissions(user.id),
   ])
 
-  if (!profile) redirect('/auth/login')
+  if (!profile) redirect('/onboarding')
 
   const completedCount = userMissions.filter(m => m.status === 'completed').length
   const tier = getTierFromKarma(profile.karma_total)
