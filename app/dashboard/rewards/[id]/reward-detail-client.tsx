@@ -77,12 +77,12 @@ export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRe
                 src={reward.brand_logo}
                 alt={reward.brand}
                 className="w-20 h-20 rounded-2xl object-contain border border-stone-100 p-2"
+                onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
               />
-            ) : (
-              <div className="w-20 h-20 rounded-2xl bg-stone-100 flex items-center justify-center font-black text-3xl text-stone-400">
-                {reward.brand[0]}
-              </div>
-            )}
+            ) : null}
+            <div className="w-20 h-20 rounded-2xl bg-stone-100 items-center justify-center font-black text-3xl text-stone-400" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+              {reward.brand[0]}
+            </div>
           </div>
           <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">{reward.brand}</p>
           <h1 className="font-display font-extrabold text-2xl text-stone-900 mb-3">{reward.title}</h1>

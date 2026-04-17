@@ -170,15 +170,15 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                                 src={ngo.logo_url}
                                 alt={ngo.name}
                                 className="w-7 h-7 rounded-lg object-contain border border-stone-100 p-0.5 flex-shrink-0"
+                                onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                               />
-                            ) : (
-                              <div
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                                style={{ backgroundColor: ngo.color_accent ?? '#F4B942' }}
-                              >
-                                {(ngo.short_name ?? ngo.name)[0]}
-                              </div>
-                            )}
+                            ) : null}
+                            <div
+                              className="w-7 h-7 rounded-lg items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                              style={{ backgroundColor: ngo.color_accent ?? '#F4B942', display: ngo.logo_url ? 'none' : 'flex' }}
+                            >
+                              {(ngo.short_name ?? ngo.name)[0]}
+                            </div>
                             <div className="min-w-0">
                               <p className="font-display font-bold text-stone-900 text-xs truncate">{ngo.short_name ?? ngo.name}</p>
                               <p className="text-[10px] text-stone-400 truncate">{ngo.tagline}</p>

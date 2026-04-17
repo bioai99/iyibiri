@@ -85,15 +85,15 @@ export function MissionCard({ mission, isCompleted, isTaken, compact = false }: 
                     src={ngo.logo_url}
                     alt={ngo.name}
                     className="w-4 h-4 rounded object-contain flex-shrink-0"
+                    onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                   />
-                ) : (
+                ) : null}
                   <div
                     className="w-4 h-4 rounded flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0"
-                    style={{ backgroundColor: ngo.color_accent ?? '#F4B942' }}
+                    style={{ backgroundColor: ngo.color_accent ?? '#F4B942', display: ngo.logo_url ? 'none' : 'flex' }}
                   >
                     {(ngo.short_name ?? ngo.name)[0]}
                   </div>
-                )}
                 <span className="text-xs text-stone-400 font-medium truncate">
                   {ngo.short_name ?? ngo.name}
                 </span>

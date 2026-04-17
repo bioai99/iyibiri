@@ -65,12 +65,12 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                         src={reward.brand_logo}
                         alt={reward.brand}
                         className="w-10 h-10 object-contain rounded-xl"
+                        onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                       />
-                    ) : (
-                      <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center font-bold text-stone-500">
-                        {reward.brand[0]}
-                      </div>
-                    )}
+                    ) : null}
+                    <div className="w-10 h-10 rounded-xl bg-stone-100 items-center justify-center font-bold text-stone-500" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+                      {reward.brand[0]}
+                    </div>
                     <span className="text-[10px] text-stone-500 font-medium text-center truncate w-full">
                       {reward.brand}
                     </span>
@@ -115,12 +115,12 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                           src={reward.brand_logo}
                           alt={reward.brand}
                           className="w-10 h-10 rounded-xl object-contain border border-stone-100 p-1 flex-shrink-0"
+                          onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
                         />
-                      ) : (
-                        <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center font-bold text-sm text-stone-500 flex-shrink-0">
-                          {reward.brand[0]}
-                        </div>
-                      )}
+                      ) : null}
+                      <div className="w-10 h-10 rounded-xl bg-stone-100 items-center justify-center font-bold text-sm text-stone-500 flex-shrink-0" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+                        {reward.brand[0]}
+                      </div>
                       <div className="min-w-0">
                         <h3 className="font-display font-bold text-stone-900 text-sm leading-snug truncate">
                           {reward.title}
