@@ -41,7 +41,7 @@ export function BottomNav() {
                     />
                   )}
                 </div>
-                <span className={`text-[10px] font-medium transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
+                <span className={`text-xs font-medium transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
                   {label}
                 </span>
               </motion.div>

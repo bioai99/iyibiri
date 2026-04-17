@@ -55,7 +55,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             <div className="bg-white/20 rounded-full px-3 py-1.5 flex items-center gap-1.5">
               <Flame size={16} className="text-white" />
               <span className="text-white font-bold text-sm">{profile.streak}</span>
-              <span className="text-white/70 text-xs">gün</span>
+              <span className="text-white/70 text-xs">Gün</span>
             </div>
           </div>
 

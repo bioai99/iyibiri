@@ -86,7 +86,7 @@ export default async function NGODetailPage({ params }: { params: { id: string }
             {[
               { Icon: Users, value: (ngo.member_count ?? 0).toLocaleString('tr-TR'), label: 'Üye' },
               { Icon: Heart, value: (ngo.volunteer_count ?? 0).toLocaleString('tr-TR'), label: 'Gönüllü' },
-              { Icon: Calendar, value: String(ngo.founded ?? '—'), label: 'Kuruluş' },
+              { Icon: Calendar, value: String(ngo.founded ?? '—'), label: 'Kuruluş Tarihi' },
             ].map(({ Icon, value, label }) => (
               <div key={label} className="bg-stone-50 rounded-2xl p-3 text-center">
                 <Icon size={14} className="text-stone-400 mx-auto mb-1" />

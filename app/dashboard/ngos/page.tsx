@@ -24,6 +24,11 @@ export default async function NGOsPage() {
         <p className="text-stone-500 text-sm mt-1">STK, vakıf, dernek ve belediyeler</p>
       </div>
       <div className="px-4 py-4 space-y-3">
+        {ngos.length === 0 && (
+          <div className="text-center py-16 text-stone-400 text-sm">
+            Henüz kayıtlı kuruluş bulunmuyor.
+          </div>
+        )}
         {ngos.map(ngo => (
           <Link key={ngo.id} href={`/dashboard/ngos/${ngo.id}`}>
             <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.13)] transition-shadow p-4 flex items-center gap-4">

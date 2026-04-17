@@ -40,7 +40,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
         <div className="flex items-center gap-1.5">
           <Sparkles size={16} className="text-primary" />
           <KarmaCounter value={currentKarma} size="sm" className="text-primary font-bold" />
-          <span className="text-sm text-stone-400">karma bakiyen</span>
+          <span className="text-sm text-stone-400">Karma Bakiyeniz</span>
         </div>
       </div>
 
@@ -84,6 +84,11 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
 
       {/* Reward list */}
       <div className="px-4 space-y-3">
+        {rewards.length === 0 && (
+          <div className="text-center py-16 text-stone-400 text-sm">
+            Henüz ödül bulunmuyor.
+          </div>
+        )}
         {rewards.map((reward, i) => {
           const unlocked = currentKarma >= reward.karma_required
           const redeemed = redeemedIds.has(reward.id)
@@ -103,7 +108,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 >
                   {/* Left gradient strip */}
                   <div
-                    className={`w-3 flex-shrink-0 bg-gradient-to-b ${redeemed ? 'from-stone-200 to-stone-300' : rewardGradient}`}
+                    className={`w-3 flex-shrink-0 bg-gradient-to-b ${redeemed ? 'from-emerald-400 to-emerald-500' : rewardGradient}`}
                   />
 
                   {/* Body */}

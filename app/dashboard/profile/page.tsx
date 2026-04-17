@@ -46,7 +46,7 @@ export default async function ProfilePage() {
     { Icon: CheckCircle2, iconClass: 'bg-emerald-100 text-emerald-600', value: completedCount, label: 'Görev' },
     { Icon: Sparkles, iconClass: 'bg-amber-100 text-amber-600', value: profile.karma_total, label: 'Karma' },
     { Icon: Flame, iconClass: 'bg-orange-100 text-orange-600', value: profile.streak, label: 'Streak' },
-    { Icon: Trophy, iconClass: 'bg-purple-100 text-purple-600', value: tier, label: 'Tier' },
+    { Icon: Trophy, iconClass: 'bg-purple-100 text-purple-600', value: tier, label: 'Seviye' },
   ]
 
   return (
@@ -65,7 +65,7 @@ export default async function ProfilePage() {
           {profile.name ?? 'İsimsiz Kullanıcı'}
         </h1>
         <div className="inline-flex items-center bg-primary/20 rounded-full px-3 py-1 mt-1 mb-4">
-          <span className="text-primary text-xs font-bold">{tierName[tier]} · Tier {tier}</span>
+          <span className="text-primary text-xs font-bold">{tierName[tier]} · Seviye {tier}</span>
         </div>
         <div className="flex items-end gap-2">
           <Sparkles size={18} className="text-white/50 mb-0.5" />
@@ -99,7 +99,7 @@ export default async function ProfilePage() {
         {nextThreshold !== Infinity && (
           <div className="bg-white rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
             <div className="flex items-center justify-between mb-3">
-              <p className="font-display font-bold text-stone-900 text-sm">Sonraki Tier</p>
+              <p className="font-display font-bold text-stone-900 text-sm">Sonraki Seviye</p>
               <span className="text-xs text-stone-400 font-medium">{tierName[(tier + 1) as keyof typeof tierName]}</span>
             </div>
             <XPBar current={xpCurrent} max={xpMax} label={`${xpMax - xpCurrent} karma kaldı`} />
