@@ -36,7 +36,8 @@ export async function handleNativeGoogleLogin(): Promise<void> {
 
   await SocialLogin.initialize({
     google: {
-      webClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
+      iOSClientId: '67588080719-at90h2m2dai4uccdqchibp9bs4d0eg1m.apps.googleusercontent.com',
+      iOSServerClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
     },
   })
 
