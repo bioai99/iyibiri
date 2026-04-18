@@ -1,29 +1,48 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Sparkles, Mail, Lock, User } from 'lucide-react'
+import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 
+function getPasswordStrength(password: string): number {
+  let score = 0
+  if (password.length >= 8) score++
+  if (password.length >= 12) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^a-zA-Z0-9]/.test(password)) score++
+  return score
+}
+
 export default function SignupPage() {
-  const supabase = createClient()
+  const { colors: c } = useTheme()
+  const router = useRouter()
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPw, setShowPw] = useState(false)
+  const [kvkk, setKvkk] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+
+  const strength = getPasswordStrength(password)
+  const strengthColors = [c.gold, c.gold, c.goldDim, c.ink600]
+
+  const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
+  const uiFont = 'var(--font-sans), system-ui, sans-serif'
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
+    if (!kvkk) return
     setLoading(true)
     setError(null)
+    const supabase = createClient()
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { full_name: name } },
     })
     if (error) {
       const msg = error.message.toLowerCase()
@@ -38,102 +57,154 @@ export default function SignupPage() {
       return
     }
     setLoading(false)
-    router.push('/onboarding')
+    router.push('/onboarding/welcome')
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontFamily: uiFont, fontSize: 11, fontWeight: 600, color: c.ink300,
+    letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 6,
+  }
+  const inputContainerStyle: React.CSSProperties = {
+    background: c.ink800, border: `1px solid ${c.ink600}`, borderRadius: 12,
+    display: 'flex', alignItems: 'center',
+  }
+  const inputStyle: React.CSSProperties = {
+    flex: 1, background: 'transparent', border: 'none', outline: 'none',
+    padding: '14px', fontFamily: uiFont, fontSize: 15, color: c.cream, fontWeight: 500,
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 flex flex-col">
-      {/* Brand area */}
-      <motion.div
-        className="flex-1 flex flex-col items-center justify-center px-6 pb-8"
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-      >
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-5 shadow-[0_8px_32px_rgba(251,146,60,0.4)]">
-          <Sparkles size={36} className="text-white" />
-        </div>
-        <h1 className="font-display font-black text-white text-4xl tracking-tight">İyiBiri</h1>
-        <p className="text-stone-400 text-base mt-2 text-center">İyi şeyler yapmak, iyi hissettirir</p>
-      </motion.div>
+    <div style={{ background: c.ink900, minHeight: '100vh', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <div style={{ padding: '58px 20px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Link href="/auth/login" style={{ textDecoration: 'none' }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: c.ink800, border: `1px solid ${c.ink600}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.cream, cursor: 'pointer' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </div>
+        </Link>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: uiFont, fontSize: 13, fontWeight: 600, color: c.ink200 }}>1 / 5 · Hesap</div>
+        <div style={{ width: 36 }} />
+      </div>
 
-      {/* Form card */}
-      <motion.div
-        className="bg-white rounded-t-3xl px-6 pt-8 pb-10"
-        initial={{ y: 60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 0.1 }}
-      >
-        <h2 className="font-display font-extrabold text-stone-900 text-2xl mb-6">Hesap Oluştur</h2>
+      {/* Title */}
+      <div style={{ padding: '28px 24px 0' }}>
+        <h1 style={{ margin: 0, fontFamily: displayFont, fontSize: 28, fontWeight: 400, letterSpacing: '-0.028em', lineHeight: 1.1, color: c.cream }}>
+          <span style={{ fontStyle: 'italic', color: c.gold }}>Tanışalım</span> —<br />birkaç bilgi yeter.
+        </h1>
+        <p style={{ margin: '8px 0 0', fontFamily: uiFont, fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
+          Hesabını oluşturduğunda, Karma bakiyen ve aldığın rozetler seninle kalır.
+        </p>
+      </div>
 
-        <form onSubmit={handleSignup} className="space-y-3">
-          {/* Name */}
-          <div className="relative">
-            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
+      {/* Form */}
+      <form onSubmit={handleSignup} style={{ padding: '24px 24px 0', display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+        {/* Name */}
+        <div>
+          <div style={labelStyle}>AD SOYAD</div>
+          <div style={inputContainerStyle}>
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
               required
+              style={inputStyle}
               placeholder="Adın Soyadın"
-              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
             />
           </div>
+        </div>
 
-          {/* Email */}
-          <div className="relative">
-            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
+        {/* Email */}
+        <div>
+          <div style={labelStyle}>E-POSTA</div>
+          <div style={inputContainerStyle}>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              placeholder="E-posta adresin"
-              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+              style={inputStyle}
+              placeholder="ornek@mail.com"
             />
           </div>
+        </div>
 
-          {/* Password */}
-          <div className="relative">
-            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
+        {/* Password */}
+        <div>
+          <div style={labelStyle}>ŞİFRE</div>
+          <div style={inputContainerStyle}>
             <input
-              type="password"
+              type={showPw ? 'text' : 'password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
-              minLength={6}
-              placeholder="Şifre (en az 6 karakter)"
-              className="w-full bg-stone-100 rounded-2xl pl-11 pr-4 py-4 text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+              style={inputStyle}
+              placeholder="En az 8 karakter"
             />
-          </div>
-
-          {error && (
-            <motion.p
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-red-500 text-sm text-center pt-1"
+            <button
+              type="button"
+              onClick={() => setShowPw(s => !s)}
+              style={{ background: 'transparent', border: 'none', color: c.ink300, cursor: 'pointer', paddingRight: 12, fontFamily: uiFont, fontSize: 11, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase' }}
             >
-              {error}
-            </motion.p>
-          )}
+              {showPw ? 'Gizle' : 'Göster'}
+            </button>
+          </div>
+        </div>
 
-          <motion.button
-            type="submit"
-            disabled={loading}
-            whileTap={{ scale: 0.97 }}
-            className="w-full py-4 mt-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-display font-bold text-base rounded-2xl shadow-[0_4px_20px_rgba(251,146,60,0.35)] disabled:opacity-60"
+        {/* Password strength bars */}
+        <div style={{ display: 'flex', gap: 4, marginTop: -6 }}>
+          {strengthColors.map((color, i) => (
+            <div key={i} style={{ flex: 1, height: 3, borderRadius: 999, background: i < strength ? color : c.ink600, opacity: i === 2 && strength < 3 ? 1 : 1 }} />
+          ))}
+        </div>
+        <div style={{ fontFamily: uiFont, fontSize: 11, color: c.ink400, marginTop: -8 }}>
+          En az 8 karakter, 1 rakam. Güçlü şifre.
+        </div>
+
+        {/* KVKK checkbox */}
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 4, cursor: 'pointer' }}>
+          <div
+            onClick={() => setKvkk(k => !k)}
+            style={{ width: 22, height: 22, borderRadius: 7, marginTop: 1, background: kvkk ? c.gold : 'transparent', border: `1.5px solid ${kvkk ? c.gold : c.ink500}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
           >
-            {loading ? 'Hesap oluşturuluyor...' : 'Başla'}
-          </motion.button>
-        </form>
+            {kvkk && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#241E18" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            )}
+          </div>
+          <span style={{ fontFamily: uiFont, fontSize: 12, color: c.ink200, lineHeight: 1.5 }}>
+            <span style={{ color: c.cream, fontWeight: 600 }}>KVKK Aydınlatma Metni</span>'ni okudum, kabul ediyorum. E-posta ile ara sıra ilham verici görevler almayı kabul ediyorum.
+          </span>
+        </label>
 
-        <p className="text-center text-sm text-stone-400 mt-6">
-          Zaten hesabın var mı?{' '}
-          <Link href="/auth/login" className="text-primary font-bold">
-            Giriş yap
-          </Link>
-        </p>
-      </motion.div>
+        {error && (
+          <p style={{ margin: 0, fontFamily: uiFont, fontSize: 13, color: c.danger, textAlign: 'center' }}>
+            {error}
+          </p>
+        )}
+      </form>
+
+      {/* Footer */}
+      <div style={{ padding: '18px 24px 28px' }}>
+        <button
+          type="button"
+          onClick={handleSignup}
+          disabled={!kvkk || loading}
+          style={{ width: '100%', height: 52, borderRadius: 14, background: kvkk ? c.gold : c.ink700, border: 'none', color: kvkk ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: kvkk ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: kvkk ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
+        >
+          {loading ? 'Hesap oluşturuluyor...' : 'Hesabımı oluştur →'}
+        </button>
+        <div style={{ marginTop: 16 }}>
+          {/* Progress dots */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} style={{ width: i === 0 ? 18 : 6, height: 3, borderRadius: 999, background: i === 0 ? c.gold : c.ink600, transition: 'width .2s ease' }} />
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
