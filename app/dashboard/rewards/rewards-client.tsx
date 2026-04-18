@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Lock, Sparkles, CheckCircle2 } from 'lucide-react'
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
-import { KarmaCounter } from '@/components/ui/karma-counter'
 
 interface Props {
   rewards: Reward[]
@@ -13,8 +12,6 @@ interface Props {
   currentKarma: number
   userId: string
 }
-
-const rewardGradient = 'from-amber-500 to-orange-400'
 
 export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
   const redeemedIds = useMemo(
@@ -33,21 +30,51 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
   }, [rewards])
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="px-4 pt-12 pb-4">
-        <h1 className="font-display font-extrabold text-3xl text-stone-900 mb-2">Ödüller</h1>
-        <div className="flex items-center gap-1.5">
-          <Sparkles size={16} className="text-primary" />
-          <KarmaCounter value={currentKarma} size="sm" className="text-primary font-bold" />
-          <span className="text-sm text-stone-400">Karma Bakiyeniz</span>
+    <div style={{ minHeight: '100vh', background: '#1C1812', paddingBottom: 96 }}>
+      {/* Page header */}
+      <div style={{ padding: '48px 16px 16px' }}>
+        <h1 style={{ color: '#F4EEDF', fontSize: 28, fontWeight: 700, marginBottom: 8, fontFamily: 'inherit' }}>
+          Ödüller
+        </h1>
+
+        {/* Karma balance card */}
+        <div
+          style={{
+            background: '#2E2923',
+            border: '1px solid rgba(232,194,104,0.25)',
+            borderRadius: 16,
+            padding: '14px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            marginTop: 12,
+          }}
+        >
+          <span style={{ fontSize: 24 }}>🎁</span>
+          <div>
+            <p style={{ color: '#A89E8A', fontSize: 11, marginBottom: 2 }}>Kullanabileceğin</p>
+            <p style={{ color: '#E8C268', fontSize: 20, fontWeight: 700, lineHeight: 1 }}>
+              {currentKarma.toLocaleString('tr-TR')} Karma
+            </p>
+          </div>
+          <Sparkles size={16} style={{ color: '#E8C268', marginLeft: 'auto' }} />
         </div>
       </div>
 
       {/* Brand carousel */}
       {brands.length > 0 && (
-        <div className="mb-4">
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+        <div style={{ marginBottom: 16 }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              overflowX: 'auto',
+              paddingBottom: 8,
+              paddingLeft: 16,
+              paddingRight: 16,
+              scrollbarWidth: 'none',
+            }}
+          >
             {brands.map((reward, i) => (
               <motion.div
                 key={reward.id}
@@ -55,23 +82,62 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex-shrink-0"
+                style={{ flexShrink: 0 }}
               >
                 <Link href={`/dashboard/rewards/${reward.id}`}>
-                  <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.07)] p-3 flex flex-col items-center gap-1.5 w-20">
+                  <div
+                    style={{
+                      background: '#2E2923',
+                      border: '1px solid #3F3830',
+                      borderRadius: 16,
+                      padding: 12,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 6,
+                      width: 80,
+                    }}
+                  >
                     {reward.brand_logo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={reward.brand_logo}
                         alt={reward.brand}
-                        className="w-10 h-10 object-contain rounded-xl"
-                        onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
+                        style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 10 }}
+                        onError={e => {
+                          e.currentTarget.style.display = 'none'
+                          ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex')
+                        }}
                       />
                     ) : null}
-                    <div className="w-10 h-10 rounded-xl bg-stone-100 items-center justify-center font-bold text-stone-500" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
+                        background: '#3F3830',
+                        display: reward.brand_logo ? 'none' : 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                        color: '#A89E8A',
+                        fontSize: 14,
+                      }}
+                    >
                       {reward.brand[0]}
                     </div>
-                    <span className="text-[10px] text-stone-500 font-medium text-center truncate w-full">
+                    <span
+                      style={{
+                        fontSize: 10,
+                        color: '#A89E8A',
+                        fontWeight: 500,
+                        textAlign: 'center',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        width: '100%',
+                      }}
+                    >
                       {reward.brand}
                     </span>
                   </div>
@@ -83,9 +149,9 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       )}
 
       {/* Reward list */}
-      <div className="px-4 space-y-3">
+      <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {rewards.length === 0 && (
-          <div className="text-center py-16 text-stone-400 text-sm">
+          <div style={{ textAlign: 'center', padding: '64px 0', color: '#A89E8A', fontSize: 14 }}>
             Henüz ödül bulunmuyor.
           </div>
         )}
@@ -99,47 +165,106 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.06 }}
-              className={!unlocked && !redeemed ? 'opacity-60' : ''}
+              style={{ opacity: !unlocked && !redeemed ? 0.6 : 1 }}
             >
               <Link href={`/dashboard/rewards/${reward.id}`}>
                 <motion.div
                   whileTap={unlocked && !redeemed ? { scale: 0.98 } : undefined}
-                  className="flex bg-white rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.07)] cursor-pointer"
+                  style={{
+                    display: 'flex',
+                    background: '#2E2923',
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    border: '1px solid #3F3830',
+                    cursor: 'pointer',
+                  }}
                 >
                   {/* Left gradient strip */}
                   <div
-                    className={`w-3 flex-shrink-0 bg-gradient-to-b ${redeemed ? 'from-emerald-400 to-emerald-500' : rewardGradient}`}
+                    style={{
+                      width: 6,
+                      flexShrink: 0,
+                      background: redeemed
+                        ? 'linear-gradient(to bottom, #34d399, #10b981)'
+                        : 'linear-gradient(to bottom, #E8C268, #d97706)',
+                    }}
                   />
 
                   {/* Body */}
-                  <div className="flex-1 px-4 py-4 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
+                  <div style={{ flex: 1, padding: '14px 16px', minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
                       {reward.brand_logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={reward.brand_logo}
                           alt={reward.brand}
-                          className="w-10 h-10 rounded-xl object-contain border border-stone-100 p-1 flex-shrink-0"
-                          onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 10,
+                            objectFit: 'contain',
+                            border: '1px solid #3F3830',
+                            padding: 4,
+                            flexShrink: 0,
+                            background: '#3F3830',
+                          }}
+                          onError={e => {
+                            e.currentTarget.style.display = 'none'
+                            ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex')
+                          }}
                         />
                       ) : null}
-                      <div className="w-10 h-10 rounded-xl bg-stone-100 items-center justify-center font-bold text-sm text-stone-500 flex-shrink-0" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+                      <div
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 10,
+                          background: '#3F3830',
+                          display: reward.brand_logo ? 'none' : 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 700,
+                          fontSize: 14,
+                          color: '#A89E8A',
+                          flexShrink: 0,
+                        }}
+                      >
                         {reward.brand[0]}
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="font-display font-bold text-stone-900 text-sm leading-snug truncate">
+                      <div style={{ minWidth: 0 }}>
+                        <h3
+                          style={{
+                            fontWeight: 700,
+                            color: '#F4EEDF',
+                            fontSize: 14,
+                            lineHeight: 1.3,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            margin: 0,
+                          }}
+                        >
                           {reward.title}
                         </h3>
-                        <p className="text-xs text-stone-400">{reward.brand}</p>
+                        <p style={{ fontSize: 12, color: '#A89E8A', margin: 0 }}>{reward.brand}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Sparkles size={12} className={redeemed ? 'text-stone-300' : 'text-primary'} />
-                      <span className={`text-sm font-bold ${redeemed ? 'text-stone-400' : 'text-primary'}`}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                      <Sparkles
+                        size={12}
+                        style={{ color: redeemed ? '#3F3830' : '#E8C268', flexShrink: 0 }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: redeemed ? '#A89E8A' : '#E8C268',
+                        }}
+                      >
                         {reward.karma_required.toLocaleString('tr-TR')} karma
                       </span>
                       {!unlocked && !redeemed && (
-                        <span className="text-xs text-stone-400 ml-1">
+                        <span style={{ fontSize: 11, color: '#A89E8A', marginLeft: 4 }}>
                           · {(reward.karma_required - currentKarma).toLocaleString('tr-TR')} daha
                         </span>
                       )}
@@ -147,19 +272,43 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                   </div>
 
                   {/* Dashed divider */}
-                  <div className="w-px border-r border-dashed border-stone-200 my-3" />
+                  <div
+                    style={{
+                      width: 1,
+                      borderRight: '1px dashed #3F3830',
+                      margin: '12px 0',
+                    }}
+                  />
 
                   {/* Right action */}
-                  <div className="w-16 flex items-center justify-center flex-shrink-0">
+                  <div
+                    style={{
+                      width: 64,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
                     {redeemed ? (
-                      <CheckCircle2 size={22} className="text-emerald-500" />
+                      <CheckCircle2 size={22} style={{ color: '#34d399' }} />
                     ) : unlocked ? (
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-primary font-bold text-xs">Kullan</span>
-                        <Sparkles size={14} className="text-primary" />
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 2,
+                          background: 'linear-gradient(135deg, #E8C268, #d97706)',
+                          borderRadius: 10,
+                          padding: '6px 10px',
+                        }}
+                      >
+                        <span style={{ color: '#1C1812', fontWeight: 700, fontSize: 11 }}>Kullan</span>
+                        <Sparkles size={12} style={{ color: '#1C1812' }} />
                       </div>
                     ) : (
-                      <Lock size={18} className="text-stone-300" />
+                      <Lock size={18} style={{ color: '#3F3830' }} />
                     )}
                   </div>
                 </motion.div>
