@@ -30,13 +30,13 @@ const MailIcon = ({ size = 16 }: { size?: number }) => (
 export default function AuthLandingPage() {
   const { colors: c } = useTheme()
 
-  async function handleGoogleLogin() {
+  async function handleOAuthLogin(provider: 'google' | 'apple') {
     const supabase = createClient()
     const { data } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: { prompt: 'select_account' },
+        ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
       },
     })
     if (data.url) window.location.href = data.url
@@ -78,13 +78,13 @@ export default function AuthLandingPage() {
         {/* Social buttons */}
         <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button
-            onClick={() => { /* Apple OAuth stub */ }}
+            onClick={() => handleOAuthLogin('apple')}
             style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
           >
             <AppleIcon size={18} /> Apple ile devam et
           </button>
           <button
-            onClick={handleGoogleLogin}
+            onClick={() => handleOAuthLogin('google')}
             style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
           >
             <GoogleIcon size={18} /> Google ile devam et
