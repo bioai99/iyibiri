@@ -80,22 +80,25 @@ export async function handleNativeGoogleLogin(): Promise<void> {
 
   const { SocialLogin } = await import('@capgo/capacitor-social-login')
 
-  // Önce cache temizle (nonce mismatch önlemi)
+  // Önce cache temizle
   await SocialLogin.logout({ provider: 'google' }).catch(() => {})
+
+  const rawNonce = generateNonce()
+  const hashedNonce = await sha256(rawNonce)
 
   const result = await SocialLogin.login({
     provider: 'google',
-    options: { scopes: ['email', 'profile'] },
+    options: { scopes: ['email', 'profile'], nonce: hashedNonce },
   })
 
   const idToken = (result as any).result?.idToken
   if (!idToken) throw new Error('Google ID token alınamadı')
 
-  // Supabase'e token ver (nonce olmadan — daha güvenilir)
   const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
     token: idToken,
+    nonce: rawNonce,
   })
 
   if (error) throw new Error(`Google giriş hatası: ${error.message}`)
