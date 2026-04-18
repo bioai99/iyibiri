@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, MapPin, ArrowRight } from 'lucide-react'
 import type { Mission } from '@/lib/supabase/types'
@@ -173,7 +174,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
 
 // ─── Applied state body ─────────────────────────────────────────────────────
 
-function AppliedBody() {
+function AppliedBody({ onCancel }: { onCancel: () => void }) {
   const steps = [
     {
       num: 1,
@@ -242,6 +243,7 @@ function AppliedBody() {
       {/* Cancel button */}
       <div style={{ padding: '28px 16px 0' }}>
         <button
+          onClick={onCancel}
           style={{
             width: '100%',
             background: 'transparent',
@@ -263,7 +265,7 @@ function AppliedBody() {
 
 // ─── CheckIn state body ─────────────────────────────────────────────────────
 
-function CheckInBody() {
+function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
   return (
     <>
       {/* Participation code card */}
@@ -318,6 +320,7 @@ function CheckInBody() {
           </div>
 
           <button
+            onClick={onMap}
             style={{
               background: '#1E1B16',
               border: '1px solid #3F3830',
@@ -342,6 +345,7 @@ function CheckInBody() {
       {/* QR check-in primary button */}
       <div style={{ padding: '24px 16px 0' }}>
         <button
+          onClick={onQR}
           style={{
             width: '100%',
             background: '#E8C268',
@@ -367,11 +371,14 @@ function CheckInBody() {
 
 // ─── Completed state body ───────────────────────────────────────────────────
 
-function CompletedBody({ karma, photoUrl, impactStatement }: {
+function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission }: {
   karma: number
   photoUrl: string | null
   impactStatement: string | null
+  onShare: () => void
+  onNewMission: () => void
 }) {
+  const [rating, setRating] = useState(4)
   const extraPhotos = [
     'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&q=80',
     'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&q=80',
@@ -503,7 +510,7 @@ function CompletedBody({ karma, photoUrl, impactStatement }: {
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {[1, 2, 3, 4, 5].map((star) => (
-              <svg key={star} width="28" height="28" viewBox="0 0 24 24" fill={star <= 4 ? '#E8C268' : 'none'} stroke="#E8C268" strokeWidth="1.5">
+              <svg key={star} width="28" height="28" viewBox="0 0 24 24" fill={star <= rating ? '#E8C268' : 'none'} stroke="#E8C268" strokeWidth="1.5" style={{ cursor: 'pointer' }} onClick={() => setRating(star)}>
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
             ))}
@@ -514,6 +521,7 @@ function CompletedBody({ karma, photoUrl, impactStatement }: {
       {/* CTA buttons */}
       <div style={{ padding: '24px 16px 0', display: 'flex', gap: 10 }}>
         <button
+          onClick={onShare}
           style={{
             flex: 1,
             background: 'transparent',
@@ -534,6 +542,7 @@ function CompletedBody({ karma, photoUrl, impactStatement }: {
           Paylaş
         </button>
         <button
+          onClick={onNewMission}
           style={{
             flex: 1,
             background: '#E8C268',
@@ -562,6 +571,14 @@ function CompletedBody({ karma, photoUrl, impactStatement }: {
 
 export function MissionStatesClient({ mission, state }: MissionStatesProps) {
   const router = useRouter()
+
+  function handleShare() {
+    try {
+      if (navigator.share) {
+        navigator.share({ title: mission.title, url: window.location.href })
+      }
+    } catch { /* silent */ }
+  }
 
   return (
     <div
@@ -620,7 +637,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
             onClick={() => router.back()}
           />
           {state === 'completed' && (
-            <IconButtonDS icon={<Share2 size={18} />} />
+            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} />
           )}
         </div>
 
@@ -658,13 +675,22 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
       <StatusStrip state={state} karma={mission.karma} />
 
       {/* ── State-specific body ── */}
-      {state === 'applied' && <AppliedBody />}
-      {state === 'checkin' && <CheckInBody />}
+      {state === 'applied' && (
+        <AppliedBody onCancel={() => router.push('/dashboard/missions')} />
+      )}
+      {state === 'checkin' && (
+        <CheckInBody
+          onMap={() => window.open('https://maps.google.com/maps?q=Kilyos+Sahili', '_blank')}
+          onQR={() => router.push('/dashboard/missions/' + mission.id + '/complete')}
+        />
+      )}
       {state === 'completed' && (
         <CompletedBody
           karma={mission.karma}
           photoUrl={mission.photo_url}
           impactStatement={mission.impact_statement}
+          onShare={handleShare}
+          onNewMission={() => router.push('/dashboard/missions')}
         />
       )}
     </div>

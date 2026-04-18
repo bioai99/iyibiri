@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Settings, Share2, MapPin, LogOut } from 'lucide-react'
+import { Settings, Share2, MapPin, LogOut, ChevronRight } from 'lucide-react'
 import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { logoutAction } from './actions'
@@ -97,7 +97,16 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
           <Link href="/dashboard/profile/edit" style={{ textDecoration: 'none' }}>
             <IconButtonDS icon={<Settings size={16} />} />
           </Link>
-          <IconButtonDS icon={<Share2 size={16} />} />
+          <IconButtonDS
+            icon={<Share2 size={16} />}
+            onClick={() => {
+              try {
+                if (navigator.share) {
+                  navigator.share({ title: profile.name ?? 'İyiBiri Profili', url: window.location.href })
+                }
+              } catch { /* silent */ }
+            }}
+          />
         </div>
       </div>
 
@@ -380,6 +389,28 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Rozetlerim link */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <Link href="/dashboard/profile/badges" style={{ textDecoration: 'none' }}>
+          <div
+            style={{
+              background: '#2E2923',
+              border: '1px solid #3F3830',
+              borderRadius: 14,
+              padding: '14px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
+              Tüm Rozetlerim
+            </span>
+            <ChevronRight size={16} color="#A89E8A" />
+          </div>
+        </Link>
       </div>
 
       {/* Activity timeline */}

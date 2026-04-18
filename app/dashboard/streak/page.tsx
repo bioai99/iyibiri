@@ -66,7 +66,16 @@ export default function StreakPage() {
         >
           SERİ
         </span>
-        <IconButtonDS icon={<Share2 size={18} />} />
+        <IconButtonDS
+          icon={<Share2 size={18} />}
+          onClick={() => {
+            try {
+              if (navigator.share) {
+                navigator.share({ title: `${CURRENT_STREAK} günlük iyilik serisi! — İyiBiri`, url: window.location.href })
+              }
+            } catch { /* silent */ }
+          }}
+        />
       </div>
 
       {/* Big coin section */}

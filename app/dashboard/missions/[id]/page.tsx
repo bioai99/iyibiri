@@ -2,6 +2,7 @@ import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getMissionById, getUserMissions } from '@/lib/supabase/queries/missions'
 import { MissionDetailClient } from './mission-detail-client'
+import { MissionStatesClient } from './states-client'
 
 export default async function MissionDetailPage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -16,6 +17,14 @@ export default async function MissionDetailPage({ params }: { params: { id: stri
   if (!mission) notFound()
 
   const userMission = userMissions.find(m => m.mission_id === params.id)
+
+  if (userMission?.status === 'taken') {
+    return <MissionStatesClient mission={mission as any} state="applied" />
+  }
+
+  if (userMission?.status === 'completed') {
+    return <MissionStatesClient mission={mission as any} state="completed" />
+  }
 
   return (
     <MissionDetailClient

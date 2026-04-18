@@ -177,7 +177,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
               letterSpacing: '.06em',
               borderRadius: 999,
               padding: '7px 14px',
-              cursor: 'pointer',
+              cursor: 'default',
             }}
           >
             GEÇMİŞ

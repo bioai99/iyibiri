@@ -26,6 +26,8 @@ interface Props {
 export function MissionDetailClient({ mission, userMission, userId }: Props) {
   const [loading, setLoading] = useState(false)
   const [takeError, setTakeError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+  const [following, setFollowing] = useState(false)
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
@@ -103,8 +105,20 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
             onClick={() => router.back()}
           />
           <div style={{ display: 'flex', gap: 8 }}>
-            <IconButtonDS icon={<Share2 size={18} />} />
-            <IconButtonDS icon={<Heart size={18} />} />
+            <IconButtonDS
+              icon={<Share2 size={18} />}
+              onClick={() => {
+                try {
+                  if (navigator.share) {
+                    navigator.share({ title: mission.title, url: window.location.href })
+                  }
+                } catch { /* silent */ }
+              }}
+            />
+            <IconButtonDS
+              icon={<Heart size={18} fill={saved ? '#F4EEDF' : 'none'} />}
+              onClick={() => setSaved(s => !s)}
+            />
           </div>
         </div>
 
@@ -195,6 +209,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
 
           {/* Follow button */}
           <button
+            onClick={() => setFollowing(f => !f)}
             style={{
               background: 'transparent',
               border: '1px solid #5C5346',
@@ -207,7 +222,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
               flexShrink: 0,
             }}
           >
-            Takip et
+            {following ? 'Takip ediliyor ✓' : 'Takip et'}
           </button>
         </div>
       )}

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Sparkles, Star, Flame, Clock, Users } from 'lucide-react'
 import { KarmaDotToken } from '@/components/ui/ds'
 
@@ -138,6 +139,8 @@ function NotifRow({ notif }: { notif: Notif }) {
 }
 
 export default function NotificationsPage() {
+  const [allRead, setAllRead] = useState(false)
+
   return (
     <div
       style={{
@@ -191,6 +194,7 @@ export default function NotificationsPage() {
         </div>
 
         <button
+          onClick={() => setAllRead(true)}
           style={{
             background: 'transparent',
             border: 'none',
@@ -198,11 +202,11 @@ export default function NotificationsPage() {
             fontSize: 11,
             fontWeight: 700,
             letterSpacing: '0.04em',
-            cursor: 'pointer',
+            cursor: allRead ? 'default' : 'pointer',
             padding: 0,
           }}
         >
-          TÜMÜNÜ OKU
+          {allRead ? 'OKUNDU ✓' : 'TÜMÜNÜ OKU'}
         </button>
       </div>
 

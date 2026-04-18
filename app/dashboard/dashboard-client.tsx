@@ -141,26 +141,28 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             />
           </Link>
           {/* Gold avatar circle */}
-          <div style={{
-            width: 38,
-            height: 38,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #E8C268, #B58F3D)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.25)',
-            flexShrink: 0,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
-              fontSize: 16,
-              fontWeight: 600,
-              color: '#241E18',
+          <Link href="/dashboard/profile" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: 38,
+              height: 38,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #E8C268, #B58F3D)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.25)',
+              flexShrink: 0,
             }}>
-              {firstName[0].toUpperCase()}
-            </span>
-          </div>
+              <span style={{
+                fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+                fontSize: 16,
+                fontWeight: 600,
+                color: '#241E18',
+              }}>
+                {firstName[0].toUpperCase()}
+              </span>
+            </div>
+          </Link>
         </div>
       </div>
 
