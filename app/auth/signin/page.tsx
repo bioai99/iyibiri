@@ -34,10 +34,16 @@ export default function SigninPage() {
   const [error, setError] = useState<string | null>(null)
 
   async function handleOAuthLogin(provider: 'google' | 'apple') {
-    const { isNativePlatform, handleNativeOAuth } = await import('@/lib/auth/oauth-native')
+    const { isNativePlatform, handleNativeGoogleLogin, handleNativeAppleLogin } = await import('@/lib/auth/oauth-native')
 
     if (isNativePlatform()) {
-      await handleNativeOAuth(provider)
+      try {
+        if (provider === 'google') await handleNativeGoogleLogin()
+        else await handleNativeAppleLogin()
+        window.location.href = '/dashboard'
+      } catch (err) {
+        console.error('Native OAuth error:', err)
+      }
     } else {
       const supabase = createClient()
       const { data } = await supabase.auth.signInWithOAuth({

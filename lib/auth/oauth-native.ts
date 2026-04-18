@@ -1,59 +1,105 @@
-import { createClient } from '@/lib/supabase/client'
+import { createClient as createBrowserClient } from '@/lib/supabase/client'
 
+// ─── Platform Detection ────────────────────────────────────────
 export function isNativePlatform(): boolean {
   if (typeof window === 'undefined') return false
-  // Check for Capacitor runtime
-  if ((window as any).Capacitor?.isNativePlatform?.()) return true
-  if ((window as any).Capacitor) return true
-  // Check for standalone mode (PWA or Capacitor WebView)
-  if ((window.navigator as any).standalone) return true
-  if (window.matchMedia?.('(display-mode: standalone)').matches) return true
-  return false
+  return !!(window as any).Capacitor?.isNativePlatform?.() || !!(window as any).Capacitor
 }
 
-export async function handleNativeOAuth(provider: 'google' | 'apple'): Promise<void> {
-  const supabase = createClient()
+// ─── Crypto Helpers ────────────────────────────────────────────
+function generateNonce(length = 32): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const values = crypto.getRandomValues(new Uint8Array(length))
+  return Array.from(values, v => chars[v % chars.length]).join('')
+}
 
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: {
-      redirectTo: 'https://www.iyibiri.app/auth/native-callback',
-      skipBrowserRedirect: true,
-      ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
+async function sha256(message: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+  return Array.from(new Uint8Array(hashBuffer), b => b.toString(16).padStart(2, '0')).join('')
+}
+
+// ─── Session Sync ──────────────────────────────────────────────
+// Native login session'ını server-side cookie'lere yazar.
+// Bu sayede middleware ve server component'lar user'ı görebilir.
+async function syncSessionToCookies(accessToken: string, refreshToken: string): Promise<void> {
+  await fetch('/api/auth/set-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
+  })
+}
+
+// ─── Google Native Sign-In ─────────────────────────────────────
+export async function handleNativeGoogleLogin(): Promise<void> {
+  const { SocialLogin } = await import('@capgo/capacitor-social-login')
+
+  await SocialLogin.initialize({
+    google: {
+      webClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
     },
   })
 
-  if (error || !data.url) {
-    console.error('OAuth error:', error)
-    return
-  }
+  const rawNonce = generateNonce()
+  const hashedNonce = await sha256(rawNonce)
 
-  // Try Capacitor Browser plugin first
-  try {
-    const { Browser } = await import('@capacitor/browser')
-    const { App } = await import('@capacitor/app')
+  const result = await SocialLogin.login({
+    provider: 'google',
+    options: {
+      scopes: ['email', 'profile'],
+      nonce: hashedNonce,
+    },
+  })
 
-    // Listen for custom URL scheme callback
-    const handle = await App.addListener('appUrlOpen', async ({ url }) => {
-      if (url.includes('auth/callback')) {
-        try {
-          const parsedUrl = new URL(url)
-          const code = parsedUrl.searchParams.get('code')
-          if (code) {
-            await supabase.auth.exchangeCodeForSession(code)
-          }
-        } catch (e) {
-          console.error('Code exchange error:', e)
-        }
-        await Browser.close().catch(() => {})
-        await handle.remove()
-        window.location.href = '/dashboard'
-      }
-    })
+  const idToken = (result as any).result?.idToken
+  if (!idToken) throw new Error('Google ID token alınamadı')
 
-    await Browser.open({ url: data.url, presentationStyle: 'popover' })
-  } catch {
-    // Fallback: regular redirect if Capacitor plugins not available
-    window.location.href = data.url
-  }
+  // Supabase'e ID token ile giriş yap
+  const supabase = createBrowserClient()
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: idToken,
+    nonce: rawNonce,
+  })
+
+  if (error) throw error
+  if (!data.session) throw new Error('Session oluşturulamadı')
+
+  // Session'ı cookie'lere sync et (middleware için)
+  await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
+}
+
+// ─── Apple Native Sign-In ──────────────────────────────────────
+export async function handleNativeAppleLogin(): Promise<void> {
+  const { SocialLogin } = await import('@capgo/capacitor-social-login')
+
+  await SocialLogin.initialize({
+    apple: {},
+  })
+
+  const rawNonce = generateNonce()
+  const hashedNonce = await sha256(rawNonce)
+
+  const result = await SocialLogin.login({
+    provider: 'apple',
+    options: {
+      scopes: ['email', 'name'],
+      nonce: hashedNonce,
+    },
+  })
+
+  const idToken = (result as any).result?.identityToken
+  if (!idToken) throw new Error('Apple identity token alınamadı')
+
+  const supabase = createBrowserClient()
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: 'apple',
+    token: idToken,
+    nonce: rawNonce,
+  })
+
+  if (error) throw error
+  if (!data.session) throw new Error('Session oluşturulamadı')
+
+  await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
