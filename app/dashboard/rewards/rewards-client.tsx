@@ -1,10 +1,10 @@
 'use client'
 
-import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Lock, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Lock } from 'lucide-react'
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
+import { KarmaDotToken, BadgeDS, ChipDS } from '@/components/ui/ds'
 
 interface Props {
   rewards: Reward[]
@@ -13,307 +13,521 @@ interface Props {
   userId: string
 }
 
+const FILTER_TABS = ['Hepsi', 'Kupon', 'Deneyim', 'Bağış', 'Kilitli'] as const
+type FilterTab = (typeof FILTER_TABS)[number]
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80'
+
 export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
+  const [activeTab, setActiveTab] = useState<FilterTab>('Hepsi')
+
   const redeemedIds = useMemo(
     () => new Set<string>(redemptions.map(r => r.reward_id)),
     [redemptions]
   )
 
-  // Deduplicated brands for carousel
-  const brands = useMemo(() => {
-    const seen = new Set<string>()
-    return rewards.filter(r => {
-      if (seen.has(r.brand)) return false
-      seen.add(r.brand)
-      return true
-    })
-  }, [rewards])
+  const filteredRewards = useMemo(() => {
+    if (activeTab === 'Hepsi') return rewards
+    if (activeTab === 'Kilitli') return rewards.filter(r => currentKarma < r.karma_required)
+    const catMap: Record<string, string> = {
+      Kupon: 'kupon',
+      Deneyim: 'deneyim',
+      Bağış: 'bagis',
+    }
+    const cat = catMap[activeTab]
+    return rewards.filter(r => r.category?.toLowerCase() === cat)
+  }, [rewards, activeTab, currentKarma])
+
+  // Featured tile: first reward with image_url
+  const featuredReward = useMemo(
+    () => rewards.find(r => r.image_url) ?? rewards[0] ?? null,
+    [rewards]
+  )
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1C1812', paddingBottom: 96 }}>
-      {/* Page header */}
-      <div style={{ padding: '48px 16px 16px' }}>
-        <h1 style={{ color: '#F4EEDF', fontSize: 28, fontWeight: 700, marginBottom: 8, fontFamily: 'inherit' }}>
-          Ödüller
-        </h1>
-
-        {/* Karma balance card */}
-        <div
+    <div
+      style={{
+        background: '#24201B',
+        color: '#F4EEDF',
+        minHeight: '100%',
+        paddingBottom: 140,
+      }}
+    >
+      {/* ── 1. Header ── */}
+      <div style={{ padding: '58px 20px 0' }}>
+        <p
           style={{
-            background: '#2E2923',
-            border: '1px solid rgba(232,194,104,0.25)',
-            borderRadius: 16,
-            padding: '14px 16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            marginTop: 12,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '.22em',
+            textTransform: 'uppercase',
+            color: '#A89E8A',
+            margin: 0,
+            marginBottom: 8,
           }}
         >
-          <span style={{ fontSize: 24 }}>🎁</span>
-          <div>
-            <p style={{ color: '#A89E8A', fontSize: 11, marginBottom: 2 }}>Kullanabileceğin</p>
-            <p style={{ color: '#E8C268', fontSize: 20, fontWeight: 700, lineHeight: 1 }}>
-              {currentKarma.toLocaleString('tr-TR')} Karma
+          KARMA MARKETİ
+        </p>
+        <h1
+          style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 28,
+            fontWeight: 500,
+            letterSpacing: '-0.025em',
+            lineHeight: 1.05,
+            margin: 0,
+            color: '#F4EEDF',
+          }}
+        >
+          İyilik{' '}
+          <em
+            style={{
+              fontStyle: 'italic',
+              color: '#E8C268',
+            }}
+          >
+            ödüllerle
+          </em>{' '}
+          döner
+        </h1>
+      </div>
+
+      {/* ── 2. Balance card ── */}
+      <div style={{ padding: '22px 16px 0' }}>
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #2E2923, #36302A)',
+            border: '1px solid rgba(232,194,104,.32)',
+            borderRadius: 18,
+            padding: '18px 22px',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* Concentric rings decoration */}
+          <svg
+            width="140"
+            height="140"
+            viewBox="0 0 140 140"
+            style={{
+              position: 'absolute',
+              right: -30,
+              top: -30,
+              opacity: 0.12,
+              pointerEvents: 'none',
+            }}
+          >
+            {[60, 45, 30, 15].map(r => (
+              <circle
+                key={r}
+                cx="70"
+                cy="70"
+                r={r}
+                stroke="#E8C268"
+                strokeWidth=".8"
+                fill="none"
+              />
+            ))}
+          </svg>
+
+          {/* Left: balance info */}
+          <div style={{ position: 'relative' }}>
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '.06em',
+                color: '#A89E8A',
+                margin: 0,
+                marginBottom: 6,
+                textTransform: 'uppercase',
+              }}
+            >
+              Bakiyen
             </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <KarmaDotToken size={14} />
+              <span
+                style={{
+                  fontSize: 36,
+                  fontWeight: 700,
+                  color: '#E8C268',
+                  fontVariantNumeric: 'tabular-nums',
+                  lineHeight: 1,
+                }}
+              >
+                {currentKarma.toLocaleString('tr-TR')}
+              </span>
+            </div>
           </div>
-          <Sparkles size={16} style={{ color: '#E8C268', marginLeft: 'auto' }} />
+
+          {/* Right: history button */}
+          <button
+            style={{
+              position: 'relative',
+              background: 'transparent',
+              border: '1px solid #3F3830',
+              color: '#F4EEDF',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '.06em',
+              borderRadius: 999,
+              padding: '7px 14px',
+              cursor: 'pointer',
+            }}
+          >
+            GEÇMİŞ
+          </button>
         </div>
       </div>
 
-      {/* Brand carousel */}
-      {brands.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
-          <div
-            style={{
-              display: 'flex',
-              gap: 12,
-              overflowX: 'auto',
-              paddingBottom: 8,
-              paddingLeft: 16,
-              paddingRight: 16,
-              scrollbarWidth: 'none',
-            }}
+      {/* ── 3. Filter tabs ── */}
+      <div
+        style={{
+          padding: '22px 0 4px',
+          display: 'flex',
+          gap: 8,
+          overflowX: 'auto',
+          paddingLeft: 20,
+          paddingRight: 20,
+          scrollbarWidth: 'none',
+        }}
+      >
+        {FILTER_TABS.map(tab => (
+          <ChipDS
+            key={tab}
+            active={activeTab === tab}
+            onClick={() => setActiveTab(tab)}
           >
-            {brands.map((reward, i) => (
-              <motion.div
-                key={reward.id}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{ flexShrink: 0 }}
+            {tab}
+          </ChipDS>
+        ))}
+      </div>
+
+      {/* ── 4. Featured editorial tile ── */}
+      {featuredReward && (
+        <div style={{ padding: '20px 16px 0' }}>
+          <Link href={`/dashboard/rewards/${featuredReward.id}`}>
+            <div
+              style={{
+                position: 'relative',
+                aspectRatio: '16/9',
+                borderRadius: 16,
+                overflow: 'hidden',
+                border: '1px solid #3F3830',
+              }}
+            >
+              {/* Background photo */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={featuredReward.image_url ?? FALLBACK_IMAGE}
+                alt={featuredReward.title}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+
+              {/* Left gradient overlay */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background:
+                    'linear-gradient(90deg, rgba(26,22,18,.85) 20%, rgba(26,22,18,.15))',
+                }}
+              />
+
+              {/* Content */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  padding: '18px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
               >
-                <Link href={`/dashboard/rewards/${reward.id}`}>
-                  <div
+                {/* Top */}
+                <div>
+                  <BadgeDS variant="gold">ÖZEL İŞBİRLİĞİ</BadgeDS>
+                </div>
+
+                {/* Bottom */}
+                <div>
+                  <p
                     style={{
-                      background: '#2E2923',
-                      border: '1px solid #3F3830',
-                      borderRadius: 16,
-                      padding: 12,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 6,
-                      width: 80,
+                      fontFamily: "'Fraunces', serif",
+                      fontStyle: 'italic',
+                      fontSize: 22,
+                      fontWeight: 500,
+                      color: '#F4EEDF',
+                      lineHeight: 1.15,
+                      margin: 0,
+                      marginBottom: 10,
                     }}
                   >
-                    {reward.brand_logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={reward.brand_logo}
-                        alt={reward.brand}
-                        style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 10 }}
-                        onError={e => {
-                          e.currentTarget.style.display = 'none'
-                          ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex')
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 10,
-                        background: '#3F3830',
-                        display: reward.brand_logo ? 'none' : 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                        color: '#A89E8A',
-                        fontSize: 14,
-                      }}
-                    >
-                      {reward.brand[0]}
-                    </div>
+                    {featuredReward.title}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <KarmaDotToken size={14} />
                     <span
                       style={{
-                        fontSize: 10,
-                        color: '#A89E8A',
-                        fontWeight: 500,
-                        textAlign: 'center',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        width: '100%',
+                        fontSize: 16,
+                        fontWeight: 700,
+                        color: '#E8C268',
+                        fontVariantNumeric: 'tabular-nums',
                       }}
                     >
-                      {reward.brand}
+                      {featuredReward.karma_required.toLocaleString('tr-TR')}
                     </span>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                </div>
+              </div>
+            </div>
+          </Link>
         </div>
       )}
 
-      {/* Reward list */}
-      <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {rewards.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '64px 0', color: '#A89E8A', fontSize: 14 }}>
-            Henüz ödül bulunmuyor.
-          </div>
-        )}
-        {rewards.map((reward, i) => {
-          const unlocked = currentKarma >= reward.karma_required
-          const redeemed = redeemedIds.has(reward.id)
+      {/* ── 5. Reward grid ── */}
+      {/* Section header */}
+      <div style={{ padding: '24px 20px 8px', display: 'flex', alignItems: 'baseline', gap: 10 }}>
+        <h2
+          style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 20,
+            fontWeight: 500,
+            color: '#F4EEDF',
+            margin: 0,
+          }}
+        >
+          {activeTab}
+        </h2>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '.14em',
+            color: '#A89E8A',
+            textTransform: 'uppercase',
+          }}
+        >
+          {filteredRewards.length} ÖDÜL
+        </span>
+      </div>
+
+      {filteredRewards.length === 0 && (
+        <div
+          style={{
+            padding: '48px 20px',
+            textAlign: 'center',
+            color: '#A89E8A',
+            fontSize: 14,
+          }}
+        >
+          Bu kategoride ödül bulunmuyor.
+        </div>
+      )}
+
+      {/* Grid */}
+      <div
+        style={{
+          padding: '8px 16px 0',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 12,
+        }}
+      >
+        {filteredRewards.map(reward => {
+          const canAfford = currentKarma >= reward.karma_required
+          const locked = !canAfford
 
           return (
-            <motion.div
-              key={reward.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.06 }}
-              style={{ opacity: !unlocked && !redeemed ? 0.6 : 1 }}
-            >
-              <Link href={`/dashboard/rewards/${reward.id}`}>
-                <motion.div
-                  whileTap={unlocked && !redeemed ? { scale: 0.98 } : undefined}
+            <Link key={reward.id} href={`/dashboard/rewards/${reward.id}`}>
+              <div
+                style={{
+                  background: '#2E2923',
+                  border: '1px solid #3F3830',
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  opacity: locked ? 0.65 : 1,
+                  cursor: 'pointer',
+                }}
+              >
+                {/* Photo area — 4:3 */}
+                <div
                   style={{
-                    display: 'flex',
-                    background: '#2E2923',
-                    borderRadius: 20,
-                    overflow: 'hidden',
-                    border: '1px solid #3F3830',
-                    cursor: 'pointer',
+                    position: 'relative',
+                    aspectRatio: '4/3',
+                    background: '#1A1612',
                   }}
                 >
-                  {/* Left gradient strip */}
+                  {reward.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={reward.image_url}
+                      alt={reward.title}
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  ) : null}
+
+                  {/* Gradient scrim */}
                   <div
                     style={{
-                      width: 6,
-                      flexShrink: 0,
-                      background: redeemed
-                        ? 'linear-gradient(to bottom, #34d399, #10b981)'
-                        : 'linear-gradient(to bottom, #E8C268, #d97706)',
+                      position: 'absolute',
+                      inset: 0,
+                      background:
+                        'linear-gradient(to top, rgba(26,22,18,.75) 0%, rgba(26,22,18,0) 50%)',
                     }}
                   />
 
-                  {/* Body */}
-                  <div style={{ flex: 1, padding: '14px 16px', minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+                  {/* Lock icon (top-right) */}
+                  {locked && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        width: 26,
+                        height: 26,
+                        borderRadius: 999,
+                        background: '#2E2923',
+                        backdropFilter: 'blur(6px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Lock size={12} color="#A89E8A" />
+                    </div>
+                  )}
+
+                  {/* Partner info (bottom-left on photo) */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: 8,
+                      left: 8,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 5,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: 999,
+                        background: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                      }}
+                    >
                       {reward.brand_logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={reward.brand_logo}
                           alt={reward.brand}
-                          style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 10,
-                            objectFit: 'contain',
-                            border: '1px solid #3F3830',
-                            padding: 4,
-                            flexShrink: 0,
-                            background: '#3F3830',
-                          }}
-                          onError={e => {
-                            e.currentTarget.style.display = 'none'
-                            ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex')
-                          }}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                         />
-                      ) : null}
-                      <div
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 10,
-                          background: '#3F3830',
-                          display: reward.brand_logo ? 'none' : 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 700,
-                          fontSize: 14,
-                          color: '#A89E8A',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {reward.brand[0]}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <h3
+                      ) : (
+                        <span
                           style={{
+                            fontSize: 8,
                             fontWeight: 700,
-                            color: '#F4EEDF',
-                            fontSize: 14,
-                            lineHeight: 1.3,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            margin: 0,
+                            color: '#24201B',
                           }}
                         >
-                          {reward.title}
-                        </h3>
-                        <p style={{ fontSize: 12, color: '#A89E8A', margin: 0 }}>{reward.brand}</p>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                      <Sparkles
-                        size={12}
-                        style={{ color: redeemed ? '#3F3830' : '#E8C268', flexShrink: 0 }}
-                      />
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: redeemed ? '#A89E8A' : '#E8C268',
-                        }}
-                      >
-                        {reward.karma_required.toLocaleString('tr-TR')} karma
-                      </span>
-                      {!unlocked && !redeemed && (
-                        <span style={{ fontSize: 11, color: '#A89E8A', marginLeft: 4 }}>
-                          · {(reward.karma_required - currentKarma).toLocaleString('tr-TR')} daha
+                          {reward.brand[0]}
                         </span>
                       )}
                     </div>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 500,
+                        color: '#F4EEDF',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {reward.brand}
+                    </span>
                   </div>
+                </div>
 
-                  {/* Dashed divider */}
-                  <div
+                {/* Body */}
+                <div style={{ padding: '11px 12px 12px' }}>
+                  <p
                     style={{
-                      width: 1,
-                      borderRight: '1px dashed #3F3830',
-                      margin: '12px 0',
-                    }}
-                  />
-
-                  {/* Right action */}
-                  <div
-                    style={{
-                      width: 64,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: '#F4EEDF',
+                      margin: 0,
+                      minHeight: 30,
+                      lineHeight: 1.3,
                     }}
                   >
-                    {redeemed ? (
-                      <CheckCircle2 size={22} style={{ color: '#34d399' }} />
-                    ) : unlocked ? (
-                      <div
+                    {reward.title}
+                  </p>
+
+                  {/* Bottom bar */}
+                  <div
+                    style={{
+                      borderTop: '1px solid #3F3830',
+                      marginTop: 8,
+                      paddingTop: 8,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    {/* Left: cost */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <KarmaDotToken size={10} />
+                      <span
                         style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: 2,
-                          background: 'linear-gradient(135deg, #E8C268, #d97706)',
-                          borderRadius: 10,
-                          padding: '6px 10px',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: '#E8C268',
+                          fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        <span style={{ color: '#1C1812', fontWeight: 700, fontSize: 11 }}>Kullan</span>
-                        <Sparkles size={12} style={{ color: '#1C1812' }} />
-                      </div>
-                    ) : (
-                      <Lock size={18} style={{ color: '#3F3830' }} />
-                    )}
+                        {reward.karma_required.toLocaleString('tr-TR')}
+                      </span>
+                    </div>
+
+                    {/* Right: action label */}
+                    <span
+                      style={{
+                        fontSize: 9,
+                        fontWeight: 600,
+                        letterSpacing: '.08em',
+                        color: locked ? '#A89E8A' : '#E8C268',
+                      }}
+                    >
+                      {locked ? 'KİLİTLİ' : 'TAKAS →'}
+                    </span>
                   </div>
-                </motion.div>
-              </Link>
-            </motion.div>
+                </div>
+              </div>
+            </Link>
           )
         })}
       </div>
