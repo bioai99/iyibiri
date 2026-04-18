@@ -1,0 +1,324 @@
+'use client'
+
+import { useState } from 'react'
+import { Search, MapPin, Maximize2, Leaf, BookOpen, Heart } from 'lucide-react'
+import { PawPrint } from 'lucide-react'
+import { MissionCard } from '@/components/ui/mission-card'
+import type { MissionWithNGO, NGO } from '@/lib/supabase/types'
+
+interface DiscoverClientProps {
+  missions: MissionWithNGO[]
+  ngos: NGO[]
+}
+
+const pins = [
+  { x: 28, y: 45, count: 8, active: true },
+  { x: 56, y: 62, count: 3, active: false },
+  { x: 72, y: 38, count: 12, active: false },
+  { x: 42, y: 78, count: 5, active: false },
+]
+
+const categories = [
+  { name: 'Çevre', count: 18, color: '#C4CBAC', bg: 'rgba(196,203,172,0.12)', icon: Leaf },
+  { name: 'Eğitim', count: 32, color: '#EADDB8', bg: 'rgba(234,221,184,0.12)', icon: BookOpen },
+  { name: 'Hayvanlar', count: 14, color: '#E9CFC2', bg: 'rgba(233,207,194,0.12)', icon: PawPrint },
+  { name: 'Sağlık', count: 9, color: '#E8B4A8', bg: 'rgba(232,180,168,0.12)', icon: Heart },
+]
+
+export function DiscoverClient({ missions }: DiscoverClientProps) {
+  const [query, setQuery] = useState('')
+
+  const trendingMission = missions[missions.length - 1] ?? null
+
+  return (
+    <div
+      style={{
+        background: '#24201B',
+        color: '#F4EEDF',
+        minHeight: '100%',
+        paddingBottom: 140,
+      }}
+    >
+      {/* Header */}
+      <div style={{ padding: '58px 20px 0' }}>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-fraunces), Fraunces, serif',
+            fontSize: 30,
+            fontWeight: 500,
+            letterSpacing: '-0.025em',
+            color: '#F4EEDF',
+            lineHeight: 1.25,
+          }}
+        >
+          Bugün{' '}
+          <em
+            style={{
+              fontStyle: 'italic',
+              color: '#E8C268',
+            }}
+          >
+            iyi
+          </em>{' '}
+          yapacağın şey?
+        </h1>
+      </div>
+
+      {/* Search input */}
+      <div style={{ padding: '20px 16px 0' }}>
+        <div style={{ position: 'relative' }}>
+          <Search
+            size={16}
+            style={{
+              position: 'absolute',
+              left: 14,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#6B6154',
+              pointerEvents: 'none',
+            }}
+          />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="NGO, kategori veya şehir"
+            style={{
+              width: '100%',
+              background: '#2E2923',
+              border: '1px solid #3F3830',
+              borderRadius: 14,
+              padding: '14px 16px 14px 44px',
+              fontSize: 15,
+              color: '#F4EEDF',
+              outline: 'none',
+              boxSizing: 'border-box',
+              transition: 'border-color 180ms ease',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = '#E8C268' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = '#3F3830' }}
+          />
+        </div>
+      </div>
+
+      {/* Map preview */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <div
+          style={{
+            position: 'relative',
+            aspectRatio: '16/9',
+            background: '#2E2923',
+            borderRadius: 16,
+            overflow: 'hidden',
+            border: '1px solid #3F3830',
+          }}
+        >
+          {/* Grid SVG pattern */}
+          <svg
+            viewBox="0 0 400 225"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.5 }}
+          >
+            <defs>
+              <pattern id="gMap" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3F3830" strokeWidth=".5" />
+              </pattern>
+            </defs>
+            <rect width="400" height="225" fill="url(#gMap)" />
+            <path d="M20 80 Q80 60 140 80 T260 90 T380 70" stroke="#E8C268" strokeWidth="1.2" fill="none" opacity=".3" />
+            <path d="M30 140 Q100 120 180 150 T320 145" stroke="#C4CBAC" strokeWidth="1" fill="none" opacity=".3" />
+          </svg>
+
+          {/* Pin markers */}
+          {pins.map((pin, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: `${pin.x}%`,
+                top: `${pin.y}%`,
+                transform: 'translate(-50%, -100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <div
+                style={{
+                  background: pin.active ? '#E8C268' : '#2E2923',
+                  color: pin.active ? '#241E18' : '#F4EEDF',
+                  border: pin.active ? 'none' : '1px solid #4A4237',
+                  borderRadius: 20,
+                  padding: '3px 8px',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                }}
+              >
+                {pin.count}
+              </div>
+              <div
+                style={{
+                  width: 1.5,
+                  height: 8,
+                  background: pin.active ? '#E8C268' : '#4A4237',
+                  marginTop: 1,
+                }}
+              />
+            </div>
+          ))}
+
+          {/* Bottom-left: location pill */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 10,
+              left: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              background: 'rgba(26,22,18,0.75)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: 20,
+              padding: '5px 10px 5px 8px',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
+            <MapPin size={12} style={{ color: '#E8C268' }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#F4EEDF' }}>
+              İstanbul · 47 görev
+            </span>
+          </div>
+
+          {/* Top-right: expand button */}
+          <button
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              width: 36,
+              height: 36,
+              background: 'rgba(46,41,35,0.8)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <Maximize2 size={14} style={{ color: '#F4EEDF' }} />
+          </button>
+        </div>
+      </div>
+
+      {/* Categories heading */}
+      <div style={{ padding: '24px 20px 0' }}>
+        <h2
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-fraunces), Fraunces, serif',
+            fontSize: 20,
+            fontWeight: 500,
+            color: '#F4EEDF',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Kategoriler
+        </h2>
+      </div>
+
+      {/* Categories grid */}
+      <div
+        style={{
+          padding: '14px 16px 0',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 10,
+        }}
+      >
+        {categories.map((cat) => {
+          const Icon = cat.icon
+          return (
+            <div
+              key={cat.name}
+              style={{
+                background: '#2E2923',
+                border: '1px solid #3F3830',
+                borderRadius: 14,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                cursor: 'pointer',
+              }}
+            >
+              {/* Icon square */}
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  background: cat.bg,
+                  borderRadius: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Icon size={18} style={{ color: cat.color }} />
+              </div>
+              {/* Text */}
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
+                  {cat.name}
+                </div>
+                <div style={{ fontSize: 11, color: '#6B6154', marginTop: 2 }}>
+                  {cat.count} görev
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Trending section */}
+      <div style={{ padding: '32px 20px 14px' }}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: '#E8C268',
+            marginBottom: 6,
+          }}
+        >
+          Bu hafta
+        </div>
+        <h2
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-fraunces), Fraunces, serif',
+            fontSize: 20,
+            fontWeight: 500,
+            color: '#F4EEDF',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Trend olanlar
+        </h2>
+      </div>
+
+      {trendingMission && (
+        <div style={{ padding: '0 16px' }}>
+          <MissionCard mission={trendingMission} />
+        </div>
+      )}
+    </div>
+  )
+}
