@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Settings, Share2, MapPin, LogOut } from 'lucide-react'
 import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
@@ -93,7 +94,9 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             justifyContent: 'space-between',
           }}
         >
-          <IconButtonDS icon={<Settings size={16} />} />
+          <Link href="/dashboard/profile/edit" style={{ textDecoration: 'none' }}>
+            <IconButtonDS icon={<Settings size={16} />} />
+          </Link>
           <IconButtonDS icon={<Share2 size={16} />} />
         </div>
       </div>

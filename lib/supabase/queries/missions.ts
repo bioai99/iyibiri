@@ -12,15 +12,15 @@ export async function getAllMissions(): Promise<MissionWithNGO[]> {
   return data as unknown as MissionWithNGO[]
 }
 
-export async function getMissionById(id: string): Promise<Mission | null> {
+export async function getMissionById(id: string): Promise<MissionWithNGO | null> {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('missions')
-    .select('*, ngos(*)')
+    .select('*, ngos(id, name, short_name, logo_url, color_accent, cover_image_url)')
     .eq('id', id)
     .single()
   if (error) return null
-  return data
+  return data as unknown as (MissionWithNGO | null)
 }
 
 export async function getUserMissions(userId: string): Promise<UserMission[]> {

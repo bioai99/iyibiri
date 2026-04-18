@@ -133,11 +133,13 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
 
         {/* Right */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <IconButtonDS
-            size={38}
-            theme="dark"
-            icon={<Bell size={18} color="#F4EEDF" />}
-          />
+          <Link href="/dashboard/notifications" style={{ textDecoration: 'none' }}>
+            <IconButtonDS
+              size={38}
+              theme="dark"
+              icon={<Bell size={18} color="#F4EEDF" />}
+            />
+          </Link>
           {/* Gold avatar circle */}
           <div style={{
             width: 38,
@@ -181,16 +183,20 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
         gridTemplateColumns: '1fr 1fr',
         gap: 8,
       }}>
-        <QuickAction
-          icon={<Calendar size={18} color="#E8C268" />}
-          title="Bu hafta sonu"
-          sub="12 görev yakında"
-        />
-        <QuickAction
-          icon={<Sparkles size={18} color="#E8C268" />}
-          title="Önerilenler"
-          sub="Senin için 6 yeni"
-        />
+        <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
+          <QuickAction
+            icon={<Calendar size={18} color="#E8C268" />}
+            title="Bu hafta sonu"
+            sub="12 görev yakında"
+          />
+        </Link>
+        <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
+          <QuickAction
+            icon={<Sparkles size={18} color="#E8C268" />}
+            title="Önerilenler"
+            sub="Senin için 6 yeni"
+          />
+        </Link>
       </div>
 
       {/* ── 4. Filter chips ── */}

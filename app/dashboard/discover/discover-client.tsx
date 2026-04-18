@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Search, MapPin, Maximize2, Leaf, BookOpen, Heart } from 'lucide-react'
 import { PawPrint } from 'lucide-react'
 import { MissionCard } from '@/components/ui/mission-card'
@@ -243,45 +244,50 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
         {categories.map((cat) => {
           const Icon = cat.icon
           return (
-            <div
+            <Link
               key={cat.name}
-              style={{
-                background: '#2E2923',
-                border: '1px solid #3F3830',
-                borderRadius: 14,
-                padding: 16,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                cursor: 'pointer',
-              }}
+              href="/dashboard/missions"
+              style={{ textDecoration: 'none' }}
             >
-              {/* Icon square */}
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  background: cat.bg,
-                  borderRadius: 12,
+                  background: '#2E2923',
+                  border: '1px solid #3F3830',
+                  borderRadius: 14,
+                  padding: 16,
                   display: 'flex',
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
+                  gap: 12,
+                  cursor: 'pointer',
                 }}
               >
-                <Icon size={18} style={{ color: cat.color }} />
-              </div>
-              {/* Text */}
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
-                  {cat.name}
+                {/* Icon square */}
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    background: cat.bg,
+                    borderRadius: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={18} style={{ color: cat.color }} />
                 </div>
-                <div style={{ fontSize: 11, color: '#6B6154', marginTop: 2 }}>
-                  {cat.count} görev
+                {/* Text */}
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
+                    {cat.name}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#6B6154', marginTop: 2 }}>
+                    {cat.count} görev
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>
