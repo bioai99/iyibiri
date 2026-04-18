@@ -57,7 +57,7 @@ export default function SignupPage() {
       return
     }
     setLoading(false)
-    router.push('/onboarding/welcome')
+    router.push(`/auth/verify?email=${encodeURIComponent(email)}`)
   }
 
   const labelStyle: React.CSSProperties = {

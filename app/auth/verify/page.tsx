@@ -1,16 +1,34 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTheme } from '@/lib/theme'
+import { createClient } from '@/lib/supabase/client'
 
 export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div style={{ background: '#1A1612', minHeight: '100vh' }} />}>
+      <VerifyContent />
+    </Suspense>
+  )
+}
+
+function VerifyContent() {
   const { colors: c } = useTheme()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const email = searchParams.get('email') ?? ''
+
   const [digits, setDigits] = useState(['', '', '', '', '', ''])
-  const [countdown, setCountdown] = useState(42)
+  const [countdown, setCountdown] = useState(60)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [resent, setResent] = useState(false)
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
 
   const filled = digits.filter(Boolean).length
+  const code = digits.join('')
 
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
@@ -22,11 +40,17 @@ export default function VerifyPage() {
     return () => clearTimeout(timer)
   }, [countdown])
 
+  // Auto-submit when all 6 digits are filled
+  useEffect(() => {
+    if (filled === 6) handleVerify()
+  }, [filled])
+
   function handleDigitChange(index: number, value: string) {
     const char = value.replace(/\D/g, '').slice(-1)
     const next = [...digits]
     next[index] = char
     setDigits(next)
+    setError(null)
     if (char && index < 5) {
       inputRefs.current[index + 1]?.focus()
     }
@@ -47,11 +71,57 @@ export default function VerifyPage() {
       next[i] = pasted[i] || ''
     }
     setDigits(next)
+    setError(null)
     const lastFilled = Math.min(pasted.length, 5)
     inputRefs.current[lastFilled]?.focus()
   }
 
+  async function handleVerify() {
+    if (code.length < 6 || loading) return
+    setLoading(true)
+    setError(null)
+
+    const supabase = createClient()
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: 'signup',
+    })
+
+    if (error) {
+      setError('Kod geçersiz veya süresi dolmuş. Tekrar dene.')
+      setDigits(['', '', '', '', '', ''])
+      inputRefs.current[0]?.focus()
+      setLoading(false)
+      return
+    }
+
+    setLoading(false)
+    router.push('/onboarding/welcome')
+  }
+
+  async function handleResend() {
+    if (countdown > 0) return
+    const supabase = createClient()
+    await supabase.auth.resend({ type: 'signup', email })
+    setCountdown(60)
+    setResent(true)
+    setTimeout(() => setResent(false), 3000)
+  }
+
   const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+
+  // Redirect if no email provided
+  if (!email) {
+    return (
+      <div style={{ background: c.ink900, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: c.ink300, fontFamily: uiFont }}>
+          E-posta adresi bulunamadı.{' '}
+          <Link href="/auth/signup" style={{ color: c.gold }}>Kayıt ol</Link>
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div style={{ background: c.ink900, minHeight: '100vh', height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -91,7 +161,7 @@ export default function VerifyPage() {
           E-postana <span style={{ fontStyle: 'italic', color: c.gold }}>kod gönderdik</span>
         </h1>
         <p style={{ margin: '10px 0 0', fontFamily: uiFont, fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
-          E-posta adresine gelen 6 haneli kodu gir.
+          <span style={{ color: c.cream, fontWeight: 600 }}>{email}</span> adresine gelen 6 haneli kodu gir.
         </p>
       </div>
 
@@ -136,19 +206,34 @@ export default function VerifyPage() {
         })}
       </div>
 
+      {/* Error */}
+      {error && (
+        <p style={{ margin: '16px 24px 0', fontFamily: uiFont, fontSize: 13, color: c.danger, textAlign: 'center' }}>
+          {error}
+        </p>
+      )}
+
       {/* Resend */}
       <div style={{ padding: '28px 24px 0', textAlign: 'center' }}>
-        <div style={{ fontFamily: uiFont, fontSize: 13, color: c.ink300 }}>
-          Kod gelmedi mi?{' '}
-          <span style={{ color: c.ink400 }}>{formatTime(countdown)}</span>
-        </div>
-        <button
-          onClick={() => setCountdown(42)}
-          disabled={countdown > 0}
-          style={{ marginTop: 10, background: 'transparent', border: 'none', color: countdown > 0 ? c.ink500 : c.gold, fontFamily: uiFont, fontSize: 13, fontWeight: 600, cursor: countdown > 0 ? 'not-allowed' : 'pointer' }}
-        >
-          Tekrar gönder
-        </button>
+        {resent ? (
+          <div style={{ fontFamily: uiFont, fontSize: 13, color: c.gold, fontWeight: 600 }}>
+            Kod tekrar gönderildi
+          </div>
+        ) : (
+          <>
+            <div style={{ fontFamily: uiFont, fontSize: 13, color: c.ink300 }}>
+              Kod gelmedi mi?{' '}
+              {countdown > 0 && <span style={{ color: c.ink400 }}>{formatTime(countdown)}</span>}
+            </div>
+            <button
+              onClick={handleResend}
+              disabled={countdown > 0}
+              style={{ marginTop: 10, background: 'transparent', border: 'none', color: countdown > 0 ? c.ink500 : c.gold, fontFamily: uiFont, fontSize: 13, fontWeight: 600, cursor: countdown > 0 ? 'not-allowed' : 'pointer' }}
+            >
+              Tekrar gönder
+            </button>
+          </>
+        )}
       </div>
 
       <div style={{ flex: 1 }} />
@@ -156,10 +241,11 @@ export default function VerifyPage() {
       {/* Footer */}
       <div style={{ padding: '18px 24px 28px' }}>
         <button
-          disabled={filled < 6}
+          onClick={handleVerify}
+          disabled={filled < 6 || loading}
           style={{ width: '100%', height: 52, borderRadius: 14, background: filled === 6 ? c.gold : c.ink700, border: 'none', color: filled === 6 ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === 6 ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === 6 ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
         >
-          Doğrula →
+          {loading ? 'Doğrulanıyor...' : 'Doğrula →'}
         </button>
         <p style={{ margin: '14px 0 0', fontFamily: uiFont, fontSize: 11, color: c.ink400, textAlign: 'center', lineHeight: 1.5 }}>
           Farklı bir{' '}
