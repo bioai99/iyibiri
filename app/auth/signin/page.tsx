@@ -33,6 +33,18 @@ export default function SigninPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  async function handleGoogleLogin() {
+    const supabase = createClient()
+    const { data } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: { prompt: 'select_account' },
+      },
+    })
+    if (data.url) window.location.href = data.url
+  }
+
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
 
@@ -195,7 +207,7 @@ export default function SigninPage() {
             <AppleIcon size={16} /> Apple
           </button>
           <button
-            onClick={() => { /* Google OAuth stub */ }}
+            onClick={handleGoogleLogin}
             style={{ flex: 1, height: 48, borderRadius: 12, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: uiFont, fontSize: 13, fontWeight: 600 }}
           >
             <GoogleIcon size={16} /> Google

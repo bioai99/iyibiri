@@ -189,7 +189,11 @@ export default function OnboardingCauses() {
 
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px 40px' }}>
-        <Link href="/onboarding/location" style={{ textDecoration: 'none' }}>
+        <Link
+          href="/onboarding/location"
+          onClick={() => localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))}
+          style={{ textDecoration: 'none' }}
+        >
           <button
             style={{
               width: '100%',

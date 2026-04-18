@@ -1,12 +1,39 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
+import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingReady() {
   const { colors: c } = useTheme()
+
+  useEffect(() => {
+    async function saveOnboardingData() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const interests = JSON.parse(localStorage.getItem('iyibiri_onboarding_interests') || '[]')
+      const city = localStorage.getItem('iyibiri_onboarding_city')
+      const radius = localStorage.getItem('iyibiri_onboarding_radius')
+
+      if (!interests.length && !city) return
+
+      await supabase.from('profiles').update({
+        interests,
+        city: city || null,
+        search_radius: radius ? Number(radius) : 10,
+      }).eq('id', user.id)
+
+      localStorage.removeItem('iyibiri_onboarding_interests')
+      localStorage.removeItem('iyibiri_onboarding_city')
+      localStorage.removeItem('iyibiri_onboarding_radius')
+    }
+    saveOnboardingData()
+  }, [])
 
   return (
     <div

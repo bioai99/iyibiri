@@ -14,6 +14,9 @@ export interface Database {
           streak: number
           last_active: string | null
           created_at: string
+          interests: string[]
+          city: string | null
+          search_radius: number
         }
         Insert: {
           id: string
@@ -25,6 +28,9 @@ export interface Database {
           streak?: number
           last_active?: string | null
           created_at?: string
+          interests?: string[]
+          city?: string | null
+          search_radius?: number
         }
         Update: {
           id?: string
@@ -36,6 +42,9 @@ export interface Database {
           streak?: number
           last_active?: string | null
           created_at?: string
+          interests?: string[]
+          city?: string | null
+          search_radius?: number
         }
         Relationships: []
       }

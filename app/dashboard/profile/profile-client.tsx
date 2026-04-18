@@ -167,7 +167,9 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               }}
             >
               <MapPin size={11} color={c.ink300} />
-              <span style={{ fontSize: 12, color: c.ink300 }}>İstanbul · 2024&apos;ten beri</span>
+              <span style={{ fontSize: 12, color: c.ink300 }}>
+                {profile.city ?? 'Konum belirtilmedi'} · {new Date(profile.created_at).getFullYear()}&apos;ten beri
+              </span>
             </div>
           </div>
           <TierBadgeDS tier={tierName} />

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
+import { createClient } from '@/lib/supabase/client'
 
 const AppleIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -28,6 +29,18 @@ const MailIcon = ({ size = 16 }: { size?: number }) => (
 
 export default function AuthLandingPage() {
   const { colors: c } = useTheme()
+
+  async function handleGoogleLogin() {
+    const supabase = createClient()
+    const { data } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: { prompt: 'select_account' },
+      },
+    })
+    if (data.url) window.location.href = data.url
+  }
 
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
@@ -71,7 +84,7 @@ export default function AuthLandingPage() {
             <AppleIcon size={18} /> Apple ile devam et
           </button>
           <button
-            onClick={() => { /* Google OAuth stub */ }}
+            onClick={handleGoogleLogin}
             style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
           >
             <GoogleIcon size={18} /> Google ile devam et

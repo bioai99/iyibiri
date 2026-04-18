@@ -292,7 +292,14 @@ export default function OnboardingLocation() {
 
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px' }}>
-        <Link href="/onboarding/ready" style={{ textDecoration: 'none' }}>
+        <Link
+          href="/onboarding/ready"
+          onClick={() => {
+            localStorage.setItem('iyibiri_onboarding_city', city)
+            localStorage.setItem('iyibiri_onboarding_radius', String(radius))
+          }}
+          style={{ textDecoration: 'none' }}
+        >
           <button
             style={{
               width: '100%',
