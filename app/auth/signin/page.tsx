@@ -222,17 +222,25 @@ export default function SigninPage() {
         <div style={{ display: 'flex', gap: 10 }}>
           <button
             onClick={() => handleOAuthLogin('apple')}
-            style={{ flex: 1, height: 48, borderRadius: 12, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: uiFont, fontSize: 13, fontWeight: 600 }}
+            disabled={!!oauthLoading}
+            style={{ flex: 1, height: 48, borderRadius: 12, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, cursor: oauthLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: uiFont, fontSize: 13, fontWeight: 600, opacity: oauthLoading && oauthLoading !== 'apple' ? 0.5 : 1 }}
           >
-            <AppleIcon size={16} /> Apple
+            <AppleIcon size={16} /> {oauthLoading === 'apple' ? 'Bağlanıyor...' : 'Apple'}
           </button>
           <button
             onClick={() => handleOAuthLogin('google')}
-            style={{ flex: 1, height: 48, borderRadius: 12, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: uiFont, fontSize: 13, fontWeight: 600 }}
+            disabled={!!oauthLoading}
+            style={{ flex: 1, height: 48, borderRadius: 12, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, cursor: oauthLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: uiFont, fontSize: 13, fontWeight: 600, opacity: oauthLoading && oauthLoading !== 'google' ? 0.5 : 1 }}
           >
-            <GoogleIcon size={16} /> Google
+            <GoogleIcon size={16} /> {oauthLoading === 'google' ? 'Bağlanıyor...' : 'Google'}
           </button>
         </div>
+
+        {oauthError && (
+          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: '#C8553D', textAlign: 'center' }}>
+            {oauthError}
+          </p>
+        )}
 
         <p style={{ margin: '16px 0 0', fontFamily: uiFont, fontSize: 13, color: c.ink300, textAlign: 'center' }}>
           Hesabın yok mu?{' '}

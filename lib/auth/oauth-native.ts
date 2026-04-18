@@ -1,12 +1,51 @@
-import { createClient as createBrowserClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 // ─── Platform Detection ────────────────────────────────────────
 export function isNativePlatform(): boolean {
   if (typeof window === 'undefined') return false
-  return !!(window as any).Capacitor?.isNativePlatform?.() || !!(window as any).Capacitor
+  const cap = (window as any).Capacitor
+  if (cap?.isNativePlatform?.()) return true
+  if (cap) return true
+  return false
 }
 
-// ─── Crypto Helpers ────────────────────────────────────────────
+// ─── State ─────────────────────────────────────────────────────
+let initialized = false
+
+// ─── Initialize (call ONCE at app start) ───────────────────────
+export async function initSocialLogin(): Promise<void> {
+  if (initialized) return
+  if (!isNativePlatform()) return
+
+  try {
+    const { SocialLogin } = await import('@capgo/capacitor-social-login')
+    const { Capacitor } = await import('@capacitor/core')
+    const platform = Capacitor.getPlatform()
+
+    if (platform === 'ios') {
+      await SocialLogin.initialize({
+        google: {
+          iOSClientId: '67588080719-at90h2m2dai4uccdqchibp9bs4d0eg1m.apps.googleusercontent.com',
+          iOSServerClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
+        },
+        apple: {},
+      })
+    } else if (platform === 'android') {
+      await SocialLogin.initialize({
+        google: {
+          webClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
+        },
+        // Apple iOS-only, Android'de ekleme
+      })
+    }
+
+    initialized = true
+  } catch (err) {
+    console.error('SocialLogin init failed:', err)
+  }
+}
+
+// ─── Crypto ────────────────────────────────────────────────────
 function generateNonce(length = 32): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   const values = crypto.getRandomValues(new Uint8Array(length))
@@ -14,14 +53,11 @@ function generateNonce(length = 32): string {
 }
 
 async function sha256(message: string): Promise<string> {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
-  return Array.from(new Uint8Array(hashBuffer), b => b.toString(16).padStart(2, '0')).join('')
+  const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message))
+  return Array.from(new Uint8Array(buffer), b => b.toString(16).padStart(2, '0')).join('')
 }
 
 // ─── Session Sync ──────────────────────────────────────────────
-// Native login session'ını server-side cookie'lere yazar.
-// Bu sayede middleware ve server component'lar user'ı görebilir.
 async function syncSessionToCookies(accessToken: string, refreshToken: string): Promise<void> {
   await fetch('/api/auth/set-session', {
     method: 'POST',
@@ -30,69 +66,88 @@ async function syncSessionToCookies(accessToken: string, refreshToken: string): 
   })
 }
 
-// ─── Google Native Sign-In ─────────────────────────────────────
+// ─── Google ────────────────────────────────────────────────────
 export async function handleNativeGoogleLogin(): Promise<void> {
+  await initSocialLogin()
+  if (!initialized) throw new Error('Social login başlatılamadı')
+
   const { SocialLogin } = await import('@capgo/capacitor-social-login')
-
-  await SocialLogin.initialize({
-    google: {
-      iOSClientId: '67588080719-at90h2m2dai4uccdqchibp9bs4d0eg1m.apps.googleusercontent.com',
-      iOSServerClientId: '67588080719-6fv1g9kq19kf55cvbko3miqjiejrakme.apps.googleusercontent.com',
-    },
-  })
-
+  const supabase = createClient()
   const rawNonce = generateNonce()
   const hashedNonce = await sha256(rawNonce)
 
-  const result = await SocialLogin.login({
-    provider: 'google',
-    options: {
-      scopes: ['email', 'profile'],
-      nonce: hashedNonce,
-    },
-  })
+  let idToken: string | undefined
 
-  const idToken = (result as any).result?.idToken
+  // İlk deneme
+  try {
+    const result = await SocialLogin.login({
+      provider: 'google',
+      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
+    })
+    idToken = (result as any).result?.idToken
+  } catch {
+    // iOS token cache sorunu — logout ve tekrar dene
+    await SocialLogin.logout({ provider: 'google' }).catch(() => {})
+    const result = await SocialLogin.login({
+      provider: 'google',
+      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
+    })
+    idToken = (result as any).result?.idToken
+  }
+
   if (!idToken) throw new Error('Google ID token alınamadı')
 
-  // Supabase'e ID token ile giriş yap
-  const supabase = createBrowserClient()
+  // Supabase'e token ver
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
     token: idToken,
     nonce: rawNonce,
   })
 
+  // Nonce mismatch retry
+  if (error?.message?.includes('nonce')) {
+    await SocialLogin.logout({ provider: 'google' }).catch(() => {})
+    const retryResult = await SocialLogin.login({
+      provider: 'google',
+      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
+    })
+    const retryToken = (retryResult as any).result?.idToken
+    if (!retryToken) throw new Error('Retry: token alınamadı')
+
+    const { data: retryData, error: retryError } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: retryToken,
+      nonce: rawNonce,
+    })
+    if (retryError) throw retryError
+    if (!retryData.session) throw new Error('Session oluşturulamadı')
+    await syncSessionToCookies(retryData.session.access_token, retryData.session.refresh_token)
+    return
+  }
+
   if (error) throw error
   if (!data.session) throw new Error('Session oluşturulamadı')
-
-  // Session'ı cookie'lere sync et (middleware için)
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
 
-// ─── Apple Native Sign-In ──────────────────────────────────────
+// ─── Apple ─────────────────────────────────────────────────────
 export async function handleNativeAppleLogin(): Promise<void> {
+  await initSocialLogin()
+  if (!initialized) throw new Error('Social login başlatılamadı')
+
   const { SocialLogin } = await import('@capgo/capacitor-social-login')
-
-  await SocialLogin.initialize({
-    apple: {},
-  })
-
+  const supabase = createClient()
   const rawNonce = generateNonce()
   const hashedNonce = await sha256(rawNonce)
 
   const result = await SocialLogin.login({
     provider: 'apple',
-    options: {
-      scopes: ['email', 'name'],
-      nonce: hashedNonce,
-    },
+    options: { scopes: ['email', 'name'], nonce: hashedNonce },
   })
 
   const idToken = (result as any).result?.identityToken
   if (!idToken) throw new Error('Apple identity token alınamadı')
 
-  const supabase = createBrowserClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'apple',
     token: idToken,
@@ -101,6 +156,5 @@ export async function handleNativeAppleLogin(): Promise<void> {
 
   if (error) throw error
   if (!data.session) throw new Error('Session oluşturulamadı')
-
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
