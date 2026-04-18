@@ -208,36 +208,50 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           </section>
         )}
 
-        {/* Featured */}
+        {/* Featured — grouped by domain, horizontal scroll per group */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display font-extrabold text-xl text-stone-900">Öne Çıkanlar</h2>
+            <h2 className="font-display font-extrabold text-xl text-stone-900">Senin İçin Seçtiklerimiz</h2>
             <Link href="/dashboard/missions" className="text-sm text-primary font-bold">
               Tümü →
             </Link>
           </div>
-          <div className="space-y-3">
-            {featuredMissions.length === 0 ? (
-              <div className="text-center py-10 text-stone-400 text-sm">
-                Tüm öne çıkan görevleri tamamladın!
-              </div>
-            ) : (
-              featuredMissions.map((mission, i) => (
-                <motion.div
-                  key={mission.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.07 }}
-                >
-                  <MissionCard
-                    mission={mission}
-                    isCompleted={completedIds.has(mission.id)}
-                    isTaken={takenIds.has(mission.id)}
-                  />
-                </motion.div>
-              ))
-            )}
-          </div>
+          {featuredMissions.length === 0 ? (
+            <div className="text-center py-10 text-stone-400 text-sm">
+              Tüm öne çıkan görevleri tamamladın!
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {Object.entries(
+                featuredMissions.reduce<Record<string, typeof featuredMissions>>((acc, m) => {
+                  const d = m.domain ?? 'default'
+                  if (!acc[d]) acc[d] = []
+                  acc[d].push(m)
+                  return acc
+                }, {})
+              ).map(([domain, domainMissions]) => (
+                <div key={domain}>
+                  <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+                    {domainMissions.map((mission, i) => (
+                      <motion.div
+                        key={mission.id}
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.06 }}
+                      >
+                        <MissionCard
+                          mission={mission}
+                          isCompleted={completedIds.has(mission.id)}
+                          isTaken={takenIds.has(mission.id)}
+                          compact
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* NGO Feed */}
