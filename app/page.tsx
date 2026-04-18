@@ -619,7 +619,7 @@ export default function LandingPage() {
 
         /* === SCROLL-PINNED PHONE SECTION === */
         .story{position:relative}
-        .story-pin{height:400vh;position:relative}
+        .story-pin{height:300vh;position:relative}
         .story-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
         .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;width:100%;max-width:1280px;margin:0 auto;padding:0 32px;align-items:center}
         .story-phone{display:flex;justify-content:center;position:relative}
@@ -651,7 +651,7 @@ export default function LandingPage() {
         .stat-trend{font-size:11px;color:#6B8E4E;margin-top:8px;font-family:'JetBrains Mono',monospace}
 
         /* === ETKI KARTLARI === */
-        .proof{padding:140px 0;background:#1A1612;position:relative}
+        .proof{padding:80px 0 140px;background:#1A1612;position:relative}
         .impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
         .impact-card{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;overflow:hidden;transition:transform 250ms cubic-bezier(.23,1,.32,1),border-color 250ms ease}
         @media (hover:hover) and (pointer:fine){.impact-card:hover{border-color:rgba(232,194,104,.3);transform:translateY(-4px)}}
