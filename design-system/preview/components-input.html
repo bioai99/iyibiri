@@ -1,0 +1,94 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Input</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1100px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:18px;font-weight:500;letter-spacing:-0.015em;margin:32px 0 14px;color:#E8C268;font-style:italic}
+  .col{display:flex;flex-direction:column;gap:14px;padding:28px;background:#2E2923;border:1px solid #3F3830;border-radius:14px;max-width:440px}
+  .col.light{background:#FAF5E9;border-color:#EBE3CE}
+
+  .inp{position:relative;border-radius:14px;border:1px solid #3F3830;background:#2E2923;padding:11px 16px 10px;transition:all 220ms cubic-bezier(.2,.8,.2,1)}
+  .inp.active{background:#36302A;border-color:#E8C268;box-shadow:0 0 0 4px rgba(232,194,104,.12)}
+  .inp.err{border-color:#B84E3B}
+  .inp .l{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A89E8A;margin-bottom:5px;transition:all 220ms}
+  .inp.small .l{font-size:14px;font-weight:400;color:#A89E8A;text-transform:none;letter-spacing:-0.01em;margin-bottom:0}
+  .inp input{display:block;width:100%;border:none;outline:none;background:transparent;font-family:inherit;font-size:15px;font-weight:500;color:#F4EEDF;letter-spacing:-0.01em;padding:0}
+  .inp.small input{display:none}
+  .inp.icon{padding-left:44px}
+  .inp svg.ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#A89E8A}
+  .help{font-size:11px;color:#A89E8A;margin-top:-6px;padding-left:4px}
+  .help.err{color:#CF7A65}
+  .grp{border-radius:14px;border:1px solid #3F3830;background:#2E2923;overflow:hidden}
+  .grp .inp{border:none;border-bottom:1px solid #3F3830;border-radius:0}
+  .grp .inp:last-child{border-bottom:none}
+  .grp .inp.active{border-radius:0}
+  .note{margin-top:32px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · COMPONENTS</div>
+  <h1>Input — Airbnb floating label</h1>
+  <p class="lede">Boş iken label büyük (16px) + ortada. Focus veya doluluk = label küçülür (10px, uppercase eyebrow), altında değer görünür. Altın ring focus.</p>
+
+  <h2>States</h2>
+  <div class="col">
+    <div class="inp small"><span class="l">E-posta</span></div>
+    <div class="help">Boş — label büyük</div>
+
+    <div class="inp active">
+      <span class="l">E-posta</span>
+      <input value="ayse@iyibiri.app"/>
+    </div>
+    <div class="help">Focus + dolu — label uppercase eyebrow</div>
+
+    <div class="inp err">
+      <span class="l">E-posta</span>
+      <input value="ayse@"/>
+    </div>
+    <div class="help err">Geçerli bir e-posta yaz</div>
+  </div>
+
+  <h2>With icon</h2>
+  <div class="col">
+    <div class="inp icon active">
+      <svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="l">Görev ara</span>
+      <input value="sahil temizliği"/>
+    </div>
+  </div>
+
+  <h2>Group — birleşik input (onboarding)</h2>
+  <div class="col">
+    <div class="grp">
+      <div class="inp active">
+        <span class="l">Ad</span>
+        <input value="Ayşe"/>
+      </div>
+      <div class="inp active">
+        <span class="l">Soyad</span>
+        <input value="Yılmaz"/>
+      </div>
+      <div class="inp active">
+        <span class="l">Şehir</span>
+        <input value="İstanbul"/>
+      </div>
+    </div>
+  </div>
+
+  <h2>Light mode</h2>
+  <div class="col light">
+    <div class="inp small" style="background:#F5EEDD;border-color:#D9CFB4;color:#241E18"><span class="l" style="color:#7A6F5E">E-posta</span></div>
+    <div class="inp active" style="background:white;border-color:#241E18;box-shadow:0 1px 2px rgba(26,22,18,.04), 0 8px 20px rgba(26,22,18,.08)">
+      <span class="l" style="color:#7A6F5E">E-posta</span>
+      <input value="ayse@iyibiri.app" style="color:#241E18"/>
+    </div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Focus ring = <code>box-shadow: 0 0 0 4px rgba(232,194,104,.12)</code> + border altın. Label animasyonu 220ms. Birleşik input grubunda dış konteyner border tutar, iç hücreler sadece alt çizgi. Hata durumu border kırmızımsı (<code>#B84E3B</code>), label normal kalır.</p>
+</div></body></html>

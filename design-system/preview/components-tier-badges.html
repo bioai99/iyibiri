@@ -1,0 +1,103 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Tier Badges</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:18px;font-weight:500;letter-spacing:-0.015em;margin:36px 0 16px;color:#E8C268;font-style:italic}
+
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .tier{background:#2E2923;border:1px solid #3F3830;border-radius:16px;padding:28px 20px 22px;text-align:center;position:relative}
+  .tier.current{border-color:rgba(232,194,104,.35);background:linear-gradient(180deg,rgba(232,194,104,.04),rgba(232,194,104,0))}
+  .med{width:88px;height:88px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+  .med svg{width:100%;height:100%}
+  .name{font-family:Fraunces,serif;font-size:20px;font-weight:500;letter-spacing:-0.015em;font-style:italic;margin-bottom:4px}
+  .kr{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#A89E8A;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+  .curLabel{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#E8C268;color:#241E18;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+
+  .pills{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;border-radius:999px;background:rgba(232,194,104,.12);border:1px solid rgba(232,194,104,.32);font-size:12px;font-weight:700;color:#E8C268;letter-spacing:.02em}
+  .pill.lg{padding:8px 16px 8px 12px;font-size:14px}
+
+  .note{margin-top:36px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+</style>
+<defs style="display:none"></defs>
+</head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · COMPONENTS</div>
+  <h1>Tier Badges — Karma seviyeleri</h1>
+  <p class="lede">Türkçe, yarı mizah, az oyunlaştırılmış. Bronze/Silver/Gold yok — <i>İyi Biri → Çok İyi Biri → Çoook İyi Biri → Efsane Biri</i>. Her seviye aynı sikke ama kenar kalınlığı/doygunluğu artar.</p>
+
+  <h2>Ladder</h2>
+  <div class="ladder">
+    <!-- İyi Biri -->
+    <div class="tier">
+      <div class="med">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="28" fill="#36302A" stroke="#3F3830" stroke-width="1.5"/>
+          <text x="32" y="38" text-anchor="middle" font-family="Fraunces" font-weight="500" font-size="22" fill="#A89E8A" font-style="italic">i</text>
+        </svg>
+      </div>
+      <div class="name" style="color:#A89E8A">İyi Biri</div>
+      <div class="kr">0 – 999 Karma</div>
+    </div>
+    <!-- Çok İyi Biri -->
+    <div class="tier current">
+      <span class="curLabel">ŞU AN</span>
+      <div class="med">
+        <svg viewBox="0 0 64 64">
+          <defs>
+            <radialGradient id="t1" cx="40%" cy="36%" r="70%"><stop offset="0%" stop-color="#F4D98A"/><stop offset="100%" stop-color="#B58F3D"/></radialGradient>
+          </defs>
+          <circle cx="32" cy="32" r="29" fill="url(#t1)" stroke="#8A6A2C" stroke-width="1.2"/>
+          <circle cx="32" cy="32" r="24" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".6"/>
+          <text x="32" y="38" text-anchor="middle" font-family="Fraunces" font-weight="500" font-size="22" fill="#3E2F14" font-style="italic">ii</text>
+        </svg>
+      </div>
+      <div class="name" style="color:#E8C268">Çok İyi Biri</div>
+      <div class="kr">1.000 – 4.999 Karma</div>
+    </div>
+    <!-- Çoook İyi Biri -->
+    <div class="tier">
+      <div class="med">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="29" fill="url(#t1)" stroke="#8A6A2C" stroke-width="2"/>
+          <circle cx="32" cy="32" r="25" fill="none" stroke="#8A6A2C" stroke-width=".8"/>
+          <circle cx="32" cy="32" r="22" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>
+          <text x="32" y="38" text-anchor="middle" font-family="Fraunces" font-weight="500" font-size="20" fill="#3E2F14" font-style="italic">iii</text>
+        </svg>
+      </div>
+      <div class="name">Çoook İyi Biri</div>
+      <div class="kr">5.000 – 19.999 Karma</div>
+    </div>
+    <!-- Efsane Biri -->
+    <div class="tier">
+      <div class="med">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="30" fill="url(#t1)" stroke="#8A6A2C" stroke-width="2.5"/>
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#8A6A2C" stroke-width="1"/>
+          <circle cx="32" cy="32" r="23" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".6"/>
+          <g transform="translate(32,32)"><g transform="rotate(0)"><path d="M0 -26 L2 -22 L-2 -22 Z" fill="#8A6A2C"/></g><g transform="rotate(90)"><path d="M0 -26 L2 -22 L-2 -22 Z" fill="#8A6A2C"/></g><g transform="rotate(180)"><path d="M0 -26 L2 -22 L-2 -22 Z" fill="#8A6A2C"/></g><g transform="rotate(270)"><path d="M0 -26 L2 -22 L-2 -22 Z" fill="#8A6A2C"/></g></g>
+          <text x="32" y="38" text-anchor="middle" font-family="Fraunces" font-weight="500" font-size="18" fill="#3E2F14" font-style="italic">iv</text>
+        </svg>
+      </div>
+      <div class="name">Efsane Biri</div>
+      <div class="kr">20.000+ Karma</div>
+    </div>
+  </div>
+
+  <h2>Pill — kompakt kullanım</h2>
+  <div class="pills">
+    <span class="pill" style="background:rgba(255,255,255,.03);border-color:#3F3830;color:#A89E8A"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#574E42"/></svg>İyi Biri</span>
+    <span class="pill"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="url(#t1)"/></svg>Çok İyi Biri</span>
+    <span class="pill lg"><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5.5" fill="url(#t1)"/><circle cx="6" cy="6" r="2.6" fill="none" stroke="#3E2F14" stroke-opacity=".4" stroke-width=".6"/></svg>Çoook İyi Biri</span>
+    <span class="pill lg" style="background:rgba(232,194,104,.18);border-color:#E8C268"><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5.5" fill="url(#t1)" stroke="#8A6A2C" stroke-width=".5"/></svg>Efsane Biri</span>
+  </div>
+
+  <p class="note"><b>Kural:</b> Roma rakamı (i, ii, iii, iv) italic Fraunces ile — "ii" sikkenin üstünde fiziksel bir işaret gibi durur. Kenar yoğunluğu: 1.5 → 1.2 → 2 → 2.5 px, her seviyede biraz daha sağlam. Asla emoji yıldız ⭐ eklenmez. Pilote tek parça.</p>
+</div></body></html>

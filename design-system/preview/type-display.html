@@ -1,0 +1,48 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Type · Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  .row{display:grid;grid-template-columns:140px 1fr;gap:32px;padding:28px 0;border-top:1px solid #3F3830;align-items:baseline}
+  .row:first-of-type{border-top:none}
+  .meta{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#A89E8A;letter-spacing:.12em;line-height:1.5}
+  .meta b{color:#E8C268;display:block;font-weight:500;margin-bottom:4px;letter-spacing:.18em;text-transform:uppercase}
+  .f-display{font-family:"Fraunces",serif;color:#F4EEDF}
+  .italic{font-style:italic;color:#E8C268}
+  .note{margin-top:40px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · TYPOGRAPHY</div>
+  <h1>Display — Fraunces (Serif)</h1>
+  <p class="lede">Editorial sıcaklık. Duygusal anlar için serif — hoş geldin, seviye atladın, bir görevi tamamladın. Asla UI için değil. Weight: 500 (sade). İtalic vurguyu altın yapar.</p>
+
+  <div class="row">
+    <div class="meta"><b>D1</b>56 / 1.02<br/>500 · -0.03em</div>
+    <div class="f-display" style="font-size:56px;font-weight:500;letter-spacing:-0.03em;line-height:1.02">Sen <span class="italic">iyi biri</span>sin.</div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>D2</b>44 / 1.05<br/>500 · -0.028em</div>
+    <div class="f-display" style="font-size:44px;font-weight:500;letter-spacing:-0.028em;line-height:1.05">İyilik <span class="italic">birikir</span> — Karma büyür.</div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>D3</b>32 / 1.1<br/>500 · -0.02em</div>
+    <div class="f-display" style="font-size:32px;font-weight:500;letter-spacing:-0.02em;line-height:1.1">Bugün bir ağaç, yarın bir orman.</div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Section</b>22 / 1.2<br/>500 · -0.02em</div>
+    <div class="f-display" style="font-size:22px;font-weight:500;letter-spacing:-0.02em;line-height:1.2">Senin için seçtik</div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Eyebrow</b>22 italic<br/>500 · -0.02em</div>
+    <div class="f-display italic" style="font-size:22px;font-weight:500;letter-spacing:-0.015em;line-height:1.2">Bu Görevin Etkisi</div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Display sadece <i>editorial</i> anlarda — başlıklar, section header'lar, kutlama kartları. Asla buton, chip, form label, meta metin. İtalic + altın = <code>fontStyle:italic</code> + <code>color:gold</code>. Weight 500 standart; 400 ince başlıklarda; 700 asla.</p>
+</div></body></html>

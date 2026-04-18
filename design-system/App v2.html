@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<title>İyiBiri — App v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#0E0D0C;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF}
+  *{box-sizing:border-box}
+  .canvas{padding:72px 40px 120px;max-width:1920px;margin:0 auto}
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:8px}
+  h1.title{font-family:"Fraunces",serif;font-size:44px;font-weight:400;letter-spacing:-0.02em;margin:0;color:#F4EEDF;line-height:1.05}
+  .sub{color:#A89E8A;font-size:15px;max-width:680px;margin-top:16px;line-height:1.55}
+
+  .divider{margin:96px 0 40px;border-top:1px solid #36302A;padding-top:28px}
+  .sect{font-family:"Fraunces",serif;font-size:28px;font-weight:500;letter-spacing:-0.022em;color:#F4EEDF;margin:0 0 4px;font-style:italic}
+  .sect-sub{color:#A89E8A;font-size:13px;max-width:640px;margin-bottom:32px;line-height:1.55}
+  .eb-sect{font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:4px}
+
+  .row{display:flex;gap:32px;flex-wrap:wrap;justify-content:flex-start}
+  .frame-block{flex:0 0 auto}
+  .frame-label{font-family:"Fraunces",serif;font-size:15px;font-style:italic;color:#E8C268;margin-bottom:12px;text-align:center;letter-spacing:-0.01em}
+  .frame-sub{font-family:"Plus Jakarta Sans";font-size:11px;color:#7A6F5E;margin-top:-6px;margin-bottom:12px;text-align:center;letter-spacing:.02em}
+
+  .phone{width:390px;height:844px;margin:0 auto;border-radius:48px;overflow:hidden;position:relative;background:#24201B;box-shadow:0 40px 80px rgba(0,0,0,0.5), 0 0 0 6px #1A1612, 0 0 0 7px rgba(232,194,104,.12)}
+  .phone .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+  .phone .scroll{height:100%;overflow:auto;scrollbar-width:none}
+  .phone .scroll::-webkit-scrollbar{display:none}
+
+  .palette-row{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+  .swatch{display:flex;flex-direction:column;gap:6px}
+  .swatch .tile{width:70px;height:70px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+  .swatch .lbl{font-size:10px;color:#A89E8A;letter-spacing:.08em}
+  .swatch .hex{font-size:11px;color:#E8C268;font-family:"IBM Plex Mono",monospace}
+</style>
+</head>
+<body>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="ds/tokens.js"></script>
+<script src="explore/data.js"></script>
+<script type="text/babel" src="ds/icons.jsx"></script>
+<script type="text/babel" src="ds/KarmaToken.jsx"></script>
+<script type="text/babel" src="ds/Logo.jsx"></script>
+<script type="text/babel" src="ds/Components.jsx"></script>
+<script type="text/babel" src="ds/Blocks.jsx"></script>
+<script type="text/babel" src="ds/Screens.jsx"></script>
+<script type="text/babel" src="ds/Screens2.jsx"></script>
+<script type="text/babel" src="ds/Screens3.jsx"></script>
+
+<div class="canvas">
+  <div class="hdr">
+    <div class="eyebrow">İYİBİRİ · APP V2 · FULL KIT</div>
+    <h1 class="title"><i>Karma</i> nereye akarsa, uygulamayı takip eder.</h1>
+    <p class="sub">Dashboard'dan başlayıp Karma Marketi'ne, ödüllerden rozete kadar bütün akışı kit'in sistemi ile kurduk. Her ekran aynı kartları, aynı altın aksanı, aynı fotoğraf oranını kullanır.</p>
+  </div>
+
+  <!-- ══════════ CORE ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">Temel</div>
+    <h2 class="sect">Ana akış</h2>
+    <p class="sect-sub">Bir kullanıcının 80%'ini yaşadığı ekranlar. Dashboard, Keşfet, Görev Detayı, Ödüller, Profil.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">Ana Sayfa</div><div class="frame-sub">Hero · öneriler · ortaklar</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-dashboard"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Keşfet</div><div class="frame-sub">Harita · kategoriler · trend</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-discover"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Görev Detayı</div><div class="frame-sub">Fotoğraf · NGO · CTA</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-detail"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Karma Marketi</div><div class="frame-sub">Bakiye · sekmeler · ödüller</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-rewards"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Profil</div><div class="frame-sub">Kapak · rozet · timeline</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-profile"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ MISSION FLOW ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">Görev akışı</div>
+    <h2 class="sect">Başvuru → kabul → check-in → tamamlandı</h2>
+    <p class="sect-sub">Aynı görev detay şablonu, dört durumda farklı üst şeritle ve farklı alt bölümlerle.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">1 · Başvurudan önce</div><div class="frame-sub">"Bu göreve katıl" sticky CTA</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-detail2"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">2 · Başvuruldu</div><div class="frame-sub">24 sa içinde onay bekleniyor</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-applied"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">3 · Check-in</div><div class="frame-sub">Katılım kodu + harita</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-checkin"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">4 · Tamamlandı</div><div class="frame-sub">+Karma · etki · oy ver</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-completed"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ ONBOARDING ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">İlk açılış</div>
+    <h2 class="sect">Dört adımda başlangıç</h2>
+    <p class="sect-sub">Hesap açıldığı anda 100 Karma hediye. Adım sayısı 4 ama her ekran tek amaçlı — kullanıcı iki cümle okur, devam eder.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">1 · Hoş geldin</div><div class="frame-sub">Sikke havası + iki buton</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-on1"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">2 · İlgi alanları</div><div class="frame-sub">Çoklu seçim · 6 kategori</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-on2"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">3 · Konum + yarıçap</div><div class="frame-sub">Şehir · 1–50 km slider</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-on3"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">4 · Hazırsın</div><div class="frame-sub">100 Karma hediye</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-on4"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ NGO MEMBERSHIP ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">NGO üyelik</div>
+    <h2 class="sect">Profilden aylık desteğe</h2>
+    <p class="sect-sub">Kullanıcı NGO profilini keşfeder, aylık plan seçer, onay ekranında Karma bonusu alır. Üyelik bir görev tipi — her ay otomatik Karma.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">1 · NGO profili</div><div class="frame-sub">Kapak · istatistik · plan teaser</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-ngo-profile"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">2 · Üyelik planları</div><div class="frame-sub">3 seviye · aylık Karma</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-membership-plans"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">3 · Üyelik başladı</div><div class="frame-sub">+300 Karma hoş geldin</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-membership-success"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ DONATION ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">Bağış</div>
+    <h2 class="sect">Kampanya → tutar → onay → teşekkür</h2>
+    <p class="sect-sub">Tek seferlik bağış akışı. Her ₺10 = +5 Karma. Komisyon alınmaz, tutarın %100'ü NGO'ya aktarılır.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">1 · Kampanya</div><div class="frame-sub">Acil rozet · hedef · etki</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-donate-camp"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">2 · Tutar seç</div><div class="frame-sub">Hızlı butonlar · özel tutar</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-donate-amt"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">3 · Özet</div><div class="frame-sub">Kart · Karma ödülü · onay</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-donate-review"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">4 · Teşekkürler</div><div class="frame-sub">Sikke · +125 Karma · paylaş</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-donate-thanks"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ ENGAGEMENT ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">Etkileşim</div>
+    <h2 class="sect">Bildirim, seri, sıralama</h2>
+    <p class="sect-sub">Geri dönüşü sağlayan yan ekranlar. Bildirimler kısa, seri duygusal, sıralama rekabetçi ama arkadaşça.</p>
+  </div>
+  <div class="row">
+    <div class="frame-block"><div class="frame-label">Bildirimler</div><div class="frame-sub">Bugün · daha önce</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-notif"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Seri (Streak)</div><div class="frame-sub">7 gün · kilometre taşı</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-streak"></div></div></div></div>
+    <div class="frame-block"><div class="frame-label">Sıralama</div><div class="frame-sub">Podyum · #142 sen</div><div class="phone"><div class="notch"></div><div class="scroll"><div id="s-board"></div></div></div></div>
+  </div>
+
+  <!-- ══════════ PALETTE ══════════ -->
+  <div class="divider">
+    <div class="eb-sect">Palet</div>
+    <h2 class="sect">Mürekkep · altın · pastel aksanlar</h2>
+  </div>
+  <div class="palette-row">
+    <div class="swatch"><div class="tile" style="background:#24201B"></div><span class="lbl">INK BG</span><span class="hex">#24201B</span></div>
+    <div class="swatch"><div class="tile" style="background:#2E2923"></div><span class="lbl">CARD</span><span class="hex">#2E2923</span></div>
+    <div class="swatch"><div class="tile" style="background:#36302A"></div><span class="lbl">HOVER</span><span class="hex">#36302A</span></div>
+    <div class="swatch"><div class="tile" style="background:#3F3830"></div><span class="lbl">LINE</span><span class="hex">#3F3830</span></div>
+    <div class="swatch"><div class="tile" style="background:#F4EEDF"></div><span class="lbl">CREAM</span><span class="hex">#F4EEDF</span></div>
+    <div class="swatch"><div class="tile" style="background:#E8C268"></div><span class="lbl">GOLD</span><span class="hex">#E8C268</span></div>
+    <div class="swatch"><div class="tile" style="background:#B58F3D"></div><span class="lbl">GOLD DIM</span><span class="hex">#B58F3D</span></div>
+    <div class="swatch"><div class="tile" style="background:#E9CFC2"></div><span class="lbl">BLUSH</span><span class="hex">#E9CFC2</span></div>
+    <div class="swatch"><div class="tile" style="background:#C4CBAC"></div><span class="lbl">SAGE</span><span class="hex">#C4CBAC</span></div>
+    <div class="swatch"><div class="tile" style="background:#EADDB8"></div><span class="lbl">WHEAT</span><span class="hex">#EADDB8</span></div>
+  </div>
+</div>
+
+<script type="text/babel">
+  const mountAll = () => {
+    const mounts = [
+      ['s-dashboard',  <Dashboard/>],
+      ['s-discover',   <Discover/>],
+      ['s-detail',     <MissionDetail/>],
+      ['s-rewards',    <Rewards/>],
+      ['s-profile',    <Profile/>],
+      ['s-detail2',    <MissionDetail/>],
+      ['s-applied',    <MissionApplied/>],
+      ['s-checkin',    <MissionCheckIn/>],
+      ['s-completed',  <MissionCompleted/>],
+      ['s-on1',        <OnboardingWelcome/>],
+      ['s-on2',        <OnboardingCauses/>],
+      ['s-on3',        <OnboardingLocation/>],
+      ['s-on4',        <OnboardingReady/>],
+      ['s-notif',      <Notifications/>],
+      ['s-streak',     <Streak/>],
+      ['s-board',      <Leaderboard/>],
+      ['s-ngo-profile',         <NGOProfile/>],
+      ['s-membership-plans',    <MembershipPlans/>],
+      ['s-membership-success',  <MembershipSuccess/>],
+      ['s-donate-camp',         <DonationCampaign/>],
+      ['s-donate-amt',          <DonationAmount/>],
+      ['s-donate-review',       <DonationReview/>],
+      ['s-donate-thanks',       <DonationThanks/>],
+    ];
+    mounts.forEach(([id, el]) => {
+      const node = document.getElementById(id);
+      if (node) ReactDOM.createRoot(node).render(el);
+    });
+  };
+  mountAll();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Shadows & Motion</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:22px;font-weight:500;letter-spacing:-0.02em;margin:40px 0 14px}
+  .shadows{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;background:#FAF5E9;padding:40px 30px;border-radius:16px;margin-top:8px}
+  .shItem{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .shBox{width:100%;aspect-ratio:1;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;color:#241E18;font-size:12px;font-weight:600}
+  .shLbl{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#3E3830;letter-spacing:.1em}
+  .shLbl b{color:#8A6A2C;font-weight:600}
+  .darkShadows{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
+  .dkItem{background:#2E2923;border:1px solid #3F3830;border-radius:14px;padding:28px 24px;display:flex;flex-direction:column;gap:10px}
+  .dkItem h3{font-family:"Fraunces",serif;font-size:17px;font-weight:500;margin:0;letter-spacing:-0.01em;color:#F4EEDF}
+  .dkItem p{margin:0;font-size:12px;color:#A89E8A;line-height:1.55}
+  .dkItem code{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px;display:inline-block}
+  .motion{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:8px}
+  .mItem{background:#2E2923;border:1px solid #3F3830;border-radius:14px;padding:20px}
+  .mItem .name{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#E8C268;font-weight:600}
+  .mItem .val{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#F4EEDF;margin-top:6px}
+  .mItem .use{font-size:12px;color:#A89E8A;margin-top:8px;line-height:1.5}
+  .note{margin-top:40px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · SPACING</div>
+  <h1>Shadows & Motion</h1>
+  <p class="lede">İki ayrı shadow sistemi. Light mode'ta gerçek sıcak gölge; dark mode'ta hairline border + subtle inner glow (kahverengi gölge ink zeminde yok olur). Gold glow sadece aktif Karma durumları için.</p>
+
+  <h2>Light mode — warm drop shadow</h2>
+  <div class="shadows">
+    <div class="shItem"><div class="shBox" style="box-shadow:0 1px 2px rgba(26,22,18,.06), 0 2px 6px rgba(26,22,18,.04)">sm</div><span class="shLbl"><b>shadow.sm</b> · press</span></div>
+    <div class="shItem"><div class="shBox" style="box-shadow:0 2px 4px rgba(26,22,18,.06), 0 8px 20px rgba(26,22,18,.06)">md</div><span class="shLbl"><b>shadow.md</b> · card</span></div>
+    <div class="shItem"><div class="shBox" style="box-shadow:0 4px 8px rgba(26,22,18,.08), 0 16px 36px rgba(26,22,18,.08)">lg</div><span class="shLbl"><b>shadow.lg</b> · hover</span></div>
+    <div class="shItem"><div class="shBox" style="box-shadow:0 8px 16px rgba(26,22,18,.08), 0 32px 56px rgba(26,22,18,.08)">xl</div><span class="shLbl"><b>shadow.xl</b> · modal</span></div>
+    <div class="shItem"><div class="shBox" style="box-shadow:0 0 0 1px rgba(232,194,104,.4), 0 8px 24px rgba(232,194,104,.22)">gold</div><span class="shLbl"><b>shadow.gold</b> · active</span></div>
+  </div>
+
+  <h2>Dark mode — border + inner glow yerine shadow</h2>
+  <div class="darkShadows">
+    <div class="dkItem">
+      <h3>Hairline card</h3>
+      <p>Kart ink800 üzerinde ink600 1px border. Shadow yok. Kahverengi gölge ink zemininde yok olur — kirli görünür.</p>
+      <code>border: 1px solid #3F3830</code>
+    </div>
+    <div class="dkItem" style="border:1px solid rgba(232,194,104,.32);box-shadow:inset 0 0 0 1px rgba(232,194,104,.08)">
+      <h3 style="color:#E8C268">Active gold border</h3>
+      <p>Aktif/focus durumlar: altın border + içten çok hafif glow. Dışarıdaki gölge yerine <i>seçilmişlik</i> hissi.</p>
+      <code>border: 1px solid goldLine</code>
+    </div>
+    <div class="dkItem" style="background:rgba(26,22,18,.85);backdrop-filter:blur(18px) saturate(140%);border-top:1px solid #3F3830">
+      <h3>Bottom nav blur</h3>
+      <p>Sticky bar'lar (nav, CTA) blur(18px) + saturate(140%). Altın aktif pill glow'suz — disk tam altın doluluk.</p>
+      <code>backdrop-filter: blur(18px)</code>
+    </div>
+  </div>
+
+  <h2>Motion · cubic-bezier(.2,.8,.2,1)</h2>
+  <div class="motion">
+    <div class="mItem"><div class="name">fast</div><div class="val">160ms</div><div class="use">Button press, chip select. Parmak geri bildirimi.</div></div>
+    <div class="mItem"><div class="name">base</div><div class="val">220ms</div><div class="use">Varsayılan. Kart hover, input focus, heart toggle.</div></div>
+    <div class="mItem"><div class="name">slow</div><div class="val">320ms</div><div class="use">Progress bar dolması, modal açılış, karma sayım.</div></div>
+    <div class="mItem"><div class="name">spring</div><div class="val">360ms cubic-bezier(.34,1.56,.64,1)</div><div class="use">Kutlama, seviye atladı, coin parlama.</div></div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Press state = <code>scale(0.97)</code>; kart press = <code>scale(0.985)</code>. Bütün transition'lar aynı easing (<code>.2,.8,.2,1</code>) dışında spring kullanma. Shadow'u KARMA için boşa harcama — altın glow sadece "hak edildi" anlarında (seviye geçiş, görev tamamlandı toast, primary CTA focus ring).</p>
+</div></body></html>

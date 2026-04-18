@@ -1,0 +1,74 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Buttons</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:18px;font-weight:500;letter-spacing:-0.015em;margin:32px 0 14px;color:#E8C268;font-style:italic}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:20px 24px;background:#2E2923;border:1px solid #3F3830;border-radius:14px}
+  .row.light{background:#FAF5E9;border-color:#EBE3CE}
+  .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#A89E8A;margin-bottom:8px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:999px;font-family:"Plus Jakarta Sans";font-size:14px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;border:1px solid transparent;transition:transform 160ms cubic-bezier(.2,.8,.2,1)}
+  .btn:active{transform:scale(.97)}
+  .primary{background:#E8C268;color:#241E18;box-shadow:0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)}
+  .secondary{background:#2E2923;color:#F4EEDF;border-color:#3F3830}
+  .ghost{background:transparent;color:#F4EEDF;border-color:#3F3830}
+  .outlineGold{background:transparent;color:#E8C268;border-color:#E8C268}
+  .lightPrim{background:#241E18;color:#FAF5E9}
+  .lightSec{background:transparent;color:#241E18;border-color:#D9CFB4}
+  .danger{background:transparent;color:#B84E3B;border-color:rgba(184,78,59,.4)}
+  .lg{padding:14px 22px;font-size:15px}
+  .sm{padding:8px 14px;font-size:13px}
+  .full{width:100%}
+  .iconOnly{width:44px;height:44px;border-radius:50%;padding:0}
+  .note{margin-top:32px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · COMPONENTS</div>
+  <h1>Buttons</h1>
+  <p class="lede">Her buton pill. Altın primary sadece "iyi şey"ler için (görev katıl, takas, kaydet). Secondary ink, ghost hairline, outline gold ikinci CTA. Press state scale(.97).</p>
+
+  <h2>Variants · dark mode</h2>
+  <div class="row">
+    <button class="btn primary">Bu göreve katıl</button>
+    <button class="btn secondary">Detaylar</button>
+    <button class="btn ghost">Daha sonra</button>
+    <button class="btn outlineGold">Karma ile takas</button>
+    <button class="btn danger">Vazgeç</button>
+  </div>
+
+  <h2>Sizes</h2>
+  <div class="row">
+    <button class="btn primary sm">Küçük</button>
+    <button class="btn primary">Orta — default</button>
+    <button class="btn primary lg">Büyük — CTA</button>
+  </div>
+
+  <h2>With icons</h2>
+  <div class="row">
+    <button class="btn primary">Katıl <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></button>
+    <button class="btn secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg> Kaydet</button>
+    <button class="btn ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6"/></svg> Paylaş</button>
+    <button class="btn iconOnly secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg></button>
+  </div>
+
+  <h2>Full width · sticky CTA</h2>
+  <div class="row" style="display:block;padding:20px">
+    <button class="btn primary lg full">Bu göreve katıl <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></button>
+  </div>
+
+  <h2>Light mode (paper bg)</h2>
+  <div class="row light">
+    <button class="btn lightPrim">Katıl</button>
+    <button class="btn lightSec">Daha sonra</button>
+    <button class="btn primary">Karma</button>
+  </div>
+
+  <p class="note"><b>Kural:</b> Primary = altın, bir ekranda en fazla bir. Secondary ink800 + hairline. Ghost transparent. Outline gold ikinci CTA için. Disabled = opacity .4 + pointer-events:none. Focus ring: <code>box-shadow: 0 0 0 3px rgba(232,194,104,.25)</code>. Text her zaman <code>font-weight:600</code>, altın primary'de metin rengi <code>#241E18</code> (ink, cream değil — kontrast).</p>
+</div></body></html>

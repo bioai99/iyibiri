@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>İyiBiri — App tasarım yönleri</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#f0eee9;font-family:'Inter',system-ui,sans-serif;}
+  *{-webkit-font-smoothing:antialiased;}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="explore/data.js"></script>
+<script type="text/babel" src="explore/ios-frame.jsx"></script>
+<script type="text/babel" src="explore/design-canvas.jsx"></script>
+<script type="text/babel" src="explore/DirA.jsx"></script>
+<script type="text/babel" src="explore/DirAPrime.jsx"></script>
+<script type="text/babel" src="explore/DirB.jsx"></script>
+<script type="text/babel" src="explore/DirBPrime.jsx"></script>
+<script type="text/babel" src="explore/DirC.jsx"></script>
+
+<script type="text/babel">
+  function Phone({children, dark}) {
+    return (
+      <div style={{width:390,height:844,borderRadius:48,overflow:'hidden',position:'relative',background:dark?'#0E0E10':'#F5F1EA',boxShadow:'0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)'}}>
+        <div style={{position:'absolute',top:11,left:'50%',transform:'translateX(-50%)',width:126,height:37,borderRadius:24,background:'#000',zIndex:50}}/>
+        <div style={{height:'100%',overflow:'auto',WebkitOverflowScrolling:'touch'}}>
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  function App() {
+    return (
+      <DesignCanvas>
+        <div style={{padding:'0 60px 40px',maxWidth:1200}}>
+          <div style={{fontSize:44,fontWeight:600,letterSpacing:'-0.03em',color:'#1A1A1A',marginBottom:8,fontFamily:'"Fraunces", serif'}}>
+            İyiBiri — 3 yön
+          </div>
+          <div style={{fontSize:15,color:'#6B6358',maxWidth:640,lineHeight:1.55}}>
+            Mevcut dizayn fazla oyuncak, fazla renkli ve okunması güç. Üçünü yan yana koy, bir tanesini seç — sonra kite tam olarak o dili yayalım. Domain gradient'leri ve yeşil/mavi/pembe kart başlıkları üçünde de yok. Gerçek fotoğraflar hero element olarak geri döndü.
+          </div>
+        </div>
+
+        <DCSection title="A′ — Editorial × Mobile  ⭐ YENİ" subtitle="A'nın olgunluğu (krem, terracotta, Fraunces) KORUNDU + floating kartlar, yumuşak radius, micro-interactions, bottom nav. Gazete → uygulama." gap={64}>
+          <DCArtboard label="Ana Sayfa · A′" width={390} height={844}>
+            <Phone><DirAPrime/></Phone>
+          </DCArtboard>
+          <DCPostIt top={20} left={440} rotate={-2}>
+            Gazete diline uygulama hissi. Serif başlık + pill chip + floating kart + bottom nav.
+          </DCPostIt>
+        </DCSection>
+
+        <DCSection title="A — Kağıt / Editorial (önceki)" subtitle="Saf gazete disiplini. Karşılaştırma için bırakıldı." gap={64}>
+          <DCArtboard label="Ana Sayfa · A" width={390} height={844}>
+            <Phone><DirA/></Phone>
+          </DCArtboard>
+          <DCPostIt top={20} left={440} rotate={-3}>
+            Çok gazete — mobil his eksik.
+          </DCPostIt>
+        </DCSection>
+
+        <DCSection title="B′ — Premium × Warm  ⭐ YENİ" subtitle="B'nin fintech disiplini + altın Karma korundu. Saf siyah → sıcak kömür zemin. Mat altın aksan. Fotoğraflar nefes alır, okunaklılık yükseldi." gap={64}>
+          <DCArtboard label="Ana Sayfa · B′" width={390} height={844}>
+            <div style={{width:390,height:844,borderRadius:48,overflow:'hidden',position:'relative',background:'#24201B',boxShadow:'0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)'}}>
+              <div style={{position:'absolute',top:11,left:'50%',transform:'translateX(-50%)',width:126,height:37,borderRadius:24,background:'#000',zIndex:50}}/>
+              <div style={{height:'100%',overflow:'auto',WebkitOverflowScrolling:'touch'}}>
+                <DirBPrime/>
+              </div>
+            </div>
+          </DCArtboard>
+          <DCPostIt top={20} left={440} rotate={2}>
+            Karanlık değil, sıcak. Mürekkep üzerine mat altın. Premium kalıyor.
+          </DCPostIt>
+        </DCSection>
+
+        <DCSection title="B — Koyu Premium (önceki)" subtitle="Saf siyah — çok ağır. Karşılaştırma için bırakıldı." gap={64}>
+          <DCArtboard label="Ana Sayfa · B" width={390} height={844}>
+            <Phone dark><DirB/></Phone>
+          </DCArtboard>
+          <DCPostIt top={20} left={440} rotate={2}>
+            Fazla karanlık.
+          </DCPostIt>
+        </DCSection>
+
+        <DCSection title="C — Türk Toprağı" subtitle="Kil, zeytin, eski altın. Kağıt dokusu + handcraft detaylar. Kültürel kök ama modern." gap={64}>
+          <DCArtboard label="Ana Sayfa · C" width={390} height={844}>
+            <Phone><DirC/></Phone>
+          </DCArtboard>
+          <DCPostIt top={20} left={440} rotate={-2}>
+            Yöresel değil — evrensel. Ama kökü Türkiye'de.
+          </DCPostIt>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

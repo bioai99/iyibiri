@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>İyiBiri — App UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  html, body { margin:0; padding:0; background:#E7E5E0; font-family: var(--iyi-font-sans); color: var(--iyi-fg-1); min-height:100vh; }
+  .stage { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px 16px; background: radial-gradient(ellipse at top, #FAFAF5, #E7E5E0); }
+  .phone-wrap { display:flex; gap:28px; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
+  .phone {
+    width: 390px; height: 780px; background: #1C1917;
+    border-radius: 48px; padding: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.25), 0 0 0 2px rgba(0,0,0,.15);
+    position: relative;
+  }
+  .notch { position:absolute; top:22px; left:50%; transform:translateX(-50%); width:110px; height:32px; background:#0A0A0A; border-radius:999px; z-index:50; }
+  .screen { position:relative; width:100%; height:100%; background: var(--iyi-bg); border-radius: 38px; overflow:hidden; }
+  .scroll { position:absolute; inset:0 0 72px 0; overflow-y:auto; scrollbar-width:none; }
+  .scroll::-webkit-scrollbar { display:none; }
+  .side-panel { max-width:360px; padding:24px 20px 24px 0; }
+  .side-panel h1 { font-family: var(--iyi-font-display); font-weight:800; letter-spacing:-0.02em; font-size:28px; color:var(--iyi-trust); margin:0 0 6px; }
+  .side-panel .dek { font-size:14px; line-height:1.55; color:var(--iyi-fg-3); margin:0 0 20px; }
+  .side-panel .pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .side-panel .pill { background:white; border:1px solid var(--iyi-border); border-radius:999px; padding:4px 10px; font-size:11px; font-weight:600; color:var(--iyi-fg-3); }
+  .side-panel .note { font-size:12px; line-height:1.5; color:var(--iyi-fg-4); padding:12px 14px; background:white; border:1px dashed var(--iyi-border); border-radius:14px; }
+  .logo-row { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .logo-row img { width:40px; height:40px; }
+  .logo-row strong { font-family: var(--iyi-font-display); font-weight:800; font-size:18px; color:var(--iyi-trust); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone-wrap">
+
+    <aside class="side-panel">
+      <div class="logo-row">
+        <img src="../../assets/logos/iyibiri-logo.svg" alt="İyiBiri"/>
+        <strong>İyiBiri</strong>
+      </div>
+      <h1>App UI Kit</h1>
+      <p class="dek">Dashboard, görev listesi, görev detayı, kuruluşlar, ödüller ve profil. Click-through: bir görev seç, kabul et, tamamla — Karma hesabına düşer.</p>
+      <div class="pills">
+        <span class="pill">Ana Sayfa</span>
+        <span class="pill">Görevler</span>
+        <span class="pill">Görev Detayı</span>
+        <span class="pill">Kuruluşlar</span>
+        <span class="pill">Ödüller</span>
+        <span class="pill">Profil</span>
+      </div>
+      <div class="note">Alt sekmelerden gezin. Bir görev kartına dokun → "Göreve Başla" → "Tamamladım" ile Karma'nın arttığını gör.</div>
+    </aside>
+
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="app-root"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="tokens.js"></script>
+<script type="text/babel" src="Components.jsx"></script>
+<script type="text/babel" src="Screens.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+function App() {
+  const [tab, setTab] = useState('home');
+  const [profile, setProfile] = useState(window.IYI_DATA.profile);
+  const [takenIds, setTakenIds] = useState(new Set());
+  const [completedIds, setCompletedIds] = useState(new Set());
+  const [detail, setDetail] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const openMission = (m) => setDetail(m);
+  const closeDetail = () => setDetail(null);
+
+  const takeMission = (m) => {
+    setTakenIds(new Set([...takenIds, m.id]));
+    setToast({ msg: `📌 "${m.title}" görevi alındı`, tone:'blue' });
+    setTimeout(()=>setToast(null), 2200);
+  };
+
+  const completeMission = (m) => {
+    setCompletedIds(new Set([...completedIds, m.id]));
+    setProfile({ ...profile, karma: profile.karma + m.karma, completed: profile.completed + 1 });
+    setToast({ msg: `✨ +${m.karma} Karma kazandın!`, tone:'gold' });
+    setTimeout(()=>setToast(null), 2500);
+    setDetail(null);
+  };
+
+  const claimReward = (r) => {
+    if (profile.karma < r.cost) return;
+    setProfile({ ...profile, karma: profile.karma - r.cost });
+    setToast({ msg: `🎁 ${r.brand} kuponun hazır!`, tone:'green' });
+    setTimeout(()=>setToast(null), 2500);
+  };
+
+  let content;
+  if (detail) {
+    content = <MissionDetailScreen mission={detail} onBack={closeDetail} onTake={takeMission} onComplete={completeMission} taken={takenIds.has(detail.id)} completed={completedIds.has(detail.id)}/>;
+  } else if (tab === 'home') {
+    content = <HomeScreen profile={profile} onMission={openMission}/>;
+  } else if (tab === 'missions') {
+    content = <MissionsScreen onMission={openMission} takenIds={takenIds} completedIds={completedIds}/>;
+  } else if (tab === 'ngos') {
+    content = <NGOsScreen/>;
+  } else if (tab === 'rewards') {
+    content = <RewardsScreen profile={profile} onClaim={claimReward}/>;
+  } else if (tab === 'profile') {
+    content = <ProfileScreen profile={profile} completedIds={completedIds}/>;
+  }
+
+  const toneBg = { gold:'linear-gradient(90deg,#F4B942,#F97316)', green:'#2D9E5A', blue:'#3B82F6' };
+
+  return (
+    <>
+      <div className="scroll" style={{paddingBottom:24}}>
+        <StatusBar/>
+        {content}
+      </div>
+      <BottomNav active={detail ? tab : tab} onChange={(t)=>{ setDetail(null); setTab(t); }}/>
+      {toast && (
+        <div style={{position:'absolute',bottom:92,left:16,right:16,padding:'12px 16px',borderRadius:14,color:'white',fontWeight:700,fontSize:13,background:toneBg[toast.tone]||'#1C1917',boxShadow:'0 12px 32px rgba(0,0,0,.2)',zIndex:40,textAlign:'center'}}>{toast.msg}</div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app-root')).render(<App/>);
+</script>
+
+</body>
+</html>

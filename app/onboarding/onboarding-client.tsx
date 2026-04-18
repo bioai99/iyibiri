@@ -12,7 +12,7 @@ const steps = [
     tag: "Hoş Geldin",
     title: "İyilik\nyapmak\neğlenceli.",
     description:
-      "İyiBiri'de sivil toplum kuruluşlarıyla ortaklık kurarak gerçek fark yaratan görevleri tamamlıyor, XP kazanıyor ve ödüller alıyorsun.",
+      "İyiBiri'de sivil toplum kuruluşlarıyla ortaklık kurarak gerçek fark yaratan görevleri tamamlıyor, Karma kazanıyor ve ödüller alıyorsun.",
   },
   {
     icon: "◎",
@@ -28,9 +28,9 @@ const steps = [
     iconBg: "bg-primary",
     iconColor: "text-primary-foreground",
     tag: "Kazan",
-    title: "Her iyilik\nXP\nkazandırır.",
+    title: "Her iyilik\nKarma\nkazandırır.",
     description:
-      "Görevi tamamla, XP kazan, seviye atla. Rozetler, özel ödüller ve topluluk sıralamasında yerini al.",
+      "Görevi tamamla, Karma kazan, ödüller aç. Rozetler ve özel kampanyalarla iyiliğini somut kazanımlara dönüştür.",
   },
   {
     icon: "❋",

@@ -1,0 +1,56 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Spacing & Radii</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:700px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:22px;font-weight:500;letter-spacing:-0.02em;margin:40px 0 14px}
+  .spacingRow{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+  .spaceItem{display:flex;flex-direction:column;gap:8px;align-items:center}
+  .spaceItem .bar{background:#E8C268;height:24px;border-radius:3px}
+  .spaceItem .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#A89E8A;letter-spacing:.1em}
+  .spaceItem .n{color:#E8C268;font-weight:600}
+  .radii{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+  .radItem{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .radBox{width:100px;height:100px;background:#2E2923;border:1px solid #3F3830;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;color:#E8C268;font-size:12px}
+  .radLbl{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#A89E8A;letter-spacing:.1em}
+  .radLbl b{color:#E8C268;font-weight:500}
+  .note{margin-top:40px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · SPACING</div>
+  <h1>Spacing & Radii</h1>
+  <p class="lede">4px tabanlı grid. Radii Airbnb-bitişik: büyük kartlar 16, butonlar pill, chipler pill. 20+ kullanılmaz — yumuşaklık, lolipop değil.</p>
+
+  <h2>Spacing · 4px base</h2>
+  <div class="spacingRow">
+    <div class="spaceItem"><div class="bar" style="width:4px"></div><span class="lbl"><b class="n">1</b> · 4</span></div>
+    <div class="spaceItem"><div class="bar" style="width:8px"></div><span class="lbl"><b class="n">2</b> · 8</span></div>
+    <div class="spaceItem"><div class="bar" style="width:12px"></div><span class="lbl"><b class="n">3</b> · 12</span></div>
+    <div class="spaceItem"><div class="bar" style="width:16px"></div><span class="lbl"><b class="n">4</b> · 16</span></div>
+    <div class="spaceItem"><div class="bar" style="width:20px"></div><span class="lbl"><b class="n">5</b> · 20</span></div>
+    <div class="spaceItem"><div class="bar" style="width:24px"></div><span class="lbl"><b class="n">6</b> · 24</span></div>
+    <div class="spaceItem"><div class="bar" style="width:32px"></div><span class="lbl"><b class="n">7</b> · 32</span></div>
+    <div class="spaceItem"><div class="bar" style="width:40px"></div><span class="lbl"><b class="n">8</b> · 40</span></div>
+    <div class="spaceItem"><div class="bar" style="width:48px"></div><span class="lbl"><b class="n">9</b> · 48</span></div>
+    <div class="spaceItem"><div class="bar" style="width:64px"></div><span class="lbl"><b class="n">10</b> · 64</span></div>
+  </div>
+
+  <h2>Radii</h2>
+  <div class="radii">
+    <div class="radItem"><div class="radBox" style="border-radius:6px">6</div><span class="radLbl"><b>xs</b> · inline chip</span></div>
+    <div class="radItem"><div class="radBox" style="border-radius:10px">10</div><span class="radLbl"><b>sm</b> · small card</span></div>
+    <div class="radItem"><div class="radBox" style="border-radius:12px">12</div><span class="radLbl"><b>md</b> · input / dense</span></div>
+    <div class="radItem"><div class="radBox" style="border-radius:16px">16</div><span class="radLbl"><b>lg</b> · card</span></div>
+    <div class="radItem"><div class="radBox" style="border-radius:20px">20</div><span class="radLbl"><b>xl</b> · hero</span></div>
+    <div class="radItem"><div class="radBox" style="border-radius:9999px">∞</div><span class="radLbl"><b>pill</b> · button / chip</span></div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Kartlar 14–16 radius (Airbnb 12 — bizimki birazcık daha yumuşak çünkü palet sıcak). Butonlar ve chipler her zaman pill. 20+ sadece hero kart. Küçük meta ikon button 50% (yuvarlak). <br/><br/><b>Kenar boşlukları:</b> ekran kenarı <code>16</code>, kart iç <code>18–22</code>, dikey listede kart arası <code>16</code>.</p>
+</div></body></html>

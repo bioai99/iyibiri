@@ -1,0 +1,133 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Neutrals & Semantic</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1300px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:680px;margin-top:14px;line-height:1.55}
+  h2{font-family:"Fraunces",serif;font-size:22px;font-weight:500;letter-spacing:-0.02em;margin:40px 0 12px}
+  .lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:#A89E8A;margin-bottom:14px}
+  .scale{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;border-radius:14px;overflow:hidden;border:1px solid #3F3830}
+  .sw{aspect-ratio:1;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;font-family:"IBM Plex Mono",monospace;font-size:10px}
+  .sw .n{font-size:10px;letter-spacing:.1em;font-weight:700}
+  .sw .h{opacity:.7;margin-top:2px}
+  .pastel{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+  .pastelSw{border-radius:14px;border:1px solid #3F3830;overflow:hidden;background:#2E2923}
+  .pastelSw .tile{aspect-ratio:2/1}
+  .pastelSw .meta{padding:14px 16px}
+  .pastelSw .name{font-family:"Fraunces",serif;font-size:17px;font-weight:500;letter-spacing:-0.01em}
+  .pastelSw .hex{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#A89E8A;margin-top:2px}
+  .pastelSw .use{font-size:11px;color:#A89E8A;margin-top:8px;line-height:1.5}
+  .sem{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  .semCard{padding:20px;border-radius:14px;border:1px solid #3F3830;background:#2E2923}
+  .semCard .dot{width:12px;height:12px;border-radius:50%;margin-bottom:10px}
+  .semCard .name{font-weight:700;font-size:14px}
+  .semCard .hex{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#A89E8A;margin-top:4px}
+  .semCard .use{font-size:12px;color:#A89E8A;line-height:1.5;margin-top:10px}
+  .note{margin-top:32px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:680px}
+  .note b{color:#E8C268}
+  code{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · COLORS</div>
+  <h1>Nötrler & Semantik + Pastel</h1>
+  <p class="lede">İki nötr skala: <b style="color:#F4EEDF">Ink</b> (warm charcoal — app için) ve <b style="color:#F4EEDF">Paper</b> (soft cream — printable / light mode). Pastel tonlar "yumuşak aksan" olarak — hiçbiri ana aksan değil, altın tek.</p>
+
+  <h2>Ink — warm charcoal scale</h2>
+  <div class="lbl">App zemini + kart + metin</div>
+  <div class="scale">
+    <div class="sw" style="background:#1A1612;color:#F4EEDF"><div class="n">INK</div><div class="h">#1A1612</div></div>
+    <div class="sw" style="background:#24201B;color:#F4EEDF"><div class="n">900</div><div class="h">#24201B</div></div>
+    <div class="sw" style="background:#2E2923;color:#F4EEDF"><div class="n">800</div><div class="h">#2E2923</div></div>
+    <div class="sw" style="background:#36302A;color:#F4EEDF"><div class="n">700</div><div class="h">#36302A</div></div>
+    <div class="sw" style="background:#3F3830;color:#F4EEDF"><div class="n">600</div><div class="h">#3F3830</div></div>
+    <div class="sw" style="background:#574E42;color:#F4EEDF"><div class="n">500</div><div class="h">#574E42</div></div>
+    <div class="sw" style="background:#7A6F5E;color:#F4EEDF"><div class="n">400</div><div class="h">#7A6F5E</div></div>
+    <div class="sw" style="background:#A89E8A;color:#241E18"><div class="n">300</div><div class="h">#A89E8A</div></div>
+    <div class="sw" style="background:#CEC5B2;color:#241E18"><div class="n">200</div><div class="h">#CEC5B2</div></div>
+    <div class="sw" style="background:#E6DEC9;color:#241E18"><div class="n">100</div><div class="h">#E6DEC9</div></div>
+    <div class="sw" style="background:#F4EEDF;color:#241E18"><div class="n">CREAM</div><div class="h">#F4EEDF</div></div>
+  </div>
+
+  <h2>Paper — soft cream scale</h2>
+  <div class="lbl">Light mode, print, offboarded / informational</div>
+  <div class="scale">
+    <div class="sw" style="background:#FAF5E9;color:#241E18"><div class="n">PAPER</div><div class="h">#FAF5E9</div></div>
+    <div class="sw" style="background:#F5EEDD;color:#241E18"><div class="n">100</div><div class="h">#F5EEDD</div></div>
+    <div class="sw" style="background:#EBE3CE;color:#241E18"><div class="n">200</div><div class="h">#EBE3CE</div></div>
+    <div class="sw" style="background:#D9CFB4;color:#241E18"><div class="n">300</div><div class="h">#D9CFB4</div></div>
+    <div class="sw" style="background:#B8AD92;color:#241E18"><div class="n">400</div><div class="h">#B8AD92</div></div>
+    <div class="sw" style="background:#7A6F5E;color:#F4EEDF"><div class="n">500</div><div class="h">#7A6F5E</div></div>
+    <div class="sw" style="background:#3E3830;color:#F4EEDF"><div class="n">600</div><div class="h">#3E3830</div></div>
+    <div class="sw" style="background:#241E18;color:#F4EEDF"><div class="n">700</div><div class="h">#241E18</div></div>
+    <div class="sw" style="background:#1A1612;color:#F4EEDF"><div class="n">INK</div><div class="h">#1A1612</div></div>
+    <div class="sw" style="background:#24201B;color:#F4EEDF"><div class="n">+</div><div class="h">&nbsp;</div></div>
+    <div class="sw" style="background:#2E2923;color:#F4EEDF"><div class="n">+</div><div class="h">&nbsp;</div></div>
+  </div>
+
+  <h2>Pastel aksanlar — yumuşak vurgu</h2>
+  <div class="lbl">Kutlama, empati, özenli mesaj. Ana aksan değil; "summary kart" tintleri gibi.</div>
+  <div class="pastel">
+    <div class="pastelSw">
+      <div class="tile" style="background:#E9CFC2"></div>
+      <div class="meta">
+        <div class="name" style="color:#F4EEDF">Blush</div>
+        <div class="hex">#E9CFC2 · soft terracotta</div>
+        <div class="use">Kutlama, seviye atladın. Sevgi dolu anlar.</div>
+      </div>
+    </div>
+    <div class="pastelSw">
+      <div class="tile" style="background:#C4CBAC"></div>
+      <div class="meta">
+        <div class="name" style="color:#F4EEDF">Sage</div>
+        <div class="hex">#C4CBAC · soft olive</div>
+        <div class="use">Çevre etki özeti, ağaç / doğa.</div>
+      </div>
+    </div>
+    <div class="pastelSw">
+      <div class="tile" style="background:#EADDB8"></div>
+      <div class="meta">
+        <div class="name" style="color:#F4EEDF">Wheat</div>
+        <div class="hex">#EADDB8 · soft gold</div>
+        <div class="use">Karma partner tintleri, başarı özeti.</div>
+      </div>
+    </div>
+    <div class="pastelSw">
+      <div class="tile" style="background:#C8553D"></div>
+      <div class="meta">
+        <div class="name" style="color:#F4EEDF">Clay</div>
+        <div class="hex">#C8553D · warm terracotta</div>
+        <div class="use">İkinci aksan — sadece davet/uyarı. Seyrek.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Semantik</h2>
+  <div class="lbl">Uyarı, başarı, hata — paletten türetilmiş, yüksek doygunluktan kaçınmış.</div>
+  <div class="sem">
+    <div class="semCard">
+      <div class="dot" style="background:#6B8E4E"></div>
+      <div class="name" style="color:#6B8E4E">Success</div>
+      <div class="hex">#6B8E4E — muted olive</div>
+      <div class="use">Görev tamamlandı. Kontrastı korur ama neon değil.</div>
+    </div>
+    <div class="semCard">
+      <div class="dot" style="background:#D19B3C"></div>
+      <div class="name" style="color:#D19B3C">Warning</div>
+      <div class="hex">#D19B3C — amber</div>
+      <div class="use">Son yerler, eksik bilgi. Altından hafif farklı.</div>
+    </div>
+    <div class="semCard">
+      <div class="dot" style="background:#B84E3B"></div>
+      <div class="name" style="color:#B84E3B">Danger</div>
+      <div class="hex">#B84E3B — burnt clay</div>
+      <div class="use">Form hatası, geri alınamaz eylem. Clay'den koyu.</div>
+    </div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Nötr skala <b>warm</b> — saf gri (soğuk) kullanma. Pastel aksanlar sadece "tintli summary" alanlarda (Impact kartı, seviye geçiş, kutlama modalı). Semantik renkler oyuncak ton almayacak; doygunluk kısık. Token adı: <code>ink.900</code>, <code>paper.200</code>, <code>blush</code>, <code>success</code>.</p>
+</div>
+</body></html>

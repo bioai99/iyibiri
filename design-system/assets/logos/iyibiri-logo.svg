@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" aria-label="İyiBiri">
+  <defs>
+    <linearGradient id="iyi-g" x1="50" y1="8" x2="50" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F9C355"></stop>
+      <stop offset="100%" stop-color="#E8901A"></stop>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="27" r="17" fill="url(#iyi-g)"></circle>
+  <path d="M14 88 Q14 54 50 54 Q86 54 86 88 Z" fill="url(#iyi-g)"></path>
+  <path d="M50 80 C50 80 38 71 38 64 C38 59.5 41.5 57 45 57 C47.5 57 50 59.5 50 59.5 C50 59.5 52.5 57 55 57 C58.5 57 62 59.5 62 64 C62 71 50 80 50 80 Z" fill="white" opacity="0.95"></path>
+  <g transform="translate(60, 60)">
+    <circle cx="18" cy="18" r="17" fill="#1B3A5C"></circle>
+    <line x1="31" y1="18" x2="35" y2="18" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="1" y1="18" x2="5" y2="18" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="18" y1="1" x2="18" y2="5" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="18" y1="31" x2="18" y2="35" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="27.2" y1="8.8" x2="30" y2="6" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="6" y1="30" x2="8.8" y2="27.2" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="27.2" y1="27.2" x2="30" y2="30" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="6" y1="6" x2="8.8" y2="8.8" stroke="#1B3A5C" stroke-width="3" stroke-linecap="round"></line>
+    <circle cx="18" cy="18" r="12" fill="#1B3A5C"></circle>
+    <path d="M11 18 L16 23 L25 13" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+</svg>

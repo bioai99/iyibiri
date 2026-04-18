@@ -1,0 +1,123 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><title>Mission Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,300..700,0;9..144,300..700,1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#24201B;font-family:"Plus Jakarta Sans",sans-serif;color:#F4EEDF;min-height:100vh}
+  *{box-sizing:border-box}
+  .shell{padding:56px 48px;max-width:1400px;margin:0 auto}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:#E8C268;margin-bottom:10px}
+  h1{font-family:"Fraunces",serif;font-size:34px;font-weight:400;letter-spacing:-0.022em;margin:0}
+  .lede{color:#A89E8A;font-size:14px;max-width:680px;margin-top:14px;line-height:1.55}
+  .row{display:grid;grid-template-columns:380px 380px;gap:32px;margin-top:40px;align-items:start}
+  .card{background:#2E2923;border:1px solid #3F3830;border-radius:16px;overflow:hidden}
+  .photo{position:relative;aspect-ratio:4/3;overflow:hidden}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,22,18,0) 55%,rgba(26,22,18,.55) 100%);pointer-events:none}
+  .topRow{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:rgba(26,22,18,.55);border:1px solid rgba(244,238,223,.16);color:#F4EEDF;font-size:11px;font-weight:600;letter-spacing:.04em;backdrop-filter:blur(10px)}
+  .iconBtn{width:36px;height:36px;border-radius:50%;background:rgba(26,22,18,.55);border:1px solid rgba(244,238,223,.14);color:#F4EEDF;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)}
+  .iconBtn svg{width:16px;height:16px}
+  .ngoLine{position:absolute;left:12px;bottom:12px;display:flex;align-items:center;gap:8px}
+  .ngoLogo{width:26px;height:26px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .ngoLogo img{width:72%;height:72%;object-fit:contain}
+  .ngoName{font-size:12px;font-weight:600;color:#F4EEDF;letter-spacing:-0.01em;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .body{padding:16px 18px 16px}
+  h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F4EEDF}
+  .impact{margin:6px 0 14px;font-size:13px;line-height:1.5;color:#A89E8A}
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#CEC5B2;background:rgba(255,255,255,.03);padding:5px 9px;border-radius:999px;border:1px solid #3F3830}
+  .chip svg{width:11px;height:11px;color:#A89E8A}
+  .kpill{display:inline-flex;align-items:center;gap:5px;padding:6px 10px 6px 8px;border-radius:999px;background:rgba(232,194,104,.12);border:1px solid rgba(232,194,104,.35)}
+  .kpill .val{font-size:13px;font-weight:700;color:#E8C268;letter-spacing:-0.01em;font-variant-numeric:tabular-nums}
+  .urgency{margin-top:12px;padding-top:12px;border-top:1px solid #3F3830;display:flex;align-items:center;gap:6px;color:#E8C268;font-size:11px;font-weight:600;letter-spacing:.04em}
+  .urgency svg{width:13px;height:13px}
+  .note{margin-top:36px;color:#A89E8A;font-size:12px;line-height:1.55;max-width:720px}
+  .note b{color:#E8C268}
+  .caption{font-size:11px;color:#A89E8A;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+  .anatomyNote{color:#A89E8A;font-size:12px;line-height:1.5;margin-top:16px}
+</style></head><body>
+<div class="shell">
+  <div class="eyebrow">İYİBİRİ · COMPONENTS</div>
+  <h1>Mission Card</h1>
+  <p class="lede">Airbnb proporsiyonu (4:3 fotoğraf), fotoğraf baş-rol oyuncusu. Üstte kategori rozeti + heart. Fotoğrafta NGO lockup — emoji yok, yarım daire logo disk'i ve isim. Altta minimal chip'ler + mat altın Karma pili. Renkli gradient blok yok; her şey gerçek fotoğraf.</p>
+
+  <div class="row">
+    <!-- Default -->
+    <div>
+      <div class="caption">Default</div>
+      <article class="card">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop" alt=""/>
+          <div class="overlay"></div>
+          <div class="topRow">
+            <span class="badge">ÇEVRE</span>
+            <button class="iconBtn" aria-label="save">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg>
+            </button>
+          </div>
+          <div class="ngoLine">
+            <div class="ngoLogo"><img src="assets/logos/tema-logo.png" alt=""/></div>
+            <span class="ngoName">TEMA Vakfı</span>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Sahil Temizliği Gönüllüsü</h3>
+          <p class="impact">Bu görevle bir kıyı şeridi temizlenir; deniz canlıları nefes alır.</p>
+          <div class="meta">
+            <div class="chips">
+              <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>2 saat</span>
+              <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Kilyos</span>
+            </div>
+            <span class="kpill">
+              <svg width="11" height="11" viewBox="0 0 12 12"><defs><radialGradient id="kfm1" cx="40%" cy="36%" r="70%"><stop offset="0%" stop-color="#F4D98A"/><stop offset="100%" stop-color="#B58F3D"/></radialGradient></defs><circle cx="6" cy="6" r="5.5" fill="url(#kfm1)"/><circle cx="6" cy="6" r="2.6" fill="none" stroke="#3E2F14" stroke-opacity=".35" stroke-width="0.6"/></svg>
+              <span class="val">+150</span>
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Urgent variant -->
+    <div>
+      <div class="caption">Aciliyet — son yerler</div>
+      <article class="card">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=900&q=80&auto=format&fit=crop" alt=""/>
+          <div class="overlay"></div>
+          <div class="topRow">
+            <span class="badge">HAYVANLAR</span>
+            <button class="iconBtn" style="background:rgba(232,194,104,.25);border-color:#E8C268;color:#E8C268" aria-label="saved">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg>
+            </button>
+          </div>
+          <div class="ngoLine">
+            <div class="ngoLogo"><img src="assets/logos/haytap-logo.png" alt=""/></div>
+            <span class="ngoName">Haytap</span>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Barınakta Gönüllü Günü</h3>
+          <p class="impact">Bu görevle barınaktaki bir can bugün aç kalmaz.</p>
+          <div class="meta">
+            <div class="chips">
+              <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>3 saat</span>
+              <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Ankara</span>
+            </div>
+            <span class="kpill">
+              <svg width="11" height="11" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5.5" fill="url(#kfm1)"/><circle cx="6" cy="6" r="2.6" fill="none" stroke="#3E2F14" stroke-opacity=".35" stroke-width="0.6"/></svg>
+              <span class="val">+200</span>
+            </span>
+          </div>
+          <div class="urgency">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-4 3-6 1 2 3 2 3 5"/></svg>
+            Son 3 kişi · Hafta sonu
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <p class="note"><b>Kural:</b> Fotoğraf 4:3 — Airbnb ölçüsü, scroll'da daha çok görev görünür. Fotoğraf <b>dokunulmaz</b>: renkli gradient blok yok, tint yok. Üst overlay hafif (pointer-events:none). NGO lockup fotoğrafın üstünde — kart dar alanda STK sahipliğini hemen okur. Press'de tüm kart <code style="font-family:'IBM Plex Mono';font-size:11px;color:#E8C268;background:rgba(232,194,104,.08);padding:2px 6px;border-radius:4px">scale(0.985)</code>.</p>
+</div>
+</body></html>
