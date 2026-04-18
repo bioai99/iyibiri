@@ -4,10 +4,10 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Lottie from 'lottie-react'
-import { Flame, Sparkles, Handshake, Gift, ClipboardList, User, CheckCircle2, Pencil } from 'lucide-react'
+import { Flame, Pencil, Handshake, Gift, ClipboardList, User } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
-import { KarmaCounter } from '@/components/ui/karma-counter'
 import { MissionCard } from '@/components/ui/mission-card'
+import { TierBadge, getTierFromKarma } from '@/components/ui/tier-badge'
 import { createClient } from '@/lib/supabase/client'
 
 import catAnim from '@/public/animations/cat.json'
@@ -19,12 +19,33 @@ import partyAnim from '@/public/animations/party.json'
 type AvatarType = 'cat' | 'dog' | 'fox' | 'robot' | 'party'
 
 const avatarOptions: { type: AvatarType; label: string; anim: object }[] = [
-  { type: 'cat', label: 'Kedi 🐱', anim: catAnim },
-  { type: 'dog', label: 'Köpek 🐕', anim: dogAnim },
-  { type: 'fox', label: 'Tilki 🦊', anim: foxAnim },
-  { type: 'robot', label: 'Robot 🤖', anim: robotAnim },
-  { type: 'party', label: 'Parti 🥳', anim: partyAnim },
+  { type: 'cat',   label: 'Kedi',   anim: catAnim },
+  { type: 'dog',   label: 'Köpek',  anim: dogAnim },
+  { type: 'fox',   label: 'Tilki',  anim: foxAnim },
+  { type: 'robot', label: 'Robot',  anim: robotAnim },
+  { type: 'party', label: 'Parti',  anim: partyAnim },
 ]
+
+const tierThresholds = [0, 500, 2000, 5000, 10000, Infinity]
+const tierNames = ['İyi Biri', 'Çok İyi Biri', 'Çoook İyi Biri', 'Gerçekten İyi Biri', 'İyiliğin Öncüsü']
+
+function getKarmaProgress(karma: number): { pct: number; toNext: number; nextTierName: string } {
+  let tierIndex = 0
+  for (let i = 1; i < tierThresholds.length; i++) {
+    if (karma >= tierThresholds[i - 1] && karma < tierThresholds[i]) {
+      tierIndex = i - 1
+      break
+    }
+  }
+  if (karma >= tierThresholds[tierThresholds.length - 2]) {
+    tierIndex = tierThresholds.length - 2
+  }
+  const min = tierThresholds[tierIndex]
+  const max = tierThresholds[tierIndex + 1]
+  if (max === Infinity) return { pct: 100, toNext: 0, nextTierName: '' }
+  const pct = Math.round(((karma - min) / (max - min)) * 100)
+  return { pct, toNext: max - karma, nextTierName: tierNames[tierIndex + 1] ?? '' }
+}
 
 interface Props {
   profile: Profile
@@ -33,32 +54,27 @@ interface Props {
   ngos: NGO[]
 }
 
-
 const discoverItems = [
-  { href: '/dashboard/ngos', Icon: Handshake, label: 'Kuruluşlar', gradient: 'from-blue-500 to-indigo-400' },
-  { href: '/dashboard/rewards', Icon: Gift, label: 'Ödüller', gradient: 'from-amber-500 to-orange-400' },
-  { href: '/dashboard/missions', Icon: ClipboardList, label: 'Görevler', gradient: 'from-emerald-500 to-teal-400' },
-  { href: '/dashboard/profile', Icon: User, label: 'Profil', gradient: 'from-rose-500 to-pink-400' },
+  { href: '/dashboard/ngos',     Icon: Handshake,    label: 'Kuruluşlar', gradient: 'linear-gradient(135deg,#3B82F6,#6366F1)' },
+  { href: '/dashboard/rewards',  Icon: Gift,          label: 'Ödüller',    gradient: 'linear-gradient(135deg,#E8C268,#B58F3D)' },
+  { href: '/dashboard/missions', Icon: ClipboardList, label: 'Görevler',   gradient: 'linear-gradient(135deg,#10B981,#14B8A6)' },
+  { href: '/dashboard/profile',  Icon: User,          label: 'Profil',     gradient: 'linear-gradient(135deg,#A855F7,#D946EF)' },
 ]
 
 export function DashboardClient({ profile, missions, userMissions, ngos }: Props) {
-  const completedIds = new Set(
-    userMissions.filter(m => m.status === 'completed').map(m => m.mission_id)
-  )
-  const takenIds = new Set(
-    userMissions.filter(m => m.status === 'taken').map(m => m.mission_id)
-  )
+  const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
+  const takenIds     = new Set(userMissions.filter(m => m.status === 'taken').map(m => m.mission_id))
 
-  const featuredMissions = missions.filter(m => m.featured && !completedIds.has(m.id)).slice(0, 3)
+  const featuredMissions   = missions.filter(m => m.featured && !completedIds.has(m.id)).slice(0, 6)
   const inProgressMissions = missions.filter(m => takenIds.has(m.id) && !completedIds.has(m.id))
-  const firstName = profile.name?.split(' ')[0] ?? 'Kullanıcı'
 
-  const [avatarType, setAvatarType] = useState<AvatarType>(
-    (profile.avatar_type as AvatarType) ?? 'cat'
-  )
+  const karma = profile.karma_total ?? 0
+  const tier = getTierFromKarma(karma)
+  const { pct, toNext, nextTierName } = getKarmaProgress(karma)
+
+  const [avatarType, setAvatarType] = useState<AvatarType>((profile.avatar_type as AvatarType) ?? 'cat')
   const [showPicker, setShowPicker] = useState(false)
   const supabase = useMemo(() => createClient(), [])
-
   const currentAvatar = avatarOptions.find(a => a.type === avatarType) ?? avatarOptions[0]
 
   async function handleAvatarSelect(type: AvatarType) {
@@ -70,128 +86,206 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="px-4 pt-12 pb-6">
-        {/* Hero Card */}
-        <motion.div
-          className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl shadow-[0_8px_32px_rgba(251,146,60,0.35)] overflow-hidden"
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        >
-          <div className="flex items-stretch">
-            {/* Left: text content */}
-            <div className="flex-1 p-5">
-              <div className="flex items-start justify-between mb-4">
+        {/* Hero card + avatar wrapper */}
+        <div style={{ position: 'relative' }}>
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            style={{
+              background: '#2E2923',
+              borderRadius: 20,
+              border: '1px solid #3F3830',
+              padding: '22px 22px 18px',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Concentric gold arcs decoration */}
+            <svg
+              width="240" height="240" viewBox="0 0 240 240"
+              style={{ position: 'absolute', right: -80, top: -80, opacity: 0.1, pointerEvents: 'none' }}
+              aria-hidden="true"
+            >
+              {[110, 80, 50, 20].map(r => (
+                <circle key={r} cx="120" cy="120" r={r} stroke="#E8C268" strokeWidth="0.8" fill="none" />
+              ))}
+            </svg>
+
+            <div style={{ position: 'relative' }}>
+              {/* Top row: eyebrow + tier badge */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <p className="text-white/70 text-sm font-medium">Merhaba,</p>
-                  <h1 className="font-display font-extrabold text-white text-2xl leading-tight">
-                    {firstName}
-                  </h1>
+                  <p style={{
+                    margin: 0, fontSize: 10, fontWeight: 700,
+                    color: '#A89E8A', letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                  }}>
+                    Karma Hesabın
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                    <div style={{
+                      width: 16, height: 16, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #E8C268, #B58F3D)',
+                      flexShrink: 0,
+                      boxShadow: '0 0 0 3px rgba(232,194,104,0.2)',
+                    }} />
+                    <span style={{
+                      fontSize: 52, fontWeight: 700, lineHeight: 0.95,
+                      letterSpacing: '-0.035em',
+                      color: '#E8C268',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}>
+                      {karma.toLocaleString('tr-TR')}
+                    </span>
+                  </div>
                 </div>
-                {/* Streak pill */}
-                <div className="bg-white/20 rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                  <Flame size={16} className="text-white" />
-                  <span className="text-white font-bold text-sm">{profile.streak}</span>
-                  <span className="text-white/70 text-xs">Gün</span>
-                </div>
+                <TierBadge tier={tier} size="sm" />
               </div>
 
-              <div className="flex items-end gap-2 mb-1">
-                <Sparkles size={20} className="text-white/70 mb-1" />
-                <KarmaCounter
-                  value={profile.karma_total}
-                  size="lg"
-                  className="text-white font-black !text-5xl"
-                />
-              </div>
-              <p className="text-white/70 text-xs font-medium mb-4">toplam karma</p>
+              {/* Progress bar */}
+              {toNext > 0 && (
+                <div style={{ marginTop: 18 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 7, gap: 8 }}>
+                    <span style={{ color: '#A89E8A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <em style={{ fontStyle: 'italic', color: '#F4EEDF', fontFamily: 'var(--font-display)' }}>
+                        {nextTierName}
+                      </em>
+                      {`'ye`}
+                    </span>
+                    <span style={{ color: '#E8C268', fontWeight: 700, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+                      {toNext.toLocaleString('tr-TR')} kaldı
+                    </span>
+                  </div>
+                  <div style={{ height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 999, overflow: 'hidden' }}>
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+                      style={{
+                        height: '100%',
+                        background: 'linear-gradient(90deg, #B58F3D, #E8C268)',
+                        borderRadius: 999,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-              {/* Completed missions pill */}
-              <div className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1.5 w-fit">
-                <CheckCircle2 size={14} className="text-white" />
-                <span className="text-white font-bold text-sm">{completedIds.size}</span>
-                <span className="text-white/70 text-xs">görev tamamlandı</span>
+              {/* Stat strip */}
+              <div style={{
+                display: 'flex', marginTop: 18, paddingTop: 16,
+                borderTop: '1px solid #3F3830',
+              }}>
+                {[
+                  { label: 'GÖREV', value: completedIds.size, sub: 'tamamlandı', flame: false },
+                  { label: 'SERİ',  value: `${profile.streak ?? 0} gün`, sub: 'kesintisiz', flame: true },
+                  { label: 'SIRA',  value: '#-', sub: 'bu ay', flame: false },
+                ].map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    style={{
+                      flex: 1, textAlign: 'center', padding: '0 4px',
+                      borderLeft: i > 0 ? '1px solid #3F3830' : 'none',
+                    }}
+                  >
+                    <p style={{ margin: 0, fontSize: 9, fontWeight: 700, color: '#A89E8A', letterSpacing: '0.18em', textTransform: 'uppercase' }}>
+                      {stat.label}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, marginTop: 5 }}>
+                      {stat.flame && <Flame size={11} style={{ color: '#E8C268' }} />}
+                      <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.015em', fontVariantNumeric: 'tabular-nums' }}>
+                        {stat.value}
+                      </p>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 10, color: '#A89E8A', marginTop: 3 }}>{stat.sub}</p>
+                  </div>
+                ))}
               </div>
             </div>
+          </motion.div>
 
-            {/* Right: avatar */}
-            <div className="relative flex items-end justify-center w-28 flex-shrink-0">
-              <motion.button
-                onClick={() => setShowPicker(true)}
-                whileTap={{ scale: 0.95 }}
-                className="w-full h-full flex items-end justify-center pb-2"
-              >
-                <Lottie
-                  animationData={currentAvatar.anim}
-                  loop
-                  autoplay
-                  className="w-28 h-28"
-                />
-              </motion.button>
-              <div className="absolute top-3 right-3 bg-white/20 rounded-full p-1">
-                <Pencil size={11} className="text-white" />
+          {/* Floating avatar button */}
+          <motion.button
+            onClick={() => setShowPicker(true)}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              position: 'absolute',
+              top: 22, right: 22,
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+              zIndex: 10,
+            }}
+          >
+            <div style={{ position: 'relative', width: 64, height: 64 }}>
+              <Lottie animationData={currentAvatar.anim} loop autoplay style={{ width: 64, height: 64 }} />
+              <div style={{
+                position: 'absolute', top: -4, right: -4,
+                background: 'rgba(46,41,35,0.85)',
+                borderRadius: '50%', width: 18, height: 18,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '1px solid #3F3830',
+              }}>
+                <Pencil size={9} style={{ color: '#A89E8A' }} />
               </div>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Avatar Picker Bottom Sheet */}
-        <AnimatePresence>
-          {showPicker && (
-            <>
-              <motion.div
-                className="fixed inset-0 bg-black/40 z-40"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowPicker(false)}
-              />
-              <motion.div
-                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 px-4 pt-5 pb-10"
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
-                transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              >
-                <div className="w-10 h-1 bg-stone-200 rounded-full mx-auto mb-5" />
-                <h3 className="font-display font-bold text-stone-900 text-lg mb-4 text-center">
-                  Maskotunu Seç
-                </h3>
-                <div className="grid grid-cols-5 gap-3">
-                  {avatarOptions.map(option => (
-                    <motion.button
-                      key={option.type}
-                      onClick={() => handleAvatarSelect(option.type)}
-                      whileTap={{ scale: 0.92 }}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-colors ${
-                        avatarType === option.type
-                          ? 'bg-primary/15 ring-2 ring-primary'
-                          : 'bg-stone-50'
-                      }`}
-                    >
-                      <Lottie
-                        animationData={option.anim}
-                        loop
-                        autoplay
-                        className="w-14 h-14"
-                      />
-                      <span className="text-[10px] font-semibold text-stone-600 truncate w-full text-center">
-                        {option.label.split(' ')[0]}
-                      </span>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+          </motion.button>
+        </div>
       </div>
 
-      <div className="px-4 space-y-7">
-        {/* In-Progress */}
+      {/* Avatar Picker Bottom Sheet */}
+      <AnimatePresence>
+        {showPicker && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/60 z-40"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setShowPicker(false)}
+            />
+            <motion.div
+              className="fixed bottom-0 left-0 right-0 z-50 px-4 pt-5 pb-10"
+              style={{ background: '#2E2923', borderRadius: '24px 24px 0 0', borderTop: '1px solid #3F3830' }}
+              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+            >
+              <div style={{ width: 40, height: 4, background: '#574E42', borderRadius: 999, margin: '0 auto 20px' }} />
+              <h3 style={{ margin: '0 0 16px', textAlign: 'center', fontSize: 17, fontWeight: 700, color: '#F4EEDF' }}>
+                Maskotunu Seç
+              </h3>
+              <div className="grid grid-cols-5 gap-3">
+                {avatarOptions.map(option => (
+                  <motion.button
+                    key={option.type}
+                    onClick={() => handleAvatarSelect(option.type)}
+                    whileTap={{ scale: 0.92 }}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                      padding: 8, borderRadius: 16, border: 'none', cursor: 'pointer',
+                      background: avatarType === option.type
+                        ? 'rgba(232,194,104,0.14)'
+                        : 'rgba(255,255,255,0.03)',
+                      outline: avatarType === option.type
+                        ? '2px solid rgba(232,194,104,0.5)'
+                        : 'none',
+                    }}
+                  >
+                    <Lottie animationData={option.anim} loop autoplay style={{ width: 52, height: 52 }} />
+                    <span style={{ fontSize: 10, fontWeight: 600, color: '#A89E8A' }}>
+                      {option.label}
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <div className="px-4 space-y-8">
+        {/* In-Progress missions */}
         {inProgressMissions.length > 0 && (
           <section>
-            <h2 className="font-display font-extrabold text-xl text-stone-900 mb-3">
-              Devam Eden
+            <h2 style={{ margin: '0 0 12px', fontSize: 18, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.02em' }}>
+              🔥 Devam Eden
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
               {inProgressMissions.map((mission, i) => (
@@ -208,58 +302,49 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           </section>
         )}
 
-        {/* Featured — grouped by domain, horizontal scroll per group */}
+        {/* Featured missions */}
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display font-extrabold text-xl text-stone-900">Senin İçin Seçtiklerimiz</h2>
-            <Link href="/dashboard/missions" className="text-sm text-primary font-bold">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.02em' }}>
+              Senin İçin Seçtiklerimiz
+            </h2>
+            <Link href="/dashboard/missions" style={{ fontSize: 13, fontWeight: 700, color: '#E8C268', textDecoration: 'none' }}>
               Tümü →
             </Link>
           </div>
           {featuredMissions.length === 0 ? (
-            <div className="text-center py-10 text-stone-400 text-sm">
-              Tüm öne çıkan görevleri tamamladın!
-            </div>
+            <p style={{ color: '#574E42', fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
+              Tüm öne çıkan görevleri tamamladın! 🎉
+            </p>
           ) : (
-            <div className="space-y-4">
-              {Object.entries(
-                featuredMissions.reduce<Record<string, typeof featuredMissions>>((acc, m) => {
-                  const d = m.domain ?? 'default'
-                  if (!acc[d]) acc[d] = []
-                  acc[d].push(m)
-                  return acc
-                }, {})
-              ).map(([domain, domainMissions]) => (
-                <div key={domain}>
-                  <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-                    {domainMissions.map((mission, i) => (
-                      <motion.div
-                        key={mission.id}
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.06 }}
-                      >
-                        <MissionCard
-                          mission={mission}
-                          isCompleted={completedIds.has(mission.id)}
-                          isTaken={takenIds.has(mission.id)}
-                          compact
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+              {featuredMissions.map((mission, i) => (
+                <motion.div
+                  key={mission.id}
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.06 }}
+                >
+                  <MissionCard
+                    mission={mission}
+                    isCompleted={completedIds.has(mission.id)}
+                    isTaken={takenIds.has(mission.id)}
+                    compact
+                  />
+                </motion.div>
               ))}
             </div>
           )}
         </section>
 
-        {/* NGO Feed */}
+        {/* NGO Rail */}
         {ngos.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-display font-extrabold text-xl text-stone-900">Kuruluşlardan</h2>
-              <Link href="/dashboard/ngos" className="text-sm text-primary font-bold">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.02em' }}>
+                Kuruluşlardan
+              </h2>
+              <Link href="/dashboard/ngos" style={{ fontSize: 13, fontWeight: 700, color: '#E8C268', textDecoration: 'none' }}>
                 Tümü →
               </Link>
             </div>
@@ -273,39 +358,58 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.05 }}
                     whileTap={{ scale: 0.97 }}
-                    className="flex-shrink-0 w-[200px]"
+                    style={{ flexShrink: 0, width: 158 }}
                   >
                     <Link href={`/dashboard/ngos/${ngo.id}`}>
-                      <div className="rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
-                        <div
-                          className="h-28 bg-cover bg-center"
-                          style={{
-                            backgroundImage: coverUrl ? `url(${coverUrl})` : undefined,
-                            backgroundColor: coverUrl ? undefined : (ngo.color_accent ?? '#F4B942'),
-                          }}
-                        />
-                        <div className="bg-white px-3 py-3">
-                          <div className="flex items-center gap-2">
+                      <div style={{
+                        background: '#2E2923',
+                        borderRadius: 14,
+                        overflow: 'hidden',
+                        border: '1px solid #3F3830',
+                      }}>
+                        <div style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
+                          <div
+                            style={{
+                              width: '100%', height: '100%',
+                              backgroundImage: coverUrl ? `url(${coverUrl})` : undefined,
+                              backgroundColor: coverUrl ? undefined : (ngo.color_accent ?? '#3F3830'),
+                              backgroundSize: 'cover',
+                              backgroundPosition: 'center',
+                            }}
+                          />
+                          <div style={{
+                            position: 'absolute', inset: 0,
+                            background: 'linear-gradient(180deg, rgba(26,22,18,0) 45%, rgba(26,22,18,0.85) 100%)',
+                          }} />
+                          <div style={{
+                            position: 'absolute', left: 10, bottom: 10,
+                            width: 32, height: 32, borderRadius: '50%',
+                            background: 'white',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                          }}>
                             {ngo.logo_url ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={ngo.logo_url}
                                 alt={ngo.name}
-                                className="w-7 h-7 rounded-lg object-contain border border-stone-100 p-0.5 flex-shrink-0"
-                                onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
+                                style={{ width: '72%', height: '72%', objectFit: 'contain' }}
+                                onError={e => { e.currentTarget.style.display = 'none' }}
                               />
-                            ) : null}
-                            <div
-                              className="w-7 h-7 rounded-lg items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                              style={{ backgroundColor: ngo.color_accent ?? '#F4B942', display: ngo.logo_url ? 'none' : 'flex' }}
-                            >
-                              {(ngo.short_name ?? ngo.name)[0]}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="font-display font-bold text-stone-900 text-xs truncate">{ngo.short_name ?? ngo.name}</p>
-                              <p className="text-[10px] text-stone-400 truncate">{ngo.tagline}</p>
-                            </div>
+                            ) : (
+                              <span style={{ fontSize: 12, fontWeight: 700, color: ngo.color_accent ?? '#E8C268' }}>
+                                {(ngo.short_name ?? ngo.name)[0]}
+                              </span>
+                            )}
                           </div>
+                        </div>
+                        <div style={{ padding: '11px 12px 13px' }}>
+                          <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#F4EEDF', letterSpacing: '-0.015em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {ngo.short_name ?? ngo.name}
+                          </p>
+                          <p style={{ margin: '2px 0 0', fontSize: 11, color: '#A89E8A' }}>
+                            {missions.filter(m => m.ngos?.id === ngo.id).length} aktif görev
+                          </p>
                         </div>
                       </div>
                     </Link>
@@ -316,9 +420,11 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           </section>
         )}
 
-        {/* Discover Grid */}
+        {/* Quick access discover grid */}
         <section>
-          <h2 className="font-display font-extrabold text-xl text-stone-900 mb-3">Keşfet</h2>
+          <h2 style={{ margin: '0 0 12px', fontSize: 18, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.02em' }}>
+            Keşfet
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             {discoverItems.map(({ href, Icon, label, gradient }, i) => (
               <motion.div
@@ -329,11 +435,23 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                 whileTap={{ scale: 0.96 }}
               >
                 <Link href={href}>
-                  <div className={`bg-gradient-to-br ${gradient} rounded-3xl p-5 flex flex-col gap-3`}>
-                    <div className="bg-white/20 rounded-xl p-2.5 w-fit">
-                      <Icon size={20} className="text-white" />
+                  <div style={{
+                    background: '#2E2923',
+                    borderRadius: 16,
+                    border: '1px solid #3F3830',
+                    padding: '18px 16px',
+                    display: 'flex', flexDirection: 'column', gap: 12,
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 12,
+                      background: gradient,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <Icon size={18} style={{ color: 'white' }} />
                     </div>
-                    <span className="font-display font-bold text-white text-sm">{label}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.01em' }}>
+                      {label}
+                    </span>
                   </div>
                 </Link>
               </motion.div>
