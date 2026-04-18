@@ -12,6 +12,7 @@ import {
   ChipDS,
   IconButtonDS,
 } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 // ── Tier helpers ───────────────────────────────────────────────
 
@@ -85,6 +86,7 @@ const FILTERS = ['Tümü', 'Yakınımda', 'Bu hafta sonu', 'Online', 'Kısa', 'U
 // ── Component ─────────────────────────────────────────────────
 
 export function DashboardClient({ profile, missions, userMissions, ngos }: Props) {
+  const { colors: c } = useTheme()
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
   const takenIds     = new Set(userMissions.filter(m => m.status === 'taken').map(m => m.mission_id))
 
@@ -99,8 +101,8 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
     <div
       style={{
         minHeight: '100vh',
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         paddingBottom: 100,
       }}
     >
@@ -114,7 +116,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: '#A89E8A',
+            color: c.ink300,
           }}>
             {formatDateEyebrow()}
           </p>
@@ -124,7 +126,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             fontSize: 22,
             fontWeight: 500,
             letterSpacing: '-0.02em',
-            color: '#F4EEDF',
+            color: c.cream,
           }}>
             Günaydın,{' '}
             <em style={{ fontStyle: 'italic' }}>{firstName}</em>
@@ -137,7 +139,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             <IconButtonDS
               size={38}
               theme="dark"
-              icon={<Bell size={18} color="#F4EEDF" />}
+              icon={<Bell size={18} color={c.cream} />}
             />
           </Link>
           {/* Gold avatar circle */}
@@ -146,7 +148,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
               width: 38,
               height: 38,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #E8C268, #B58F3D)',
+              background: `linear-gradient(135deg, ${c.gold}, ${c.goldDim})`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -187,14 +189,14 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       }}>
         <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
           <QuickAction
-            icon={<Calendar size={18} color="#E8C268" />}
+            icon={<Calendar size={18} color={c.gold} />}
             title="Bu hafta sonu"
             sub="12 görev yakında"
           />
         </Link>
         <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
           <QuickAction
-            icon={<Sparkles size={18} color="#E8C268" />}
+            icon={<Sparkles size={18} color={c.gold} />}
             title="Önerilenler"
             sub="Senin için 6 yeni"
           />
@@ -236,7 +238,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           fontSize: 24,
           fontWeight: 500,
           letterSpacing: '-0.02em',
-          color: '#F4EEDF',
+          color: c.cream,
         }}>
           Senin için seçtik
         </h2>
@@ -245,7 +247,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           style={{
             fontSize: 11,
             fontWeight: 700,
-            color: '#E8C268',
+            color: c.gold,
             letterSpacing: '0.06em',
             textDecoration: 'none',
           }}
@@ -257,7 +259,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       {/* ── 6. Mission cards (vertical) ── */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {featuredMissions.length === 0 ? (
-          <p style={{ color: '#574E42', fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
+          <p style={{ color: c.ink500, fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
             Tüm öne çıkan görevleri tamamladın!
           </p>
         ) : (
@@ -285,7 +287,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                 margin: '0 0 3px',
                 fontSize: 10,
                 fontWeight: 700,
-                color: '#E8C268',
+                color: c.gold,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
               }}>
@@ -296,7 +298,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                 fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
                 fontSize: 22,
                 fontWeight: 500,
-                color: '#F4EEDF',
+                color: c.cream,
               }}>
                 İyiliğin öncüleri
               </h2>
@@ -306,7 +308,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
               style={{
                 fontSize: 11,
                 fontWeight: 700,
-                color: '#E8C268',
+                color: c.gold,
                 letterSpacing: '0.06em',
                 textDecoration: 'none',
               }}
@@ -334,10 +336,10 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                   style={{ flexShrink: 0, width: 158, textDecoration: 'none' }}
                 >
                   <div style={{
-                    background: '#2E2923',
+                    background: c.ink800,
                     borderRadius: 14,
                     overflow: 'hidden',
-                    border: '1px solid #3F3830',
+                    border: `1px solid ${c.ink600}`,
                   }}>
                     {/* 1:1 cover image */}
                     <div style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
@@ -345,7 +347,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                         width: '100%',
                         height: '100%',
                         backgroundImage: coverUrl ? `url(${coverUrl})` : undefined,
-                        backgroundColor: coverUrl ? undefined : (ngo.color_accent ?? '#3F3830'),
+                        backgroundColor: coverUrl ? undefined : (ngo.color_accent ?? c.ink600),
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                       }} />
@@ -379,7 +381,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                             onError={e => { e.currentTarget.style.display = 'none' }}
                           />
                         ) : (
-                          <span style={{ fontSize: 13, fontWeight: 700, color: ngo.color_accent ?? '#E8C268' }}>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: ngo.color_accent ?? c.gold }}>
                             {(ngo.short_name ?? ngo.name)[0]}
                           </span>
                         )}
@@ -392,14 +394,14 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                         margin: 0,
                         fontSize: 14,
                         fontWeight: 600,
-                        color: '#F4EEDF',
+                        color: c.cream,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                       }}>
                         {ngo.short_name ?? ngo.name}
                       </p>
-                      <p style={{ margin: '2px 0 0', fontSize: 11, color: '#A89E8A' }}>
+                      <p style={{ margin: '2px 0 0', fontSize: 11, color: c.ink300 }}>
                         {activeMissionCount} aktif görev
                       </p>
                     </div>

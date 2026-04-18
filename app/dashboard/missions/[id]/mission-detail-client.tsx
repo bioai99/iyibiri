@@ -16,6 +16,7 @@ import {
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 interface Props {
   mission: Mission & { ngos?: { name: string; color_accent: string | null; logo_url: string | null } | null }
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function MissionDetailClient({ mission, userMission, userId }: Props) {
+  const { colors: c } = useTheme()
   const [loading, setLoading] = useState(false)
   const [takeError, setTakeError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
@@ -51,8 +53,8 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 120,
         position: 'relative',
@@ -75,7 +77,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
             }}
           />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, background: '#3F3830' }} />
+          <div style={{ position: 'absolute', inset: 0, background: c.ink600 }} />
         )}
 
         {/* Gradient overlay */}
@@ -116,13 +118,13 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
               }}
             />
             <IconButtonDS
-              icon={<Heart size={18} fill={saved ? '#F4EEDF' : 'none'} />}
+              icon={<Heart size={18} fill={saved ? c.cream : 'none'} />}
               onClick={() => setSaved(s => !s)}
             />
           </div>
         </div>
 
-        {/* Bottom: badge + title */}
+        {/* Bottom: badge + title — v2.1: raw #F4EEDF + textShadow on photo overlay */}
         <div
           style={{
             position: 'absolute',
@@ -145,6 +147,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
               lineHeight: 1.05,
               color: '#F4EEDF',
               margin: 0,
+              textShadow: '0 2px 16px rgba(0,0,0,.5)',
             }}
           >
             {mission.title}
@@ -157,7 +160,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
         <div
           style={{
             padding: '18px 20px 18px',
-            borderBottom: '1px solid #3F3830',
+            borderBottom: `1px solid ${c.ink600}`,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
@@ -189,7 +192,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                 style={{
                   fontSize: 16,
                   fontWeight: 700,
-                  color: mission.ngos.color_accent ?? '#24201B',
+                  color: mission.ngos.color_accent ?? c.ink900,
                 }}
               >
                 {mission.ngos.name[0]}
@@ -199,10 +202,10 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
 
           {/* Name + subtitle */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#F4EEDF', lineHeight: 1.3 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
               {mission.ngos.name}
             </div>
-            <div style={{ fontSize: 11, color: '#A89E8A', marginTop: 2 }}>
+            <div style={{ fontSize: 11, color: c.ink300, marginTop: 2 }}>
               27 yıldır · 12.4K gönüllü
             </div>
           </div>
@@ -212,8 +215,8 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
             onClick={() => setFollowing(f => !f)}
             style={{
               background: 'transparent',
-              border: '1px solid #5C5346',
-              color: '#F4EEDF',
+              border: `1px solid #5C5346`,
+              color: c.cream,
               borderRadius: 999,
               fontSize: 13,
               fontWeight: 500,
@@ -239,22 +242,22 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
         <FactCard
           label="TARİH"
           value={mission.date_label ?? 'Esnek'}
-          icon={<Calendar size={16} color="#E8C268" />}
+          icon={<Calendar size={16} color={c.gold} />}
         />
         <FactCard
           label="SÜRE"
           value={mission.duration ?? '-'}
-          icon={<Clock size={16} color="#E8C268" />}
+          icon={<Clock size={16} color={c.gold} />}
         />
         <FactCard
           label="KONUM"
           value={mission.location ?? 'Belirtilmemiş'}
-          icon={<MapPin size={16} color="#E8C268" />}
+          icon={<MapPin size={16} color={c.gold} />}
         />
         <FactCard
           label="KONTENJAN"
           value={`${mission.spots_left ?? 0} yer`}
-          icon={<Users size={16} color="#E8C268" />}
+          icon={<Users size={16} color={c.gold} />}
           urgent={(mission.spots_left ?? 0) <= 5}
         />
       </div>
@@ -269,7 +272,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
               fontWeight: 700,
               letterSpacing: '.22em',
               textTransform: 'uppercase',
-              color: '#E8C268',
+              color: c.gold,
               marginBottom: 10,
             }}
           >
@@ -286,7 +289,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                 lineHeight: 1.3,
                 letterSpacing: '-0.015em',
                 fontStyle: 'italic',
-                color: '#F4EEDF',
+                color: c.cream,
                 margin: '0 0 0 0',
               }}
             >
@@ -300,7 +303,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
               style={{
                 fontSize: 14,
                 lineHeight: 1.6,
-                color: '#CEC5B2',
+                color: c.ink200,
                 marginTop: 16,
                 margin: mission.impact_statement ? '16px 0 0' : '0',
               }}
@@ -316,7 +319,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
         <div
           style={{
             background: '#1E1B16',
-            border: '1px solid rgba(232,194,104,.32)',
+            border: `1px solid ${c.goldLine}`,
             borderRadius: 16,
             padding: '18px 20px',
             display: 'flex',
@@ -332,7 +335,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                 fontWeight: 700,
                 letterSpacing: '.22em',
                 textTransform: 'uppercase',
-                color: '#A89E8A',
+                color: c.ink300,
                 marginBottom: 8,
               }}
             >
@@ -344,7 +347,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                 style={{
                   fontSize: 32,
                   fontWeight: 700,
-                  color: '#E8C268',
+                  color: c.gold,
                   lineHeight: 1,
                   letterSpacing: '-0.02em',
                 }}
@@ -352,7 +355,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                 +{mission.karma}
               </span>
             </div>
-            <div style={{ fontSize: 13, color: '#A89E8A', marginTop: 2 }}>Karma</div>
+            <div style={{ fontSize: 13, color: c.ink300, marginTop: 2 }}>Karma</div>
           </div>
 
           {/* Right side */}
@@ -369,7 +372,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
             fontWeight: 700,
             letterSpacing: '.22em',
             textTransform: 'uppercase',
-            color: '#A89E8A',
+            color: c.ink300,
             marginBottom: 12,
           }}
         >
@@ -380,10 +383,10 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
           {/* Avatar stack */}
           <div style={{ display: 'flex' }}>
             {[
-              { initial: 'E', bg: '#B58F3D' },
-              { initial: 'M', bg: '#C4CBAC' },
-              { initial: 'D', bg: '#E9CFC2' },
-              { initial: 'B', bg: '#574E42' },
+              { initial: 'E', bg: c.goldDim },
+              { initial: 'M', bg: c.sage },
+              { initial: 'D', bg: c.blush },
+              { initial: 'B', bg: c.ink500 },
             ].map((avatar, i) => (
               <div
                 key={i}
@@ -392,13 +395,13 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
                   height: 34,
                   borderRadius: '50%',
                   background: avatar.bg,
-                  border: '2px solid #1A1612',
+                  border: `2px solid ${c.ink}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 12,
                   fontWeight: 700,
-                  color: '#F4EEDF',
+                  color: c.cream,
                   marginLeft: i === 0 ? 0 : -10,
                   position: 'relative',
                   zIndex: 4 - i,
@@ -410,7 +413,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
           </div>
 
           {/* Text */}
-          <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.4 }}>
+          <div style={{ fontSize: 13, color: c.ink300, lineHeight: 1.4 }}>
             {mission.participants ?? 17} kişi katıldı · senin ağından 3&apos;ü
           </div>
         </div>
@@ -501,7 +504,7 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
             disabled={loading}
             style={{
               width: '100%',
-              background: loading ? '#8A6A2C' : '#E8C268',
+              background: loading ? '#8A6A2C' : c.gold,
               color: '#24201B',
               border: 'none',
               borderRadius: 16,

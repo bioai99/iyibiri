@@ -6,6 +6,7 @@ import { Search, MapPin, Maximize2, Leaf, BookOpen, Heart } from 'lucide-react'
 import { PawPrint } from 'lucide-react'
 import { MissionCard } from '@/components/ui/mission-card'
 import type { MissionWithNGO, NGO } from '@/lib/supabase/types'
+import { useTheme } from '@/lib/theme'
 
 interface DiscoverClientProps {
   missions: MissionWithNGO[]
@@ -27,6 +28,7 @@ const categories = [
 ]
 
 export function DiscoverClient({ missions }: DiscoverClientProps) {
+  const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
   const trendingMission = missions[missions.length - 1] ?? null
@@ -34,8 +36,8 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 140,
       }}
@@ -49,7 +51,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             fontSize: 30,
             fontWeight: 500,
             letterSpacing: '-0.025em',
-            color: '#F4EEDF',
+            color: c.cream,
             lineHeight: 1.25,
           }}
         >
@@ -57,7 +59,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
           <em
             style={{
               fontStyle: 'italic',
-              color: '#E8C268',
+              color: c.gold,
             }}
           >
             iyi
@@ -87,18 +89,18 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             placeholder="NGO, kategori veya şehir"
             style={{
               width: '100%',
-              background: '#2E2923',
-              border: '1px solid #3F3830',
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
               borderRadius: 14,
               padding: '14px 16px 14px 44px',
               fontSize: 15,
-              color: '#F4EEDF',
+              color: c.cream,
               outline: 'none',
               boxSizing: 'border-box',
               transition: 'border-color 180ms ease',
             }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = '#E8C268' }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = '#3F3830' }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = c.gold }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = c.ink600 }}
           />
         </div>
       </div>
@@ -109,25 +111,25 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
           style={{
             position: 'relative',
             aspectRatio: '16/9',
-            background: '#2E2923',
+            background: c.ink800,
             borderRadius: 16,
             overflow: 'hidden',
-            border: '1px solid #3F3830',
+            border: `1px solid ${c.ink600}`,
           }}
         >
-          {/* Grid SVG pattern */}
+          {/* Grid SVG pattern — v2.1: semantic tokens for strokes */}
           <svg
             viewBox="0 0 400 225"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.5 }}
           >
             <defs>
               <pattern id="gMap" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3F3830" strokeWidth=".5" />
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke={c.ink600} strokeWidth=".5" />
               </pattern>
             </defs>
             <rect width="400" height="225" fill="url(#gMap)" />
-            <path d="M20 80 Q80 60 140 80 T260 90 T380 70" stroke="#E8C268" strokeWidth="1.2" fill="none" opacity=".3" />
-            <path d="M30 140 Q100 120 180 150 T320 145" stroke="#C4CBAC" strokeWidth="1" fill="none" opacity=".3" />
+            <path d="M20 80 Q80 60 140 80 T260 90 T380 70" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".3" />
+            <path d="M30 140 Q100 120 180 150 T320 145" stroke={c.sage} strokeWidth="1" fill="none" opacity=".3" />
           </svg>
 
           {/* Pin markers */}
@@ -146,8 +148,8 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             >
               <div
                 style={{
-                  background: pin.active ? '#E8C268' : '#2E2923',
-                  color: pin.active ? '#241E18' : '#F4EEDF',
+                  background: pin.active ? c.gold : c.ink800,
+                  color: pin.active ? '#241E18' : c.cream,
                   border: pin.active ? 'none' : '1px solid #4A4237',
                   borderRadius: 20,
                   padding: '3px 8px',
@@ -163,7 +165,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
                 style={{
                   width: 1.5,
                   height: 8,
-                  background: pin.active ? '#E8C268' : '#4A4237',
+                  background: pin.active ? c.gold : '#4A4237',
                   marginTop: 1,
                 }}
               />
@@ -186,8 +188,8 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
               border: '1px solid rgba(255,255,255,0.08)',
             }}
           >
-            <MapPin size={12} style={{ color: '#E8C268' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#F4EEDF' }}>
+            <MapPin size={12} style={{ color: c.gold }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: c.cream }}>
               İstanbul · 47 görev
             </span>
           </div>
@@ -211,7 +213,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
               padding: 0,
             }}
           >
-            <Maximize2 size={14} style={{ color: '#F4EEDF' }} />
+            <Maximize2 size={14} style={{ color: c.cream }} />
           </button>
         </div>
       </div>
@@ -224,7 +226,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             fontFamily: 'var(--font-fraunces), Fraunces, serif',
             fontSize: 20,
             fontWeight: 500,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.02em',
           }}
         >
@@ -251,8 +253,8 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             >
               <div
                 style={{
-                  background: '#2E2923',
-                  border: '1px solid #3F3830',
+                  background: c.ink800,
+                  border: `1px solid ${c.ink600}`,
                   borderRadius: 14,
                   padding: 16,
                   display: 'flex',
@@ -279,7 +281,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
                 </div>
                 {/* Text */}
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
                     {cat.name}
                   </div>
                   <div style={{ fontSize: 11, color: '#6B6154', marginTop: 2 }}>
@@ -300,7 +302,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             fontWeight: 700,
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
-            color: '#E8C268',
+            color: c.gold,
             marginBottom: 6,
           }}
         >
@@ -312,7 +314,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             fontFamily: 'var(--font-fraunces), Fraunces, serif',
             fontSize: 20,
             fontWeight: 500,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.02em',
           }}
         >

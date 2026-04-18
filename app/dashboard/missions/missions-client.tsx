@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 import { ChipDS } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 interface Props {
   missions: MissionWithNGO[]
@@ -22,6 +23,7 @@ const filters = [
 ]
 
 export function MissionsClient({ missions, userMissions }: Props) {
+  const { colors: c } = useTheme()
   const [activeFilter, setActiveFilter] = useState('all')
 
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
@@ -32,11 +34,11 @@ export function MissionsClient({ missions, userMissions }: Props) {
     : missions.filter(m => m.domain === activeFilter)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#24201B', paddingBottom: 96 }}>
+    <div style={{ minHeight: '100vh', background: c.ink900, paddingBottom: 96 }}>
       {/* Sticky header */}
       <div
         className="sticky top-0 z-10 px-4 pt-12 pb-4"
-        style={{ background: '#24201B', borderBottom: '1px solid #3F3830' }}
+        style={{ background: c.ink900, borderBottom: `1px solid ${c.ink600}` }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
           <h1 style={{
@@ -44,15 +46,15 @@ export function MissionsClient({ missions, userMissions }: Props) {
             fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
             fontSize: 28,
             fontWeight: 500,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.025em',
           }}>
             Görevler
           </h1>
           <span style={{
-            background: 'rgba(232,194,104,0.14)',
-            border: '1px solid rgba(232,194,104,0.3)',
-            color: '#E8C268',
+            background: c.goldSoft,
+            border: `1px solid ${c.goldLine}`,
+            color: c.gold,
             fontSize: 12, fontWeight: 700,
             padding: '2px 10px', borderRadius: 999,
           }}>
@@ -97,13 +99,13 @@ export function MissionsClient({ missions, userMissions }: Props) {
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '64px 0', gap: 12 }}
           >
             <div style={{
-              background: '#2E2923', borderRadius: 20, width: 72, height: 72,
+              background: c.ink800, borderRadius: 20, width: 72, height: 72,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px solid #3F3830', fontSize: 28,
+              border: `1px solid ${c.ink600}`, fontSize: 28,
             }}>
               🔍
             </div>
-            <p style={{ color: '#574E42', fontSize: 13, fontWeight: 500, margin: 0 }}>
+            <p style={{ color: c.ink500, fontSize: 13, fontWeight: 500, margin: 0 }}>
               Bu kategoride görev bulunamadı
             </p>
           </motion.div>

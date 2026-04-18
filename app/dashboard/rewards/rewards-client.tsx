@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Lock } from 'lucide-react'
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
 import { KarmaDotToken, BadgeDS, ChipDS } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 interface Props {
   rewards: Reward[]
@@ -20,6 +21,7 @@ const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80'
 
 export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
+  const { colors: c } = useTheme()
   const [activeTab, setActiveTab] = useState<FilterTab>('Hepsi')
 
   const redeemedIds = useMemo(
@@ -48,8 +50,8 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 140,
       }}
@@ -62,7 +64,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             fontWeight: 700,
             letterSpacing: '.22em',
             textTransform: 'uppercase',
-            color: '#A89E8A',
+            color: c.ink300,
             margin: 0,
             marginBottom: 8,
           }}
@@ -77,14 +79,14 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             letterSpacing: '-0.025em',
             lineHeight: 1.05,
             margin: 0,
-            color: '#F4EEDF',
+            color: c.cream,
           }}
         >
           İyilik{' '}
           <em
             style={{
               fontStyle: 'italic',
-              color: '#E8C268',
+              color: c.gold,
             }}
           >
             ödüllerle
@@ -97,8 +99,8 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       <div style={{ padding: '22px 16px 0' }}>
         <div
           style={{
-            background: 'linear-gradient(135deg, #2E2923, #36302A)',
-            border: '1px solid rgba(232,194,104,.32)',
+            background: `linear-gradient(135deg, ${c.ink800}, ${c.ink700})`,
+            border: `1px solid ${c.goldLine}`,
             borderRadius: 18,
             padding: '18px 22px',
             position: 'relative',
@@ -127,7 +129,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 cx="70"
                 cy="70"
                 r={r}
-                stroke="#E8C268"
+                stroke={c.gold}
                 strokeWidth=".8"
                 fill="none"
               />
@@ -141,7 +143,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 fontSize: 10,
                 fontWeight: 600,
                 letterSpacing: '.06em',
-                color: '#A89E8A',
+                color: c.ink300,
                 margin: 0,
                 marginBottom: 6,
                 textTransform: 'uppercase',
@@ -155,7 +157,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 style={{
                   fontSize: 36,
                   fontWeight: 700,
-                  color: '#E8C268',
+                  color: c.gold,
                   fontVariantNumeric: 'tabular-nums',
                   lineHeight: 1,
                 }}
@@ -170,8 +172,8 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             style={{
               position: 'relative',
               background: 'transparent',
-              border: '1px solid #3F3830',
-              color: '#F4EEDF',
+              border: `1px solid ${c.ink600}`,
+              color: c.cream,
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: '.06em',
@@ -218,7 +220,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 aspectRatio: '16/9',
                 borderRadius: 16,
                 overflow: 'hidden',
-                border: '1px solid #3F3830',
+                border: `1px solid ${c.ink600}`,
               }}
             >
               {/* Background photo */}
@@ -283,7 +285,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                       style={{
                         fontSize: 16,
                         fontWeight: 700,
-                        color: '#E8C268',
+                        color: c.gold,
                         fontVariantNumeric: 'tabular-nums',
                       }}
                     >
@@ -305,7 +307,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             fontFamily: "'Fraunces', serif",
             fontSize: 20,
             fontWeight: 500,
-            color: '#F4EEDF',
+            color: c.cream,
             margin: 0,
           }}
         >
@@ -316,7 +318,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: '.14em',
-            color: '#A89E8A',
+            color: c.ink300,
             textTransform: 'uppercase',
           }}
         >
@@ -329,7 +331,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
           style={{
             padding: '48px 20px',
             textAlign: 'center',
-            color: '#A89E8A',
+            color: c.ink300,
             fontSize: 14,
           }}
         >
@@ -354,8 +356,8 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             <Link key={reward.id} href={`/dashboard/rewards/${reward.id}`}>
               <div
                 style={{
-                  background: '#2E2923',
-                  border: '1px solid #3F3830',
+                  background: c.ink800,
+                  border: `1px solid ${c.ink600}`,
                   borderRadius: 14,
                   overflow: 'hidden',
                   opacity: locked ? 0.65 : 1,
@@ -367,7 +369,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                   style={{
                     position: 'relative',
                     aspectRatio: '4/3',
-                    background: '#1A1612',
+                    background: c.ink,
                   }}
                 >
                   {reward.image_url ? (
@@ -405,14 +407,14 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                         width: 26,
                         height: 26,
                         borderRadius: 999,
-                        background: '#2E2923',
+                        background: c.ink800,
                         backdropFilter: 'blur(6px)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <Lock size={12} color="#A89E8A" />
+                      <Lock size={12} color={c.ink300} />
                     </div>
                   )}
 
@@ -478,7 +480,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
-                      color: '#F4EEDF',
+                      color: c.cream,
                       margin: 0,
                       minHeight: 30,
                       lineHeight: 1.3,
@@ -490,7 +492,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                   {/* Bottom bar */}
                   <div
                     style={{
-                      borderTop: '1px solid #3F3830',
+                      borderTop: `1px solid ${c.ink600}`,
                       marginTop: 8,
                       paddingTop: 8,
                       display: 'flex',
@@ -505,7 +507,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                         style={{
                           fontSize: 12,
                           fontWeight: 700,
-                          color: '#E8C268',
+                          color: c.gold,
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
@@ -519,7 +521,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                         fontSize: 9,
                         fontWeight: 600,
                         letterSpacing: '.08em',
-                        color: locked ? '#A89E8A' : '#E8C268',
+                        color: locked ? c.ink300 : c.gold,
                       }}
                     >
                       {locked ? 'KİLİTLİ' : 'TAKAS →'}

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Clock, MapPin, Heart, Flame } from 'lucide-react'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 interface MissionCardProps {
   mission: MissionWithNGO
@@ -27,6 +28,7 @@ const domainEmoji: Record<string, string> = {
 }
 
 export function MissionCard({ mission, onClick }: MissionCardProps) {
+  const { colors: c } = useTheme()
   const [saved, setSaved] = useState(false)
   const [pressed, setPressed] = useState(false)
 
@@ -48,9 +50,9 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
         onMouseUp={() => setPressed(false)}
         onMouseLeave={() => setPressed(false)}
         style={{
-          background: '#2E2923',
+          background: c.ink800,
           borderRadius: 16,
-          border: '1px solid #3F3830',
+          border: `1px solid ${c.ink600}`,
           overflow: 'hidden',
           cursor: 'pointer',
           transform: pressed ? 'scale(0.985)' : 'scale(1)',
@@ -103,8 +105,8 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
                 <Heart
                   size={14}
                   style={{
-                    fill: saved ? '#E8C268' : 'none',
-                    color: saved ? '#E8C268' : '#F4EEDF',
+                    fill: saved ? c.gold : 'none',
+                    color: saved ? c.gold : c.cream,
                     transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
                   }}
                 />
@@ -134,7 +136,7 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
                     onError={e => { e.currentTarget.style.display = 'none' }}
                   />
                 ) : (
-                  <span style={{ fontSize: 11, fontWeight: 700, color: ngo.color_accent ?? '#E8C268' }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: ngo.color_accent ?? c.gold }}>
                     {(ngo.short_name ?? ngo.name)[0]}
                   </span>
                 )}
@@ -156,7 +158,7 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
           <h2 style={{
             margin: 0,
             fontSize: 20, fontWeight: 700, lineHeight: 1.25,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.02em',
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -171,7 +173,7 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
             <p style={{
               margin: '6px 0 14px',
               fontSize: 13, lineHeight: 1.5,
-              color: '#A89E8A',
+              color: c.ink300,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -209,17 +211,17 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
           {/* Urgency row — only when spotsLeft <= 5 */}
           {spotsLeft <= 5 && (
             <div style={{
-              borderTop: '1px solid #3F3830',
+              borderTop: `1px solid ${c.ink600}`,
               marginTop: 12,
               paddingTop: 12,
               display: 'flex',
               alignItems: 'center',
               gap: 5,
             }}>
-              <Flame size={12} style={{ color: '#E8C268', flexShrink: 0 }} />
+              <Flame size={12} style={{ color: c.gold, flexShrink: 0 }} />
               <span style={{
                 fontSize: 11, fontWeight: 600,
-                color: '#E8C268',
+                color: c.gold,
                 letterSpacing: '0.01em',
               }}>
                 Son {spotsLeft} kişi{mission.date_label ? ` · ${mission.date_label}` : ''}

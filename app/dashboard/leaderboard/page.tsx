@@ -2,16 +2,8 @@
 
 import { useState } from 'react'
 import { KarmaDotToken, ChipDS } from '@/components/ui/ds'
-
-// ── Design tokens ────────────────────────────────────────────────────────────
-const gold     = '#E8C268'
-const goldDim  = '#B58F3D'
-const cream    = '#F4EEDF'
-const ink300   = '#A89E8A'
-const ink600   = '#3F3830'
-const ink700   = '#2E2923'
-const ink800   = '#241E18'
-const ink900   = '#1A1610'
+import { useTheme } from '@/lib/theme'
+import type { SemanticColors } from '@/lib/theme'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const podiumUsers = [
@@ -28,8 +20,13 @@ const rankedUsers = [
   { r: 142, name: 'Ayşe Y. (sen)', k: 2340, me: true, c: '#E8C268' },
 ]
 
+// #3E2F14 is used as dark text on gold podium bar — exception per spec
+const PODIUM_TEXT_DARK = '#3E2F14'
+// #241E18 is used as dark text on gold backgrounds
+const AVATAR_TEXT_DARK = '#241E18'
+
 // ── PodiumPlace sub-component ─────────────────────────────────────────────────
-function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: number }) {
+function PodiumPlace({ user, height, colors: c }: { user: typeof podiumUsers[0]; height: number; colors: SemanticColors }) {
   const isFirst  = user.r === 1
   const avatarSz = isFirst ? 64 : 52
   const initial  = user.name.charAt(0)
@@ -72,14 +69,14 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
             height: avatarSz,
             borderRadius: '50%',
             background: user.c,
-            border: `3px solid ${isFirst ? gold : ink600}`,
+            border: `3px solid ${isFirst ? c.gold : c.ink600}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontFamily: 'Fraunces, serif',
             fontSize: isFirst ? 26 : 20,
             fontWeight: 500,
-            color: ink800,
+            color: AVATAR_TEXT_DARK,
           }}
         >
           {initial}
@@ -96,15 +93,15 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
               width: 26,
               height: 26,
               borderRadius: '50%',
-              background: gold,
-              border: `2px solid ${ink900}`,
+              background: c.gold,
+              border: `2px solid ${c.ink}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontFamily: 'Fraunces, serif',
               fontSize: 13,
               fontWeight: 700,
-              color: ink800,
+              color: AVATAR_TEXT_DARK,
             }}
           >
             1
@@ -118,7 +115,7 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
           margin: isFirst ? '10px 0 4px' : '2px 0 4px',
           fontSize: 12,
           fontWeight: 600,
-          color: cream,
+          color: c.cream,
           textAlign: 'center',
           maxWidth: 90,
           overflow: 'hidden',
@@ -132,7 +129,7 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
       {/* Karma */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10 }}>
         <KarmaDotToken size={9} />
-        <span style={{ fontSize: 11, fontWeight: 700, color: gold }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: c.gold }}>
           {user.k.toLocaleString('tr-TR')}
         </span>
       </div>
@@ -144,9 +141,9 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
           height,
           borderRadius: '10px 10px 0 0',
           background: isFirst
-            ? `linear-gradient(180deg, ${gold}, ${goldDim})`
-            : ink700,
-          border: `1px solid ${isFirst ? goldDim : ink600}`,
+            ? `linear-gradient(180deg, ${c.gold}, ${c.goldDim})`
+            : c.ink800,
+          border: `1px solid ${isFirst ? c.goldDim : c.ink600}`,
           boxShadow: isFirst ? `inset 0 2px 8px rgba(255,255,255,.12)` : undefined,
           display: 'flex',
           alignItems: 'flex-start',
@@ -159,7 +156,7 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
             fontFamily: 'Fraunces, serif',
             fontSize: isFirst ? 28 : 22,
             fontWeight: 500,
-            color: isFirst ? '#3E2F14' : ink300,
+            color: isFirst ? PODIUM_TEXT_DARK : c.ink300,
           }}
         >
           {user.r}
@@ -171,6 +168,7 @@ function PodiumPlace({ user, height }: { user: typeof podiumUsers[0]; height: nu
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function LeaderboardPage() {
+  const { colors: c } = useTheme()
   const [scope, setScope]   = useState<string>('İstanbul')
   const [period, setPeriod] = useState<string>('Bu ay')
 
@@ -187,8 +185,8 @@ export default function LeaderboardPage() {
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 140,
       }}
@@ -202,7 +200,7 @@ export default function LeaderboardPage() {
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: gold,
+            color: c.gold,
           }}
         >
           SIRALAMA
@@ -215,11 +213,11 @@ export default function LeaderboardPage() {
             fontWeight: 500,
             letterSpacing: '-0.025em',
             lineHeight: 1.1,
-            color: cream,
+            color: c.cream,
           }}
         >
           Şehrin en{' '}
-          <em style={{ fontStyle: 'italic', color: gold }}>iyileri</em>
+          <em style={{ fontStyle: 'italic', color: c.gold }}>iyileri</em>
         </h1>
       </div>
 
@@ -243,8 +241,8 @@ export default function LeaderboardPage() {
         <div
           style={{
             display: 'inline-flex',
-            background: ink800,
-            border: `1px solid ${ink600}`,
+            background: c.ink,
+            border: `1px solid ${c.ink600}`,
             borderRadius: 10,
             padding: 3,
           }}
@@ -261,8 +259,8 @@ export default function LeaderboardPage() {
                   borderRadius: 8,
                   fontSize: 11,
                   fontWeight: active ? 700 : 500,
-                  color: active ? '#241E18' : ink300,
-                  background: active ? gold : 'transparent',
+                  color: active ? AVATAR_TEXT_DARK : c.ink300,
+                  background: active ? c.gold : 'transparent',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                   transition: 'all .15s',
@@ -287,7 +285,7 @@ export default function LeaderboardPage() {
         }}
       >
         {podiumOrder.map(({ user, height }) => (
-          <PodiumPlace key={user.r} user={user} height={height} />
+          <PodiumPlace key={user.r} user={user} height={height} colors={c} />
         ))}
       </div>
 
@@ -306,8 +304,8 @@ export default function LeaderboardPage() {
             <div
               key={u.r}
               style={{
-                background: isMe ? 'rgba(232,194,104,.08)' : '#2E2923',
-                border: `1px solid ${isMe ? gold : ink600}`,
+                background: isMe ? 'rgba(232,194,104,.08)' : c.ink800,
+                border: `1px solid ${isMe ? c.gold : c.ink600}`,
                 borderRadius: 12,
                 padding: '12px 14px',
                 display: 'flex',
@@ -321,7 +319,7 @@ export default function LeaderboardPage() {
                   width: 32,
                   fontSize: 13,
                   fontWeight: 700,
-                  color: isMe ? gold : ink300,
+                  color: isMe ? c.gold : c.ink300,
                   fontVariantNumeric: 'tabular-nums',
                   textAlign: 'center',
                   flexShrink: 0,
@@ -343,7 +341,7 @@ export default function LeaderboardPage() {
                   fontFamily: 'Fraunces, serif',
                   fontSize: 14,
                   fontWeight: 500,
-                  color: '#241E18',
+                  color: AVATAR_TEXT_DARK,
                   flexShrink: 0,
                 }}
               >
@@ -356,7 +354,7 @@ export default function LeaderboardPage() {
                   flex: 1,
                   fontSize: 14,
                   fontWeight: isMe ? 700 : 600,
-                  color: cream,
+                  color: c.cream,
                 }}
               >
                 {u.name}
@@ -369,7 +367,7 @@ export default function LeaderboardPage() {
                   style={{
                     fontSize: 14,
                     fontWeight: 700,
-                    color: gold,
+                    color: c.gold,
                     fontVariantNumeric: 'tabular-nums',
                   }}
                 >

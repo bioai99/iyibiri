@@ -6,6 +6,7 @@ import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { logoutAction } from './actions'
 import type { Profile } from '@/lib/supabase/types'
+import { useTheme } from '@/lib/theme'
 
 interface ProfileClientProps {
   profile: Profile
@@ -45,6 +46,7 @@ const timeline = [
 ]
 
 export function ProfileClient({ profile, completedCount, karma }: ProfileClientProps) {
+  const { colors: c } = useTheme()
   const tier = getTierFromKarma(karma)
   const tierName = tierNames[tier] ?? tierNames[1]
   const nextTier = tier < 5 ? tierNames[tier + 1] : null
@@ -60,8 +62,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 140,
       }}
@@ -117,8 +119,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             width: 84,
             height: 84,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #E8C268, #B58F3D)',
-            border: '3px solid #24201B',
+            background: `linear-gradient(135deg, ${c.gold}, ${c.goldDim})`,
+            border: `3px solid ${c.ink900}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -150,7 +152,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 fontWeight: 500,
                 letterSpacing: '-0.025em',
                 lineHeight: 1.1,
-                color: '#F4EEDF',
+                color: c.cream,
                 margin: 0,
               }}
             >
@@ -164,8 +166,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 marginTop: 6,
               }}
             >
-              <MapPin size={11} color="#A89E8A" />
-              <span style={{ fontSize: 12, color: '#A89E8A' }}>İstanbul · 2024&apos;ten beri</span>
+              <MapPin size={11} color={c.ink300} />
+              <span style={{ fontSize: 12, color: c.ink300 }}>İstanbul · 2024&apos;ten beri</span>
             </div>
           </div>
           <TierBadgeDS tier={tierName} />
@@ -176,8 +178,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
       <div style={{ padding: '20px 16px 0' }}>
         <div
           style={{
-            background: '#2E2923',
-            border: '1px solid #3F3830',
+            background: c.ink800,
+            border: `1px solid ${c.ink600}`,
             borderRadius: 16,
             padding: '18px 20px',
           }}
@@ -189,7 +191,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               style={{
                 fontSize: 32,
                 fontWeight: 700,
-                color: '#E8C268',
+                color: c.gold,
                 fontVariantNumeric: 'tabular-nums',
                 letterSpacing: '-0.03em',
                 lineHeight: 1,
@@ -197,7 +199,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             >
               {karma.toLocaleString('tr-TR')}
             </span>
-            <span style={{ fontSize: 12, color: '#A89E8A', marginLeft: 2 }}>Karma</span>
+            <span style={{ fontSize: 12, color: c.ink300, marginLeft: 2 }}>Karma</span>
           </div>
 
           {/* Progress bar */}
@@ -215,7 +217,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               >
                 <span
                   style={{
-                    color: '#A89E8A',
+                    color: c.ink300,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -227,7 +229,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                     style={{
                       fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
                       fontStyle: 'italic',
-                      color: '#F4EEDF',
+                      color: c.cream,
                     }}
                   >
                     {nextTier}
@@ -236,7 +238,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 </span>
                 <span
                   style={{
-                    color: '#E8C268',
+                    color: c.gold,
                     fontWeight: 700,
                     fontVariantNumeric: 'tabular-nums',
                     whiteSpace: 'nowrap',
@@ -258,7 +260,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                   style={{
                     height: '100%',
                     width: `${pct}%`,
-                    background: 'linear-gradient(90deg, #B58F3D, #E8C268)',
+                    background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
                     borderRadius: 999,
                   }}
                 />
@@ -285,8 +287,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
           <div
             key={label}
             style={{
-              background: '#2E2923',
-              border: '1px solid #3F3830',
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
               borderRadius: 12,
               padding: '14px 12px',
               textAlign: 'center',
@@ -298,7 +300,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 fontWeight: 700,
                 letterSpacing: '.22em',
                 textTransform: 'uppercase',
-                color: '#A89E8A',
+                color: c.ink300,
               }}
             >
               {label}
@@ -307,14 +309,14 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               style={{
                 fontSize: 20,
                 fontWeight: 700,
-                color: '#F4EEDF',
+                color: c.cream,
                 fontVariantNumeric: 'tabular-nums',
                 marginTop: 4,
               }}
             >
               {typeof value === 'number' ? value.toLocaleString('tr-TR') : value}
             </div>
-            <div style={{ fontSize: 10, color: '#A89E8A', marginTop: 2 }}>{sub}</div>
+            <div style={{ fontSize: 10, color: c.ink300, marginTop: 2 }}>{sub}</div>
           </div>
         ))}
       </div>
@@ -327,7 +329,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
               fontSize: 20,
               fontWeight: 500,
-              color: '#F4EEDF',
+              color: c.cream,
               margin: 0,
             }}
           >
@@ -346,8 +348,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             <div
               key={name}
               style={{
-                background: '#2E2923',
-                border: '1px solid #3F3830',
+                background: c.ink800,
+                border: `1px solid ${c.ink600}`,
                 borderRadius: 14,
                 padding: '16px 10px',
                 textAlign: 'center',
@@ -360,8 +362,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                   height: 48,
                   borderRadius: '50%',
                   background: locked
-                    ? '#3F3830'
-                    : 'linear-gradient(135deg, #E8C268, #B58F3D)',
+                    ? c.ink600
+                    : `linear-gradient(135deg, ${c.gold}, ${c.goldDim})`,
                   boxShadow: locked
                     ? undefined
                     : 'inset 0 1px 0 rgba(255,255,255,.3)',
@@ -370,7 +372,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                   justifyContent: 'center',
                   margin: '0 auto 8px',
                   fontSize: 20,
-                  color: locked ? '#A89E8A' : '#241E18',
+                  color: locked ? c.ink300 : '#241E18',
                 }}
               >
                 {icon}
@@ -379,13 +381,13 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 style={{
                   fontSize: 12,
                   fontWeight: 600,
-                  color: '#F4EEDF',
+                  color: c.cream,
                   lineHeight: 1.2,
                 }}
               >
                 {name}
               </div>
-              <div style={{ fontSize: 10, color: '#A89E8A', marginTop: 3 }}>{sub}</div>
+              <div style={{ fontSize: 10, color: c.ink300, marginTop: 3 }}>{sub}</div>
             </div>
           ))}
         </div>
@@ -396,8 +398,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
         <Link href="/dashboard/profile/badges" style={{ textDecoration: 'none' }}>
           <div
             style={{
-              background: '#2E2923',
-              border: '1px solid #3F3830',
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
               borderRadius: 14,
               padding: '14px 18px',
               display: 'flex',
@@ -405,10 +407,10 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               justifyContent: 'space-between',
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF' }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
               Tüm Rozetlerim
             </span>
-            <ChevronRight size={16} color="#A89E8A" />
+            <ChevronRight size={16} color={c.ink300} />
           </div>
         </Link>
       </div>
@@ -421,7 +423,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
               fontSize: 20,
               fontWeight: 500,
-              color: '#F4EEDF',
+              color: c.cream,
               margin: 0,
             }}
           >
@@ -453,8 +455,8 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                     width: 10,
                     height: 10,
                     borderRadius: '50%',
-                    background: '#E8C268',
-                    boxShadow: '0 0 0 3px rgba(232,194,104,.2)',
+                    background: c.gold,
+                    boxShadow: `0 0 0 3px ${c.goldSoft}`,
                     flexShrink: 0,
                   }}
                 />
@@ -463,7 +465,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                     style={{
                       width: 1,
                       flex: 1,
-                      background: '#3F3830',
+                      background: c.ink600,
                       marginTop: 6,
                     }}
                   />
@@ -475,7 +477,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: '#F4EEDF',
+                    color: c.cream,
                     lineHeight: 1.3,
                   }}
                 >
@@ -490,16 +492,16 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                     flexWrap: 'wrap',
                   }}
                 >
-                  <span style={{ fontSize: 12, color: '#A89E8A' }}>{ngo}</span>
-                  <span style={{ fontSize: 12, color: '#3F3830' }}>·</span>
-                  <span style={{ fontSize: 12, color: '#A89E8A' }}>{date}</span>
-                  <span style={{ fontSize: 12, color: '#3F3830' }}>·</span>
+                  <span style={{ fontSize: 12, color: c.ink300 }}>{ngo}</span>
+                  <span style={{ fontSize: 12, color: c.ink600 }}>·</span>
+                  <span style={{ fontSize: 12, color: c.ink300 }}>{date}</span>
+                  <span style={{ fontSize: 12, color: c.ink600 }}>·</span>
                   <KarmaDotToken size={12} />
                   <span
                     style={{
                       fontSize: 12,
                       fontWeight: 700,
-                      color: '#E8C268',
+                      color: c.gold,
                       fontVariantNumeric: 'tabular-nums',
                     }}
                   >
@@ -526,7 +528,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
               gap: 8,
               fontSize: 14,
               fontWeight: 600,
-              color: '#A89E8A',
+              color: c.ink300,
               background: 'none',
               border: 'none',
               cursor: 'pointer',

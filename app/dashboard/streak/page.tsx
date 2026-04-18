@@ -3,6 +3,7 @@
 import { ChevronLeft, Share2, Flame } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { IconButtonDS } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 const DAYS = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
@@ -13,31 +14,18 @@ const MILESTONES = [
 ]
 
 const CURRENT_STREAK = 7
-
-// Design tokens
-const tokens = {
-  cream: '#F4EEDF',
-  gold: '#E8C268',
-  goldDim: '#B58F3D',
-  goldSoft: 'rgba(232,194,104,.15)',
-  goldLine: 'rgba(232,194,104,.35)',
-  ink200: '#CEC5B2',
-  ink300: '#A89E8A',
-  ink600: 'rgba(244,238,223,.12)',
-  ink700: 'rgba(244,238,223,.07)',
-  ink800: 'rgba(26,22,18,.45)',
-  bg: '#24201B',
-  coinDark: '#3E2F14',
-}
+// #3E2F14 is used as dark text on gold coin — exception per spec
+const COIN_DARK = '#3E2F14'
 
 export default function StreakPage() {
+  const { colors: c } = useTheme()
   const router = useRouter()
 
   return (
     <div
       style={{
-        background: tokens.bg,
-        color: tokens.cream,
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 40,
       }}
@@ -61,7 +49,7 @@ export default function StreakPage() {
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: tokens.ink300,
+            color: c.ink300,
           }}
         >
           SERİ
@@ -104,7 +92,7 @@ export default function StreakPage() {
               width: 200,
               height: 200,
               borderRadius: '50%',
-              background: 'linear-gradient(145deg, #E8C268, #B58F3D)',
+              background: `linear-gradient(145deg, ${c.gold}, ${c.goldDim})`,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -114,12 +102,12 @@ export default function StreakPage() {
               position: 'relative',
             }}
           >
-            <Flame size={28} color={tokens.coinDark} />
+            <Flame size={28} color={COIN_DARK} />
             <span
               style={{
                 fontSize: 72,
                 fontWeight: 700,
-                color: tokens.coinDark,
+                color: COIN_DARK,
                 letterSpacing: '-0.05em',
                 fontVariantNumeric: 'tabular-nums',
                 marginTop: 4,
@@ -132,7 +120,7 @@ export default function StreakPage() {
               style={{
                 fontSize: 12,
                 fontWeight: 700,
-                color: tokens.coinDark,
+                color: COIN_DARK,
                 letterSpacing: '0.14em',
                 marginTop: 2,
               }}
@@ -152,7 +140,7 @@ export default function StreakPage() {
             fontWeight: 500,
             letterSpacing: '-0.025em',
             lineHeight: 1.1,
-            color: tokens.cream,
+            color: c.cream,
             margin: 0,
           }}
         >
@@ -161,7 +149,7 @@ export default function StreakPage() {
         <p
           style={{
             fontSize: 14,
-            color: tokens.ink200,
+            color: c.ink200,
             lineHeight: 1.55,
             maxWidth: 300,
             margin: '12px auto 0',
@@ -176,8 +164,8 @@ export default function StreakPage() {
       <div style={{ padding: '36px 16px 0' }}>
         <div
           style={{
-            background: tokens.ink800,
-            border: `1px solid ${tokens.ink600}`,
+            background: 'rgba(26,22,18,.45)',
+            border: `1px solid rgba(244,238,223,.12)`,
             borderRadius: 16,
             padding: '18px 14px',
             display: 'flex',
@@ -203,8 +191,8 @@ export default function StreakPage() {
                     width: 36,
                     height: 36,
                     borderRadius: '50%',
-                    background: filled ? tokens.gold : tokens.ink700,
-                    border: `1px solid ${filled ? tokens.goldDim : tokens.ink600}`,
+                    background: filled ? c.gold : 'rgba(244,238,223,.07)',
+                    border: `1px solid ${filled ? c.goldDim : 'rgba(244,238,223,.12)'}`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -219,7 +207,7 @@ export default function StreakPage() {
                       height="14"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#3E2F14"
+                      stroke={COIN_DARK}
                       strokeWidth="3"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -234,7 +222,7 @@ export default function StreakPage() {
                     fontSize: 11,
                     fontWeight: 600,
                     letterSpacing: '0.04em',
-                    color: isLast ? tokens.gold : tokens.ink300,
+                    color: isLast ? c.gold : c.ink300,
                   }}
                 >
                   {day}
@@ -253,7 +241,7 @@ export default function StreakPage() {
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: tokens.ink300,
+            color: c.ink300,
             marginBottom: 14,
             margin: '0 0 14px 0',
           }}
@@ -265,8 +253,8 @@ export default function StreakPage() {
             <div
               key={m.at}
               style={{
-                background: tokens.ink800,
-                border: `1px solid ${m.near ? tokens.goldLine : tokens.ink600}`,
+                background: 'rgba(26,22,18,.45)',
+                border: `1px solid ${m.near ? c.goldLine : 'rgba(244,238,223,.12)'}`,
                 borderRadius: 14,
                 padding: '14px 18px',
                 display: 'flex',
@@ -280,8 +268,8 @@ export default function StreakPage() {
                   width: 44,
                   height: 44,
                   borderRadius: 12,
-                  background: m.near ? tokens.goldSoft : tokens.ink700,
-                  border: `1px solid ${m.near ? tokens.goldLine : tokens.ink600}`,
+                  background: m.near ? c.goldSoft : 'rgba(244,238,223,.07)',
+                  border: `1px solid ${m.near ? c.goldLine : 'rgba(244,238,223,.12)'}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -289,7 +277,7 @@ export default function StreakPage() {
                   fontSize: 16,
                   fontWeight: 700,
                   fontVariantNumeric: 'tabular-nums',
-                  color: m.near ? tokens.gold : tokens.ink300,
+                  color: m.near ? c.gold : c.ink300,
                 }}
               >
                 {m.at}
@@ -297,12 +285,12 @@ export default function StreakPage() {
               {/* Content */}
               <div style={{ flex: 1 }}>
                 <div
-                  style={{ fontSize: 14, fontWeight: 600, color: tokens.cream }}
+                  style={{ fontSize: 14, fontWeight: 600, color: c.cream }}
                 >
                   {m.name}
                 </div>
                 <div
-                  style={{ fontSize: 11, color: tokens.ink300, marginTop: 2 }}
+                  style={{ fontSize: 11, color: c.ink300, marginTop: 2 }}
                 >
                   {m.bonus}
                 </div>
@@ -313,7 +301,7 @@ export default function StreakPage() {
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: '0.04em',
-                  color: m.near ? tokens.gold : tokens.ink300,
+                  color: m.near ? c.gold : c.ink300,
                   flexShrink: 0,
                 }}
               >

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, MapPin, ArrowRight } from 'lucide-react'
 import type { Mission } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, KarmaDotToken } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -16,6 +17,7 @@ interface MissionStatesProps {
 // ─── Eyebrow label ─────────────────────────────────────────────────────────────
 
 function Eyebrow({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
@@ -23,7 +25,7 @@ function Eyebrow({ children, style }: { children: React.ReactNode; style?: React
         fontWeight: 700,
         letterSpacing: '.22em',
         textTransform: 'uppercase' as const,
-        color: '#E8C268',
+        color: c.gold,
         ...style,
       }}
     >
@@ -35,6 +37,7 @@ function Eyebrow({ children, style }: { children: React.ReactNode; style?: React
 // ─── Status icons ───────────────────────────────────────────────────────────
 
 function HourglassIcon() {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
@@ -48,7 +51,7 @@ function HourglassIcon() {
         flexShrink: 0,
       }}
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C4CBAC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.sage} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 22h14" />
         <path d="M5 2h14" />
         <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
@@ -59,6 +62,7 @@ function HourglassIcon() {
 }
 
 function QRIcon() {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
@@ -72,7 +76,7 @@ function QRIcon() {
         flexShrink: 0,
       }}
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C268" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.gold} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="5" height="5" x="3" y="3" rx="1" />
         <rect width="5" height="5" x="16" y="3" rx="1" />
         <rect width="5" height="5" x="3" y="16" rx="1" />
@@ -91,6 +95,7 @@ function QRIcon() {
 }
 
 function CheckIcon() {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
@@ -104,7 +109,7 @@ function CheckIcon() {
         flexShrink: 0,
       }}
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C268" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.gold} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="20 6 9 17 4 12" />
       </svg>
     </div>
@@ -114,6 +119,7 @@ function CheckIcon() {
 // ─── Status strip ───────────────────────────────────────────────────────────
 
 function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'completed'; karma: number }) {
+  const { colors: c } = useTheme()
   const configs = {
     applied: {
       icon: <HourglassIcon />,
@@ -130,7 +136,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       sub: 'Konuma vardığında kod ile katıl.',
       containerStyle: {
         background: '#2A2820',
-        border: '1px solid rgba(232,194,104,.25)',
+        border: `1px solid rgba(232,194,104,.25)`,
       },
     },
     completed: {
@@ -139,7 +145,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       sub: `Bu görevden +${karma} Karma kazandın.`,
       containerStyle: {
         background: 'linear-gradient(135deg, #2C2518 0%, #241E12 100%)',
-        border: '1px solid rgba(232,194,104,.35)',
+        border: `1px solid rgba(232,194,104,.35)`,
       },
     },
   }
@@ -160,10 +166,10 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       >
         {cfg.icon}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#F4EEDF', lineHeight: 1.3 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
             {cfg.title}
           </div>
-          <div style={{ fontSize: 13, color: '#A89E8A', marginTop: 3, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 13, color: c.ink300, marginTop: 3, lineHeight: 1.4 }}>
             {cfg.sub}
           </div>
         </div>
@@ -175,6 +181,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
 // ─── Applied state body ─────────────────────────────────────────────────────
 
 function AppliedBody({ onCancel }: { onCancel: () => void }) {
+  const { colors: c } = useTheme()
   const steps = [
     {
       num: 1,
@@ -213,7 +220,7 @@ function AppliedBody({ onCancel }: { onCancel: () => void }) {
                 width: 30,
                 height: 30,
                 borderRadius: '50%',
-                background: step.active ? '#E8C268' : 'transparent',
+                background: step.active ? c.gold : 'transparent',
                 border: step.active ? 'none' : '1px solid #5C5346',
                 display: 'flex',
                 alignItems: 'center',
@@ -229,7 +236,7 @@ function AppliedBody({ onCancel }: { onCancel: () => void }) {
 
             {/* Text */}
             <div style={{ paddingTop: 4 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF', lineHeight: 1.3 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
                 {step.title}
               </div>
               <div style={{ fontSize: 12, color: '#7A7060', marginTop: 2, lineHeight: 1.4 }}>
@@ -248,7 +255,7 @@ function AppliedBody({ onCancel }: { onCancel: () => void }) {
             width: '100%',
             background: 'transparent',
             border: '1px solid #5C5346',
-            color: '#F4EEDF',
+            color: c.cream,
             borderRadius: 999,
             padding: '14px 20px',
             fontSize: 15,
@@ -266,6 +273,7 @@ function AppliedBody({ onCancel }: { onCancel: () => void }) {
 // ─── CheckIn state body ─────────────────────────────────────────────────────
 
 function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
+  const { colors: c } = useTheme()
   return (
     <>
       {/* Participation code card */}
@@ -285,7 +293,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
               fontFamily: '"IBM Plex Mono", monospace',
               fontSize: 44,
               fontWeight: 700,
-              color: '#E8C268',
+              color: c.gold,
               letterSpacing: '.08em',
               fontVariantNumeric: 'tabular-nums',
               lineHeight: 1.1,
@@ -304,7 +312,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
         <div
           style={{
             background: '#1E1B16',
-            border: '1px solid #3F3830',
+            border: `1px solid ${c.ink600}`,
             borderRadius: 14,
             padding: '14px 18px',
             display: 'flex',
@@ -314,7 +322,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
         >
           <div>
             <Eyebrow style={{ marginBottom: 4 }}>Buluşma</Eyebrow>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF', lineHeight: 1.3 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
               Kilyos Sahili · 09:30
             </div>
           </div>
@@ -323,8 +331,8 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
             onClick={onMap}
             style={{
               background: '#1E1B16',
-              border: '1px solid #3F3830',
-              color: '#F4EEDF',
+              border: `1px solid ${c.ink600}`,
+              color: c.cream,
               borderRadius: 999,
               fontSize: 13,
               fontWeight: 500,
@@ -336,7 +344,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
               flexShrink: 0,
             }}
           >
-            <MapPin size={14} color="#E8C268" />
+            <MapPin size={14} color={c.gold} />
             Harita
           </button>
         </div>
@@ -348,7 +356,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
           onClick={onQR}
           style={{
             width: '100%',
-            background: '#E8C268',
+            background: c.gold,
             color: '#241E18',
             border: 'none',
             borderRadius: 16,
@@ -378,6 +386,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
   onShare: () => void
   onNewMission: () => void
 }) {
+  const { colors: c } = useTheme()
   const [rating, setRating] = useState(4)
   const extraPhotos = [
     'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&q=80',
@@ -396,7 +405,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
         <div
           style={{
             background: '#1E1B16',
-            border: '1px solid rgba(232,194,104,.35)',
+            border: `1px solid rgba(232,194,104,.35)`,
             borderRadius: 18,
             padding: 22,
             position: 'relative',
@@ -416,10 +425,10 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
               pointerEvents: 'none',
             }}
           >
-            <circle cx="80" cy="80" r="80" fill="none" stroke="#E8C268" strokeWidth="1" />
-            <circle cx="80" cy="80" r="60" fill="none" stroke="#E8C268" strokeWidth="1" />
-            <circle cx="80" cy="80" r="40" fill="none" stroke="#E8C268" strokeWidth="1" />
-            <circle cx="80" cy="80" r="20" fill="none" stroke="#E8C268" strokeWidth="1" />
+            <circle cx="80" cy="80" r="80" fill="none" stroke={c.gold} strokeWidth="1" />
+            <circle cx="80" cy="80" r="60" fill="none" stroke={c.gold} strokeWidth="1" />
+            <circle cx="80" cy="80" r="40" fill="none" stroke={c.gold} strokeWidth="1" />
+            <circle cx="80" cy="80" r="20" fill="none" stroke={c.gold} strokeWidth="1" />
           </svg>
 
           <Eyebrow style={{ marginBottom: 12 }}>Kazandın</Eyebrow>
@@ -430,7 +439,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
               style={{
                 fontSize: 48,
                 fontWeight: 700,
-                color: '#E8C268',
+                color: c.gold,
                 lineHeight: 1,
                 letterSpacing: '-0.02em',
               }}
@@ -439,7 +448,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
             </span>
           </div>
 
-          <div style={{ fontSize: 13, color: '#A89E8A' }}>
+          <div style={{ fontSize: 13, color: c.ink300 }}>
             Bakiye: 2.490 Karma
           </div>
         </div>
@@ -456,7 +465,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
             lineHeight: 1.35,
             letterSpacing: '-0.015em',
             fontStyle: 'italic',
-            color: '#F4EEDF',
+            color: c.cream,
             margin: 0,
           }}
         >
@@ -500,17 +509,17 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
         <div
           style={{
             background: '#1E1B16',
-            border: '1px solid #3F3830',
+            border: `1px solid ${c.ink600}`,
             borderRadius: 14,
             padding: '16px 18px',
           }}
         >
-          <div style={{ fontSize: 14, fontWeight: 600, color: '#F4EEDF', marginBottom: 12 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: c.cream, marginBottom: 12 }}>
             TEMA Vakfı&apos;nı nasıl buldun?
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {[1, 2, 3, 4, 5].map((star) => (
-              <svg key={star} width="28" height="28" viewBox="0 0 24 24" fill={star <= rating ? '#E8C268' : 'none'} stroke="#E8C268" strokeWidth="1.5" style={{ cursor: 'pointer' }} onClick={() => setRating(star)}>
+              <svg key={star} width="28" height="28" viewBox="0 0 24 24" fill={star <= rating ? c.gold : 'none'} stroke={c.gold} strokeWidth="1.5" style={{ cursor: 'pointer' }} onClick={() => setRating(star)}>
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
             ))}
@@ -525,8 +534,8 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
           style={{
             flex: 1,
             background: 'transparent',
-            border: '1px solid #3F3830',
-            color: '#F4EEDF',
+            border: `1px solid ${c.ink600}`,
+            color: c.cream,
             borderRadius: 16,
             padding: '14px 16px',
             fontSize: 15,
@@ -545,7 +554,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
           onClick={onNewMission}
           style={{
             flex: 1,
-            background: '#E8C268',
+            background: c.gold,
             border: 'none',
             color: '#241E18',
             borderRadius: 16,
@@ -570,6 +579,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
 // ─── Main export ────────────────────────────────────────────────────────────
 
 export function MissionStatesClient({ mission, state }: MissionStatesProps) {
+  const { colors: c } = useTheme()
   const router = useRouter()
 
   function handleShare() {
@@ -583,8 +593,8 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 120,
       }}
@@ -607,7 +617,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
             }}
           />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, background: '#3F3830' }} />
+          <div style={{ position: 'absolute', inset: 0, background: c.ink600 }} />
         )}
 
         {/* Gradient overlay */}
@@ -641,7 +651,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
           )}
         </div>
 
-        {/* Bottom: badge + title */}
+        {/* Bottom: badge + title — raw #F4EEDF on photo overlay per v2.1 spec */}
         <div
           style={{
             position: 'absolute',
@@ -664,6 +674,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
               lineHeight: 1.05,
               color: '#F4EEDF',
               margin: 0,
+              textShadow: '0 2px 16px rgba(0,0,0,.5)',
             }}
           >
             {mission.title}

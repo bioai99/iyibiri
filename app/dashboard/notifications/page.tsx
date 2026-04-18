@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Sparkles, Star, Flame, Clock, Users } from 'lucide-react'
 import { KarmaDotToken } from '@/components/ui/ds'
+import { useTheme } from '@/lib/theme'
 
 type NotifKind = 'karma' | 'match' | 'tier' | 'streak' | 'reminder' | 'social'
 
@@ -26,40 +27,42 @@ const earlierNotifs: Notif[] = [
   { kind: 'social', title: 'Zeynep ekibine katıldı', sub: 'Barınakta Gönüllü Günü · Haytap', time: '3 gün' },
 ]
 
-const iconConfig: Record<NotifKind, { bg: string; content: React.ReactNode }> = {
-  karma: {
-    bg: 'rgba(232,194,104,.15)',
-    content: <KarmaDotToken size={18} />,
-  },
-  match: {
-    bg: 'rgba(196,203,172,.15)',
-    content: <Sparkles size={18} color="#C4CBAC" />,
-  },
-  tier: {
-    bg: 'rgba(232,194,104,.15)',
-    content: <Star size={18} color="#E8C268" />,
-  },
-  streak: {
-    bg: 'rgba(232,194,104,.15)',
-    content: <Flame size={18} color="#E8C268" />,
-  },
-  reminder: {
-    bg: 'rgba(233,207,194,.15)',
-    content: <Clock size={18} color="#E9CFC2" />,
-  },
-  social: {
-    bg: 'rgba(244,238,223,.06)',
-    content: <Users size={18} color="#F4EEDF" />,
-  },
-}
-
 function NotifRow({ notif }: { notif: Notif }) {
+  const { colors: c } = useTheme()
+
+  const iconConfig: Record<NotifKind, { bg: string; content: React.ReactNode }> = {
+    karma: {
+      bg: c.goldSoft,
+      content: <KarmaDotToken size={18} />,
+    },
+    match: {
+      bg: 'rgba(196,203,172,.15)',
+      content: <Sparkles size={18} color={c.sage} />,
+    },
+    tier: {
+      bg: c.goldSoft,
+      content: <Star size={18} color={c.gold} />,
+    },
+    streak: {
+      bg: c.goldSoft,
+      content: <Flame size={18} color={c.gold} />,
+    },
+    reminder: {
+      bg: 'rgba(233,207,194,.15)',
+      content: <Clock size={18} color={c.blush} />,
+    },
+    social: {
+      bg: 'rgba(244,238,223,.06)',
+      content: <Users size={18} color={c.cream} />,
+    },
+  }
+
   const { bg, content } = iconConfig[notif.kind]
   return (
     <div
       style={{
-        background: notif.fresh ? 'rgba(232,194,104,.04)' : '#2E2923',
-        border: notif.fresh ? '1px solid rgba(232,194,104,.32)' : '1px solid #3F3830',
+        background: notif.fresh ? 'rgba(232,194,104,.04)' : c.ink800,
+        border: notif.fresh ? `1px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
         borderRadius: 14,
         padding: '14px 16px',
         display: 'flex',
@@ -90,7 +93,7 @@ function NotifRow({ notif }: { notif: Notif }) {
           style={{
             fontSize: 14,
             fontWeight: 600,
-            color: '#F4EEDF',
+            color: c.cream,
             paddingTop: 2,
           }}
         >
@@ -99,7 +102,7 @@ function NotifRow({ notif }: { notif: Notif }) {
         <div
           style={{
             fontSize: 12,
-            color: '#A89E8A',
+            color: c.ink300,
             marginTop: 3,
           }}
         >
@@ -111,7 +114,7 @@ function NotifRow({ notif }: { notif: Notif }) {
       <div
         style={{
           fontSize: 11,
-          color: '#7A6F5E',
+          color: c.ink400,
           whiteSpace: 'nowrap',
           paddingTop: 3,
         }}
@@ -129,8 +132,8 @@ function NotifRow({ notif }: { notif: Notif }) {
             width: 7,
             height: 7,
             borderRadius: '50%',
-            background: '#E8C268',
-            boxShadow: '0 0 0 3px rgba(232,194,104,.2)',
+            background: c.gold,
+            boxShadow: `0 0 0 3px ${c.goldSoft}`,
           }}
         />
       )}
@@ -139,13 +142,14 @@ function NotifRow({ notif }: { notif: Notif }) {
 }
 
 export default function NotificationsPage() {
+  const { colors: c } = useTheme()
   const [allRead, setAllRead] = useState(false)
 
   return (
     <div
       style={{
-        background: '#24201B',
-        color: '#F4EEDF',
+        background: c.ink900,
+        color: c.cream,
         minHeight: '100%',
         paddingBottom: 40,
       }}
@@ -166,7 +170,7 @@ export default function NotificationsPage() {
               fontWeight: 700,
               letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              color: '#A89E8A',
+              color: c.ink300,
             }}
           >
             BİLDİRİMLER
@@ -185,7 +189,7 @@ export default function NotificationsPage() {
             <em
               style={{
                 fontStyle: 'italic',
-                color: '#E8C268',
+                color: c.gold,
               }}
             >
               iyilikler
@@ -198,7 +202,7 @@ export default function NotificationsPage() {
           style={{
             background: 'transparent',
             border: 'none',
-            color: '#E8C268',
+            color: c.gold,
             fontSize: 11,
             fontWeight: 700,
             letterSpacing: '0.04em',
@@ -220,7 +224,7 @@ export default function NotificationsPage() {
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: '#E8C268',
+            color: c.gold,
           }}
         >
           BUGÜN
@@ -249,7 +253,7 @@ export default function NotificationsPage() {
             fontWeight: 700,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: '#A89E8A',
+            color: c.ink300,
           }}
         >
           DAHA ÖNCE

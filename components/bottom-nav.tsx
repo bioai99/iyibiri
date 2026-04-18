@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Home, Search, ListChecks, Gift, User } from 'lucide-react'
+import { useTheme } from '@/lib/theme'
 
 const navItems = [
   { href: '/dashboard',          label: 'Ana Sayfa', icon: Home },
@@ -14,6 +15,7 @@ const navItems = [
 ]
 
 export function BottomNav() {
+  const { colors: c } = useTheme()
   const pathname = usePathname()
 
   return (
@@ -23,7 +25,7 @@ export function BottomNav() {
         zIndex: 100,
         background: 'rgba(26,22,18,.85)',
         backdropFilter: 'blur(18px) saturate(140%)',
-        borderTop: '1px solid #3F3830',
+        borderTop: `1px solid ${c.ink600}`,
         padding: '10px 8px 28px',
         display: 'flex',
         justifyContent: 'space-around',
@@ -53,14 +55,14 @@ export function BottomNav() {
                       position: 'absolute',
                       inset: -8,
                       borderRadius: '50%',
-                      background: 'rgba(232,194,104,.12)',
+                      background: c.goldSoft,
                     }}
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
                 <Icon
                   size={22}
-                  style={{ position: 'relative', color: isActive ? '#E8C268' : '#A89E8A' }}
+                  style={{ position: 'relative', color: isActive ? c.gold : c.ink300 }}
                   strokeWidth={isActive ? 2.5 : 1.8}
                 />
               </div>
@@ -69,7 +71,7 @@ export function BottomNav() {
                   fontSize: 10,
                   fontWeight: 600,
                   letterSpacing: '.02em',
-                  color: isActive ? '#E8C268' : '#A89E8A',
+                  color: isActive ? c.gold : c.ink300,
                 }}
               >
                 {label}
