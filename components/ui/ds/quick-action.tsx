@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface QuickActionProps {
   icon: React.ReactNode
@@ -9,11 +10,12 @@ interface QuickActionProps {
 }
 
 export function QuickAction({ icon, title, sub }: QuickActionProps) {
+  const { colors: c } = useTheme()
   return (
     <button
       style={{
-        background: '#2E2923',
-        border: '1px solid #3F3830',
+        background: c.ink800,
+        border: `1px solid ${c.ink600}`,
         borderRadius: 14,
         padding: '14px 14px 12px',
         display: 'flex',
@@ -31,8 +33,8 @@ export function QuickAction({ icon, title, sub }: QuickActionProps) {
           height: 34,
           borderRadius: 10,
           flexShrink: 0,
-          background: 'rgba(232,194,104,.12)',
-          border: '1px solid rgba(232,194,104,.32)',
+          background: c.goldSoft,
+          border: `1px solid ${c.goldLine}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -45,14 +47,14 @@ export function QuickAction({ icon, title, sub }: QuickActionProps) {
           style={{
             fontSize: 13,
             fontWeight: 600,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.015em',
             lineHeight: 1.25,
           }}
         >
           {title}
         </div>
-        <div style={{ fontSize: 11, color: '#A89E8A', marginTop: 3, lineHeight: 1.35 }}>
+        <div style={{ fontSize: 11, color: c.ink300, marginTop: 3, lineHeight: 1.35 }}>
           {sub}
         </div>
       </div>

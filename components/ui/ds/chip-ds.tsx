@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface ChipDSProps {
   active?: boolean
@@ -11,17 +12,18 @@ interface ChipDSProps {
 }
 
 export function ChipDS({ active, children, icon, onClick, theme = 'dark' }: ChipDSProps) {
+  const { colors: c } = useTheme()
   const tokens =
     theme === 'dark'
       ? {
-          bg:     active ? 'rgba(232,194,104,.12)' : 'transparent',
-          border: active ? '#E8C268' : '#3F3830',
-          color:  active ? '#E8C268' : '#A89E8A',
+          bg:     active ? c.goldSoft : 'transparent',
+          border: active ? c.gold : c.ink600,
+          color:  active ? c.gold : c.ink300,
         }
       : {
-          bg:     active ? '#24201B' : 'transparent',
-          border: active ? '#24201B' : '#CEC5B2',
-          color:  active ? '#F4EEDF' : '#574E42',
+          bg:     active ? c.ink900 : 'transparent',
+          border: active ? c.ink900 : c.ink200,
+          color:  active ? c.cream : c.ink500,
         }
 
   return (

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface IconButtonDSProps {
   icon: React.ReactNode
@@ -11,9 +12,10 @@ interface IconButtonDSProps {
 }
 
 export function IconButtonDS({ icon, onClick, size = 36, theme = 'dark', style = {} }: IconButtonDSProps) {
+  const { colors: c } = useTheme()
   const tokens =
     theme === 'dark'
-      ? { bg: 'rgba(26,22,18,.55)', border: 'rgba(244,238,223,.14)', color: '#F4EEDF' }
+      ? { bg: 'rgba(26,22,18,.55)', border: 'rgba(244,238,223,.14)', color: c.cream }
       : { bg: 'rgba(250,245,233,.95)', border: 'rgba(26,22,18,.08)', color: '#241E18' }
 
   return (

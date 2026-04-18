@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface BadgeDSProps {
   children: React.ReactNode
@@ -9,15 +10,17 @@ interface BadgeDSProps {
   style?: React.CSSProperties
 }
 
-const variantStyles: Record<string, { bg: string; border: string; color: string }> = {
-  neutral:      { bg: 'rgba(255,255,255,.04)',   border: '#3F3830',                    color: '#A89E8A' },
-  gold:         { bg: 'rgba(232,194,104,.12)',   border: 'rgba(232,194,104,.32)',       color: '#E8C268' },
-  dark:         { bg: '#1A1612',                 border: 'transparent',                color: '#F4EEDF' },
-  onImage:      { bg: 'rgba(26,22,18,.55)',       border: 'rgba(244,238,223,.16)',       color: '#F4EEDF' },
-  onImageLight: { bg: 'rgba(250,245,233,.92)',   border: 'rgba(26,22,18,.06)',          color: '#24201B' },
-}
-
 export function BadgeDS({ children, icon, variant = 'neutral', style = {} }: BadgeDSProps) {
+  const { colors: c } = useTheme()
+
+  const variantStyles: Record<string, { bg: string; border: string; color: string }> = {
+    neutral:      { bg: 'rgba(255,255,255,.04)',   border: c.ink600,                    color: c.ink300 },
+    gold:         { bg: c.goldSoft,                border: c.goldLine,                  color: c.gold },
+    dark:         { bg: c.ink,                     border: 'transparent',               color: c.cream },
+    onImage:      { bg: 'rgba(26,22,18,.55)',       border: 'rgba(244,238,223,.16)',      color: c.cream },
+    onImageLight: { bg: 'rgba(250,245,233,.92)',    border: 'rgba(26,22,18,.06)',         color: c.ink900 },
+  }
+
   const v = variantStyles[variant]
   const isOnImage = variant === 'onImage' || variant === 'onImageLight'
   return (

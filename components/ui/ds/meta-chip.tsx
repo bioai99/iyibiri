@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface MetaChipProps {
   icon?: React.ReactNode
@@ -8,6 +9,7 @@ interface MetaChipProps {
 }
 
 export function MetaChip({ icon, children }: MetaChipProps) {
+  const { colors: c } = useTheme()
   return (
     <span
       style={{
@@ -16,11 +18,11 @@ export function MetaChip({ icon, children }: MetaChipProps) {
         gap: 4,
         fontSize: 11,
         fontWeight: 500,
-        color: '#CEC5B2',
+        color: c.ink200,
         background: 'rgba(255,255,255,.03)',
         padding: '5px 9px',
         borderRadius: 999,
-        border: '1px solid #3F3830',
+        border: `1px solid ${c.ink600}`,
         letterSpacing: '0',
       }}
     >

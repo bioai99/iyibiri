@@ -1,16 +1,19 @@
 'use client'
 
+import { useTheme } from '@/lib/theme'
+
 interface ImpactSummaryProps {
   completed: number
   karma: number
 }
 
 export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
         background: 'linear-gradient(135deg, rgba(233,207,194,.12), rgba(196,203,172,.08))',
-        border: '1px solid #3F3830',
+        border: `1px solid ${c.ink600}`,
         borderRadius: 18,
         padding: '22px 22px',
         position: 'relative',
@@ -23,7 +26,7 @@ export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
           fontWeight: 700,
           letterSpacing: '.22em',
           textTransform: 'uppercase',
-          color: '#A89E8A',
+          color: c.ink300,
           marginBottom: 8,
         }}
       >
@@ -35,19 +38,19 @@ export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
           fontSize: 26,
           fontWeight: 500,
           letterSpacing: '-0.02em',
-          color: '#F4EEDF',
+          color: c.cream,
           marginTop: 8,
           lineHeight: 1.2,
           fontVariantNumeric: 'tabular-nums',
         }}
       >
-        <span style={{ color: '#E8C268' }}>{(48620).toLocaleString('tr-TR')}</span> gönüllü ·
-        <span style={{ color: '#E8C268' }}> {(3421000).toLocaleString('tr-TR')}</span> Karma
+        <span style={{ color: c.gold }}>{(48620).toLocaleString('tr-TR')}</span> gönüllü ·
+        <span style={{ color: c.gold }}> {(3421000).toLocaleString('tr-TR')}</span> Karma
       </div>
       <div
         style={{
           fontSize: 13,
-          color: '#A89E8A',
+          color: c.ink300,
           marginTop: 6,
           maxWidth: 280,
           lineHeight: 1.5,
@@ -58,7 +61,7 @@ export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
           style={{
             fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
             fontStyle: 'italic',
-            color: '#F4EEDF',
+            color: c.cream,
           }}
         >
           #142

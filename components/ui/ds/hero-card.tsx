@@ -4,6 +4,7 @@ import React from 'react'
 import { Flame } from 'lucide-react'
 import { KarmaDotToken } from './karma-dot-token'
 import { TierBadgeDS } from './tier-badge-ds'
+import { useTheme } from '@/lib/theme'
 
 interface HeroCardProfile {
   karma: number
@@ -29,6 +30,7 @@ function HeroStat({
   sub: string
   icon?: React.ReactNode
 }) {
+  const { colors: c } = useTheme()
   return (
     <div style={{ flex: 1, textAlign: 'center', padding: '0 4px' }}>
       <div
@@ -37,7 +39,7 @@ function HeroStat({
           fontWeight: 700,
           letterSpacing: '.22em',
           textTransform: 'uppercase',
-          color: '#A89E8A',
+          color: c.ink300,
         }}
       >
         {label}
@@ -56,7 +58,7 @@ function HeroStat({
           style={{
             fontSize: 16,
             fontWeight: 700,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.015em',
             fontVariantNumeric: 'tabular-nums',
           }}
@@ -64,22 +66,23 @@ function HeroStat({
           {value}
         </div>
       </div>
-      <div style={{ fontSize: 10, color: '#A89E8A', marginTop: 3 }}>{sub}</div>
+      <div style={{ fontSize: 10, color: c.ink300, marginTop: 3 }}>{sub}</div>
     </div>
   )
 }
 
 export function HeroCard({ profile }: HeroCardProps) {
+  const { colors: c } = useTheme()
   const p = profile
   const pct = Math.round((p.karma / (p.karma + p.karmaToNext)) * 100)
 
   return (
     <div
       style={{
-        background: '#2E2923',
+        background: c.ink800,
         borderRadius: 20,
         padding: '22px 22px 18px',
-        border: '1px solid #3F3830',
+        border: `1px solid ${c.ink600}`,
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -98,7 +101,7 @@ export function HeroCard({ profile }: HeroCardProps) {
         }}
       >
         {[110, 80, 50, 20].map((r) => (
-          <circle key={r} cx="120" cy="120" r={r} stroke="#E8C268" strokeWidth="0.8" fill="none" />
+          <circle key={r} cx="120" cy="120" r={r} stroke={c.gold} strokeWidth="0.8" fill="none" />
         ))}
       </svg>
 
@@ -118,7 +121,7 @@ export function HeroCard({ profile }: HeroCardProps) {
               fontWeight: 700,
               letterSpacing: '.22em',
               textTransform: 'uppercase',
-              color: '#A89E8A',
+              color: c.ink300,
             }}
           >
             Karma Hesabın
@@ -138,7 +141,7 @@ export function HeroCard({ profile }: HeroCardProps) {
                 fontSize: 56,
                 lineHeight: 0.95,
                 letterSpacing: '-0.035em',
-                color: '#E8C268',
+                color: c.gold,
                 fontVariantNumeric: 'tabular-nums',
                 marginLeft: 4,
               }}
@@ -164,7 +167,7 @@ export function HeroCard({ profile }: HeroCardProps) {
         >
           <span
             style={{
-              color: '#A89E8A',
+              color: c.ink300,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -176,7 +179,7 @@ export function HeroCard({ profile }: HeroCardProps) {
               style={{
                 fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
                 fontStyle: 'italic',
-                color: '#F4EEDF',
+                color: c.cream,
               }}
             >
               {p.nextTier}
@@ -185,7 +188,7 @@ export function HeroCard({ profile }: HeroCardProps) {
           </span>
           <span
             style={{
-              color: '#E8C268',
+              color: c.gold,
               fontWeight: 700,
               fontVariantNumeric: 'tabular-nums',
               whiteSpace: 'nowrap',
@@ -207,7 +210,7 @@ export function HeroCard({ profile }: HeroCardProps) {
             style={{
               height: '100%',
               width: `${pct}%`,
-              background: 'linear-gradient(90deg, #B58F3D, #E8C268)',
+              background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
               borderRadius: 999,
               transition: 'width 220ms cubic-bezier(.2,.8,.2,1)',
             }}
@@ -221,18 +224,18 @@ export function HeroCard({ profile }: HeroCardProps) {
           display: 'flex',
           marginTop: 18,
           paddingTop: 16,
-          borderTop: '1px solid #3F3830',
+          borderTop: `1px solid ${c.ink600}`,
         }}
       >
         <HeroStat label="GÖREV" value={p.completed} sub="tamamlandı" />
-        <div style={{ width: 1, background: '#3F3830' }} />
+        <div style={{ width: 1, background: c.ink600 }} />
         <HeroStat
           label="SERİ"
           value={`${p.streak} gün`}
           sub="kesintisiz"
-          icon={<Flame size={11} color="#E8C268" />}
+          icon={<Flame size={11} color={c.gold} />}
         />
-        <div style={{ width: 1, background: '#3F3830' }} />
+        <div style={{ width: 1, background: c.ink600 }} />
         <HeroStat label="SIRA" value="#142" sub="bu ay" />
       </div>
     </div>

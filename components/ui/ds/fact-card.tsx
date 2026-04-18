@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTheme } from '@/lib/theme'
 
 interface FactCardProps {
   label: string
@@ -10,11 +11,12 @@ interface FactCardProps {
 }
 
 export function FactCard({ label, value, icon, urgent }: FactCardProps) {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
-        background: '#2E2923',
-        border: `1px solid ${urgent ? 'rgba(232,194,104,.32)' : '#3F3830'}`,
+        background: c.ink800,
+        border: `1px solid ${urgent ? c.goldLine : c.ink600}`,
         borderRadius: 14,
         padding: '14px 14px 12px',
       }}
@@ -27,7 +29,7 @@ export function FactCard({ label, value, icon, urgent }: FactCardProps) {
             fontWeight: 700,
             letterSpacing: '.22em',
             textTransform: 'uppercase',
-            color: '#A89E8A',
+            color: c.ink300,
           }}
         >
           {label}
@@ -37,7 +39,7 @@ export function FactCard({ label, value, icon, urgent }: FactCardProps) {
         style={{
           fontSize: 15,
           fontWeight: 600,
-          color: urgent ? '#E8C268' : '#F4EEDF',
+          color: urgent ? c.gold : c.cream,
           letterSpacing: '-0.015em',
         }}
       >
