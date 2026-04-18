@@ -14,6 +14,18 @@
     --ring: 42 73% 66%;
     --muted: 43 25% 92%;
     --muted-foreground: 26 14% 48%;
+    --secondary: 220 20% 92%;
+    --secondary-foreground: 220 30% 20%;
+    --accent: 220 15% 93%;
+    --accent-foreground: 220 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 10%;
+    --trust: 214 52% 23%;
+    --trust-foreground: 0 0% 100%;
+    --impact: 145 57% 40%;
+    --impact-foreground: 0 0% 100%;
     --radius: 1rem;
   }
 

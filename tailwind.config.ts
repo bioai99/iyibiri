@@ -52,12 +52,38 @@ const config: Config = {
           animals: '#F97316',
           culture: '#A855F7',
         },
-        // Legacy aliases (keeps existing pages from breaking)
+        // Legacy aliases — keep existing pages from breaking
         primary: {
           DEFAULT: '#E8C268',
           dark: '#B58F3D',
           light: '#FDE68A',
           foreground: '#24201B',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary, 220 20% 92%))',
+          foreground: 'hsl(var(--secondary-foreground, 220 30% 20%))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent, 220 15% 93%))',
+          foreground: 'hsl(var(--accent-foreground, 220 30% 10%))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive, 0 84% 60%))',
+          foreground: 'hsl(var(--destructive-foreground, 0 0% 100%))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover, 0 0% 100%))',
+          foreground: 'hsl(var(--popover-foreground, 220 30% 10%))',
+        },
+        surface: '#FFFFFF',
+        danger: '#EF4444',
+        trust: {
+          DEFAULT: 'hsl(var(--trust, 214 52% 23%))',
+          foreground: 'hsl(var(--trust-foreground, 0 0% 100%))',
+        },
+        impact: {
+          DEFAULT: 'hsl(var(--impact, 145 57% 40%))',
+          foreground: 'hsl(var(--impact-foreground, 0 0% 100%))',
         },
         'text-primary': '#F4EEDF',
         'text-muted': '#A89E8A',
