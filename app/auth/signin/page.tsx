@@ -34,35 +34,12 @@ export default function SigninPage() {
   const [error, setError] = useState<string | null>(null)
 
   async function handleOAuthLogin(provider: 'google' | 'apple') {
-    const supabase = createClient()
-    const isNative = typeof (window as any).Capacitor !== 'undefined'
+    const { isNativePlatform, handleNativeOAuth } = await import('@/lib/auth/oauth-native')
 
-    if (isNative) {
-      const { data } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: 'https://www.iyibiri.app/auth/callback',
-          skipBrowserRedirect: true,
-          ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
-        },
-      })
-      if (data.url) {
-        const { Browser } = await import('@capacitor/browser')
-        await Browser.open({ url: data.url, presentationStyle: 'popover' })
-
-        const { App } = await import('@capacitor/app')
-        App.addListener('appUrlOpen', async ({ url }) => {
-          if (url.includes('/auth/callback')) {
-            const code = new URL(url).searchParams.get('code')
-            if (code) {
-              await supabase.auth.exchangeCodeForSession(code)
-              await Browser.close()
-              window.location.href = '/dashboard'
-            }
-          }
-        })
-      }
+    if (isNativePlatform()) {
+      await handleNativeOAuth(provider)
     } else {
+      const supabase = createClient()
       const { data } = await supabase.auth.signInWithOAuth({
         provider,
         options: {

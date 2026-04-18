@@ -10,7 +10,7 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
   ios: {
-    scheme: 'İyiBiri',
+    scheme: 'iyibiri',
     contentInset: 'automatic',
   },
   android: {
