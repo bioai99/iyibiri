@@ -1,820 +1,465 @@
 import Link from "next/link";
-import WaitlistForm from "@/components/waitlist-form";
-import Logo from "@/components/logo";
 
-/* ─────────────────────────── DATA ─────────────────────────── */
-
-const HOW_IT_WORKS = [
-  {
-    step: "01",
-    title: "Görev Seç",
-    desc: "TEMA'dan sahil temizliği, Kızılay'dan komşu dayanışması — sana özel görevler seni bekliyor.",
-  },
-  {
-    step: "02",
-    title: "Tamamla & Doğrula",
-    desc: "Fotoğraf çek, QR tara veya kod gir. 60 saniyede tamamlandı.",
-  },
-  {
-    step: "03",
-    title: "Karma Kazan",
-    desc: "Her iyilik hesabına anında yansır. Karma biriktikçe seviye atlar, yeni görevler açılır.",
-  },
-  {
-    step: "04",
-    title: "Ödül Al",
-    desc: "Starbucks, Nike, Migros — gerçek markalardan gerçek ödüller. Karma'nı harca.",
-  },
-];
-
-const DOMAINS = [
-  {
-    title: "Doğa & Çevre",
-    partner: "TEMA Vakfı",
-    desc: "Ağaç dikimi, geri dönüşüm ve temizlik etkinlikleri.",
-    badge: "bg-emerald-500 text-white",
-    logo: "/tema-logo.png",
-    photo: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    title: "Eğitim & Gençlik",
-    partner: "TOG",
-    desc: "Mentorluk, burs desteği ve toplum gönüllülüğü.",
-    badge: "bg-blue-500 text-white",
-    logo: "/tog-logo.svg",
-    photo: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    title: "Toplum Dayanışması",
-    partner: "ÇYDD",
-    desc: "Bağış kampanyaları, gıda bankası ve maddi destek.",
-    badge: "bg-rose-500 text-white",
-    logo: "/cydd-logo.png",
-    photo: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    title: "Hayvan Hakları",
-    partner: "Haytap",
-    desc: "Mama desteği, barınak gönüllülüğü ve sahiplendirme.",
-    badge: "bg-amber-500 text-white",
-    logo: "/haytap-logo.png",
-    photo: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80&auto=format&fit=crop",
-  },
-];
-
-const STATS = [
-  { value: "40+",    label: "Aktif Görev"          },
-  { value: "4",      label: "İyilik Öncüsü Ortak"  },
-  { value: "1.200+", label: "Erken Kullanıcı"       },
-];
-
-interface LogoItem {
-  name: string;
-  img?: string;
-  svg?: React.ReactNode;
-  bg: string;
-}
-
-const NGO_LOGOS: LogoItem[] = [
-  { name: "TEMA",   img: "/tema-logo.png",   bg: "bg-white" },
-  { name: "TOG",    img: "/tog-logo.svg",    bg: "bg-white" },
-  { name: "ÇYDD",   img: "/cydd-logo.png",   bg: "bg-white" },
-  { name: "Haytap", img: "/haytap-logo.png", bg: "bg-white" },
-];
-
-const BRAND_LOGOS: LogoItem[] = [
-  { name: "Migros", img: "https://upload.wikimedia.org/wikipedia/commons/0/07/MiGROS_Logo.svg", bg: "bg-white" },
-  {
-    name: "Starbucks",
-    img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
-    bg: "bg-white",
-  },
-  { name: "Trendyol",     img: "/trendyol-logo.svg",     bg: "bg-white" },
-  {
-    name: "Nike",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
-    bg: "bg-white",
-  },
-  { name: "Garanti BBVA", img: "/garanti-bbva-logo.svg", bg: "bg-white" },
-];
-
-const KARMA_HOW = [
-  { icon: "🎯", label: "Görev tamamla",       karma: "+50 – 500 Karma" },
-  { icon: "🔥", label: "Aylık görevi tamamla", karma: "+100 Karma/ay"   },
-  { icon: "👥", label: "Arkadaşını davet et", karma: "+100 Karma"      },
-  { icon: "⭐", label: "İlk görevini yap",    karma: "+50 Karma bonus" },
-];
-
-const TIERS = [
-  { name: "İyi Biri",             karma: "0+"      },
-  { name: "Çok İyi Biri",         karma: "1.000+"  },
-  { name: "Çoook İyi Biri",       karma: "5.000+"  },
-  { name: "İyiliğin Öncüsü",      karma: "20.000+" },
-];
-
-const TESTIMONIALS = [
-  {
-    quote: "\"Hem iyilik yapıyorum hem Karma kazanıyorum — motivasyonum gerçekten ikiye katlandı. TEMA görevi çok keyifliydi!\"",
-    name: "Zeynep A.",
-    role: "Beta Kullanıcısı · İstanbul",
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80&auto=format&fit=crop&crop=face",
-  },
-  {
-    quote: "\"TOG mentorluk görevinden 250 Karma kazandım, Starbucks kodum geldi. Böyle bir döngüyü hayal bile etmezdim.\"",
-    name: "Berk T.",
-    role: "Beta Kullanıcısı · Ankara",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80&auto=format&fit=crop&crop=face",
-  },
-];
-
-/* ─────────────────────── SUB-COMPONENTS ─────────────────────── */
-
-function AppMockup() {
-  return (
-    <div className="relative w-full max-w-[280px] sm:max-w-[360px] mx-auto select-none pointer-events-none">
-      {/* Glow */}
-      <div className="absolute inset-0 rounded-[2.5rem] bg-amber-400/10 blur-2xl scale-110 -z-10" />
-
-      {/* Phone shell */}
-      <div className="bg-[#1a1a2e] rounded-[2.5rem] p-[3px] shadow-2xl">
-        <div className="bg-[#F5F5F7] rounded-[2.4rem] p-2.5">
-          {/* Screen */}
-          <div className="bg-white rounded-[2rem] overflow-hidden" style={{ minHeight: 500 }}>
-
-            {/* Header */}
-            <div className="bg-[#1B3A5C] px-5 pt-5 pb-5">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-white/50 text-[10px]">Hoş geldin</p>
-                  <p className="text-white font-bold text-sm font-headline">Ada ✦</p>
-                </div>
-                <div className="flex items-center gap-1.5 bg-amber-400 rounded-xl px-3 py-1.5">
-                  <KarmaToken size={11} />
-                  <span className="text-amber-900 text-[10px] font-bold">2.340 Karma</span>
-                </div>
-              </div>
-
-              {/* Karma bar */}
-              <div className="bg-white/10 rounded-2xl p-3">
-                <div className="flex justify-between text-[10px] text-white/60 mb-2">
-                  <span className="font-bold text-white">Çok İyi Biri</span>
-                  <span>2.340 / 3.000</span>
-                </div>
-                <div className="h-2 bg-white/15 rounded-full overflow-hidden">
-                  <div className="mockup-bar h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" />
-                </div>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <span className="mockup-dot w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
-                  <p className="text-[9px] text-white/40">660 Karma → Gerçekten İyi Biri</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="px-4 py-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-800">Bu Ayın Görevleri</p>
-                <span className="text-[10px] text-amber-500 font-semibold">Tümü →</span>
-              </div>
-
-              {/* Mission card 1 */}
-              <div className="mockup-card-1 bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Doğa & Çevre</span>
-                  <span className="text-[10px] text-gray-400">TEMA</span>
-                </div>
-                <p className="text-xs font-bold text-gray-900 leading-snug">Sahil temizliği etkinliğine katıl</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400">Nisan · 42 kişi</span>
-                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+150 Karma</span>
-                </div>
-              </div>
-
-              {/* Mission card 2 */}
-              <div className="mockup-card-2 bg-blue-50 border border-blue-100 rounded-2xl p-3.5 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Eğitim</span>
-                  <span className="text-[10px] text-gray-400">TOG</span>
-                </div>
-                <p className="text-xs font-bold text-gray-900 leading-snug">İlkokul öğrencisine okuma desteği</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400">Nisan · Online</span>
-                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+250 Karma</span>
-                </div>
-              </div>
-
-              {/* Reward teaser */}
-              <div className="mockup-reward bg-[#1B3A5C]/5 border border-[#1B3A5C]/10 rounded-2xl p-3 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center text-base flex-shrink-0">☕</div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-gray-400">Bir sonraki ödülün</p>
-                  <p className="text-xs font-bold text-gray-900">Starbucks %20 indirim</p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-[10px] text-amber-500 font-bold">660</p>
-                  <p className="text-[9px] text-gray-400">Karma kaldı</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* Floating notification badge */}
-      <div className="mockup-badge absolute -top-2 -right-4 sm:-right-8 bg-amber-400 text-amber-900 rounded-2xl px-3.5 py-2.5 shadow-xl shadow-amber-400/30">
-        <p className="text-[9px] font-semibold opacity-60 mb-0.5">Görev tamamlandı</p>
-        <p className="text-sm font-bold leading-none flex items-center gap-1">+150 <KarmaToken size={13} /></p>
-      </div>
-    </div>
-  );
-}
-
-function MarqueeRow({ items, label }: { items: LogoItem[]; label: string }) {
-  const doubled = [...items, ...items, ...items, ...items];
-  return (
-    <div>
-      <p className="text-center text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">{label}</p>
-      <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        <div className="flex animate-marquee gap-5 w-max">
-          {doubled.map(({ name, img, svg, bg }, i) => (
-            <div
-              key={i}
-              className={`flex items-center justify-center h-[68px] px-6 rounded-2xl border border-gray-100 shadow-sm grayscale hover:grayscale-0 transition-all duration-300 cursor-default flex-shrink-0 ${bg}`}
-              style={{ minWidth: "130px" }}
-              title={name}
-            >
-              {img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={img} alt={name} className="max-h-10 max-w-[110px] object-contain" />
-              ) : (
-                <div className="flex items-center justify-center">{svg}</div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────── CUSTOM ICONS & COMPONENTS ─────────────── */
-
-function KarmaSymbol({ size = 48 }: { size?: number }) {
-  // Konsept: Altın sikke (karma = değer) + kalp (iyilik) + küçük dönüş oku (geri gelir)
-  // Witty mesaj: "Attığın iyilik geri döner" → boomerang/return metaforu
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-      <defs>
-        <radialGradient id="karmaGrad" cx="38%" cy="32%" r="68%">
-          <stop offset="0%" stopColor="#FDE68A"/>
-          <stop offset="55%" stopColor="#F59E0B"/>
-          <stop offset="100%" stopColor="#B45309"/>
-        </radialGradient>
-      </defs>
-      {/* Altın sikke */}
-      <circle cx="32" cy="32" r="30" fill="url(#karmaGrad)"/>
-      <circle cx="32" cy="32" r="25" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" fill="none"/>
-      {/* Kalp */}
-      <path d="M 32 46 C 12 34 12 14 23 14 C 27 14 30 17 32 21 C 34 17 37 14 41 14 C 52 14 52 34 32 46 Z" fill="white"/>
-      {/* Küçük dönüş oku — "iyilik geri döner" */}
-      <path d="M 46 10 A 6.5 6.5 0 1 0 52.5 16.5" stroke="white" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
-      <path d="M 49 10 L 53 15.5 L 47.5 17.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    </svg>
-  );
-}
-
-function KarmaHowIcon({ index }: { index: number }) {
-  const wrap = "w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0";
-  if (index === 0) return (
-    <div className={wrap}>
-      <svg viewBox="0 0 22 22" className="w-5 h-5" fill="none">
-        <circle cx="11" cy="11" r="9" stroke="#F59E0B" strokeWidth="1.8"/>
-        <path d="M 7 11 L 10 14 L 15 8" stroke="#F59E0B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </div>
-  );
-  if (index === 1) return (
-    <div className={wrap}>
-      <svg viewBox="0 0 22 22" className="w-5 h-5" fill="none">
-        <path d="M 11 2 C 9 5 7 7.5 7 10.5 C 7 13.5 8.7 15.5 11 15.5 C 13.3 15.5 15 13.5 15 10.5 C 15 8.5 14 6.5 12.5 5 C 12.5 7.5 11.5 8.5 11 9.5 C 11 7 11.5 4.5 11 2 Z" fill="#F59E0B"/>
-        <ellipse cx="11" cy="17" rx="4" ry="2" fill="#FDE68A"/>
-      </svg>
-    </div>
-  );
-  if (index === 2) return (
-    <div className={wrap}>
-      <svg viewBox="0 0 22 22" className="w-5 h-5" fill="none">
-        <circle cx="8" cy="7" r="3.5" stroke="#F59E0B" strokeWidth="1.8"/>
-        <path d="M 2 19 C 2 15.5 4.7 13 8 13" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M 15 13 V 19 M 12 16 H 18" stroke="#F59E0B" strokeWidth="2.2" strokeLinecap="round"/>
-      </svg>
-    </div>
-  );
-  return (
-    <div className={wrap}>
-      <svg viewBox="0 0 22 22" className="w-5 h-5" fill="#F59E0B">
-        <path d="M 11 2 L 13.2 8.2 L 20 8.2 L 14.5 12.2 L 16.8 18.5 L 11 14.8 L 5.2 18.5 L 7.5 12.2 L 2 8.2 L 8.8 8.2 Z"/>
-      </svg>
-    </div>
-  );
-}
-
-function StepIcon({ step }: { step: string }) {
-  if (step === "01") return (
-    <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center">
-      <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
-        <circle cx="20" cy="20" r="14" stroke="#F59E0B" strokeWidth="2.5"/>
-        <circle cx="20" cy="20" r="8.5" stroke="#F59E0B" strokeWidth="2.5"/>
-        <circle cx="20" cy="20" r="3" fill="#F59E0B"/>
-        <line x1="27" y1="9" x2="22" y2="16" stroke="#1B3A5C" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 24 7 L 29 10 L 26.5 15" stroke="#1B3A5C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-      </svg>
-    </div>
-  );
-  if (step === "02") return (
-    <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
-      <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
-        <path d="M 20 5 L 33 10 L 33 22 C 33 30 27 35 20 37 C 13 35 7 30 7 22 L 7 10 Z" fill="#DBEAFE" stroke="#1B3A5C" strokeWidth="2" strokeLinejoin="round"/>
-        <path d="M 13.5 21 L 18 25.5 L 26.5 15" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </div>
-  );
-  if (step === "03") return (
-    <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center">
-      <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
-        <circle cx="20" cy="20" r="14" fill="#FEF3C7" stroke="#F59E0B" strokeWidth="2"/>
-        <path d="M 20 8 A 12 12 0 1 1 32 20" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-        <path d="M 27 14 L 33 20 L 26.5 24" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-        <path d="M 23 13 L 17 23 H 21.5 L 18 28 L 25 18 H 20.5 Z" fill="#F59E0B"/>
-      </svg>
-    </div>
-  );
-  return (
-    <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
-      <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
-        <rect x="9" y="19" width="22" height="14" rx="2" fill="#D1FAE5" stroke="#059669" strokeWidth="2"/>
-        <rect x="7" y="14" width="26" height="7" rx="2" fill="#D1FAE5" stroke="#059669" strokeWidth="2"/>
-        <line x1="20" y1="14" x2="20" y2="33" stroke="#059669" strokeWidth="2"/>
-        <path d="M 20 14 C 18 11 14 10 13 12.5 C 12 15 16 14 20 14" fill="#A7F3D0" stroke="#059669" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M 20 14 C 22 11 26 10 27 12.5 C 28 15 24 14 20 14" fill="#A7F3D0" stroke="#059669" strokeWidth="1.5" strokeLinejoin="round"/>
-      </svg>
-    </div>
-  );
-}
-
-// Küçük inline kullanım için — metin içinde ⚡ yerine
-function KarmaToken({ size = 14 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0 }}
-    >
-      <circle cx="8" cy="8" r="7.5" fill="#F59E0B"/>
-      <path d="M 8 12 C 3 9 3 5 5.5 4 C 6.2 3.7 7 4.2 8 5.5 C 9 4.2 9.8 3.7 10.5 4 C 13 5 13 9 8 12 Z" fill="white"/>
-    </svg>
-  );
-}
-
-function TierTrack() {
-  const tiers = [
-    { name: "İyi Biri",        karma: "0+",      state: "done"   },
-    { name: "Çok İyi Biri",    karma: "1.000+",  state: "active" },
-    { name: "Çoook İyi Biri",  karma: "5.000+",  state: "next"   },
-    { name: "İyiliğin Öncüsü", karma: "20.000+", state: "next"   },
-  ];
-  return (
-    <div>
-      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">Seviye Skalası</p>
-      <div className="relative">
-        <div className="hidden sm:block absolute top-[15px] left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-amber-300 via-amber-200 to-gray-200 rounded-full" />
-        <div className="flex items-start">
-          {tiers.map(({ name, karma, state }, i) => (
-            <div key={i} className="flex flex-col items-center gap-2 flex-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 border-2 transition-all ${
-                state === "active"
-                  ? "bg-amber-400 border-amber-400 text-white shadow-lg shadow-amber-200 ring-4 ring-amber-100"
-                  : state === "done"
-                    ? "bg-amber-100 border-amber-300 text-amber-600"
-                    : "bg-white border-gray-200 text-gray-300"
-              }`}>
-                {i + 1}
-              </div>
-              <div className="text-center px-1">
-                <p className={`text-[11px] font-bold leading-tight ${
-                  state === "active" ? "text-amber-700" : state === "done" ? "text-gray-600" : "text-gray-400"
-                }`}>{name}</p>
-                <p className={`text-[10px] mt-0.5 font-medium ${
-                  state === "active" ? "text-amber-500" : "text-gray-400"
-                }`}>{karma} <KarmaToken size={10} /></p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────── PAGE ─────────────────────────── */
+/* eslint-disable @next/next/no-img-element */
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col overflow-x-hidden">
+    <>
+      <style>{`
+        .landing *{box-sizing:border-box}
+        .landing a{color:inherit;text-decoration:none}
+        .landing button{cursor:pointer;font-family:inherit}
+        .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
 
-      {/* ── Duyuru bandı (Yakında Geliyor) ── */}
-      <div className="bg-[#1B3A5C] text-white py-2.5 px-6 text-center">
-        <p className="text-xs font-medium">
-          <span className="font-bold text-amber-400">İyiBiri erken erişime açılıyor.</span>
-          {" "}Listeye katıl, ilk kullananlar arasında ol ve özel Karma bonusu kazan.{" "}
-          <a href="#waitlist" className="underline text-amber-300 font-semibold hover:text-amber-200 transition-colors">
-            Katıl →
-          </a>
-        </p>
-      </div>
+        /* NAV */
+        nav.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(26,22,18,.72);border-bottom:1px solid rgba(232,194,104,.12)}
+        nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+        nav.top .links{display:flex;gap:28px;font-size:14px;color:#CEC5B2}
+        nav.top .links a:hover{color:#E8C268}
+        .btn-primary{background:#E8C268;color:#1A1612;border:none;height:42px;padding:0 18px;border-radius:999px;font-weight:700;font-size:14px;letter-spacing:-.01em;display:inline-flex;align-items:center;gap:8px}
+        .btn-primary:hover{background:#F4D98A}
+        .btn-ghost{background:transparent;color:#F4EEDF;border:1px solid rgba(232,194,104,.32);height:42px;padding:0 18px;border-radius:999px;font-weight:600;font-size:14px;display:inline-flex;align-items:center}
+        .btn-ghost:hover{border-color:rgba(232,194,104,.6)}
 
-      {/* ── Navbar ── */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo size="md" variant="full" />
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#nasil-calisir" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">Nasıl Çalışır?</a>
-            <a href="#karma" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">Karma</a>
-            <a href="#iyilik-oncüleri" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">İyilik Öncüleri</a>
-            <a href="#odüller" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">Ödüller</a>
-          </nav>
-          <div className="flex items-center gap-3">
-            <a href="#erisim" className="text-sm font-bold bg-[#1B3A5C] text-white px-5 py-2.5 rounded-xl hover:bg-[#1B3A5C]/90 transition-colors">Erken Erişime Katıl</a>
+        /* HERO */
+        .hero{position:relative;padding:88px 0 120px;overflow:hidden}
+        .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(232,194,104,.18),transparent 55%),radial-gradient(ellipse at 85% 80%,rgba(233,207,194,.08),transparent 50%);pointer-events:none}
+        .hero .grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
+        .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A89E8A;font-weight:700;display:inline-flex;align-items:center;gap:10px;margin-bottom:22px}
+        .eyebrow .dot{width:6px;height:6px;border-radius:999px;background:#E8C268}
+        h1.display{font-family:var(--font-display),serif;font-weight:400;font-size:88px;line-height:1;letter-spacing:-.04em;margin:0 0 24px}
+        h1.display em{font-style:italic;color:#E8C268}
+        .lead{font-size:19px;line-height:1.55;color:#CEC5B2;max-width:520px;margin:0 0 36px}
+        .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+        .store-btn{display:inline-flex;align-items:center;gap:12px;background:#24201B;border:1px solid rgba(232,194,104,.2);color:#F4EEDF;height:56px;padding:0 22px;border-radius:14px;text-align:left}
+        .store-btn:hover{border-color:rgba(232,194,104,.45)}
+        .store-btn .sm{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;font-weight:600}
+        .store-btn .lg{font-family:var(--font-display),serif;font-size:18px;font-weight:500;letter-spacing:-.01em;margin-top:1px}
+        .hero-meta{display:flex;gap:28px;margin-top:38px;padding-top:26px;border-top:1px solid rgba(232,194,104,.14)}
+        .hero-meta .m{font-size:13px;color:#A89E8A}
+        .hero-meta .m b{display:block;font-family:var(--font-display),serif;font-weight:500;font-size:26px;color:#F4EEDF;letter-spacing:-.02em;margin-bottom:2px}
+
+        /* Phone mockup */
+        .phone-wrap{position:relative;display:flex;justify-content:center;align-items:center}
+        .phone{width:340px;height:692px;border-radius:42px;background:#24201B;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(232,194,104,.14),inset 0 0 0 1px rgba(232,194,104,.04);padding:14px;position:relative}
+        .phone::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:96px;height:28px;border-radius:20px;background:#000;z-index:10}
+        .phone-inner{width:100%;height:100%;border-radius:30px;overflow:hidden;background:#1A1612;position:relative}
+        .float-token{position:absolute;filter:drop-shadow(0 12px 30px rgba(232,194,104,.3))}
+        .float-token.a{top:-30px;right:-10px}
+        .float-token.b{bottom:40px;left:-40px}
+
+        /* SECTIONS */
+        section.s{padding:120px 0;position:relative}
+        section.s.alt{background:#24201B}
+        .sec-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A89E8A;font-weight:700;margin-bottom:14px}
+        .sec-title{font-family:var(--font-display),serif;font-weight:400;font-size:56px;line-height:1.05;letter-spacing:-.03em;margin:0 0 18px;max-width:720px}
+        .sec-title em{font-style:italic;color:#E8C268}
+        .sec-lead{font-size:17px;line-height:1.55;color:#CEC5B2;max-width:600px}
+
+        /* 3 column features */
+        .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px}
+        .feat{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden}
+        .feat:hover{border-color:rgba(232,194,104,.25)}
+        .feat .num{font-family:var(--font-display),serif;font-style:italic;font-size:13px;color:#E8C268;letter-spacing:.12em;margin-bottom:28px}
+        .feat h3{font-family:var(--font-display),serif;font-weight:500;font-size:26px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;color:#F4EEDF}
+        .feat p{font-size:14px;line-height:1.6;color:#A89E8A;margin:0}
+
+        /* How it works */
+        .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:64px;position:relative}
+        .steps::before{content:"";position:absolute;top:28px;left:5%;right:5%;height:1px;background:linear-gradient(to right,transparent,rgba(232,194,104,.3),transparent)}
+        .step{position:relative;padding:0 12px}
+        .step .circle{width:56px;height:56px;border-radius:50%;background:#1A1612;border:1px solid rgba(232,194,104,.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display),serif;font-size:22px;color:#E8C268;font-weight:500;margin-bottom:20px}
+        .step h4{font-family:var(--font-display),serif;font-weight:500;font-size:20px;letter-spacing:-.02em;margin:0 0 8px}
+        .step p{font-size:13px;line-height:1.55;color:#A89E8A;margin:0}
+
+        /* Stats bar */
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0;border-top:1px solid rgba(232,194,104,.14);border-bottom:1px solid rgba(232,194,104,.14);padding:40px 0}
+        .stat{padding:0 24px;border-right:1px solid rgba(232,194,104,.1)}
+        .stat:last-child{border-right:none}
+        .stat .num{font-family:var(--font-display),serif;font-weight:500;font-size:48px;letter-spacing:-.025em;color:#F4EEDF;line-height:1}
+        .stat .num em{font-style:italic;color:#E8C268;font-size:32px;margin-right:2px}
+        .stat .lbl{font-size:12px;color:#A89E8A;margin-top:6px;letter-spacing:.04em}
+
+        /* CTA final */
+        .cta-final{text-align:center;padding:120px 0;background:radial-gradient(ellipse at 50% 50%,rgba(232,194,104,.14),transparent 70%)}
+        .cta-final h2{font-family:var(--font-display),serif;font-weight:400;font-size:72px;line-height:1;letter-spacing:-.035em;margin:0 0 24px}
+        .cta-final h2 em{font-style:italic;color:#E8C268}
+        .cta-final .p{font-size:18px;color:#CEC5B2;margin:0 auto 40px;max-width:520px;line-height:1.55}
+        .qr-box{display:inline-flex;align-items:center;gap:20px;background:#2E2923;border:1px solid rgba(232,194,104,.16);border-radius:20px;padding:18px 22px;margin-top:32px}
+        .qr-box .qr{width:84px;height:84px;background:#F4EEDF;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:8px}
+        .qr-box .txt{text-align:left;max-width:200px}
+        .qr-box .txt .h{font-family:var(--font-display),serif;font-size:16px;margin-bottom:2px}
+        .qr-box .txt .s-txt{font-size:12px;color:#A89E8A;line-height:1.4}
+
+        /* Footer */
+        footer.landing-footer{padding:60px 0 40px;border-top:1px solid rgba(232,194,104,.1);background:#1A1612}
+        footer.landing-footer .g{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+        footer.landing-footer h5{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;margin:0 0 16px;font-weight:700}
+        footer.landing-footer ul{list-style:none;padding:0;margin:0}
+        footer.landing-footer li{font-size:14px;color:#CEC5B2;margin-bottom:10px}
+        footer.landing-footer li a:hover{color:#E8C268}
+        .copy{margin-top:48px;padding-top:24px;border-top:1px solid rgba(232,194,104,.08);display:flex;justify-content:space-between;font-size:12px;color:#7A6F5E}
+
+        @media (max-width:960px){
+          .hero .grid{grid-template-columns:1fr;gap:48px}
+          h1.display{font-size:58px}
+          .feat-grid{grid-template-columns:1fr}
+          .steps{grid-template-columns:1fr 1fr;gap:32px 8px}
+          .stats{grid-template-columns:1fr 1fr}
+          footer.landing-footer .g{grid-template-columns:1fr 1fr}
+          .cta-final h2{font-size:48px}
+          .hero-meta{flex-wrap:wrap}
+          .copy{flex-direction:column;gap:8px;align-items:center;text-align:center}
+        }
+
+        @media (max-width:600px){
+          h1.display{font-size:44px}
+          .sec-title{font-size:38px}
+          .cta-final h2{font-size:38px}
+          .steps{grid-template-columns:1fr}
+          .stats{grid-template-columns:1fr}
+          .stat{padding:12px 0;border-right:none;border-bottom:1px solid rgba(232,194,104,.1)}
+          .stat:last-child{border-bottom:none}
+          nav.top .links{display:none}
+          .phone{width:280px;height:572px;border-radius:36px}
+          .phone::before{width:76px;height:22px}
+          footer.landing-footer .g{grid-template-columns:1fr}
+        }
+      `}</style>
+
+      <div className="landing" style={{ margin: 0, padding: 0, background: "#1A1612", color: "#F4EEDF", fontFamily: "var(--font-sans), system-ui, sans-serif", WebkitFontSmoothing: "antialiased" }}>
+
+        {/* ── NAV ── */}
+        <nav className="top">
+          <div className="wrap inner">
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <svg width="32" height="32" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="32" fill="#24201B" />
+                <circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" />
+                <g transform="translate(32,32)">
+                  <rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" />
+                  <rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" />
+                  <circle cx="0" cy="-11" r="4.2" fill="#E8C268" />
+                </g>
+              </svg>
+              <span style={{ fontFamily: "var(--font-display), serif", fontSize: 22, fontWeight: 500, letterSpacing: "-.02em" }}>
+                İyi<em style={{ fontStyle: "italic", color: "#E8C268" }}>Biri</em>
+              </span>
+            </div>
+            <div className="links">
+              <a href="#ne-yapiyoruz">Ne yapıyoruz</a>
+              <a href="#nasil">Nasıl çalışır</a>
+              <a href="#stklar">STK&apos;lar</a>
+              <a href="#manifesto">Manifesto</a>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Link href="/auth/login" className="btn-ghost">Giriş</Link>
+              <Link href="/auth/signup" className="btn-primary">
+                Uygulamayı İndir
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </nav>
 
-      <main className="flex-1">
-
-        {/* ── Hero ── */}
-        <section id="erisim" className="px-6 pt-16 pb-24 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-            {/* Sol */}
-            <div className="flex flex-col gap-7">
-              <h1 className="text-5xl sm:text-6xl lg:text-[62px] font-bold text-[#1B3A5C] leading-[1.08] tracking-tight">
-                İyilik yapmak<br />
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#F4B942 0%,#E8901A 100%)" }}>
-                  hiç bu kadar
-                </span><br />
-                eğlenceli olmamıştı.
+        {/* ── HERO ── */}
+        <section className="hero">
+          <div className="wrap grid">
+            <div>
+              <div className="eyebrow"><span className="dot" />{" "}Türkiye&apos;nin iyilik platformu &middot; Yeni</div>
+              <h1 className="display">
+                <em>İyilik</em><br />
+                biriktirilir.
               </h1>
-
-              <p className="text-lg text-gray-500 leading-relaxed max-w-md">
-                Bir görev seç, tamamla, <strong className="text-[#1B3A5C]">Karma</strong> kazan.
-                Her iyilik seni gerçek ödüllere yaklaştırır.
+              <p className="lead">
+                Mahallendeki STK&apos;lara gönüllü ol, adım adım gerçek görevler tamamla, Karma biriktir. Kampanyalara bağış yerine zaman ver — ödülünü gerçek ortaklarda kullan.
               </p>
+              <div className="cta-row">
+                <Link className="store-btn" href="/auth/login">
+                  <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF">
+                    <path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" />
+                  </svg>
+                  <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
+                </Link>
+                <Link className="store-btn" href="/auth/login">
+                  <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF">
+                    <path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" />
+                  </svg>
+                  <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
+                </Link>
+              </div>
+              <div className="hero-meta">
+                <div className="m"><b>240+</b> partner STK</div>
+                <div className="m"><b>18K</b> aktif gönüllü</div>
+                <div className="m"><b>4.9★</b> kullanıcı puanı</div>
+              </div>
+            </div>
 
-              <div className="flex flex-col gap-3 max-w-md">
-                <WaitlistForm />
-                <p className="text-xs text-gray-400 pl-1">Spam yok. İstediğin zaman çıkabilirsin.</p>
+            <div className="phone-wrap">
+              <svg className="float-token a" width="72" height="72" viewBox="0 0 64 64">
+                <defs>
+                  <radialGradient id="ft1" cx="40%" cy="36%" r="70%">
+                    <stop offset="0%" stopColor="#F4D98A" />
+                    <stop offset="55%" stopColor="#E8C268" />
+                    <stop offset="100%" stopColor="#B58F3D" />
+                  </radialGradient>
+                </defs>
+                <circle cx="32" cy="32" r="30" fill="url(#ft1)" />
+                <circle cx="32" cy="32" r="22" fill="none" stroke="#8A6A2C" strokeOpacity=".4" strokeWidth="0.6" />
+                <g transform="translate(32,32)">
+                  <circle cx="0" cy="-9" r="2.4" fill="#3E2F14" />
+                  <path d="M-3 -3 L-3 12 L3 12 L3 -3 Z" fill="#3E2F14" />
+                  <path d="M-6 12 L6 12 L6 10 L-6 10 Z" fill="#3E2F14" />
+                </g>
+              </svg>
+
+              <div className="phone">
+                <div className="phone-inner">
+                  {/* Simplified hi-fi screenshot of home */}
+                  <div style={{ padding: "50px 18px 0" }}>
+                    <div style={{ fontSize: 10, letterSpacing: ".18em", textTransform: "uppercase", color: "#7A6F5E", fontWeight: 700 }}>Cumartesi &middot; 18 Nisan</div>
+                    <div style={{ fontFamily: "var(--font-display), serif", fontSize: 22, marginTop: 4, color: "#F4EEDF" }}>
+                      Günaydın, <em style={{ color: "#E8C268", fontStyle: "italic" }}>Deniz</em>.
+                    </div>
+                  </div>
+                  {/* Karma card */}
+                  <div style={{ margin: "18px 16px 0", background: "#2E2923", border: "1px solid rgba(232,194,104,.14)", borderRadius: 20, padding: 18 }}>
+                    <div style={{ fontSize: 9, letterSpacing: ".2em", color: "#A89E8A", fontWeight: 700, textTransform: "uppercase" }}>Biriktirdiğin</div>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 }}>
+                      <div style={{ fontFamily: "var(--font-display), serif", fontWeight: 500, fontSize: 52, color: "#F4EEDF", letterSpacing: "-.035em", lineHeight: ".95" }}>1.284</div>
+                      <svg width="22" height="22" viewBox="0 0 64 64">
+                        <defs>
+                          <radialGradient id="ftx" cx="40%" cy="36%" r="70%">
+                            <stop offset="0%" stopColor="#F4D98A" />
+                            <stop offset="100%" stopColor="#B58F3D" />
+                          </radialGradient>
+                        </defs>
+                        <circle cx="32" cy="32" r="30" fill="url(#ftx)" />
+                      </svg>
+                    </div>
+                    <div style={{ fontSize: 11, color: "#A89E8A", marginTop: 6, lineHeight: "1.45" }}>
+                      <em style={{ fontFamily: "var(--font-display), serif", color: "#E8C268", fontStyle: "italic" }}>Çok İyi Biri</em> seviyesindesin.
+                    </div>
+                    <div style={{ height: 3, background: "rgba(232,194,104,.14)", borderRadius: 999, marginTop: 14, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: "58%", background: "#E8C268", borderRadius: 999 }} />
+                    </div>
+                  </div>
+                  {/* Mission card */}
+                  <div style={{ margin: "12px 16px", background: "#2E2923", border: "1px solid rgba(232,194,104,.1)", borderRadius: 18, overflow: "hidden" }}>
+                    <div style={{ height: 92, background: "linear-gradient(135deg,#C8553D,#8a3a27)", display: "flex", alignItems: "flex-end", padding: "10px 12px", color: "#F4EEDF", fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700 }}>Bu hafta</div>
+                    <div style={{ padding: "14px 14px 16px" }}>
+                      <div style={{ fontFamily: "var(--font-display), serif", fontSize: 16, color: "#F4EEDF", lineHeight: "1.25" }}>Kadıköy&apos;de kitap toplama ve paketleme</div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
+                        <div style={{ fontSize: 11, color: "#A89E8A" }}>Cts &middot; 10:00 &middot; 3s</div>
+                        <div style={{ background: "rgba(232,194,104,.14)", color: "#E8C268", fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999 }}>+150</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ margin: "0 16px 16px", background: "#2E2923", border: "1px solid rgba(232,194,104,.08)", borderRadius: 18, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 11, color: "#A89E8A" }}>Yakınında yeni</div>
+                    <div style={{ fontFamily: "var(--font-display), serif", fontSize: 14, color: "#F4EEDF", marginTop: 2 }}>Sahipsiz hayvan mama dağıtımı</div>
+                  </div>
+                </div>
               </div>
 
-              {/* İyilik Öncüleri — gerçek logolar */}
+              <svg className="float-token b" width="56" height="56" viewBox="0 0 64 64">
+                <defs>
+                  <radialGradient id="ft2" cx="40%" cy="36%" r="70%">
+                    <stop offset="0%" stopColor="#F4D98A" />
+                    <stop offset="55%" stopColor="#E8C268" />
+                    <stop offset="100%" stopColor="#B58F3D" />
+                  </radialGradient>
+                </defs>
+                <circle cx="32" cy="32" r="30" fill="url(#ft2)" />
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        {/* ── WHAT IS IT (Features) ── */}
+        <section className="s" id="ne-yapiyoruz">
+          <div className="wrap">
+            <div className="sec-eyebrow">Ne yapıyoruz</div>
+            <h2 className="sec-title">İyilik <em>soyut</em> bir şey değil. Bir görev. Bir saat. Bir adım.</h2>
+            <p className="sec-lead">Gönüllülük dijitalleşiyor ama dağınık. STK&apos;lar e-posta atıyor, insanlar Instagram story&apos;de kayboluyor. İyiBiri, bu ikisini tek bir yerde, ölçülebilir ve ödüllendirilebilir bir sistemde buluşturuyor.</p>
+
+            <div className="feat-grid">
+              <div className="feat">
+                <div className="num">I.</div>
+                <h3>Yakınında gerçek görevler</h3>
+                <p>Mesafe, tarih, süre ve STK filtresiyle sana uygun olanı bul. Kitap paketle, fidan dik, çocuklarla okuma atölyesi yap.</p>
+              </div>
+              <div className="feat">
+                <div className="num">II.</div>
+                <h3>Karma biriktir</h3>
+                <p>Her tamamlanan görev somut Karma kazandırır. STK&apos;nın doğruladığı ve blockchain&apos;de kayıtlı, manipüle edilemez bir itibar puanı.</p>
+              </div>
+              <div className="feat">
+                <div className="num">III.</div>
+                <h3>Gerçek ödüller</h3>
+                <p>Karma&apos;nı partner kafelerde, kitapçılarda, etkinliklerde kullan. İyilik cüzdanı — indirim değil, teşekkür.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── HOW IT WORKS ── */}
+        <section className="s alt" id="nasil">
+          <div className="wrap">
+            <div className="sec-eyebrow">Nasıl çalışır</div>
+            <h2 className="sec-title">Dört adım. <em>Birkaç dakika.</em></h2>
+
+            <div className="steps">
+              <div className="step">
+                <div className="circle">01</div>
+                <h4>Hesap aç</h4>
+                <p>Apple, Google veya e-posta ile 30 saniyede. İlgilendiğin 3 alanı seç.</p>
+              </div>
+              <div className="step">
+                <div className="circle">02</div>
+                <h4>Görev bul</h4>
+                <p>Haritada yakınını, listede bu haftayı gör. Tek dokunuşla başvur.</p>
+              </div>
+              <div className="step">
+                <div className="circle">03</div>
+                <h4>Gerçekleştir</h4>
+                <p>STK koordinatörü check-in yapar. Sen sadece gelip yapıyorsun.</p>
+              </div>
+              <div className="step">
+                <div className="circle">04</div>
+                <h4>Karma al</h4>
+                <p>Görev bitince itibarın büyür. Ödüller cüzdanına düşer.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── STATS ── */}
+        <section className="s" style={{ padding: "60px 0" }}>
+          <div className="wrap">
+            <div className="stats">
+              <div className="stat">
+                <div className="num"><em>+</em>18K</div>
+                <div className="lbl">Aktif gönüllü</div>
+              </div>
+              <div className="stat">
+                <div className="num"><em>+</em>240</div>
+                <div className="lbl">Partner STK</div>
+              </div>
+              <div className="stat">
+                <div className="num">62K</div>
+                <div className="lbl">Tamamlanan görev</div>
+              </div>
+              <div className="stat">
+                <div className="num">81</div>
+                <div className="lbl">Şehir</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA FINAL ── */}
+        <section className="cta-final">
+          <div className="wrap">
+            <h2><em>İyilik</em> biriktirmeye<br />başla.</h2>
+            <p className="p">Uygulamayı indir, 30 saniyede hesap aç — mahallendeki ilk görevini bu hafta seç.</p>
+            <div className="cta-row" style={{ justifyContent: "center" }}>
+              <Link className="store-btn" href="/auth/login">
+                <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF">
+                  <path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" />
+                </svg>
+                <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
+              </Link>
+              <Link className="store-btn" href="/auth/login">
+                <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF">
+                  <path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" />
+                </svg>
+                <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
+              </Link>
+            </div>
+            <div className="qr-box">
+              <div className="qr">
+                <svg viewBox="0 0 68 68" width="68" height="68">
+                  <rect x="0" y="0" width="68" height="68" fill="#F4EEDF" />
+                  <g fill="#1A1612">
+                    <rect x="4" y="4" width="16" height="16" /><rect x="8" y="8" width="8" height="8" fill="#F4EEDF" />
+                    <rect x="48" y="4" width="16" height="16" /><rect x="52" y="8" width="8" height="8" fill="#F4EEDF" />
+                    <rect x="4" y="48" width="16" height="16" /><rect x="8" y="52" width="8" height="8" fill="#F4EEDF" />
+                    <rect x="26" y="6" width="4" height="4" /><rect x="34" y="6" width="4" height="4" /><rect x="28" y="14" width="4" height="4" /><rect x="36" y="14" width="4" height="4" /><rect x="44" y="24" width="4" height="4" />
+                    <rect x="26" y="22" width="4" height="4" /><rect x="34" y="22" width="4" height="4" /><rect x="42" y="30" width="4" height="4" /><rect x="50" y="30" width="4" height="4" />
+                    <rect x="26" y="30" width="4" height="4" /><rect x="34" y="38" width="4" height="4" /><rect x="42" y="46" width="4" height="4" /><rect x="26" y="46" width="4" height="4" />
+                    <rect x="34" y="54" width="4" height="4" /><rect x="42" y="54" width="4" height="4" /><rect x="50" y="46" width="4" height="4" /><rect x="50" y="54" width="4" height="4" />
+                    <rect x="58" y="28" width="4" height="4" /><rect x="58" y="36" width="4" height="4" /><rect x="58" y="44" width="4" height="4" />
+                  </g>
+                </svg>
+              </div>
+              <div className="txt">
+                <div className="h">Telefonla okut</div>
+                <div className="s-txt">QR&apos;ı telefon kameranla tara — mağazaya git.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FOOTER ── */}
+        <footer className="landing-footer">
+          <div className="wrap">
+            <div className="g">
               <div>
-                <p className="text-xs text-gray-400 font-medium mb-3">İyilik Öncülerimiz:</p>
-                <div className="flex flex-wrap gap-3">
-                  {NGO_LOGOS.map(({ name, img }) => (
-                    <div
-                      key={name}
-                      className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 flex items-center justify-center shadow-sm h-12 cursor-default transition-all duration-200 hover:scale-105 hover:shadow-md hover:border-amber-200 active:scale-95"
-                      style={{ minWidth: 100 }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img} alt={name} className="max-h-6 max-w-[80px] object-contain" />
-                    </div>
-                  ))}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <svg width="28" height="28" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="32" fill="#24201B" />
+                    <circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" />
+                    <g transform="translate(32,32)">
+                      <rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" />
+                      <rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" />
+                      <circle cx="0" cy="-11" r="4.2" fill="#E8C268" />
+                    </g>
+                  </svg>
+                  <span style={{ fontFamily: "var(--font-display), serif", fontSize: 20 }}>
+                    İyi<em style={{ fontStyle: "italic", color: "#E8C268" }}>Biri</em>
+                  </span>
                 </div>
+                <p style={{ fontSize: 13, color: "#A89E8A", lineHeight: "1.6", maxWidth: 280 }}>Türkiye&apos;nin iyilik cüzdanı. Zaman ver, Karma biriktir.</p>
               </div>
-            </div>
-
-            {/* Sağ — büyük uygulama mockup */}
-            <div className="flex items-center justify-center py-6 lg:py-0">
-              <AppMockup />
-            </div>
-          </div>
-        </section>
-
-        {/* ── Stats bar ── */}
-        <section className="bg-[#1B3A5C] py-12 px-6">
-          <div className="max-w-3xl mx-auto flex justify-around gap-4">
-            {STATS.map(({ value, label }) => (
-              <div key={label} className="flex flex-col items-center gap-1.5 text-center min-w-0">
-                <span className="text-2xl sm:text-4xl font-bold text-white leading-none">{value}</span>
-                <span className="text-[10px] sm:text-sm text-white/60 font-medium leading-tight">{label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Partner marquees ── */}
-        <section className="py-14 bg-gray-50 flex flex-col gap-10">
-          <div className="max-w-6xl mx-auto w-full px-6 text-center">
-            <h2 className="text-2xl font-bold text-[#1B3A5C] mb-1">Güvenilir ortaklarla büyüyoruz</h2>
-            <p className="text-sm text-gray-400">İyilik Öncülerimiz görevleri oluşturur, Sponsor Markalarımız ödülleri sağlar.</p>
-          </div>
-          <div className="flex flex-col gap-6">
-            <MarqueeRow items={NGO_LOGOS}   label="İyilik Öncüleri" />
-            <MarqueeRow items={BRAND_LOGOS} label="Sponsor Markalar" />
-          </div>
-        </section>
-
-        {/* ── Karma nedir? ── */}
-        <section id="karma" className="px-6 py-24 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="flex flex-col gap-6">
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <KarmaSymbol size={28} />
-                  <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">Karma nedir?</p>
-                </div>
-                <h2 className="text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight mb-4">
-                  İyiliğin sana<br />geri dönen hali.
-                </h2>
-                <p className="text-gray-500 leading-relaxed text-lg">
-                  Karma, İyiBiri'de iyilik yaparak kazandığın puandır. Her tamamlanan görev, her
-                  katkın hesabına Karma olarak yansır. Karma biriktikçe seviyeni yükseltir,
-                  yeni görevler açılır ve Sponsor Markalardan gerçek ödüller kazanırsın.
-                </p>
+                <h5>Ürün</h5>
+                <ul>
+                  <li><a href="#">Uygulamayı indir</a></li>
+                  <li><a href="#nasil">Nasıl çalışır</a></li>
+                  <li><a href="#stklar">STK&apos;lar</a></li>
+                  <li><a href="#">Ödüller</a></li>
+                </ul>
               </div>
-
-              {/* Seviye Skalası */}
-              <TierTrack />
-
-              {/* Karma nasıl kazanılır — individual cards */}
-              <div className="flex flex-col gap-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Karma Nasıl Kazanılır?</p>
-                {KARMA_HOW.map(({ label, karma }, i) => (
-                  <div key={label} className="bg-white border border-gray-100 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                    <KarmaHowIcon index={i} />
-                    <span className="text-sm text-gray-700 font-medium flex-1">{label}</span>
-                    <span className="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 whitespace-nowrap">
-                      {karma}
-                    </span>
-                  </div>
-                ))}
+              <div>
+                <h5>Kurum</h5>
+                <ul>
+                  <li><a href="#">Hakkımızda</a></li>
+                  <li><a href="#manifesto">Manifesto</a></li>
+                  <li><a href="#">Basın</a></li>
+                  <li><a href="#">İletişim</a></li>
+                </ul>
               </div>
-
-              {/* Altruistik kullanıcı notu */}
-              <div className="bg-[#1B3A5C]/5 border border-[#1B3A5C]/10 rounded-2xl p-4 flex gap-3 items-start">
-                <span className="text-lg flex-shrink-0 mt-0.5">♾️</span>
-                <div>
-                  <p className="text-sm font-bold text-[#1B3A5C]">Karşılık beklemiyorsan?</p>
-                  <p className="text-xs text-gray-500 leading-relaxed mt-1">
-                    Sorun değil. Kazandığın Karma'yı seçtiğin İyilik Öncüsü'ne bağış olarak yönlendirebilirsin — sana değil, iyiliğe gitsin.
-                  </p>
-                </div>
+              <div>
+                <h5>STK&apos;lar için</h5>
+                <ul>
+                  <li><a href="#">Partner ol</a></li>
+                  <li><a href="#">Panel</a></li>
+                  <li><a href="#">Dokümanlar</a></li>
+                  <li><a href="#">SSS</a></li>
+                </ul>
               </div>
             </div>
-
-            {/* Sağ: Karma dashboard görsel */}
-            <div className="flex flex-col gap-4">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-lg p-6 flex flex-col gap-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Toplam Karman</p>
-                    <p className="text-3xl font-bold text-[#1B3A5C] flex items-center gap-2">2.340 <KarmaToken size={28} /></p>
-                  </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 text-center">
-                    <p className="text-xs text-amber-500 font-medium">Seviyen</p>
-                    <p className="text-sm font-bold text-amber-700">Çok İyi Biri</p>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs text-gray-500 mb-2">
-                    <span>Çok İyi Biri</span>
-                    <span>2.340 / 3.000 Karma</span>
-                  </div>
-                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full w-[78%] bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" />
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1.5">660 Karma → <span className="font-semibold text-gray-600">Gerçekten İyi Biri</span></p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Tamamlanan", value: "18 Görev" },
-                    { label: "Seri",       value: "3 ay" },
-                    { label: "Bu hafta",   value: "+350"    },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="bg-gray-50 rounded-2xl p-3 text-center">
-                      <p className="text-sm font-bold text-[#1B3A5C]">{value}</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">{label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-[#1B3A5C] rounded-2xl px-5 py-4 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-400 flex items-center justify-center flex-shrink-0"><KarmaSymbol size={28} /></div>
-                <div>
-                  <p className="text-white font-bold text-sm">Sahil temizliği tamamlandı!</p>
-                  <p className="text-white/60 text-xs">TEMA Vakfı · az önce</p>
-                </div>
-                <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-400/10 px-3 py-1.5 rounded-xl flex items-center gap-1">+150 <KarmaToken size={12} /></span>
-              </div>
+            <div className="copy">
+              <div>&copy; 2026 İyiBiri &middot; Karma Teknoloji A.Ş.</div>
+              <div>KVKK &middot; Kullanım &middot; Çerezler</div>
             </div>
           </div>
-        </section>
+        </footer>
 
-        {/* ── Nasıl Çalışır ── */}
-        <section id="nasil-calisir" className="px-6 py-24 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-16">
-              <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4">Nasıl Çalışır?</p>
-              <h2 className="font-headline text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight max-w-lg">
-                Dört adım.<br />Gerçek etki.
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-0">
-              {HOW_IT_WORKS.map(({ step, title, desc }, i) => (
-                <div
-                  key={step}
-                  className={`flex gap-8 sm:gap-12 items-start py-10 ${i < HOW_IT_WORKS.length - 1 ? "border-b border-gray-100" : ""}`}
-                >
-                  {/* Step number */}
-                  <div className="flex-shrink-0 w-16 sm:w-20">
-                    <span className="font-headline text-5xl sm:text-6xl font-extrabold text-gray-100 leading-none select-none">
-                      {step}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 pt-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <StepIcon step={step} />
-                      <p className="font-headline text-xl font-bold text-[#1B3A5C]">{title}</p>
-                    </div>
-                    <p className="text-gray-500 leading-relaxed max-w-md">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Lifestyle photo strip ── */}
-        <section className="overflow-hidden">
-          <div className="flex gap-2" style={{ height: 220 }}>
-            {[
-              { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&q=80&auto=format&fit=crop", alt: "Gönüllüler", flex: 2 },
-              { src: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80&auto=format&fit=crop", alt: "Topluluk", flex: 1.5 },
-              { src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80&auto=format&fit=crop", alt: "Dayanışma", flex: 1.5 },
-              { src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop", alt: "Doğa", flex: 2 },
-            ].map(({ src, alt, flex }) => (
-              <div key={alt} className="relative overflow-hidden group" style={{ flex }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={alt} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-[#1B3A5C]/20 group-hover:bg-[#1B3A5C]/10 transition-colors duration-500" />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── İyilik Öncüleri ── */}
-        <section id="iyilik-oncüleri" className="px-6 py-24 max-w-6xl mx-auto">
-          <div className="text-center mb-6">
-            <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">İyilik Öncüleri</p>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight">
-              Arkamızda köklü kurumlar var.
-            </h2>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto text-lg">
-              İyilik Öncülerimiz; vakıflar, sivil toplum kuruluşları, dernekler ve belediyeler
-              gibi topluma hizmet eden kurumlardan oluşur. Görevleri onlar oluşturur,
-              güvenilirliği onlar sağlar.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
-            {DOMAINS.map(({ title, partner, desc, badge, logo, photo }) => (
-              <div key={title} className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-default" style={{ minHeight: 280 }}>
-                {/* Full-bleed photo */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo}
-                  alt={title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
-
-                {/* Content */}
-                <div className="relative h-full flex flex-col justify-between p-6" style={{ minHeight: 280 }}>
-                  {/* Top: partner badge + logo */}
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full ${badge}`}>{partner}</span>
-                    <div className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center p-1.5 shadow">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={logo} alt={partner} className="max-h-6 max-w-[32px] object-contain" />
-                    </div>
-                  </div>
-                  {/* Bottom: title + desc */}
-                  <div className="flex flex-col gap-1.5">
-                    <p className="font-headline font-bold text-white text-xl leading-snug">{title}</p>
-                    <p className="text-white/70 text-sm leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Sponsor Markalar ── */}
-        <section id="odüller" className="px-6 py-24 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">Sponsor Markalar</p>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight">
-                İyiliğin karşılıksız<br className="hidden sm:block" /> kalmaz.
-              </h2>
-              <p className="text-gray-500 mt-4 max-w-md mx-auto text-lg">
-                Sponsor Markalarımız birikmiş Karmanı gerçek ödüllere dönüştürür.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {BRAND_LOGOS.map(({ name, img, svg }) => (
-                <div key={name} className="flex flex-col items-center gap-3 rounded-3xl border border-gray-100 bg-white p-6 hover:shadow-md transition-all hover:-translate-y-1">
-                  <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center">
-                    {img ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={img} alt={name} className="max-h-10 max-w-[52px] object-contain" />
-                    ) : (
-                      <div className="scale-75">{svg}</div>
-                    )}
-                  </div>
-                  <p className="text-xs font-bold text-[#1B3A5C] text-center leading-tight">{name}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-sm text-gray-400 mt-8">ve daha fazla Sponsor Marka çok yakında...</p>
-          </div>
-        </section>
-
-        {/* ── Testimonials ── */}
-        <section className="px-6 py-24 bg-amber-50">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#1B3A5C]">Beta kullanıcıları seviyor</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {TESTIMONIALS.map(({ quote, name, role, photo }, i) => (
-                <div key={i} className="bg-white rounded-3xl border border-amber-100 p-7 flex flex-col gap-5 shadow-sm">
-                  <div className="flex gap-0.5">{[...Array(5)].map((_, s) => <span key={s} className="text-amber-400 text-lg">★</span>)}</div>
-                  <p className="text-gray-700 leading-relaxed text-sm flex-1">{quote}</p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photo} alt={name} className="w-10 h-10 rounded-full object-cover flex-shrink-0 ring-2 ring-amber-100" />
-                    <div>
-                      <p className="font-bold text-[#1B3A5C] text-sm">{name}</p>
-                      <p className="text-xs text-gray-400">{role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Final CTA ── */}
-        <section className="px-6 py-28 flex flex-col items-center text-center gap-7 max-w-2xl mx-auto">
-          <Logo size="xl" variant="icon" />
-          <h2 className="text-4xl sm:text-5xl font-bold text-[#1B3A5C] leading-tight">
-            Fark yaratmaya<br />hazır mısın?
-          </h2>
-          <p className="text-gray-500 max-w-sm text-lg">
-            Erken erişim listesine katıl, İyiBiri'yi ilk kullananlardan biri ol
-            ve özel Karma bonusuyla başla.
-          </p>
-          <div className="w-full max-w-md">
-            <WaitlistForm />
-          </div>
-          <p className="text-xs text-gray-400">Spam yok. İstediğin zaman çıkabilirsin.</p>
-        </section>
-      </main>
-
-      {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 px-6 py-10">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-          <Logo size="sm" variant="full" />
-          <p className="text-xs text-gray-400">© 2026 İyiBiri. Tüm hakları saklıdır.</p>
-          <div className="flex gap-6">
-            <a href="#karma" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Karma</a>
-            <a href="#iyilik-oncüleri" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">İyilik Öncüleri</a>
-            <a href="#erisim" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">Erken Erişim</a>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
