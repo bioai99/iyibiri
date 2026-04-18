@@ -10,72 +10,70 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#F4B942',
-          dark: '#E09B20',
-          light: '#FDE68A',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        success: '#22C55E',
-        danger: '#EF4444',
+        // Semantic tokens (CSS-var backed)
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        surface: '#FFFFFF',
-        'text-primary': '#1C1917',
-        'text-muted': '#78716C',
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+        // İyiBiri design tokens — "Premium × Warm"
+        ink: {
+          DEFAULT: '#1A1612',
+          900: '#24201B',
+          800: '#2E2923',
+          700: '#36302A',
+          600: '#3F3830',
+          500: '#574E42',
+          400: '#7A6F5E',
+          300: '#A89E8A',
+          200: '#CEC5B2',
+          100: '#E6DEC9',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+        cream: '#F4EEDF',
+        gold: {
+          DEFAULT: '#E8C268',
+          dim: '#B58F3D',
         },
-        trust: {
-          DEFAULT: 'hsl(var(--trust))',
-          foreground: 'hsl(var(--trust-foreground))',
-        },
-        impact: {
-          DEFAULT: 'hsl(var(--impact))',
-          foreground: 'hsl(var(--impact-foreground))',
-        },
+        clay: '#C8553D',
+        success: '#6B8E4E',
         domain: {
           nature: '#10B981',
           education: '#3B82F6',
           social: '#F43F5E',
           financial: '#F59E0B',
+          animals: '#F97316',
+          culture: '#A855F7',
         },
+        // Legacy aliases (keeps existing pages from breaking)
+        primary: {
+          DEFAULT: '#E8C268',
+          dark: '#B58F3D',
+          light: '#FDE68A',
+          foreground: '#24201B',
+        },
+        'text-primary': '#F4EEDF',
+        'text-muted': '#A89E8A',
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-headline)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-headline)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-        '2xl': '1rem',
-        '3xl': '1.5rem',
-        '4xl': '2rem',
+        lg: '16px',
+        md: '12px',
+        sm: '10px',
+        xl: '20px',
+        '2xl': '24px',
+        '3xl': '32px',
+        pill: '9999px',
       },
       animation: {
         'bounce-sm': 'bounce-sm 0.4s ease-in-out',
