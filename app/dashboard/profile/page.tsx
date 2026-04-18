@@ -43,10 +43,10 @@ export default async function ProfilePage() {
   }
 
   const stats = [
-    { Icon: CheckCircle2, iconClass: 'bg-emerald-100 text-emerald-600', value: completedCount, label: 'Görev' },
-    { Icon: Sparkles, iconClass: 'bg-amber-100 text-amber-600', value: profile.karma_total, label: 'Karma' },
-    { Icon: Flame, iconClass: 'bg-orange-100 text-orange-600', value: profile.streak, label: 'Streak' },
-    { Icon: Trophy, iconClass: 'bg-purple-100 text-purple-600', value: tier, label: 'Seviye' },
+    { Icon: CheckCircle2, iconStyle: { background: 'rgba(52,211,153,0.15)', color: '#34d399' }, value: completedCount, label: 'Görev' },
+    { Icon: Sparkles, iconStyle: { background: 'rgba(232,194,104,0.15)', color: '#E8C268' }, value: profile.karma_total, label: 'Karma' },
+    { Icon: Flame, iconStyle: { background: 'rgba(251,146,60,0.15)', color: '#fb923c' }, value: profile.streak, label: 'Streak' },
+    { Icon: Trophy, iconStyle: { background: 'rgba(167,139,250,0.15)', color: '#a78bfa' }, value: tier, label: 'Seviye' },
   ]
 
   return (
@@ -58,7 +58,7 @@ export default async function ProfilePage() {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={profile.avatar_url} alt={profile.name ?? ''} className="w-full h-full object-cover" />
           ) : (
-            <User size={32} className="text-stone-400" />
+            <User size={32} style={{ color: '#A89E8A' }} />
           )}
         </div>
         <h1 className="font-display font-extrabold text-white text-2xl">
@@ -73,7 +73,7 @@ export default async function ProfilePage() {
             {profile.karma_total.toLocaleString('tr-TR')}
           </span>
         </div>
-        <p className="text-stone-500 text-xs font-medium mt-1">toplam karma</p>
+        <p className="text-xs font-medium mt-1" style={{ color: '#A89E8A' }}>toplam karma</p>
         <Link href="/dashboard/profile/edit" className="text-primary text-sm font-semibold mt-3">
           Profili Düzenle
         </Link>
@@ -82,25 +82,25 @@ export default async function ProfilePage() {
       <div className="px-4 py-6 space-y-4">
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-          {stats.map(({ Icon, iconClass, value, label }) => (
-            <div key={label} className="bg-white rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
-              <div className={`w-fit rounded-xl p-2 mb-3 ${iconClass}`}>
+          {stats.map(({ Icon, iconStyle, value, label }) => (
+            <div key={label} className="rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.18)]" style={{ background: '#2E2923' }}>
+              <div className="w-fit rounded-xl p-2 mb-3" style={iconStyle}>
                 <Icon size={18} />
               </div>
-              <p className="font-display font-black text-stone-900 text-3xl leading-none">
+              <p className="font-display font-black text-3xl leading-none" style={{ color: '#F4EEDF' }}>
                 {typeof value === 'number' ? value.toLocaleString('tr-TR') : value}
               </p>
-              <p className="text-xs text-stone-400 mt-1">{label}</p>
+              <p className="text-xs mt-1" style={{ color: '#A89E8A' }}>{label}</p>
             </div>
           ))}
         </div>
 
         {/* Tier Progress */}
         {nextThreshold !== Infinity && (
-          <div className="bg-white rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+          <div className="rounded-3xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.18)]" style={{ background: '#2E2923' }}>
             <div className="flex items-center justify-between mb-3">
-              <p className="font-display font-bold text-stone-900 text-sm">Sonraki Seviye</p>
-              <span className="text-xs text-stone-400 font-medium">{tierName[(tier + 1) as keyof typeof tierName]}</span>
+              <p className="font-display font-bold text-sm" style={{ color: '#F4EEDF' }}>Sonraki Seviye</p>
+              <span className="text-xs font-medium" style={{ color: '#A89E8A' }}>{tierName[(tier + 1) as keyof typeof tierName]}</span>
             </div>
             <XPBar current={xpCurrent} max={xpMax} label={`${xpMax - xpCurrent} karma kaldı`} />
           </div>
@@ -110,7 +110,7 @@ export default async function ProfilePage() {
         <form action={handleLogout}>
           <button
             type="submit"
-            className="w-full py-3 flex items-center justify-center gap-2 text-stone-400 font-semibold text-sm"
+            className="w-full py-3 flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: '#A89E8A' }}
           >
             <LogOut size={16} />
             Çıkış Yap
