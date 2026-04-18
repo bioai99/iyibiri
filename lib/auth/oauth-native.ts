@@ -59,11 +59,18 @@ async function sha256(message: string): Promise<string> {
 
 // ─── Session Sync ──────────────────────────────────────────────
 async function syncSessionToCookies(accessToken: string, refreshToken: string): Promise<void> {
-  await fetch('/api/auth/set-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
-  })
+  try {
+    const res = await fetch('/api/auth/set-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
+    })
+    if (!res.ok) {
+      console.error('Session sync failed:', res.status, await res.text())
+    }
+  } catch (e) {
+    console.error('Session sync error:', e)
+  }
 }
 
 // ─── Google ────────────────────────────────────────────────────
@@ -72,61 +79,28 @@ export async function handleNativeGoogleLogin(): Promise<void> {
   if (!initialized) throw new Error('Social login başlatılamadı')
 
   const { SocialLogin } = await import('@capgo/capacitor-social-login')
-  const supabase = createClient()
-  const rawNonce = generateNonce()
-  const hashedNonce = await sha256(rawNonce)
 
-  let idToken: string | undefined
+  // Önce cache temizle (nonce mismatch önlemi)
+  await SocialLogin.logout({ provider: 'google' }).catch(() => {})
 
-  // İlk deneme
-  try {
-    const result = await SocialLogin.login({
-      provider: 'google',
-      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
-    })
-    idToken = (result as any).result?.idToken
-  } catch {
-    // iOS token cache sorunu — logout ve tekrar dene
-    await SocialLogin.logout({ provider: 'google' }).catch(() => {})
-    const result = await SocialLogin.login({
-      provider: 'google',
-      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
-    })
-    idToken = (result as any).result?.idToken
-  }
+  const result = await SocialLogin.login({
+    provider: 'google',
+    options: { scopes: ['email', 'profile'] },
+  })
 
+  const idToken = (result as any).result?.idToken
   if (!idToken) throw new Error('Google ID token alınamadı')
 
-  // Supabase'e token ver
+  // Supabase'e token ver (nonce olmadan — daha güvenilir)
+  const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
     token: idToken,
-    nonce: rawNonce,
   })
 
-  // Nonce mismatch retry
-  if (error?.message?.includes('nonce')) {
-    await SocialLogin.logout({ provider: 'google' }).catch(() => {})
-    const retryResult = await SocialLogin.login({
-      provider: 'google',
-      options: { scopes: ['email', 'profile'], nonce: hashedNonce },
-    })
-    const retryToken = (retryResult as any).result?.idToken
-    if (!retryToken) throw new Error('Retry: token alınamadı')
-
-    const { data: retryData, error: retryError } = await supabase.auth.signInWithIdToken({
-      provider: 'google',
-      token: retryToken,
-      nonce: rawNonce,
-    })
-    if (retryError) throw retryError
-    if (!retryData.session) throw new Error('Session oluşturulamadı')
-    await syncSessionToCookies(retryData.session.access_token, retryData.session.refresh_token)
-    return
-  }
-
-  if (error) throw error
+  if (error) throw new Error(`Google giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
+
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
 
@@ -136,25 +110,36 @@ export async function handleNativeAppleLogin(): Promise<void> {
   if (!initialized) throw new Error('Social login başlatılamadı')
 
   const { SocialLogin } = await import('@capgo/capacitor-social-login')
-  const supabase = createClient()
+
   const rawNonce = generateNonce()
   const hashedNonce = await sha256(rawNonce)
 
-  const result = await SocialLogin.login({
-    provider: 'apple',
-    options: { scopes: ['email', 'name'], nonce: hashedNonce },
-  })
+  let result
+  try {
+    result = await SocialLogin.login({
+      provider: 'apple',
+      options: { scopes: ['email', 'name'], nonce: hashedNonce },
+    })
+  } catch (e: any) {
+    // Kullanıcı iptal etti
+    if (e?.message?.includes('cancel') || e?.message?.includes('1001')) {
+      throw new Error('Giriş iptal edildi')
+    }
+    throw new Error(`Apple giriş hatası: ${e?.message || 'Bilinmeyen hata'}`)
+  }
 
   const idToken = (result as any).result?.identityToken
   if (!idToken) throw new Error('Apple identity token alınamadı')
 
+  const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'apple',
     token: idToken,
     nonce: rawNonce,
   })
 
-  if (error) throw error
+  if (error) throw new Error(`Apple giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
+
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }

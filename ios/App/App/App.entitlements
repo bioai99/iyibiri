@@ -6,10 +6,5 @@
 	<array>
 		<string>Default</string>
 	</array>
-	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:www.iyibiri.app</string>
-		<string>applinks:iyibiri.app</string>
-	</array>
 </dict>
 </plist>
