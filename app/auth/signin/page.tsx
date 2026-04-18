@@ -33,27 +33,35 @@ export default function SigninPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function handleOAuthLogin(provider: 'google' | 'apple') {
-    const { isNativePlatform, handleNativeGoogleLogin, handleNativeAppleLogin } = await import('@/lib/auth/oauth-native')
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null)
+  const [oauthError, setOauthError] = useState<string | null>(null)
 
-    if (isNativePlatform()) {
-      try {
+  async function handleOAuthLogin(provider: 'google' | 'apple') {
+    setOauthLoading(provider)
+    setOauthError(null)
+
+    try {
+      const { isNativePlatform, handleNativeGoogleLogin, handleNativeAppleLogin } = await import('@/lib/auth/oauth-native')
+
+      if (isNativePlatform()) {
         if (provider === 'google') await handleNativeGoogleLogin()
         else await handleNativeAppleLogin()
         window.location.href = '/dashboard'
-      } catch (err) {
-        console.error('Native OAuth error:', err)
+      } else {
+        const supabase = createClient()
+        const { data } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
+          },
+        })
+        if (data.url) window.location.href = data.url
       }
-    } else {
-      const supabase = createClient()
-      const { data } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
-        },
-      })
-      if (data.url) window.location.href = data.url
+    } catch (err: any) {
+      console.error('OAuth error:', err)
+      setOauthError(err?.message || 'Giriş başarısız oldu. Tekrar deneyin.')
+      setOauthLoading(null)
     }
   }
 

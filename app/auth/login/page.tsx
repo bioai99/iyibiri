@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
@@ -29,28 +30,35 @@ const MailIcon = ({ size = 16 }: { size?: number }) => (
 
 export default function AuthLandingPage() {
   const { colors: c } = useTheme()
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null)
+  const [oauthError, setOauthError] = useState<string | null>(null)
 
   async function handleOAuthLogin(provider: 'google' | 'apple') {
-    const { isNativePlatform, handleNativeGoogleLogin, handleNativeAppleLogin } = await import('@/lib/auth/oauth-native')
+    setOauthLoading(provider)
+    setOauthError(null)
 
-    if (isNativePlatform()) {
-      try {
+    try {
+      const { isNativePlatform, handleNativeGoogleLogin, handleNativeAppleLogin } = await import('@/lib/auth/oauth-native')
+
+      if (isNativePlatform()) {
         if (provider === 'google') await handleNativeGoogleLogin()
         else await handleNativeAppleLogin()
         window.location.href = '/dashboard'
-      } catch (err) {
-        console.error('Native OAuth error:', err)
+      } else {
+        const supabase = createClient()
+        const { data } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
+          },
+        })
+        if (data.url) window.location.href = data.url
       }
-    } else {
-      const supabase = createClient()
-      const { data } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
-        },
-      })
-      if (data.url) window.location.href = data.url
+    } catch (err: any) {
+      console.error('OAuth error:', err)
+      setOauthError(err?.message || 'Giriş başarısız oldu. Tekrar deneyin.')
+      setOauthLoading(null)
     }
   }
 
@@ -91,17 +99,25 @@ export default function AuthLandingPage() {
         <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button
             onClick={() => handleOAuthLogin('apple')}
-            style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+            disabled={!!oauthLoading}
+            style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: oauthLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: oauthLoading && oauthLoading !== 'apple' ? 0.5 : 1 }}
           >
-            <AppleIcon size={18} /> Apple ile devam et
+            <AppleIcon size={18} /> {oauthLoading === 'apple' ? 'Bağlanıyor...' : 'Apple ile devam et'}
           </button>
           <button
             onClick={() => handleOAuthLogin('google')}
-            style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+            disabled={!!oauthLoading}
+            style={{ width: '100%', height: 52, borderRadius: 14, background: c.ink800, border: `1px solid ${c.ink600}`, color: c.cream, fontFamily: uiFont, fontSize: 15, fontWeight: 600, cursor: oauthLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: oauthLoading && oauthLoading !== 'google' ? 0.5 : 1 }}
           >
-            <GoogleIcon size={18} /> Google ile devam et
+            <GoogleIcon size={18} /> {oauthLoading === 'google' ? 'Bağlanıyor...' : 'Google ile devam et'}
           </button>
         </div>
+
+        {oauthError && (
+          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: '#C8553D', textAlign: 'center', lineHeight: 1.4 }}>
+            {oauthError}
+          </p>
+        )}
 
         {/* Divider */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0 14px' }}>
