@@ -42,14 +42,15 @@ export default function SigninPage() {
     setLoading(true)
     setError(null)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    const { error, data } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    console.log('Login result:', { error, session: data?.session ? 'exists' : 'null', user: data?.user?.email })
     if (error) {
+      console.error('Login error details:', error.message, error.status, error.name)
       const msg = error.message.toLowerCase()
       if (msg.includes('email not confirmed')) {
         setError('E-postanı onaylaman gerekiyor. Gelen kutunu kontrol et.')
       } else {
-        setError('E-posta veya şifre hatalı')
-      }
+        setError(`E-posta veya şifre hatalı (${error.message})`)
       setLoading(false)
       return
     }
