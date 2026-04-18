@@ -550,11 +550,12 @@ export default function LandingPage() {
         nav.top .links a:hover{color:#E8C268}
         nav.top .links a::after{content:"";position:absolute;bottom:-6px;left:0;right:0;height:1px;background:#E8C268;transform:scaleX(0);transform-origin:left;transition:transform .3s}
         nav.top .links a:hover::after{transform:scaleX(1)}
-        .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:-.01em;transition:all .2s;border:none;white-space:nowrap}
+        .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:-.01em;transition:transform 160ms cubic-bezier(.23,1,.32,1),background 200ms ease,border-color 200ms ease,box-shadow 200ms ease;border:none;white-space:nowrap}
+        .btn:active{transform:scale(0.97)}
         .btn-primary{background:#E8C268;color:#1A1612}
-        .btn-primary:hover{background:#F4D98A;transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,194,104,.3)}
+        @media (hover:hover) and (pointer:fine){.btn-primary:hover{background:#F4D98A;transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,194,104,.3)}}
         .btn-ghost{background:transparent;color:#F4EEDF;border:1px solid rgba(232,194,104,.22)}
-        .btn-ghost:hover{border-color:rgba(232,194,104,.5);background:rgba(232,194,104,.05)}
+        @media (hover:hover) and (pointer:fine){.btn-ghost:hover{border-color:rgba(232,194,104,.5);background:rgba(232,194,104,.05)}}
 
         /* === HERO === */
         .hero{position:relative;min-height:100vh;padding:120px 0 60px;display:flex;align-items:center;overflow:hidden}
@@ -574,8 +575,9 @@ export default function LandingPage() {
         .lead{font-size:19px;line-height:1.6;color:#CEC5B2;max-width:540px;margin:0 0 40px;opacity:0}
         .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;opacity:0}
 
-        .store-btn{display:inline-flex;align-items:center;gap:12px;background:rgba(46,41,35,.8);border:1px solid rgba(232,194,104,.22);color:#F4EEDF;height:56px;padding:0 22px;border-radius:14px;text-align:left;backdrop-filter:blur(12px);transition:all .25s}
-        .store-btn:hover{border-color:rgba(232,194,104,.5);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+        .store-btn{display:inline-flex;align-items:center;gap:12px;background:rgba(46,41,35,.8);border:1px solid rgba(232,194,104,.22);color:#F4EEDF;height:56px;padding:0 22px;border-radius:14px;text-align:left;backdrop-filter:blur(12px);transition:transform 200ms cubic-bezier(.23,1,.32,1),border-color 200ms ease,box-shadow 200ms ease}
+        .store-btn:active{transform:scale(0.97)}
+        @media (hover:hover) and (pointer:fine){.store-btn:hover{border-color:rgba(232,194,104,.5);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3)}}
         .store-btn .sm{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;font-weight:600}
         .store-btn .lg{font-family:var(--font-display),'Fraunces',serif;font-size:18px;font-weight:500;letter-spacing:-.01em;margin-top:1px}
 
@@ -640,9 +642,9 @@ export default function LandingPage() {
         .stats-section{padding:120px 0;background:#24201B;position:relative;overflow:hidden}
         .stats-section::before{content:"";position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(232,194,104,.08),transparent 60%);pointer-events:none}
         .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid rgba(232,194,104,.12);border-bottom:1px solid rgba(232,194,104,.12)}
-        .stat-card{padding:40px 32px;border-right:1px solid rgba(232,194,104,.1);position:relative;transition:background .3s}
+        .stat-card{padding:40px 32px;border-right:1px solid rgba(232,194,104,.1);position:relative;transition:background 200ms ease}
         .stat-card:last-child{border-right:none}
-        .stat-card:hover{background:rgba(232,194,104,.04)}
+        @media (hover:hover) and (pointer:fine){.stat-card:hover{background:rgba(232,194,104,.04)}}
         .stat-num{font-family:var(--font-display),'Fraunces',serif;font-weight:500;font-size:72px;line-height:1;letter-spacing:-.035em;color:#F4EEDF;margin-bottom:8px;font-variant-numeric:tabular-nums}
         .stat-num em{font-style:italic;color:#E8C268;font-size:52px;margin-right:4px}
         .stat-lbl{font-size:12px;color:#A89E8A;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
@@ -651,8 +653,8 @@ export default function LandingPage() {
         /* === ETKI KARTLARI === */
         .proof{padding:140px 0;background:#1A1612;position:relative}
         .impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
-        .impact-card{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;overflow:hidden;transition:all .3s}
-        .impact-card:hover{border-color:rgba(232,194,104,.3);transform:translateY(-4px)}
+        .impact-card{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;overflow:hidden;transition:transform 250ms cubic-bezier(.23,1,.32,1),border-color 250ms ease}
+        @media (hover:hover) and (pointer:fine){.impact-card:hover{border-color:rgba(232,194,104,.3);transform:translateY(-4px)}}
         .impact-img{height:200px;background-size:cover;background-position:center;position:relative}
         .impact-img::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(26,22,18,.8))}
         .impact-body{padding:22px}
@@ -666,8 +668,8 @@ export default function LandingPage() {
         /* === ODÜLLER === */
         .rewards-section{padding:140px 0;background:#24201B;position:relative}
         .rewards-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:56px}
-        .reward-card{background:#1A1612;border:1px solid rgba(232,194,104,.12);border-radius:18px;padding:24px 18px;text-align:center;transition:all .3s}
-        .reward-card:hover{border-color:rgba(232,194,104,.35);transform:translateY(-4px)}
+        .reward-card{background:#1A1612;border:1px solid rgba(232,194,104,.12);border-radius:18px;padding:24px 18px;text-align:center;transition:transform 250ms cubic-bezier(.23,1,.32,1),border-color 250ms ease}
+        @media (hover:hover) and (pointer:fine){.reward-card:hover{border-color:rgba(232,194,104,.35);transform:translateY(-4px)}}
         .reward-logo{width:56px;height:56px;border-radius:14px;background:#2E2923;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}
         .reward-card h5{font-family:var(--font-display),'Fraunces',serif;font-size:16px;font-weight:500;margin:0 0 4px;color:#F4EEDF}
         .reward-card .karma-cost{font-family:'JetBrains Mono',monospace;font-size:12px;color:#E8C268;font-weight:700}
@@ -704,8 +706,8 @@ export default function LandingPage() {
         .copy{margin-top:60px;padding-top:24px;border-top:1px solid rgba(232,194,104,.08);display:flex;justify-content:space-between;font-size:12px;color:#7A6F5E}
 
         /* fade in utility */
-        .fade-in{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
-        .fade-in.in{opacity:1;transform:translateY(0)}
+        .fade-in{opacity:0;transform:translateY(20px) scale(0.98);transition:opacity .6s cubic-bezier(.23,1,.32,1),transform .6s cubic-bezier(.23,1,.32,1)}
+        .fade-in.in{opacity:1;transform:translateY(0) scale(1)}
 
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
@@ -779,9 +781,9 @@ export default function LandingPage() {
                 </Link>
               </div>
               <div className="hero-meta">
-                <div className="m"><b>Ucretsiz</b><span>Tamamen bedava</span></div>
-                <div className="m"><b>30 sn</b><span>Hesap ac</span></div>
-                <div className="m"><b>4.9<span style={{ color: '#E8C268' }}>&#9733;</span></b><span>Kullanici puani</span></div>
+                <div className="m"><b data-cu="18247">0</b><span>Aktif gonullu</span></div>
+                <div className="m"><b data-cu="248">0</b><span>Partner STK</span></div>
+                <div className="m"><b data-cu="62103">0</b><span>Tamamlanan gorev</span></div>
               </div>
             </div>
 
@@ -881,6 +883,20 @@ export default function LandingPage() {
                             </div>
                           </div>
                         </div>
+                        <div style={{ background: '#2E2923', border: '1px solid rgba(232,194,104,.1)', borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                          <div style={{ height: 76, background: 'linear-gradient(135deg,#4A6FA5,#2d4a7a)' }} />
+                          <div style={{ padding: 12 }}>
+                            <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 14, color: '#F4EEDF', lineHeight: 1.3 }}>Sokak hayvani mama dagitimi</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, alignItems: 'center' }}>
+                              <div style={{ fontSize: 10, color: '#A89E8A' }}>Cts &middot; 14:00 &middot; 2s</div>
+                              <div style={{ background: 'rgba(232,194,104,.14)', color: '#E8C268', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>+120</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ background: '#2E2923', border: '1px solid rgba(232,194,104,.08)', borderRadius: 16, padding: '12px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#A89E8A' }}>Yakininda yeni</div>
+                          <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 14, color: '#F4EEDF', marginTop: 2 }}>Cocuklara okuma atolyesi</div>
+                        </div>
                       </div>
                     </div>
 
@@ -967,37 +983,6 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* LIVE STATS */}
-      <section className="stats-section" id="karma">
-        <div className="wrap">
-          <div className="sec-eyebrow">Canli sayilar</div>
-          <h2 className="sec-title">Iyilik <em>su an</em> olusuyor.</h2>
-          <p className="sec-lead">Turkiye genelinde buyuyen bir iyilik hareketi. Her rakam gercek, her gun buyuyor.</p>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-num"><em>+</em><span data-cu="18247">0</span></div>
-              <div className="stat-lbl">Aktif gonullu</div>
-              <div className="stat-trend">&#8593; +284 / 7 gun</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-num"><span data-cu="62103">0</span></div>
-              <div className="stat-lbl">Tamamlanan gorev</div>
-              <div className="stat-trend">&#8593; +1.840 / 7 gun</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-num"><span data-cu="248">0</span></div>
-              <div className="stat-lbl">Partner STK</div>
-              <div className="stat-trend">&#8593; +12 / 30 gun</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-num"><span data-cu="81">0</span></div>
-              <div className="stat-lbl">Sehir</div>
-              <div className="stat-trend">&#8594; hepsi</div>
             </div>
           </div>
         </div>
