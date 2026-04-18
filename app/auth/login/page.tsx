@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Heart } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
@@ -73,30 +75,64 @@ export default function AuthLandingPage() {
           position: 'absolute', inset: 0,
           background: `radial-gradient(ellipse at 50% 30%, rgba(232,194,104,.22), transparent 65%), radial-gradient(ellipse at 20% 90%, rgba(233,207,194,.1), transparent 55%), ${c.ink900}`
         }} />
-        {/* Logo cluster */}
-        <div style={{ position: 'absolute', top: '32%', left: '50%', transform: 'translate(-50%,-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
+        {/* Logo cluster with motion */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+          style={{ position: 'absolute', top: '32%', left: '50%', transform: 'translate(-50%,-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}
+        >
           <KarmaToken size={92} />
           <div style={{ fontFamily: displayFont, fontSize: 34, fontWeight: 500, letterSpacing: '-0.028em', color: c.cream }}>
             İyi<span style={{ fontStyle: 'italic', color: c.gold }}>Biri</span>
           </div>
-        </div>
-        {/* Decorative tokens */}
-        <div style={{ position: 'absolute', top: '16%', left: '14%', opacity: 0.35 }}><KarmaToken size={22} /></div>
-        <div style={{ position: 'absolute', top: '20%', right: '16%', opacity: 0.28 }}><KarmaToken size={18} /></div>
-        <div style={{ position: 'absolute', bottom: '12%', right: '18%', opacity: 0.3 }}><KarmaToken size={26} /></div>
+        </motion.div>
+
+        {/* Floating hearts */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 0.3, y: -5 }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
+          style={{ position: 'absolute', top: '20%', left: '18%' }}
+        >
+          <Heart size={18} color={c.gold} fill={c.gold} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 0.25, y: -8 }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', delay: 0.5 }}
+          style={{ position: 'absolute', top: '30%', right: '15%' }}
+        >
+          <Heart size={14} color={c.gold} fill={c.gold} />
+        </motion.div>
       </div>
 
       {/* Bottom section */}
       <div style={{ padding: '24px 28px 44px' }}>
-        <h1 style={{ margin: 0, fontFamily: displayFont, fontSize: 30, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, color: c.cream, textAlign: 'center' }}>
-          <span style={{ fontStyle: 'italic', color: c.gold }}>İyilik</span> buradan başlar.
-        </h1>
-        <p style={{ margin: '10px 0 0', fontFamily: uiFont, fontSize: 14, lineHeight: 1.55, color: c.ink200, textAlign: 'center' }}>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          style={{ margin: 0, fontFamily: displayFont, fontSize: 30, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, color: c.cream, textAlign: 'center' }}
+        >
+          Her iyilik <em style={{ fontStyle: 'italic', color: c.gold }}>fark</em> yaratır.
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          style={{ margin: '10px 0 0', fontFamily: uiFont, fontSize: 14, lineHeight: 1.55, color: c.ink200, textAlign: 'center' }}
+        >
           Hesabını aç, Türkiye'nin en büyük gönüllülük topluluğuna katıl.
-        </p>
+        </motion.p>
 
         {/* Social buttons */}
-        <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.6 }}
+          style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}
+        >
           <button
             onClick={() => handleOAuthLogin('apple')}
             disabled={!!oauthLoading}
@@ -111,7 +147,7 @@ export default function AuthLandingPage() {
           >
             <GoogleIcon size={18} /> {oauthLoading === 'google' ? 'Bağlanıyor...' : 'Google ile devam et'}
           </button>
-        </div>
+        </motion.div>
 
         {oauthError && (
           <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: '#C8553D', textAlign: 'center', lineHeight: 1.4 }}>
