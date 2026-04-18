@@ -1,465 +1,1130 @@
-import Link from "next/link";
-
-/* eslint-disable @next/next/no-img-element */
+'use client'
+import { useEffect, useRef } from 'react'
+import Link from 'next/link'
+import type * as THREE_NS from 'three'
 
 export default function LandingPage() {
+  const threeCanvasRef = useRef<HTMLCanvasElement>(null)
+  const heroCanvasRef = useRef<HTMLCanvasElement>(null)
+  const networkCanvasRef = useRef<HTMLCanvasElement>(null)
+  const feedTrackRef = useRef<HTMLDivElement>(null)
+  const cursorDotRef = useRef<HTMLDivElement>(null)
+  const cursorRingRef = useRef<HTMLDivElement>(null)
+  const liveCountRef = useRef<HTMLSpanElement>(null)
+  const tokenStageRef = useRef<HTMLDivElement>(null)
+
+  // ══════════════ THREE.JS 3D KARMA TOKEN ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const canvas = threeCanvasRef.current
+    if (!canvas) return
+
+    let animId: number
+    let disposed = false
+
+    const initThree = async () => {
+      const THREE = await import('three')
+
+      const parent = canvas.parentElement
+      if (!parent || disposed) return
+      const W = parent.offsetWidth
+      const H = parent.offsetHeight
+      const scene = new THREE.Scene()
+      const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100)
+      camera.position.z = 5
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true })
+      renderer.setPixelRatio(window.devicePixelRatio)
+      renderer.setSize(W, H)
+
+      // Coin (cylinder)
+      const coinGeom = new THREE.CylinderGeometry(1.2, 1.2, 0.14, 64, 1)
+      const coinMat = new THREE.MeshStandardMaterial({ color: 0xE8C268, metalness: 0.95, roughness: 0.22, emissive: 0x3a2a0e, emissiveIntensity: 0.25 })
+      const coin = new THREE.Mesh(coinGeom, coinMat)
+      coin.rotation.x = Math.PI / 2
+      scene.add(coin)
+
+      // Inner ring (groove)
+      const ringGeom = new THREE.TorusGeometry(0.9, 0.015, 16, 64)
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x8a6a2c, metalness: 0.9, roughness: 0.3 })
+      const ring1 = new THREE.Mesh(ringGeom, ringMat); ring1.position.z = 0.072; coin.add(ring1)
+      const ring2 = new THREE.Mesh(ringGeom, ringMat); ring2.position.z = -0.072; coin.add(ring2)
+
+      // Lights
+      const amb = new THREE.AmbientLight(0xffffff, 0.35); scene.add(amb)
+      const key = new THREE.DirectionalLight(0xfff4d0, 1.8); key.position.set(3, 4, 5); scene.add(key)
+      const rim = new THREE.DirectionalLight(0xE8C268, 1.2); rim.position.set(-3, -2, -2); scene.add(rim)
+      const point = new THREE.PointLight(0xF4D98A, 0.8, 10); point.position.set(0, 0, 3); scene.add(point)
+
+      // Satellite tokens
+      const sats: THREE_NS.Mesh[] = []
+      for (let i = 0; i < 6; i++) {
+        const s = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.18, 0.18, 0.04, 32),
+          new THREE.MeshStandardMaterial({ color: 0xE8C268, metalness: 0.9, roughness: 0.3, emissive: 0x2a1f08, emissiveIntensity: 0.3 })
+        )
+        s.rotation.x = Math.PI / 2
+        s.userData = { angle: i * (Math.PI * 2 / 6), radius: 2.2, speed: 0.008 + Math.random() * 0.006, vOff: Math.random() * Math.PI * 2 }
+        scene.add(s)
+        sats.push(s)
+      }
+
+      let mouseX = 0, mouseY = 0, targetRX = 0, targetRY = 0
+
+      const onMouseMove = (e: MouseEvent) => {
+        const rect = parent.getBoundingClientRect()
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+          mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+        }
+      }
+      window.addEventListener('mousemove', onMouseMove)
+
+      let t = 0
+      function animate() {
+        if (disposed) return
+        animId = requestAnimationFrame(animate)
+        t += 0.016
+        targetRX += ((-mouseY * 0.3) - targetRX) * 0.05
+        targetRY += ((mouseX * 0.5) + t * 0.3 - targetRY) * 0.05
+        coin.rotation.x = Math.PI / 2 + targetRX
+        coin.rotation.z = targetRY
+
+        sats.forEach(s => {
+          s.userData.angle += s.userData.speed
+          s.position.x = Math.cos(s.userData.angle) * s.userData.radius
+          s.position.y = Math.sin(s.userData.angle) * s.userData.radius * 0.6
+          s.position.z = Math.sin(s.userData.angle + s.userData.vOff) * 0.4
+          s.rotation.z += 0.02
+        })
+
+        renderer.render(scene, camera)
+      }
+      animate()
+
+      const onResize = () => {
+        if (!parent || disposed) return
+        const W2 = parent.offsetWidth, H2 = parent.offsetHeight
+        camera.aspect = W2 / H2; camera.updateProjectionMatrix()
+        renderer.setSize(W2, H2)
+      }
+      window.addEventListener('resize', onResize)
+
+      // Store cleanup references
+      ;(canvas as any)._threeCleanup = () => {
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('resize', onResize)
+        cancelAnimationFrame(animId)
+        renderer.dispose()
+        coinGeom.dispose()
+        coinMat.dispose()
+        ringGeom.dispose()
+        ringMat.dispose()
+        sats.forEach(s => {
+          (s.geometry as THREE_NS.BufferGeometry).dispose()
+          ;(s.material as THREE_NS.Material).dispose()
+        })
+      }
+    }
+
+    initThree()
+
+    return () => {
+      disposed = true
+      cancelAnimationFrame(animId)
+      if ((canvas as any)._threeCleanup) {
+        (canvas as any)._threeCleanup()
+      }
+    }
+  }, [])
+
+  // ══════════════ GSAP EFFECTS ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    let scrollTriggers: any[] = []
+
+    const initGsap = async () => {
+      const gsapModule = await import('gsap')
+      const gsap = (gsapModule.default || gsapModule) as any
+      const scrollTriggerModule = await import('gsap/ScrollTrigger')
+      const ScrollTrigger = (scrollTriggerModule as any).ScrollTrigger || (scrollTriggerModule as any).default
+      gsap.registerPlugin(ScrollTrigger)
+
+      // Hero text intro
+      gsap.to('.word', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.15, delay: 0.2 })
+      gsap.to('.lead', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.6 })
+      gsap.to('.cta-row', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.8 })
+      gsap.to('.hero-meta', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 1 })
+
+      // Scroll-pinned story
+      const steps = document.querySelectorAll('.story-text')
+      const layers = document.querySelectorAll('.story-screen-layer')
+      const dots = document.querySelectorAll('.story-progress .dot')
+
+      function setStep(i: number) {
+        steps.forEach((s, j) => gsap.to(s, { opacity: j === i ? 1 : 0, duration: 0.5, ease: 'power2.out' }))
+        layers.forEach((l, j) => gsap.to(l, { opacity: j === i ? 1 : 0, duration: 0.5, ease: 'power2.out' }))
+        dots.forEach((d, j) => d.classList.toggle('active', j === i))
+      }
+      setStep(0)
+
+      const st1 = ScrollTrigger.create({
+        trigger: '.story-pin',
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate(self: any) {
+          const i = Math.min(3, Math.floor(self.progress * 4))
+          setStep(i)
+        }
+      })
+      scrollTriggers.push(st1)
+
+      // Count up
+      document.querySelectorAll('[data-cu]').forEach(el => {
+        const target = parseInt((el as HTMLElement).dataset.cu || '0', 10)
+        const st = ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          once: true,
+          onEnter() {
+            const obj = { v: 0 }
+            gsap.to(obj, {
+              v: target, duration: 2.2, ease: 'power2.out',
+              onUpdate() { (el as HTMLElement).textContent = Math.floor(obj.v).toLocaleString('tr-TR') }
+            })
+          }
+        })
+        scrollTriggers.push(st)
+      })
+    }
+
+    initGsap()
+
+    return () => {
+      scrollTriggers.forEach(st => st.kill && st.kill())
+    }
+  }, [])
+
+  // ══════════════ HERO BG — CANVAS PARTICLES ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const c = heroCanvasRef.current
+    if (!c) return
+    const ctx = c.getContext('2d')
+    if (!ctx) return
+
+    let w: number = 800, h: number = 600
+    let animId: number
+    const particles: { x: number; y: number; vx: number; vy: number; r: number; o: number }[] = []
+
+    function resize() {
+      const parent = c!.parentElement
+      if (!parent) return
+      w = c!.width = parent.offsetWidth
+      h = c!.height = parent.offsetHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    for (let i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * (w || 800),
+        y: Math.random() * (h || 600),
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        r: Math.random() * 1.2 + 0.3,
+        o: Math.random() * 0.5 + 0.1
+      })
+    }
+
+    function tick() {
+      ctx!.clearRect(0, 0, w, h)
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy
+        if (p.x < 0 || p.x > w) p.vx *= -1
+        if (p.y < 0 || p.y > h) p.vy *= -1
+        ctx!.beginPath(); ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx!.fillStyle = `rgba(232,194,104,${p.o})`; ctx!.fill()
+      })
+      // connect near
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i], b = particles[j]
+          const d = Math.hypot(a.x - b.x, a.y - b.y)
+          if (d < 120) {
+            ctx!.beginPath(); ctx!.moveTo(a.x, a.y); ctx!.lineTo(b.x, b.y)
+            ctx!.strokeStyle = `rgba(232,194,104,${(1 - d / 120) * 0.12})`; ctx!.lineWidth = 0.5; ctx!.stroke()
+          }
+        }
+      }
+      animId = requestAnimationFrame(tick)
+    }
+    tick()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  // ══════════════ LIVE FEED GENERATION ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const track = feedTrackRef.current
+    if (!track) return
+
+    const names = ['Zeynep K.', 'Mehmet A.', 'Deniz Y.', 'Ayse B.', 'Can S.', 'Elif D.', 'Omer T.', 'Selin M.', 'Berk O.', 'Ece P.', 'Kaan L.', 'Naz R.', 'Burak V.']
+    const cities = ['Kadikoy', 'Besiktas', 'Ankara', 'Izmir', 'Bursa', 'Eskisehir', 'Antalya', 'Konya', 'Gaziantep', 'Trabzon', 'Adana']
+    const tasks = ['kitap topladi', 'park temizledi', 'yasliya yardim etti', 'fidan dikti', 'kan bagisladi', 'mama dagitti', 'okuma atolyesi verdi', 'gida dagitimi yapti']
+    const mins = ['2dk once', '4dk once', '7dk once', '12dk once', '15dk once', '18dk once', '24dk once', '32dk once']
+    const karmaList = [50, 100, 120, 150, 180, 200, 250]
+
+    function item() {
+      const n = names[Math.floor(Math.random() * names.length)]
+      const c = cities[Math.floor(Math.random() * cities.length)]
+      const t = tasks[Math.floor(Math.random() * tasks.length)]
+      const m = mins[Math.floor(Math.random() * mins.length)]
+      const k = karmaList[Math.floor(Math.random() * karmaList.length)]
+      const initial = n[0]
+      return `<div class="feed-item"><div class="av">${initial}</div><b>${n}</b><span>\u00b7</span><span>${c}</span><span>\u00b7</span><span>${t}</span><span class="t">${m}</span><span class="k">+${k}</span></div>`
+    }
+
+    let html = ''
+    for (let i = 0; i < 28; i++) html += item()
+    track.innerHTML = html + html // duplicate for seamless scroll
+
+    // Live hero count +1 every few seconds
+    const lc = liveCountRef.current
+    let count = 1247
+    const interval = setInterval(() => {
+      count += Math.floor(Math.random() * 3) + 1
+      if (lc) lc.textContent = count.toLocaleString('tr-TR')
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // ══════════════ NETWORK MAP ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const c = networkCanvasRef.current
+    if (!c) return
+    const ctx = c.getContext('2d')
+    if (!ctx) return
+
+    let animId: number
+
+    function resize() {
+      c!.width = c!.offsetWidth * 2
+      c!.height = c!.offsetHeight * 2
+      ctx!.scale(2, 2)
+    }
+    resize()
+
+    const onResize = () => {
+      ctx!.setTransform(1, 0, 0, 1, 0, 0)
+      resize()
+    }
+    window.addEventListener('resize', onResize)
+
+    const W = () => c!.offsetWidth
+    const H = () => c!.offsetHeight
+
+    const cities = [
+      { x: 0.22, y: 0.20, r: 18, name: 'ISTANBUL', bg: true },
+      { x: 0.34, y: 0.22, r: 10, name: 'Kocaeli', bg: false },
+      { x: 0.40, y: 0.26, r: 9, name: 'Bursa', bg: false },
+      { x: 0.48, y: 0.40, r: 15, name: 'ANKARA', bg: true },
+      { x: 0.44, y: 0.46, r: 7, name: 'Eskisehir', bg: false },
+      { x: 0.54, y: 0.36, r: 7, name: 'Kayseri', bg: false },
+      { x: 0.22, y: 0.52, r: 13, name: 'IZMIR', bg: true },
+      { x: 0.28, y: 0.58, r: 8, name: 'Aydin', bg: false },
+      { x: 0.30, y: 0.62, r: 7, name: 'Mugla', bg: false },
+      { x: 0.40, y: 0.70, r: 10, name: 'Antalya', bg: false },
+      { x: 0.58, y: 0.62, r: 9, name: 'Adana', bg: false },
+      { x: 0.68, y: 0.60, r: 8, name: 'G.antep', bg: false },
+      { x: 0.74, y: 0.58, r: 7, name: 'Urfa', bg: false },
+      { x: 0.80, y: 0.54, r: 7, name: 'Diyarbakir', bg: false },
+      { x: 0.60, y: 0.20, r: 8, name: 'Samsun', bg: false },
+      { x: 0.72, y: 0.22, r: 7, name: 'Trabzon', bg: false },
+      { x: 0.82, y: 0.28, r: 6, name: 'Erzurum', bg: false },
+      { x: 0.90, y: 0.46, r: 7, name: 'Van', bg: false },
+      { x: 0.52, y: 0.50, r: 7, name: 'Konya', bg: false },
+      { x: 0.62, y: 0.46, r: 6, name: 'Malatya', bg: false },
+      { x: 0.64, y: 0.38, r: 6, name: 'Sivas', bg: false },
+    ]
+
+    const conns: [number, number][] = []
+    const hubs = [0, 3, 6]
+    hubs.forEach(h => {
+      cities.forEach((_, i) => {
+        if (i !== h && !hubs.includes(i)) conns.push([h, i])
+      })
+    })
+    ;([[3, 6], [6, 9], [3, 10], [0, 14], [3, 15], [3, 17], [14, 15]] as [number, number][]).forEach(p => conns.push(p))
+
+    let t = 0
+    let pulses: { a: number; b: number; p: number; speed: number }[] = []
+
+    let pulseTimeout: ReturnType<typeof setTimeout>
+    function pulseLoop() {
+      const [a, b] = conns[Math.floor(Math.random() * conns.length)]
+      pulses.push({ a, b, p: 0, speed: 0.012 + Math.random() * 0.01 })
+      pulseTimeout = setTimeout(pulseLoop, 500 + Math.random() * 400)
+    }
+    pulseLoop()
+
+    function tick() {
+      t += 0.01
+      const w = W(), h = H()
+      ctx!.clearRect(0, 0, w, h)
+
+      // connections
+      conns.forEach(([a, b]) => {
+        const A = cities[a], B = cities[b]
+        ctx!.beginPath()
+        ctx!.moveTo(A.x * w, A.y * h)
+        ctx!.lineTo(B.x * w, B.y * h)
+        ctx!.strokeStyle = 'rgba(232,194,104,.08)'; ctx!.lineWidth = 0.7; ctx!.stroke()
+      })
+
+      // pulses
+      pulses = pulses.filter(p => p.p < 1)
+      pulses.forEach(pl => {
+        const A = cities[pl.a], B = cities[pl.b]
+        pl.p += pl.speed
+        const x = A.x * w + (B.x - A.x) * w * pl.p
+        const y = A.y * h + (B.y - A.y) * h * pl.p
+        // trail
+        ctx!.beginPath()
+        ctx!.moveTo(A.x * w + (B.x - A.x) * w * Math.max(0, pl.p - 0.15), A.y * h + (B.y - A.y) * h * Math.max(0, pl.p - 0.15))
+        ctx!.lineTo(x, y)
+        ctx!.strokeStyle = `rgba(232,194,104,${(1 - pl.p) * 0.8})`; ctx!.lineWidth = 1.4; ctx!.stroke()
+        // head
+        ctx!.beginPath(); ctx!.arc(x, y, 2, 0, Math.PI * 2)
+        ctx!.fillStyle = '#E8C268'; ctx!.fill()
+      })
+
+      // cities
+      cities.forEach((ci, idx) => {
+        const cx = ci.x * w, cy = ci.y * h
+        const pulse = ci.bg ? (Math.sin(t * 2 + idx) + 1) / 2 * 0.5 + 0.5 : 1
+        if (ci.bg) {
+          ctx!.beginPath(); ctx!.arc(cx, cy, ci.r + 8 * pulse, 0, Math.PI * 2)
+          ctx!.fillStyle = `rgba(232,194,104,${0.05 + 0.08 * pulse})`; ctx!.fill()
+        }
+        ctx!.beginPath(); ctx!.arc(cx, cy, ci.r / 3, 0, Math.PI * 2)
+        ctx!.fillStyle = ci.bg ? '#E8C268' : 'rgba(232,194,104,.7)'; ctx!.fill()
+        // label
+        if (ci.bg || ci.r >= 8) {
+          ctx!.font = ci.bg ? '600 11px "JetBrains Mono"' : '500 10px var(--font-sans), "Plus Jakarta Sans", sans-serif'
+          ctx!.fillStyle = ci.bg ? '#F4EEDF' : 'rgba(206,197,178,.7)'
+          ctx!.textAlign = 'left'
+          ctx!.fillText(ci.name, cx + ci.r / 3 + 6, cy + 3)
+        }
+      })
+
+      animId = requestAnimationFrame(tick)
+    }
+    tick()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      clearTimeout(pulseTimeout)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  // ══════════════ CUSTOM CURSOR ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const cd = cursorDotRef.current
+    const cr = cursorRingRef.current
+    if (!cd || !cr) return
+
+    const onMove = (e: MouseEvent) => {
+      cd.style.left = e.clientX + 'px'; cd.style.top = e.clientY + 'px'
+      cr.style.left = e.clientX + 'px'; cr.style.top = e.clientY + 'px'
+    }
+    window.addEventListener('mousemove', onMove)
+
+    const enterHandler = () => { cr.style.transform = 'translate(-50%,-50%) scale(1.8)'; cr.style.borderColor = 'rgba(232,194,104,.8)' }
+    const leaveHandler = () => { cr.style.transform = 'translate(-50%,-50%) scale(1)'; cr.style.borderColor = 'rgba(232,194,104,.4)' }
+
+    const interactiveEls = document.querySelectorAll('a,button,.store-btn,.stat-card')
+    interactiveEls.forEach(el => {
+      el.addEventListener('mouseenter', enterHandler)
+      el.addEventListener('mouseleave', leaveHandler)
+    })
+
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      interactiveEls.forEach(el => {
+        el.removeEventListener('mouseenter', enterHandler)
+        el.removeEventListener('mouseleave', leaveHandler)
+      })
+    }
+  }, [])
+
+  // ══════════════ FLOATING KARMA POPS ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const stage = tokenStageRef.current
+    if (!stage) return
+
+    let popInterval: ReturnType<typeof setInterval>
+    let popTimeout: ReturnType<typeof setTimeout>
+
+    const initPops = async () => {
+      const gsapModule = await import('gsap')
+      const gsap = (gsapModule.default || gsapModule) as any
+
+      function pop() {
+        const el = document.createElement('div')
+        el.className = 'karma-pop'
+        const amt = [50, 100, 150, 200, 250][Math.floor(Math.random() * 5)]
+        el.innerHTML = `<svg width="12" height="12" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#E8C268"/></svg>+${amt}`
+        el.style.left = (20 + Math.random() * 60) + '%'
+        el.style.top = (30 + Math.random() * 40) + '%'
+        el.style.opacity = '0'
+        stage!.appendChild(el)
+        gsap.to(el, {
+          opacity: 1, y: -60, duration: 0.4, ease: 'power2.out', onComplete() {
+            gsap.to(el, { opacity: 0, y: -100, duration: 0.6, delay: 0.4, ease: 'power2.in', onComplete() { el.remove() } })
+          }
+        })
+      }
+
+      popInterval = setInterval(pop, 1800)
+      popTimeout = setTimeout(pop, 500)
+    }
+
+    initPops()
+
+    return () => {
+      clearInterval(popInterval)
+      clearTimeout(popTimeout)
+    }
+  }, [])
+
+  // ══════════════ FADE-IN OBSERVER ══════════════
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+    }), { threshold: 0.15 })
+
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el))
+
+    return () => io.disconnect()
+  }, [])
+
   return (
     <>
       <style>{`
-        .landing *{box-sizing:border-box}
-        .landing a{color:inherit;text-decoration:none}
-        .landing button{cursor:pointer;font-family:inherit}
-        .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-        /* NAV */
-        nav.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(26,22,18,.72);border-bottom:1px solid rgba(232,194,104,.12)}
-        nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:68px}
-        nav.top .links{display:flex;gap:28px;font-size:14px;color:#CEC5B2}
+        html,body{margin:0;padding:0;background:#1A1612;color:#F4EEDF;font-family:var(--font-sans),'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        *{box-sizing:border-box}
+        a{color:inherit;text-decoration:none}
+        button{cursor:pointer;font-family:inherit}
+        .wrap{max-width:1280px;margin:0 auto;padding:0 32px;position:relative}
+        .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+
+        /* === NOISE / GRAIN === */
+        body::after{
+          content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.05;mix-blend-mode:overlay;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .91 0 0 0 0 .76 0 0 0 0 .41 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* === CURSOR === */
+        .cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:#E8C268;pointer-events:none;z-index:200;transform:translate(-50%,-50%);transition:transform .15s ease,width .2s,height .2s;mix-blend-mode:difference}
+        .cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(232,194,104,.4);border-radius:50%;pointer-events:none;z-index:199;transform:translate(-50%,-50%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+
+        /* === NAV === */
+        nav.top{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);background:rgba(26,22,18,.62);border-bottom:1px solid rgba(232,194,104,.08);transition:all .3s}
+        nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 32px;max-width:1440px;margin:0 auto}
+        nav.top .links{display:flex;gap:28px;font-size:13px;color:#CEC5B2}
+        nav.top .links a{position:relative;transition:color .2s}
         nav.top .links a:hover{color:#E8C268}
-        .btn-primary{background:#E8C268;color:#1A1612;border:none;height:42px;padding:0 18px;border-radius:999px;font-weight:700;font-size:14px;letter-spacing:-.01em;display:inline-flex;align-items:center;gap:8px}
-        .btn-primary:hover{background:#F4D98A}
-        .btn-ghost{background:transparent;color:#F4EEDF;border:1px solid rgba(232,194,104,.32);height:42px;padding:0 18px;border-radius:999px;font-weight:600;font-size:14px;display:inline-flex;align-items:center}
-        .btn-ghost:hover{border-color:rgba(232,194,104,.6)}
+        nav.top .links a::after{content:"";position:absolute;bottom:-6px;left:0;right:0;height:1px;background:#E8C268;transform:scaleX(0);transform-origin:left;transition:transform .3s}
+        nav.top .links a:hover::after{transform:scaleX(1)}
+        .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:-.01em;transition:all .2s;border:none;white-space:nowrap}
+        .btn-primary{background:#E8C268;color:#1A1612}
+        .btn-primary:hover{background:#F4D98A;transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,194,104,.3)}
+        .btn-ghost{background:transparent;color:#F4EEDF;border:1px solid rgba(232,194,104,.22)}
+        .btn-ghost:hover{border-color:rgba(232,194,104,.5);background:rgba(232,194,104,.05)}
 
-        /* HERO */
-        .hero{position:relative;padding:88px 0 120px;overflow:hidden}
-        .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(232,194,104,.18),transparent 55%),radial-gradient(ellipse at 85% 80%,rgba(233,207,194,.08),transparent 50%);pointer-events:none}
-        .hero .grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
-        .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A89E8A;font-weight:700;display:inline-flex;align-items:center;gap:10px;margin-bottom:22px}
-        .eyebrow .dot{width:6px;height:6px;border-radius:999px;background:#E8C268}
-        h1.display{font-family:var(--font-display),serif;font-weight:400;font-size:88px;line-height:1;letter-spacing:-.04em;margin:0 0 24px}
-        h1.display em{font-style:italic;color:#E8C268}
-        .lead{font-size:19px;line-height:1.55;color:#CEC5B2;max-width:520px;margin:0 0 36px}
-        .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-        .store-btn{display:inline-flex;align-items:center;gap:12px;background:#24201B;border:1px solid rgba(232,194,104,.2);color:#F4EEDF;height:56px;padding:0 22px;border-radius:14px;text-align:left}
-        .store-btn:hover{border-color:rgba(232,194,104,.45)}
+        /* === HERO === */
+        .hero{position:relative;min-height:100vh;padding:120px 0 60px;display:flex;align-items:center;overflow:hidden}
+        #hero-canvas{position:absolute;inset:0;z-index:1;pointer-events:none}
+        .hero-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(232,194,104,.22),transparent 55%);pointer-events:none;z-index:0;filter:blur(60px)}
+        .hero-content{position:relative;z-index:10;width:100%}
+        .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center}
+
+        .eyebrow-live{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(232,194,104,.08);border:1px solid rgba(232,194,104,.24);border-radius:999px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#E8C268;font-weight:600;margin-bottom:28px}
+        .pulse-dot{width:8px;height:8px;border-radius:50%;background:#E8C268;animation:pulse 1.8s ease-in-out infinite;box-shadow:0 0 12px #E8C268}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+        h1.display{font-family:var(--font-display),'Fraunces',serif;font-weight:400;font-size:clamp(56px,8vw,108px);line-height:.95;letter-spacing:-.045em;margin:0 0 28px}
+        h1.display em{font-style:italic;color:#E8C268;position:relative;display:inline-block}
+        h1.display .word{display:inline-block;opacity:0;transform:translateY(40px)}
+
+        .lead{font-size:19px;line-height:1.6;color:#CEC5B2;max-width:540px;margin:0 0 40px;opacity:0}
+        .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;opacity:0}
+
+        .store-btn{display:inline-flex;align-items:center;gap:12px;background:rgba(46,41,35,.8);border:1px solid rgba(232,194,104,.22);color:#F4EEDF;height:56px;padding:0 22px;border-radius:14px;text-align:left;backdrop-filter:blur(12px);transition:all .25s}
+        .store-btn:hover{border-color:rgba(232,194,104,.5);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
         .store-btn .sm{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;font-weight:600}
-        .store-btn .lg{font-family:var(--font-display),serif;font-size:18px;font-weight:500;letter-spacing:-.01em;margin-top:1px}
-        .hero-meta{display:flex;gap:28px;margin-top:38px;padding-top:26px;border-top:1px solid rgba(232,194,104,.14)}
-        .hero-meta .m{font-size:13px;color:#A89E8A}
-        .hero-meta .m b{display:block;font-family:var(--font-display),serif;font-weight:500;font-size:26px;color:#F4EEDF;letter-spacing:-.02em;margin-bottom:2px}
+        .store-btn .lg{font-family:var(--font-display),'Fraunces',serif;font-size:18px;font-weight:500;letter-spacing:-.01em;margin-top:1px}
 
-        /* Phone mockup */
-        .phone-wrap{position:relative;display:flex;justify-content:center;align-items:center}
-        .phone{width:340px;height:692px;border-radius:42px;background:#24201B;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(232,194,104,.14),inset 0 0 0 1px rgba(232,194,104,.04);padding:14px;position:relative}
-        .phone::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:96px;height:28px;border-radius:20px;background:#000;z-index:10}
-        .phone-inner{width:100%;height:100%;border-radius:30px;overflow:hidden;background:#1A1612;position:relative}
-        .float-token{position:absolute;filter:drop-shadow(0 12px 30px rgba(232,194,104,.3))}
-        .float-token.a{top:-30px;right:-10px}
-        .float-token.b{bottom:40px;left:-40px}
+        .hero-meta{display:flex;gap:40px;margin-top:44px;padding-top:28px;border-top:1px solid rgba(232,194,104,.12);opacity:0}
+        .hero-meta .m b{display:block;font-family:var(--font-display),'Fraunces',serif;font-weight:500;font-size:28px;color:#F4EEDF;letter-spacing:-.02em;margin-bottom:2px}
+        .hero-meta .m span{font-size:12px;color:#A89E8A;letter-spacing:.04em}
 
-        /* SECTIONS */
-        section.s{padding:120px 0;position:relative}
-        section.s.alt{background:#24201B}
-        .sec-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A89E8A;font-weight:700;margin-bottom:14px}
-        .sec-title{font-family:var(--font-display),serif;font-weight:400;font-size:56px;line-height:1.05;letter-spacing:-.03em;margin:0 0 18px;max-width:720px}
+        /* === HERO 3D TOKEN STAGE === */
+        .token-stage{position:relative;width:100%;height:560px;display:flex;align-items:center;justify-content:center}
+        #three-canvas{position:absolute;inset:0}
+        .token-overlay{position:absolute;top:10%;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(26,22,18,.8);border:1px solid rgba(232,194,104,.3);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#E8C268;letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(10px);z-index:5}
+        .token-stats{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:24px;z-index:5}
+        .token-stat{font-family:'JetBrains Mono',monospace;font-size:10px;color:#A89E8A;letter-spacing:.08em}
+        .token-stat b{color:#E8C268;display:block;font-size:13px;margin-bottom:2px}
+
+        /* Floating karma pops */
+        .karma-pop{position:absolute;z-index:6;pointer-events:none;display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(232,194,104,.14);border:1px solid rgba(232,194,104,.4);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#E8C268;font-weight:700;backdrop-filter:blur(8px)}
+
+        /* === LIVE FEED === */
+        .live-feed{position:relative;padding:30px 0;border-top:1px solid rgba(232,194,104,.08);border-bottom:1px solid rgba(232,194,104,.08);background:rgba(36,32,27,.4);overflow:hidden}
+        .live-feed::before,.live-feed::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+        .live-feed::before{left:0;background:linear-gradient(to right,#1A1612,transparent)}
+        .live-feed::after{right:0;background:linear-gradient(to left,#1A1612,transparent)}
+        .feed-track{display:flex;gap:20px;animation:scroll 40s linear infinite;width:max-content}
+        @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        .feed-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(46,41,35,.6);border:1px solid rgba(232,194,104,.1);border-radius:999px;white-space:nowrap;font-size:13px;color:#CEC5B2}
+        .feed-item .av{width:24px;height:24px;border-radius:50%;background:#C8553D;display:flex;align-items:center;justify-content:center;font-size:10px;color:#F4EEDF;font-weight:700;font-family:var(--font-display),'Fraunces',serif}
+        .feed-item b{color:#F4EEDF}
+        .feed-item .t{color:#A89E8A;font-family:'JetBrains Mono',monospace;font-size:11px}
+        .feed-item .k{color:#E8C268;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+        /* === SECTION GENERIC === */
+        section.s{padding:140px 0;position:relative}
+        .sec-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A89E8A;font-weight:700;margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
+        .sec-eyebrow::before{content:"";width:24px;height:1px;background:#E8C268}
+        .sec-title{font-family:var(--font-display),'Fraunces',serif;font-weight:400;font-size:clamp(40px,5.5vw,72px);line-height:1.02;letter-spacing:-.035em;margin:0 0 24px;max-width:900px}
         .sec-title em{font-style:italic;color:#E8C268}
         .sec-lead{font-size:17px;line-height:1.55;color:#CEC5B2;max-width:600px}
 
-        /* 3 column features */
-        .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px}
-        .feat{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden}
-        .feat:hover{border-color:rgba(232,194,104,.25)}
-        .feat .num{font-family:var(--font-display),serif;font-style:italic;font-size:13px;color:#E8C268;letter-spacing:.12em;margin-bottom:28px}
-        .feat h3{font-family:var(--font-display),serif;font-weight:500;font-size:26px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;color:#F4EEDF}
-        .feat p{font-size:14px;line-height:1.6;color:#A89E8A;margin:0}
+        /* === SCROLL-PINNED PHONE SECTION === */
+        .story{position:relative}
+        .story-pin{height:400vh;position:relative}
+        .story-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+        .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;width:100%;max-width:1280px;margin:0 auto;padding:0 32px;align-items:center}
+        .story-phone{display:flex;justify-content:center;position:relative}
+        .story-phone-frame{width:360px;height:740px;border-radius:44px;background:#000;padding:10px;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(232,194,104,.2);position:relative}
+        .story-phone-frame::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:32px;border-radius:20px;background:#000;z-index:10}
+        .story-screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:#1A1612;position:relative}
+        .story-screen-layer{position:absolute;inset:0;opacity:0}
+        .story-screen-layer.active{opacity:1}
+        .story-texts{position:relative;height:400px}
+        .story-text{position:absolute;inset:0;opacity:0}
+        .story-text .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#E8C268;letter-spacing:.22em;margin-bottom:12px}
+        .story-text h3{font-family:var(--font-display),'Fraunces',serif;font-weight:400;font-size:48px;line-height:1.05;letter-spacing:-.03em;margin:0 0 18px}
+        .story-text h3 em{font-style:italic;color:#E8C268}
+        .story-text p{font-size:16px;line-height:1.6;color:#CEC5B2;max-width:420px;margin:0}
+        .story-progress{position:absolute;left:-40px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:16px}
+        .story-progress .dot{width:6px;height:6px;border-radius:999px;background:rgba(232,194,104,.2);transition:all .4s}
+        .story-progress .dot.active{background:#E8C268;height:32px}
 
-        /* How it works */
-        .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:64px;position:relative}
-        .steps::before{content:"";position:absolute;top:28px;left:5%;right:5%;height:1px;background:linear-gradient(to right,transparent,rgba(232,194,104,.3),transparent)}
-        .step{position:relative;padding:0 12px}
-        .step .circle{width:56px;height:56px;border-radius:50%;background:#1A1612;border:1px solid rgba(232,194,104,.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display),serif;font-size:22px;color:#E8C268;font-weight:500;margin-bottom:20px}
-        .step h4{font-family:var(--font-display),serif;font-weight:500;font-size:20px;letter-spacing:-.02em;margin:0 0 8px}
-        .step p{font-size:13px;line-height:1.55;color:#A89E8A;margin:0}
+        /* === STATS — COUNT UP === */
+        .stats-section{padding:120px 0;background:#24201B;position:relative;overflow:hidden}
+        .stats-section::before{content:"";position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(232,194,104,.08),transparent 60%);pointer-events:none}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid rgba(232,194,104,.12);border-bottom:1px solid rgba(232,194,104,.12)}
+        .stat-card{padding:40px 32px;border-right:1px solid rgba(232,194,104,.1);position:relative;transition:background .3s}
+        .stat-card:last-child{border-right:none}
+        .stat-card:hover{background:rgba(232,194,104,.04)}
+        .stat-num{font-family:var(--font-display),'Fraunces',serif;font-weight:500;font-size:72px;line-height:1;letter-spacing:-.035em;color:#F4EEDF;margin-bottom:8px;font-variant-numeric:tabular-nums}
+        .stat-num em{font-style:italic;color:#E8C268;font-size:52px;margin-right:4px}
+        .stat-lbl{font-size:12px;color:#A89E8A;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+        .stat-trend{font-size:11px;color:#6B8E4E;margin-top:8px;font-family:'JetBrains Mono',monospace}
 
-        /* Stats bar */
-        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0;border-top:1px solid rgba(232,194,104,.14);border-bottom:1px solid rgba(232,194,104,.14);padding:40px 0}
-        .stat{padding:0 24px;border-right:1px solid rgba(232,194,104,.1)}
-        .stat:last-child{border-right:none}
-        .stat .num{font-family:var(--font-display),serif;font-weight:500;font-size:48px;letter-spacing:-.025em;color:#F4EEDF;line-height:1}
-        .stat .num em{font-style:italic;color:#E8C268;font-size:32px;margin-right:2px}
-        .stat .lbl{font-size:12px;color:#A89E8A;margin-top:6px;letter-spacing:.04em}
+        /* === BLOCKCHAIN PROOF === */
+        .proof{padding:140px 0;background:#1A1612;position:relative}
+        .proof-canvas{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center;margin-top:60px}
+        .terminal{background:#0a0807;border:1px solid rgba(232,194,104,.16);border-radius:18px;padding:0;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#A89E8A;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+        .terminal-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:rgba(232,194,104,.04);border-bottom:1px solid rgba(232,194,104,.1)}
+        .terminal-bar .tc{width:10px;height:10px;border-radius:50%}
+        .terminal-bar .label{margin-left:12px;font-size:11px;color:#7A6F5E;letter-spacing:.1em}
+        .terminal-body{padding:20px 24px;min-height:360px}
+        .term-line{margin-bottom:4px}
+        .term-prompt{color:#E8C268}
+        .term-comment{color:#6B6358;font-style:italic}
+        .term-str{color:#C4CBAC}
+        .term-num{color:#E8C268}
+        .term-ok{color:#6B8E4E}
+        .term-key{color:#CEC5B2}
 
-        /* CTA final */
-        .cta-final{text-align:center;padding:120px 0;background:radial-gradient(ellipse at 50% 50%,rgba(232,194,104,.14),transparent 70%)}
-        .cta-final h2{font-family:var(--font-display),serif;font-weight:400;font-size:72px;line-height:1;letter-spacing:-.035em;margin:0 0 24px}
+        .chain-hash{display:inline-block;padding:2px 8px;background:rgba(232,194,104,.1);border-radius:4px;color:#E8C268;font-size:11px}
+
+        /* === NETWORK MAP === */
+        .network{padding:140px 0;position:relative;overflow:hidden}
+        #network-canvas{width:100%;height:500px;border-radius:20px;background:radial-gradient(circle at 50% 50%,#24201B,#1A1612);border:1px solid rgba(232,194,104,.1)}
+
+        /* === CTA FINAL === */
+        .cta-final{text-align:center;padding:160px 0;position:relative;overflow:hidden}
+        .cta-final::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,194,104,.18),transparent 60%);pointer-events:none}
+        .cta-final h2{font-family:var(--font-display),'Fraunces',serif;font-weight:400;font-size:clamp(48px,8vw,108px);line-height:.95;letter-spacing:-.045em;margin:0 0 24px;position:relative;z-index:2}
         .cta-final h2 em{font-style:italic;color:#E8C268}
-        .cta-final .p{font-size:18px;color:#CEC5B2;margin:0 auto 40px;max-width:520px;line-height:1.55}
-        .qr-box{display:inline-flex;align-items:center;gap:20px;background:#2E2923;border:1px solid rgba(232,194,104,.16);border-radius:20px;padding:18px 22px;margin-top:32px}
-        .qr-box .qr{width:84px;height:84px;background:#F4EEDF;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:8px}
-        .qr-box .txt{text-align:left;max-width:200px}
-        .qr-box .txt .h{font-family:var(--font-display),serif;font-size:16px;margin-bottom:2px}
-        .qr-box .txt .s-txt{font-size:12px;color:#A89E8A;line-height:1.4}
+        .cta-final .p{font-size:18px;color:#CEC5B2;margin:0 auto 44px;max-width:520px;line-height:1.55;position:relative;z-index:2}
+        .qr-row{display:inline-flex;align-items:center;gap:20px;background:rgba(46,41,35,.7);border:1px solid rgba(232,194,104,.16);border-radius:22px;padding:18px 22px;margin-top:36px;backdrop-filter:blur(12px);position:relative;z-index:2}
+        .qr-row .qr{width:92px;height:92px;background:#F4EEDF;border-radius:12px;padding:8px}
+        .qr-row .txt{text-align:left;max-width:200px}
+        .qr-row .txt .h{font-family:var(--font-display),'Fraunces',serif;font-size:18px;margin-bottom:4px}
+        .qr-row .txt .s{font-size:12px;color:#A89E8A;line-height:1.45}
 
-        /* Footer */
-        footer.landing-footer{padding:60px 0 40px;border-top:1px solid rgba(232,194,104,.1);background:#1A1612}
-        footer.landing-footer .g{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
-        footer.landing-footer h5{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;margin:0 0 16px;font-weight:700}
-        footer.landing-footer ul{list-style:none;padding:0;margin:0}
-        footer.landing-footer li{font-size:14px;color:#CEC5B2;margin-bottom:10px}
-        footer.landing-footer li a:hover{color:#E8C268}
-        .copy{margin-top:48px;padding-top:24px;border-top:1px solid rgba(232,194,104,.08);display:flex;justify-content:space-between;font-size:12px;color:#7A6F5E}
+        /* === FOOTER === */
+        footer{padding:80px 0 40px;border-top:1px solid rgba(232,194,104,.1);background:#1A1612;position:relative;z-index:5}
+        footer .g{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}
+        footer h5{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#A89E8A;margin:0 0 16px;font-weight:700}
+        footer ul{list-style:none;padding:0;margin:0}
+        footer li{font-size:14px;color:#CEC5B2;margin-bottom:10px}
+        footer li a:hover{color:#E8C268}
+        .copy{margin-top:60px;padding-top:24px;border-top:1px solid rgba(232,194,104,.08);display:flex;justify-content:space-between;font-size:12px;color:#7A6F5E}
+
+        /* fade in utility */
+        .fade-in{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+        .fade-in.in{opacity:1;transform:translateY(0)}
+
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
         @media (max-width:960px){
-          .hero .grid{grid-template-columns:1fr;gap:48px}
-          h1.display{font-size:58px}
-          .feat-grid{grid-template-columns:1fr}
-          .steps{grid-template-columns:1fr 1fr;gap:32px 8px}
-          .stats{grid-template-columns:1fr 1fr}
-          footer.landing-footer .g{grid-template-columns:1fr 1fr}
-          .cta-final h2{font-size:48px}
-          .hero-meta{flex-wrap:wrap}
-          .copy{flex-direction:column;gap:8px;align-items:center;text-align:center}
-        }
-
-        @media (max-width:600px){
-          h1.display{font-size:44px}
-          .sec-title{font-size:38px}
-          .cta-final h2{font-size:38px}
-          .steps{grid-template-columns:1fr}
-          .stats{grid-template-columns:1fr}
-          .stat{padding:12px 0;border-right:none;border-bottom:1px solid rgba(232,194,104,.1)}
-          .stat:last-child{border-bottom:none}
+          .hero-grid{grid-template-columns:1fr;gap:40px}
+          .story-grid{grid-template-columns:1fr;gap:40px}
+          .stats-grid{grid-template-columns:1fr 1fr}
+          .proof-canvas{grid-template-columns:1fr}
+          footer .g{grid-template-columns:1fr 1fr}
+          .token-stage{height:400px}
           nav.top .links{display:none}
-          .phone{width:280px;height:572px;border-radius:36px}
-          .phone::before{width:76px;height:22px}
-          footer.landing-footer .g{grid-template-columns:1fr}
+          .cursor-dot,.cursor-ring{display:none}
         }
       `}</style>
 
-      <div className="landing" style={{ margin: 0, padding: 0, background: "#1A1612", color: "#F4EEDF", fontFamily: "var(--font-sans), system-ui, sans-serif", WebkitFontSmoothing: "antialiased" }}>
+      {/* Custom cursor */}
+      <div className="cursor-dot" ref={cursorDotRef} />
+      <div className="cursor-ring" ref={cursorRingRef} />
 
-        {/* ── NAV ── */}
-        <nav className="top">
-          <div className="wrap inner">
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <svg width="32" height="32" viewBox="0 0 64 64">
-                <circle cx="32" cy="32" r="32" fill="#24201B" />
-                <circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" />
-                <g transform="translate(32,32)">
-                  <rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" />
-                  <rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" />
-                  <circle cx="0" cy="-11" r="4.2" fill="#E8C268" />
-                </g>
-              </svg>
-              <span style={{ fontFamily: "var(--font-display), serif", fontSize: 22, fontWeight: 500, letterSpacing: "-.02em" }}>
-                İyi<em style={{ fontStyle: "italic", color: "#E8C268" }}>Biri</em>
-              </span>
-            </div>
-            <div className="links">
-              <a href="#ne-yapiyoruz">Ne yapıyoruz</a>
-              <a href="#nasil">Nasıl çalışır</a>
-              <a href="#stklar">STK&apos;lar</a>
-              <a href="#manifesto">Manifesto</a>
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <Link href="/auth/login" className="btn-ghost">Giriş</Link>
-              <Link href="/auth/signup" className="btn-primary">
-                Uygulamayı İndir
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </Link>
-            </div>
+      {/* NAV */}
+      <nav className="top">
+        <div className="inner">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <svg width="30" height="30" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#24201B" /><circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" /><g transform="translate(32,32)"><rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" /><rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" /><circle cx="0" cy="-11" r="4.2" fill="#E8C268" /></g></svg>
+            <span style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 22, fontWeight: 500, letterSpacing: '-.02em' }}>
+              Iyi<em style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</em>
+            </span>
           </div>
-        </nav>
+          <div className="links">
+            <a href="#nasil">Nasil calisir</a>
+            <a href="#karma">Karma</a>
+            <a href="#stklar">STK&apos;lar</a>
+            <a href="#manifesto">Manifesto</a>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Link href="/auth/login" className="btn btn-ghost">Giris</Link>
+            <Link href="/auth/signup" className="btn btn-primary">
+              Indir
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-        {/* ── HERO ── */}
-        <section className="hero">
-          <div className="wrap grid">
+      {/* HERO */}
+      <section className="hero">
+        <canvas id="hero-canvas" ref={heroCanvasRef} />
+        <div className="hero-glow" />
+        <div className="wrap hero-content">
+          <div className="hero-grid">
             <div>
-              <div className="eyebrow"><span className="dot" />{" "}Türkiye&apos;nin iyilik platformu &middot; Yeni</div>
+              <div className="eyebrow-live">
+                <span className="pulse-dot" />
+                <span>Su an <b ref={liveCountRef} style={{ color: '#F4EEDF', fontWeight: 700 }}>1.247</b> kisi gonullu</span>
+              </div>
               <h1 className="display">
-                <em>İyilik</em><br />
-                biriktirilir.
+                <span className="word"><em>Iyilik</em></span><br />
+                <span className="word">biriktirilir.</span>
               </h1>
               <p className="lead">
-                Mahallendeki STK&apos;lara gönüllü ol, adım adım gerçek görevler tamamla, Karma biriktir. Kampanyalara bağış yerine zaman ver — ödülünü gerçek ortaklarda kullan.
+                Mahallendeki STK&apos;lara gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her gorev blockchain&apos;de dogrulanir -- manipule edilemeyen itibarin.
               </p>
               <div className="cta-row">
                 <Link className="store-btn" href="/auth/login">
-                  <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF">
-                    <path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" />
-                  </svg>
+                  <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF"><path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" /></svg>
                   <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
                 </Link>
                 <Link className="store-btn" href="/auth/login">
-                  <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF">
-                    <path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" />
-                  </svg>
+                  <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF"><path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" /></svg>
                   <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
                 </Link>
               </div>
               <div className="hero-meta">
-                <div className="m"><b>240+</b> partner STK</div>
-                <div className="m"><b>18K</b> aktif gönüllü</div>
-                <div className="m"><b>4.9★</b> kullanıcı puanı</div>
+                <div className="m"><b data-cu="18247">0</b><span>Aktif gonullu</span></div>
+                <div className="m"><b data-cu="248">0</b><span>Partner STK</span></div>
+                <div className="m"><b>4.9<span style={{ color: '#E8C268' }}>&#9733;</span></b><span>App Store puani</span></div>
               </div>
             </div>
 
-            <div className="phone-wrap">
-              <svg className="float-token a" width="72" height="72" viewBox="0 0 64 64">
-                <defs>
-                  <radialGradient id="ft1" cx="40%" cy="36%" r="70%">
-                    <stop offset="0%" stopColor="#F4D98A" />
-                    <stop offset="55%" stopColor="#E8C268" />
-                    <stop offset="100%" stopColor="#B58F3D" />
-                  </radialGradient>
-                </defs>
-                <circle cx="32" cy="32" r="30" fill="url(#ft1)" />
-                <circle cx="32" cy="32" r="22" fill="none" stroke="#8A6A2C" strokeOpacity=".4" strokeWidth="0.6" />
-                <g transform="translate(32,32)">
-                  <circle cx="0" cy="-9" r="2.4" fill="#3E2F14" />
-                  <path d="M-3 -3 L-3 12 L3 12 L3 -3 Z" fill="#3E2F14" />
-                  <path d="M-6 12 L6 12 L6 10 L-6 10 Z" fill="#3E2F14" />
-                </g>
-              </svg>
+            {/* 3D TOKEN STAGE */}
+            <div className="token-stage" ref={tokenStageRef}>
+              <div className="token-overlay">// karma.token -- mainnet</div>
+              <canvas id="three-canvas" ref={threeCanvasRef} />
+              <div className="token-stats">
+                <div className="token-stat"><b>18.247</b>token basildi</div>
+                <div className="token-stat"><b>2.4M</b>toplam karma</div>
+                <div className="token-stat"><b>62.103</b>gorev hash&apos;i</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <div className="phone">
-                <div className="phone-inner">
-                  {/* Simplified hi-fi screenshot of home */}
-                  <div style={{ padding: "50px 18px 0" }}>
-                    <div style={{ fontSize: 10, letterSpacing: ".18em", textTransform: "uppercase", color: "#7A6F5E", fontWeight: 700 }}>Cumartesi &middot; 18 Nisan</div>
-                    <div style={{ fontFamily: "var(--font-display), serif", fontSize: 22, marginTop: 4, color: "#F4EEDF" }}>
-                      Günaydın, <em style={{ color: "#E8C268", fontStyle: "italic" }}>Deniz</em>.
+      {/* LIVE FEED */}
+      <div className="live-feed">
+        <div className="feed-track" ref={feedTrackRef} />
+      </div>
+
+      {/* SCROLL STORY -- 4 phone ekrani, pinned */}
+      <section className="story" id="nasil">
+        <div className="wrap" style={{ paddingBottom: 40 }}>
+          <div className="sec-eyebrow">Nasil calisir</div>
+          <h2 className="sec-title">Iyilik <em>soyut</em> degil. <br />Bir gorev. Bir saat. <em>Bir hash.</em></h2>
+        </div>
+
+        <div className="story-pin">
+          <div className="story-sticky">
+            <div className="story-grid">
+              {/* Texts */}
+              <div className="story-texts">
+                <div className="story-text" data-step="0">
+                  <div className="num">01 &middot; BUL</div>
+                  <h3>Mahallende <em>sana uygun</em> gorev.</h3>
+                  <p>Konum, ilgi alani, sure filtresi. Yakinindaki her STK&apos;nin aktif cagrilari tek yerde. Kitap paketleme, yasliya market, park temizligi -- hepsi gercek, hepsi dogrulanmis.</p>
+                </div>
+                <div className="story-text" data-step="1">
+                  <div className="num">02 &middot; KATIL</div>
+                  <h3>Tek dokunusla <em>basvur.</em></h3>
+                  <p>STK koordinatoru seni gorur, onaylar. Takvimine eklenir. Hatirlatma gelir. Uygulamadan cikmadan her sey hallolur.</p>
+                </div>
+                <div className="story-text" data-step="2">
+                  <div className="num">03 &middot; YAP</div>
+                  <h3>Gerceklestir. <em>Check-in yap.</em></h3>
+                  <p>Alana vardiginda QR kodu okut, gorev baslar. Biten gorev koordinator tarafindan dogrulanir -- fotografli, imzali, sahitli.</p>
+                </div>
+                <div className="story-text" data-step="3">
+                  <div className="num">04 &middot; KARMA</div>
+                  <h3>Blockchain&apos;e <em>kazin.</em></h3>
+                  <p>Gorev tamamlaninca Karma cuzdanina duser. Kayit Polygon&apos;da, manipule edilemez. Itibarin artik gercek, gorunur ve tasinabilir.</p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="story-phone">
+                <div className="story-progress">
+                  <div className="dot" data-i="0" />
+                  <div className="dot" data-i="1" />
+                  <div className="dot" data-i="2" />
+                  <div className="dot" data-i="3" />
+                </div>
+                <div className="story-phone-frame">
+                  <div className="story-screen">
+                    {/* Layer 0: Kesfet */}
+                    <div className="story-screen-layer" data-layer="0">
+                      <div style={{ padding: '56px 18px 14px', background: '#1A1612', borderBottom: '1px solid rgba(232,194,104,.08)' }}>
+                        <div style={{ fontSize: 10, letterSpacing: '.16em', color: '#A89E8A', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>Kesfet &middot; 47 gorev yakinda</div>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: '#E8C268', color: '#1A1612', borderRadius: 999, fontWeight: 700 }}>Tumu</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Cevre</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Egitim</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Hayvan</span>
+                        </div>
+                      </div>
+                      <div style={{ padding: 12 }}>
+                        {/* Task cards */}
+                        <div style={{ background: '#2E2923', border: '1px solid rgba(232,194,104,.1)', borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                          <div style={{ height: 76, background: 'linear-gradient(135deg,#C8553D,#8a3a27)' }} />
+                          <div style={{ padding: 12 }}>
+                            <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 14, color: '#F4EEDF', lineHeight: 1.3 }}>Kadikoy&apos;de kitap toplama</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, alignItems: 'center' }}>
+                              <div style={{ fontSize: 10, color: '#A89E8A' }}>Cts &middot; 10:00 &middot; 3s</div>
+                              <div style={{ background: 'rgba(232,194,104,.14)', color: '#E8C268', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>+150</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ background: '#2E2923', border: '1px solid rgba(232,194,104,.1)', borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                          <div style={{ height: 76, background: 'linear-gradient(135deg,#6B8E4E,#4a6237)' }} />
+                          <div style={{ padding: 12 }}>
+                            <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 14, color: '#F4EEDF', lineHeight: 1.3 }}>Park temizligi &middot; Maltepe</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, alignItems: 'center' }}>
+                              <div style={{ fontSize: 10, color: '#A89E8A' }}>Pzr &middot; 09:00 &middot; 2s</div>
+                              <div style={{ background: 'rgba(232,194,104,.14)', color: '#E8C268', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>+100</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  {/* Karma card */}
-                  <div style={{ margin: "18px 16px 0", background: "#2E2923", border: "1px solid rgba(232,194,104,.14)", borderRadius: 20, padding: 18 }}>
-                    <div style={{ fontSize: 9, letterSpacing: ".2em", color: "#A89E8A", fontWeight: 700, textTransform: "uppercase" }}>Biriktirdiğin</div>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 }}>
-                      <div style={{ fontFamily: "var(--font-display), serif", fontWeight: 500, fontSize: 52, color: "#F4EEDF", letterSpacing: "-.035em", lineHeight: ".95" }}>1.284</div>
-                      <svg width="22" height="22" viewBox="0 0 64 64">
-                        <defs>
-                          <radialGradient id="ftx" cx="40%" cy="36%" r="70%">
-                            <stop offset="0%" stopColor="#F4D98A" />
-                            <stop offset="100%" stopColor="#B58F3D" />
-                          </radialGradient>
-                        </defs>
-                        <circle cx="32" cy="32" r="30" fill="url(#ftx)" />
-                      </svg>
+
+                    {/* Layer 1: Basvur */}
+                    <div className="story-screen-layer" data-layer="1">
+                      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ height: 240, background: 'linear-gradient(135deg,#C8553D,#8a3a27)', padding: '56px 20px 14px', position: 'relative' }}>
+                          <div style={{ position: 'absolute', top: 56, left: 20, fontSize: 10, letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(244,238,223,.7)', fontWeight: 700 }}>Gorev</div>
+                          <div style={{ position: 'absolute', bottom: 14, left: 20, right: 20 }}>
+                            <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 22, color: '#F4EEDF', lineHeight: 1.1 }}>Kadikoy&apos;de kitap toplama ve paketleme</div>
+                          </div>
+                        </div>
+                        <div style={{ flex: 1, padding: 16, background: '#1A1612' }}>
+                          <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+                            <div style={{ flex: 1, background: '#2E2923', border: '1px solid rgba(232,194,104,.1)', borderRadius: 10, padding: '8px 10px' }}>
+                              <div style={{ fontSize: 9, color: '#A89E8A', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 700 }}>Ne zaman</div>
+                              <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 13, color: '#F4EEDF', marginTop: 2 }}>Cts &middot; 10:00</div>
+                            </div>
+                            <div style={{ flex: 1, background: '#2E2923', border: '1px solid rgba(232,194,104,.1)', borderRadius: 10, padding: '8px 10px' }}>
+                              <div style={{ fontSize: 9, color: '#A89E8A', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 700 }}>Sure</div>
+                              <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 13, color: '#F4EEDF', marginTop: 2 }}>3 saat</div>
+                            </div>
+                          </div>
+                          <div style={{ background: 'rgba(232,194,104,.08)', border: '1px solid rgba(232,194,104,.3)', borderRadius: 12, padding: '10px 12px', marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <div style={{ fontSize: 9, color: '#B58F3D', letterSpacing: '.14em', textTransform: 'uppercase', fontWeight: 700 }}>Odul</div>
+                              <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 16, color: '#E8C268', marginTop: 1 }}>+150 Karma</div>
+                            </div>
+                            <svg width="22" height="22" viewBox="0 0 64 64">
+                              <defs><radialGradient id="sx1" cx="40%" cy="36%" r="70%"><stop offset="0%" stopColor="#F4D98A" /><stop offset="100%" stopColor="#B58F3D" /></radialGradient></defs>
+                              <circle cx="32" cy="32" r="30" fill="url(#sx1)" />
+                            </svg>
+                          </div>
+                          <button style={{ width: '100%', height: 44, background: '#E8C268', color: '#1A1612', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 14 }}>Basvur &#8594;</button>
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, color: "#A89E8A", marginTop: 6, lineHeight: "1.45" }}>
-                      <em style={{ fontFamily: "var(--font-display), serif", color: "#E8C268", fontStyle: "italic" }}>Çok İyi Biri</em> seviyesindesin.
+
+                    {/* Layer 2: Check-in QR */}
+                    <div className="story-screen-layer" data-layer="2">
+                      <div style={{ padding: '56px 20px 14px', background: '#1A1612' }}>
+                        <div style={{ fontSize: 10, letterSpacing: '.16em', color: '#A89E8A', textTransform: 'uppercase', fontWeight: 700 }}>Check-in</div>
+                        <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 20, color: '#F4EEDF', marginTop: 4 }}>QR&apos;i okut, basla</div>
+                      </div>
+                      <div style={{ padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ width: 220, height: 220, borderRadius: 16, background: '#F4EEDF', padding: 14, margin: '20px 0' }}>
+                          <svg viewBox="0 0 60 60" width="100%" height="100%">
+                            <rect width="60" height="60" fill="#F4EEDF" />
+                            <g fill="#1A1612">
+                              <rect x="4" y="4" width="14" height="14" /><rect x="8" y="8" width="6" height="6" fill="#F4EEDF" />
+                              <rect x="42" y="4" width="14" height="14" /><rect x="46" y="8" width="6" height="6" fill="#F4EEDF" />
+                              <rect x="4" y="42" width="14" height="14" /><rect x="8" y="46" width="6" height="6" fill="#F4EEDF" />
+                              <rect x="24" y="6" width="3" height="3" /><rect x="30" y="6" width="3" height="3" /><rect x="36" y="6" width="3" height="3" />
+                              <rect x="24" y="24" width="3" height="3" /><rect x="30" y="20" width="3" height="3" /><rect x="36" y="26" width="3" height="3" /><rect x="42" y="22" width="3" height="3" />
+                              <rect x="24" y="36" width="3" height="3" /><rect x="30" y="42" width="3" height="3" /><rect x="36" y="38" width="3" height="3" /><rect x="42" y="44" width="3" height="3" />
+                              <rect x="50" y="24" width="3" height="3" /><rect x="50" y="36" width="3" height="3" /><rect x="50" y="48" width="3" height="3" />
+                            </g>
+                          </svg>
+                        </div>
+                        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#A89E8A', letterSpacing: '.08em' }}>iyibiri://checkin/kadikoy-kitap</div>
+                      </div>
                     </div>
-                    <div style={{ height: 3, background: "rgba(232,194,104,.14)", borderRadius: 999, marginTop: 14, overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: "58%", background: "#E8C268", borderRadius: 999 }} />
-                    </div>
-                  </div>
-                  {/* Mission card */}
-                  <div style={{ margin: "12px 16px", background: "#2E2923", border: "1px solid rgba(232,194,104,.1)", borderRadius: 18, overflow: "hidden" }}>
-                    <div style={{ height: 92, background: "linear-gradient(135deg,#C8553D,#8a3a27)", display: "flex", alignItems: "flex-end", padding: "10px 12px", color: "#F4EEDF", fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700 }}>Bu hafta</div>
-                    <div style={{ padding: "14px 14px 16px" }}>
-                      <div style={{ fontFamily: "var(--font-display), serif", fontSize: 16, color: "#F4EEDF", lineHeight: "1.25" }}>Kadıköy&apos;de kitap toplama ve paketleme</div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-                        <div style={{ fontSize: 11, color: "#A89E8A" }}>Cts &middot; 10:00 &middot; 3s</div>
-                        <div style={{ background: "rgba(232,194,104,.14)", color: "#E8C268", fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999 }}>+150</div>
+
+                    {/* Layer 3: Karma kazanildi */}
+                    <div className="story-screen-layer" data-layer="3">
+                      <div style={{ height: '100%', background: '#1A1612', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '56px 20px 20px', textAlign: 'center', position: 'relative' }}>
+                        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 40%,rgba(232,194,104,.22),transparent 60%)', pointerEvents: 'none' }} />
+                        <div style={{ position: 'relative', zIndex: 2 }}>
+                          <svg width="120" height="120" viewBox="0 0 64 64" style={{ filter: 'drop-shadow(0 12px 40px rgba(232,194,104,.5))' }}>
+                            <defs><radialGradient id="sx2" cx="40%" cy="36%" r="70%"><stop offset="0%" stopColor="#F4D98A" /><stop offset="55%" stopColor="#E8C268" /><stop offset="100%" stopColor="#B58F3D" /></radialGradient></defs>
+                            <circle cx="32" cy="32" r="30" fill="url(#sx2)" />
+                            <circle cx="32" cy="32" r="22" fill="none" stroke="#8A6A2C" strokeOpacity=".4" strokeWidth="0.6" />
+                            <g transform="translate(32,32)"><circle cx="0" cy="-9" r="2.4" fill="#3E2F14" /><path d="M-3 -3 L-3 12 L3 12 L3 -3 Z" fill="#3E2F14" /><path d="M-6 12 L6 12 L6 10 L-6 10 Z" fill="#3E2F14" /></g>
+                          </svg>
+                          <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 48, color: '#E8C268', fontWeight: 500, letterSpacing: '-.03em', marginTop: 20 }}>+150</div>
+                          <div style={{ fontSize: 10, letterSpacing: '.22em', color: '#A89E8A', textTransform: 'uppercase', fontWeight: 700, marginTop: 4 }}>Karma kazandin</div>
+                          <div style={{ marginTop: 24, padding: '10px 14px', background: '#2E2923', border: '1px solid rgba(232,194,104,.16)', borderRadius: 10, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: '#A89E8A' }}>
+                            <div style={{ color: '#6B8E4E', marginBottom: 2 }}>&#10003; Blockchain&apos;e yazildi</div>
+                            <div style={{ color: '#E8C268' }}>0x8fc2...a417</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div style={{ margin: "0 16px 16px", background: "#2E2923", border: "1px solid rgba(232,194,104,.08)", borderRadius: 18, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: "#A89E8A" }}>Yakınında yeni</div>
-                    <div style={{ fontFamily: "var(--font-display), serif", fontSize: 14, color: "#F4EEDF", marginTop: 2 }}>Sahipsiz hayvan mama dağıtımı</div>
-                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <svg className="float-token b" width="56" height="56" viewBox="0 0 64 64">
-                <defs>
-                  <radialGradient id="ft2" cx="40%" cy="36%" r="70%">
-                    <stop offset="0%" stopColor="#F4D98A" />
-                    <stop offset="55%" stopColor="#E8C268" />
-                    <stop offset="100%" stopColor="#B58F3D" />
-                  </radialGradient>
-                </defs>
-                <circle cx="32" cy="32" r="30" fill="url(#ft2)" />
+      {/* LIVE STATS */}
+      <section className="stats-section" id="karma">
+        <div className="wrap">
+          <div className="sec-eyebrow">Canli sayilar</div>
+          <h2 className="sec-title">Iyilik <em>su an</em> olusuyor.</h2>
+          <p className="sec-lead">Her metrik gercek, her saat guncellenir. Protokol verisi -- dashboard degil.</p>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-num"><em>+</em><span data-cu="18247">0</span></div>
+              <div className="stat-lbl">Aktif gonullu</div>
+              <div className="stat-trend">&#8593; +284 / 7 gun</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num"><span data-cu="62103">0</span></div>
+              <div className="stat-lbl">Tamamlanan gorev</div>
+              <div className="stat-trend">&#8593; +1.840 / 7 gun</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num"><span data-cu="248">0</span></div>
+              <div className="stat-lbl">Partner STK</div>
+              <div className="stat-trend">&#8593; +12 / 30 gun</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num"><span data-cu="81">0</span></div>
+              <div className="stat-lbl">Sehir</div>
+              <div className="stat-trend">&#8594; hepsi</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BLOCKCHAIN PROOF */}
+      <section className="proof">
+        <div className="wrap">
+          <div className="sec-eyebrow">Dogrulama</div>
+          <h2 className="sec-title"><em>Her</em> iyilik, <em>her</em> Karma. <br />Zincirde.</h2>
+          <p className="sec-lead">Polygon uzerinde calisan akilli sozlesme -- bir gorev biter, koordinator dogrular, Karma zincire yazilir. Silinemez, degistirilemez.</p>
+
+          <div className="proof-canvas">
+            <div className="terminal">
+              <div className="terminal-bar">
+                <div className="tc" style={{ background: '#FF5F57' }} />
+                <div className="tc" style={{ background: '#FEBC2E' }} />
+                <div className="tc" style={{ background: '#28C840' }} />
+                <div className="label">polygon-mainnet &middot; karma.sol</div>
+              </div>
+              <div className="terminal-body">
+                <div className="term-line"><span className="term-prompt">$</span> iyibiri-cli mission verify --id <span className="term-str">&quot;kadikoy-kitap-0418&quot;</span></div>
+                <div className="term-line term-comment">// Gorev dogrulandi, on-chain yaziliyor...</div>
+                <div className="term-line"><span className="term-key">tx_hash</span>: <span className="term-str">0x8fc2a41f...be02</span></div>
+                <div className="term-line"><span className="term-key">volunteer</span>: <span className="term-str">&quot;zeynep.iyi&quot;</span></div>
+                <div className="term-line"><span className="term-key">ngo</span>: <span className="term-str">&quot;kitap-kurdu&quot;</span></div>
+                <div className="term-line"><span className="term-key">karma_delta</span>: <span className="term-num">+150</span></div>
+                <div className="term-line"><span className="term-key">signatures</span>: <span className="term-num">3</span></div>
+                <div className="term-line"><span className="term-key">block</span>: <span className="term-num">52_847_193</span></div>
+                <div className="term-line"><span className="term-key">gas</span>: <span className="term-num">0.0012 MATIC</span></div>
+                <div className="term-line term-ok">&#10003; Karma minted &middot; 0.42s</div>
+                <div className="term-line">&nbsp;</div>
+                <div className="term-line"><span className="term-prompt">$</span> <span style={{ animation: 'blink 1s steps(1) infinite' }}>&#9610;</span></div>
+              </div>
+            </div>
+
+            <div>
+              <h3 style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontWeight: 400, fontSize: 40, letterSpacing: '-.03em', margin: '0 0 20px', lineHeight: 1.05 }}>Neden zincir? Cunku <em style={{ fontStyle: 'italic', color: '#E8C268' }}>soz</em> yeterli degil.</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
+                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>01</div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Silinemez itibar</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Is degistir, sehir degistir, platform degistir. Karma seninle tasinir.</div>
+                  </div>
+                </li>
+                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
+                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>02</div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>3 imzali dogrulama</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>STK koordinatoru + en az 2 gonullu + zaman damgasi. Sahte gorev uretmek matematiksel olarak zor.</div>
+                  </div>
+                </li>
+                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
+                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>03</div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Acik kaynak sozlesme</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Karma.sol GitHub&apos;da. Denetlenebilir. Fork edilebilir. Guven dogrulanabilir.</div>
+                  </div>
+                </li>
+                <li style={{ padding: '18px 0', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
+                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>04</div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Kullanici cebinde</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Uygulamayi silsen bile Karma cuzdanin blockchain&apos;de duruyor. Sen sahibisin, biz degil.</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NETWORK MAP */}
+      <section className="network" id="stklar">
+        <div className="wrap">
+          <div className="sec-eyebrow">Ag</div>
+          <h2 className="sec-title">81 sehirde, <em>248 STK.</em> <br />Turkiye&apos;nin iyilik agi.</h2>
+          <canvas id="network-canvas" ref={networkCanvasRef} />
+        </div>
+      </section>
+
+      {/* CTA FINAL */}
+      <section className="cta-final" id="manifesto">
+        <div className="wrap">
+          <h2><em>Iyilik</em> biriktirmeye<br />basla.</h2>
+          <p className="p">30 saniyede hesap ac -- mahallendeki ilk gorevini bu hafta sec.</p>
+          <div className="cta-row" style={{ justifyContent: 'center', opacity: 1 }}>
+            <Link className="store-btn" href="/auth/login">
+              <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF"><path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" /></svg>
+              <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
+            </Link>
+            <Link className="store-btn" href="/auth/login">
+              <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF"><path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" /></svg>
+              <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
+            </Link>
+          </div>
+          <div className="qr-row">
+            <div className="qr">
+              <svg viewBox="0 0 68 68" width="100%" height="100%">
+                <rect x="0" y="0" width="68" height="68" fill="#F4EEDF" />
+                <g fill="#1A1612">
+                  <rect x="4" y="4" width="16" height="16" /><rect x="8" y="8" width="8" height="8" fill="#F4EEDF" />
+                  <rect x="48" y="4" width="16" height="16" /><rect x="52" y="8" width="8" height="8" fill="#F4EEDF" />
+                  <rect x="4" y="48" width="16" height="16" /><rect x="8" y="52" width="8" height="8" fill="#F4EEDF" />
+                  <rect x="26" y="6" width="4" height="4" /><rect x="34" y="6" width="4" height="4" /><rect x="28" y="14" width="4" height="4" /><rect x="36" y="14" width="4" height="4" /><rect x="44" y="24" width="4" height="4" />
+                  <rect x="26" y="22" width="4" height="4" /><rect x="34" y="22" width="4" height="4" /><rect x="42" y="30" width="4" height="4" /><rect x="50" y="30" width="4" height="4" />
+                  <rect x="26" y="30" width="4" height="4" /><rect x="34" y="38" width="4" height="4" /><rect x="42" y="46" width="4" height="4" /><rect x="26" y="46" width="4" height="4" />
+                  <rect x="34" y="54" width="4" height="4" /><rect x="42" y="54" width="4" height="4" /><rect x="50" y="46" width="4" height="4" /><rect x="50" y="54" width="4" height="4" />
+                  <rect x="58" y="28" width="4" height="4" /><rect x="58" y="36" width="4" height="4" /><rect x="58" y="44" width="4" height="4" />
+                </g>
               </svg>
             </div>
+            <div className="txt"><div className="h">Telefonla okut</div><div className="s">QR&apos;i telefon kameranla tara -- magazaya git.</div></div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── WHAT IS IT (Features) ── */}
-        <section className="s" id="ne-yapiyoruz">
-          <div className="wrap">
-            <div className="sec-eyebrow">Ne yapıyoruz</div>
-            <h2 className="sec-title">İyilik <em>soyut</em> bir şey değil. Bir görev. Bir saat. Bir adım.</h2>
-            <p className="sec-lead">Gönüllülük dijitalleşiyor ama dağınık. STK&apos;lar e-posta atıyor, insanlar Instagram story&apos;de kayboluyor. İyiBiri, bu ikisini tek bir yerde, ölçülebilir ve ödüllendirilebilir bir sistemde buluşturuyor.</p>
-
-            <div className="feat-grid">
-              <div className="feat">
-                <div className="num">I.</div>
-                <h3>Yakınında gerçek görevler</h3>
-                <p>Mesafe, tarih, süre ve STK filtresiyle sana uygun olanı bul. Kitap paketle, fidan dik, çocuklarla okuma atölyesi yap.</p>
+      {/* FOOTER */}
+      <footer>
+        <div className="wrap">
+          <div className="g">
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <svg width="28" height="28" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#24201B" /><circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" /><g transform="translate(32,32)"><rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" /><rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" /><circle cx="0" cy="-11" r="4.2" fill="#E8C268" /></g></svg>
+                <span style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 20 }}>Iyi<em style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</em></span>
               </div>
-              <div className="feat">
-                <div className="num">II.</div>
-                <h3>Karma biriktir</h3>
-                <p>Her tamamlanan görev somut Karma kazandırır. STK&apos;nın doğruladığı ve blockchain&apos;de kayıtlı, manipüle edilemez bir itibar puanı.</p>
-              </div>
-              <div className="feat">
-                <div className="num">III.</div>
-                <h3>Gerçek ödüller</h3>
-                <p>Karma&apos;nı partner kafelerde, kitapçılarda, etkinliklerde kullan. İyilik cüzdanı — indirim değil, teşekkür.</p>
-              </div>
+              <p style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.6, maxWidth: 280 }}>Turkiye&apos;nin iyilik cuzdani. Zaman ver, Karma biriktir. Blockchain&apos;de dogrulan.</p>
             </div>
+            <div><h5>Urun</h5><ul><li><a href="#">Indir</a></li><li><a href="#">Nasil calisir</a></li><li><a href="#">STK&apos;lar</a></li><li><a href="#">Karma</a></li></ul></div>
+            <div><h5>Kurum</h5><ul><li><a href="#">Hakkimizda</a></li><li><a href="#">Manifesto</a></li><li><a href="#">Basin</a></li><li><a href="#">Iletisim</a></li></ul></div>
+            <div><h5>Gelistirici</h5><ul><li><a href="#">Karma.sol &#8599;</a></li><li><a href="#">API dokumani</a></li><li><a href="#">GitHub &#8599;</a></li><li><a href="#">Degisiklik gunlugu</a></li></ul></div>
           </div>
-        </section>
-
-        {/* ── HOW IT WORKS ── */}
-        <section className="s alt" id="nasil">
-          <div className="wrap">
-            <div className="sec-eyebrow">Nasıl çalışır</div>
-            <h2 className="sec-title">Dört adım. <em>Birkaç dakika.</em></h2>
-
-            <div className="steps">
-              <div className="step">
-                <div className="circle">01</div>
-                <h4>Hesap aç</h4>
-                <p>Apple, Google veya e-posta ile 30 saniyede. İlgilendiğin 3 alanı seç.</p>
-              </div>
-              <div className="step">
-                <div className="circle">02</div>
-                <h4>Görev bul</h4>
-                <p>Haritada yakınını, listede bu haftayı gör. Tek dokunuşla başvur.</p>
-              </div>
-              <div className="step">
-                <div className="circle">03</div>
-                <h4>Gerçekleştir</h4>
-                <p>STK koordinatörü check-in yapar. Sen sadece gelip yapıyorsun.</p>
-              </div>
-              <div className="step">
-                <div className="circle">04</div>
-                <h4>Karma al</h4>
-                <p>Görev bitince itibarın büyür. Ödüller cüzdanına düşer.</p>
-              </div>
-            </div>
+          <div className="copy">
+            <div>&copy; 2026 IyiBiri &middot; Karma Teknoloji A.S.</div>
+            <div>KVKK &middot; Kullanim &middot; Cerezler</div>
           </div>
-        </section>
-
-        {/* ── STATS ── */}
-        <section className="s" style={{ padding: "60px 0" }}>
-          <div className="wrap">
-            <div className="stats">
-              <div className="stat">
-                <div className="num"><em>+</em>18K</div>
-                <div className="lbl">Aktif gönüllü</div>
-              </div>
-              <div className="stat">
-                <div className="num"><em>+</em>240</div>
-                <div className="lbl">Partner STK</div>
-              </div>
-              <div className="stat">
-                <div className="num">62K</div>
-                <div className="lbl">Tamamlanan görev</div>
-              </div>
-              <div className="stat">
-                <div className="num">81</div>
-                <div className="lbl">Şehir</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── CTA FINAL ── */}
-        <section className="cta-final">
-          <div className="wrap">
-            <h2><em>İyilik</em> biriktirmeye<br />başla.</h2>
-            <p className="p">Uygulamayı indir, 30 saniyede hesap aç — mahallendeki ilk görevini bu hafta seç.</p>
-            <div className="cta-row" style={{ justifyContent: "center" }}>
-              <Link className="store-btn" href="/auth/login">
-                <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF">
-                  <path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" />
-                </svg>
-                <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
-              </Link>
-              <Link className="store-btn" href="/auth/login">
-                <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF">
-                  <path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" />
-                </svg>
-                <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
-              </Link>
-            </div>
-            <div className="qr-box">
-              <div className="qr">
-                <svg viewBox="0 0 68 68" width="68" height="68">
-                  <rect x="0" y="0" width="68" height="68" fill="#F4EEDF" />
-                  <g fill="#1A1612">
-                    <rect x="4" y="4" width="16" height="16" /><rect x="8" y="8" width="8" height="8" fill="#F4EEDF" />
-                    <rect x="48" y="4" width="16" height="16" /><rect x="52" y="8" width="8" height="8" fill="#F4EEDF" />
-                    <rect x="4" y="48" width="16" height="16" /><rect x="8" y="52" width="8" height="8" fill="#F4EEDF" />
-                    <rect x="26" y="6" width="4" height="4" /><rect x="34" y="6" width="4" height="4" /><rect x="28" y="14" width="4" height="4" /><rect x="36" y="14" width="4" height="4" /><rect x="44" y="24" width="4" height="4" />
-                    <rect x="26" y="22" width="4" height="4" /><rect x="34" y="22" width="4" height="4" /><rect x="42" y="30" width="4" height="4" /><rect x="50" y="30" width="4" height="4" />
-                    <rect x="26" y="30" width="4" height="4" /><rect x="34" y="38" width="4" height="4" /><rect x="42" y="46" width="4" height="4" /><rect x="26" y="46" width="4" height="4" />
-                    <rect x="34" y="54" width="4" height="4" /><rect x="42" y="54" width="4" height="4" /><rect x="50" y="46" width="4" height="4" /><rect x="50" y="54" width="4" height="4" />
-                    <rect x="58" y="28" width="4" height="4" /><rect x="58" y="36" width="4" height="4" /><rect x="58" y="44" width="4" height="4" />
-                  </g>
-                </svg>
-              </div>
-              <div className="txt">
-                <div className="h">Telefonla okut</div>
-                <div className="s-txt">QR&apos;ı telefon kameranla tara — mağazaya git.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── FOOTER ── */}
-        <footer className="landing-footer">
-          <div className="wrap">
-            <div className="g">
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                  <svg width="28" height="28" viewBox="0 0 64 64">
-                    <circle cx="32" cy="32" r="32" fill="#24201B" />
-                    <circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" />
-                    <g transform="translate(32,32)">
-                      <rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" />
-                      <rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" />
-                      <circle cx="0" cy="-11" r="4.2" fill="#E8C268" />
-                    </g>
-                  </svg>
-                  <span style={{ fontFamily: "var(--font-display), serif", fontSize: 20 }}>
-                    İyi<em style={{ fontStyle: "italic", color: "#E8C268" }}>Biri</em>
-                  </span>
-                </div>
-                <p style={{ fontSize: 13, color: "#A89E8A", lineHeight: "1.6", maxWidth: 280 }}>Türkiye&apos;nin iyilik cüzdanı. Zaman ver, Karma biriktir.</p>
-              </div>
-              <div>
-                <h5>Ürün</h5>
-                <ul>
-                  <li><a href="#">Uygulamayı indir</a></li>
-                  <li><a href="#nasil">Nasıl çalışır</a></li>
-                  <li><a href="#stklar">STK&apos;lar</a></li>
-                  <li><a href="#">Ödüller</a></li>
-                </ul>
-              </div>
-              <div>
-                <h5>Kurum</h5>
-                <ul>
-                  <li><a href="#">Hakkımızda</a></li>
-                  <li><a href="#manifesto">Manifesto</a></li>
-                  <li><a href="#">Basın</a></li>
-                  <li><a href="#">İletişim</a></li>
-                </ul>
-              </div>
-              <div>
-                <h5>STK&apos;lar için</h5>
-                <ul>
-                  <li><a href="#">Partner ol</a></li>
-                  <li><a href="#">Panel</a></li>
-                  <li><a href="#">Dokümanlar</a></li>
-                  <li><a href="#">SSS</a></li>
-                </ul>
-              </div>
-            </div>
-            <div className="copy">
-              <div>&copy; 2026 İyiBiri &middot; Karma Teknoloji A.Ş.</div>
-              <div>KVKK &middot; Kullanım &middot; Çerezler</div>
-            </div>
-          </div>
-        </footer>
-
-      </div>
+        </div>
+      </footer>
     </>
-  );
+  )
 }
