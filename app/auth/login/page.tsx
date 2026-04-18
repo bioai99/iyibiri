@@ -43,7 +43,7 @@ export default function AuthLandingPage() {
       if (isNativePlatform()) {
         if (provider === 'google') await handleNativeGoogleLogin()
         else await handleNativeAppleLogin()
-        window.location.href = '/dashboard'
+        window.location.href = '/app-start'
       } else {
         const supabase = createClient()
         const { data } = await supabase.auth.signInWithOAuth({
