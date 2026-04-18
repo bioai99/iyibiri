@@ -754,7 +754,7 @@ export default function LandingPage() {
                 <span className="word">biriktirilir.</span>
               </h1>
               <p className="lead">
-                Mahallendeki STK&apos;lara gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her gorev blockchain&apos;de dogrulanir -- manipule edilemeyen itibarin.
+                Mahallendeki STK&apos;lara gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her iyilik gorunur, her katki degerli.
               </p>
               <div className="cta-row">
                 <Link className="store-btn" href="/auth/login">
@@ -775,12 +775,12 @@ export default function LandingPage() {
 
             {/* 3D TOKEN STAGE */}
             <div className="token-stage" ref={tokenStageRef}>
-              <div className="token-overlay">// karma.token -- mainnet</div>
+              <div className="token-overlay">karma &middot; iyilik biriktir</div>
               <canvas id="three-canvas" ref={threeCanvasRef} />
               <div className="token-stats">
-                <div className="token-stat"><b>18.247</b>token basildi</div>
+                <div className="token-stat"><b>18.247</b>gonullu</div>
                 <div className="token-stat"><b>2.4M</b>toplam karma</div>
-                <div className="token-stat"><b>62.103</b>gorev hash&apos;i</div>
+                <div className="token-stat"><b>62.103</b>tamamlanan gorev</div>
               </div>
             </div>
           </div>
@@ -796,7 +796,7 @@ export default function LandingPage() {
       <section className="story" id="nasil">
         <div className="wrap" style={{ paddingBottom: 40 }}>
           <div className="sec-eyebrow">Nasil calisir</div>
-          <h2 className="sec-title">Iyilik <em>soyut</em> degil. <br />Bir gorev. Bir saat. <em>Bir hash.</em></h2>
+          <h2 className="sec-title">Iyilik <em>soyut</em> degil. <br />Bir gorev. Bir saat. <em>Bir etki.</em></h2>
         </div>
 
         <div className="story-pin">
@@ -821,8 +821,8 @@ export default function LandingPage() {
                 </div>
                 <div className="story-text" data-step="3">
                   <div className="num">04 &middot; KARMA</div>
-                  <h3>Blockchain&apos;e <em>kazin.</em></h3>
-                  <p>Gorev tamamlaninca Karma cuzdanina duser. Kayit Polygon&apos;da, manipule edilemez. Itibarin artik gercek, gorunur ve tasinabilir.</p>
+                  <h3>Karma kazan, <em>fark yarat.</em></h3>
+                  <p>Gorev tamamlaninca Karma hesabina duser. Seviye atla, rozet kazan, odullerini kullan. Itibarin artik gercek ve gorunur.</p>
                 </div>
               </div>
 
@@ -946,8 +946,8 @@ export default function LandingPage() {
                           <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 48, color: '#E8C268', fontWeight: 500, letterSpacing: '-.03em', marginTop: 20 }}>+150</div>
                           <div style={{ fontSize: 10, letterSpacing: '.22em', color: '#A89E8A', textTransform: 'uppercase', fontWeight: 700, marginTop: 4 }}>Karma kazandin</div>
                           <div style={{ marginTop: 24, padding: '10px 14px', background: '#2E2923', border: '1px solid rgba(232,194,104,.16)', borderRadius: 10, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: '#A89E8A' }}>
-                            <div style={{ color: '#6B8E4E', marginBottom: 2 }}>&#10003; Blockchain&apos;e yazildi</div>
-                            <div style={{ color: '#E8C268' }}>0x8fc2...a417</div>
+                            <div style={{ color: '#6B8E4E', marginBottom: 2 }}>&#10003; Gorev dogrulandi</div>
+                            <div style={{ color: '#E8C268' }}>Seviye: Cok Iyi Biri</div>
                           </div>
                         </div>
                       </div>
@@ -991,12 +991,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* BLOCKCHAIN PROOF */}
+      {/* ETKI HIKAYELERI */}
       <section className="proof">
         <div className="wrap">
-          <div className="sec-eyebrow">Dogrulama</div>
-          <h2 className="sec-title"><em>Her</em> iyilik, <em>her</em> Karma. <br />Zincirde.</h2>
-          <p className="sec-lead">Polygon uzerinde calisan akilli sozlesme -- bir gorev biter, koordinator dogrular, Karma zincire yazilir. Silinemez, degistirilemez.</p>
+          <div className="sec-eyebrow">Etki</div>
+          <h2 className="sec-title"><em>Her</em> gorev, <em>gercek</em> bir degisim.</h2>
+          <p className="sec-lead">Gonullulerin tamamladigi her gorev, somut bir etki birakir. Iste gecen haftadan bir ornek.</p>
 
           <div className="proof-canvas">
             <div className="terminal">
@@ -1004,53 +1004,52 @@ export default function LandingPage() {
                 <div className="tc" style={{ background: '#FF5F57' }} />
                 <div className="tc" style={{ background: '#FEBC2E' }} />
                 <div className="tc" style={{ background: '#28C840' }} />
-                <div className="label">polygon-mainnet &middot; karma.sol</div>
+                <div className="label">iyibiri &middot; etki raporu</div>
               </div>
               <div className="terminal-body">
-                <div className="term-line"><span className="term-prompt">$</span> iyibiri-cli mission verify --id <span className="term-str">&quot;kadikoy-kitap-0418&quot;</span></div>
-                <div className="term-line term-comment">// Gorev dogrulandi, on-chain yaziliyor...</div>
-                <div className="term-line"><span className="term-key">tx_hash</span>: <span className="term-str">0x8fc2a41f...be02</span></div>
-                <div className="term-line"><span className="term-key">volunteer</span>: <span className="term-str">&quot;zeynep.iyi&quot;</span></div>
-                <div className="term-line"><span className="term-key">ngo</span>: <span className="term-str">&quot;kitap-kurdu&quot;</span></div>
-                <div className="term-line"><span className="term-key">karma_delta</span>: <span className="term-num">+150</span></div>
-                <div className="term-line"><span className="term-key">signatures</span>: <span className="term-num">3</span></div>
-                <div className="term-line"><span className="term-key">block</span>: <span className="term-num">52_847_193</span></div>
-                <div className="term-line"><span className="term-key">gas</span>: <span className="term-num">0.0012 MATIC</span></div>
-                <div className="term-line term-ok">&#10003; Karma minted &middot; 0.42s</div>
+                <div className="term-line"><span className="term-prompt">&gt;</span> gorev: <span className="term-str">&quot;Kadikoy kitap toplama&quot;</span></div>
+                <div className="term-line term-comment">// Cumartesi 10:00 - 13:00</div>
+                <div className="term-line"><span className="term-key">stk</span>: <span className="term-str">&quot;Kitap Kurdu Dernegi&quot;</span></div>
+                <div className="term-line"><span className="term-key">gonullu</span>: <span className="term-num">12 kisi</span></div>
+                <div className="term-line"><span className="term-key">toplanan</span>: <span className="term-num">4.200 kitap</span></div>
+                <div className="term-line"><span className="term-key">hedef</span>: <span className="term-str">&quot;8 koy okulu&quot;</span></div>
+                <div className="term-line"><span className="term-key">sure</span>: <span className="term-num">3 saat</span></div>
+                <div className="term-line"><span className="term-key">karma</span>: <span className="term-num">+150 / gonullu</span></div>
+                <div className="term-line term-ok">&#10003; Gorev tamamlandi &middot; dogrulandi</div>
                 <div className="term-line">&nbsp;</div>
-                <div className="term-line"><span className="term-prompt">$</span> <span style={{ animation: 'blink 1s steps(1) infinite' }}>&#9610;</span></div>
+                <div className="term-line"><span className="term-prompt">&gt;</span> <span style={{ animation: 'blink 1s steps(1) infinite' }}>&#9610;</span></div>
               </div>
             </div>
 
             <div>
-              <h3 style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontWeight: 400, fontSize: 40, letterSpacing: '-.03em', margin: '0 0 20px', lineHeight: 1.05 }}>Neden zincir? Cunku <em style={{ fontStyle: 'italic', color: '#E8C268' }}>soz</em> yeterli degil.</h3>
+              <h3 style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontWeight: 400, fontSize: 40, letterSpacing: '-.03em', margin: '0 0 20px', lineHeight: 1.05 }}>Neden <em style={{ fontStyle: 'italic', color: '#E8C268' }}>IyiBiri?</em> Cunku iyilik olculebilir.</h3>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                   <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>01</div>
                   <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Silinemez itibar</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Is degistir, sehir degistir, platform degistir. Karma seninle tasinir.</div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Gercek gorevler, gercek etki</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gorev bir STK tarafindan olusturulur ve koordine edilir. Soyut degil, somut.</div>
                   </div>
                 </li>
                 <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                   <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>02</div>
                   <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>3 imzali dogrulama</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>STK koordinatoru + en az 2 gonullu + zaman damgasi. Sahte gorev uretmek matematiksel olarak zor.</div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Dogrulanmis katki</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>STK koordinatoru gorevi dogrular. Katkin kayit altinda, itibarin gorunur.</div>
                   </div>
                 </li>
                 <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                   <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>03</div>
                   <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Acik kaynak sozlesme</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Karma.sol GitHub&apos;da. Denetlenebilir. Fork edilebilir. Guven dogrulanabilir.</div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Karma ile odul</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gorev Karma kazandirir. Karma&apos;ni Starbucks, Migros, Nike gibi markalarda kullan.</div>
                   </div>
                 </li>
                 <li style={{ padding: '18px 0', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
                   <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>04</div>
                   <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Kullanici cebinde</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Uygulamayi silsen bile Karma cuzdanin blockchain&apos;de duruyor. Sen sahibisin, biz degil.</div>
+                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Topluluk etkisi</div>
+                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gonullu, topluluga ilham verir. Siralamada yuksel, rozetler kazan, arkadaslarini davet et.</div>
                   </div>
                 </li>
               </ul>
@@ -1063,7 +1062,7 @@ export default function LandingPage() {
       <section className="network" id="stklar">
         <div className="wrap">
           <div className="sec-eyebrow">Ag</div>
-          <h2 className="sec-title">81 sehirde, <em>248 STK.</em> <br />Turkiye&apos;nin iyilik agi.</h2>
+          <h2 className="sec-title">81 sehirde, <em>248 STK.</em> <br />Turkiye&apos;nin gonulluluk agi.</h2>
           <canvas id="network-canvas" ref={networkCanvasRef} />
         </div>
       </section>
@@ -1113,11 +1112,11 @@ export default function LandingPage() {
                 <svg width="28" height="28" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#24201B" /><circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" /><g transform="translate(32,32)"><rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" /><rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" /><circle cx="0" cy="-11" r="4.2" fill="#E8C268" /></g></svg>
                 <span style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 20 }}>Iyi<em style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</em></span>
               </div>
-              <p style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.6, maxWidth: 280 }}>Turkiye&apos;nin iyilik cuzdani. Zaman ver, Karma biriktir. Blockchain&apos;de dogrulan.</p>
+              <p style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.6, maxWidth: 280 }}>Turkiye&apos;nin iyilik adresi. Gonullu ol, Karma biriktir, fark yarat.</p>
             </div>
             <div><h5>Urun</h5><ul><li><a href="#">Indir</a></li><li><a href="#">Nasil calisir</a></li><li><a href="#">STK&apos;lar</a></li><li><a href="#">Karma</a></li></ul></div>
             <div><h5>Kurum</h5><ul><li><a href="#">Hakkimizda</a></li><li><a href="#">Manifesto</a></li><li><a href="#">Basin</a></li><li><a href="#">Iletisim</a></li></ul></div>
-            <div><h5>Gelistirici</h5><ul><li><a href="#">Karma.sol &#8599;</a></li><li><a href="#">API dokumani</a></li><li><a href="#">GitHub &#8599;</a></li><li><a href="#">Degisiklik gunlugu</a></li></ul></div>
+            <div><h5>Topluluk</h5><ul><li><a href="#">Gonullu ol</a></li><li><a href="#">STK partneri ol</a></li><li><a href="#">Sikca sorulan sorular</a></li><li><a href="#">Destek</a></li></ul></div>
           </div>
           <div className="copy">
             <div>&copy; 2026 IyiBiri &middot; Karma Teknoloji A.S.</div>
