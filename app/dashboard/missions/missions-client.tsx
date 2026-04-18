@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
+import { ChipDS } from '@/components/ui/ds'
 
 interface Props {
   missions: MissionWithNGO[]
@@ -11,13 +12,13 @@ interface Props {
 }
 
 const filters = [
-  { value: 'all',       label: '✦ Tümü',      gradient: 'linear-gradient(90deg,#574E42,#3F3830)' },
-  { value: 'nature',    label: '🌿 Doğa',      gradient: 'linear-gradient(90deg,#10B981,#14B8A6)' },
-  { value: 'education', label: '📖 Eğitim',    gradient: 'linear-gradient(90deg,#3B82F6,#6366F1)' },
-  { value: 'social',    label: '❤️ Sosyal',    gradient: 'linear-gradient(90deg,#F43F5E,#EC4899)' },
-  { value: 'financial', label: '🪙 Finansal',  gradient: 'linear-gradient(90deg,#F59E0B,#F97316)' },
-  { value: 'animals',   label: '🐾 Hayvanlar', gradient: 'linear-gradient(90deg,#F97316,#F59E0B)' },
-  { value: 'culture',   label: '🎭 Kültür',    gradient: 'linear-gradient(90deg,#A855F7,#D946EF)' },
+  { value: 'all',       label: '✦ Tümü' },
+  { value: 'nature',    label: '🌿 Çevre' },
+  { value: 'education', label: '📖 Eğitim' },
+  { value: 'social',    label: '❤️ Sosyal' },
+  { value: 'financial', label: '🪙 Finansal' },
+  { value: 'animals',   label: '🐾 Hayvanlar' },
+  { value: 'culture',   label: '🎭 Kültür' },
 ]
 
 export function MissionsClient({ missions, userMissions }: Props) {
@@ -31,14 +32,21 @@ export function MissionsClient({ missions, userMissions }: Props) {
     : missions.filter(m => m.domain === activeFilter)
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div style={{ minHeight: '100vh', background: '#24201B', paddingBottom: 96 }}>
       {/* Sticky header */}
       <div
-        className="bg-background sticky top-0 z-10 px-4 pt-12 pb-4"
-        style={{ borderBottom: '1px solid #3F3830' }}
+        className="sticky top-0 z-10 px-4 pt-12 pb-4"
+        style={{ background: '#24201B', borderBottom: '1px solid #3F3830' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: '#F4EEDF', letterSpacing: '-0.025em' }}>
+          <h1 style={{
+            margin: 0,
+            fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+            fontSize: 28,
+            fontWeight: 500,
+            color: '#F4EEDF',
+            letterSpacing: '-0.025em',
+          }}>
             Görevler
           </h1>
           <span style={{
@@ -52,29 +60,15 @@ export function MissionsClient({ missions, userMissions }: Props) {
           </span>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
-          {filters.map(({ value, label, gradient }) => {
-            const isActive = activeFilter === value
-            return (
-              <motion.button
-                key={value}
-                onClick={() => setActiveFilter(value)}
-                whileTap={{ scale: 0.93 }}
-                style={{
-                  flexShrink: 0,
-                  padding: '7px 14px',
-                  borderRadius: 999,
-                  fontSize: 12, fontWeight: 700,
-                  border: 'none', cursor: 'pointer',
-                  background: isActive ? gradient : '#36302A',
-                  color: isActive ? 'white' : '#7A6F5E',
-                  outline: isActive ? 'none' : '1px solid #3F3830',
-                  transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
-                }}
-              >
-                {label}
-              </motion.button>
-            )
-          })}
+          {filters.map(({ value, label }) => (
+            <ChipDS
+              key={value}
+              active={activeFilter === value}
+              onClick={() => setActiveFilter(value)}
+            >
+              {label}
+            </ChipDS>
+          ))}
         </div>
       </div>
 
