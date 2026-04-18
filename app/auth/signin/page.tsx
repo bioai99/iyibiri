@@ -51,6 +51,7 @@ export default function SigninPage() {
         setError('E-postanı onaylaman gerekiyor. Gelen kutunu kontrol et.')
       } else {
         setError(`E-posta veya şifre hatalı (${error.message})`)
+      }
       setLoading(false)
       return
     }
