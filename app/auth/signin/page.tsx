@@ -36,12 +36,13 @@ export default function SigninPage() {
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleLogin(e?: React.FormEvent | React.MouseEvent) {
+    e?.preventDefault()
+    if (!email || !password) return
     setLoading(true)
     setError(null)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
     if (error) {
       const msg = error.message.toLowerCase()
       if (msg.includes('email not confirmed')) {
