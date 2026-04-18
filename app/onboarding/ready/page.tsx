@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
@@ -9,31 +9,38 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingReady() {
   const { colors: c } = useTheme()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    async function saveOnboardingData() {
+    async function checkAndSave() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
 
-      const interests = JSON.parse(localStorage.getItem('iyibiri_onboarding_interests') || '[]')
-      const city = localStorage.getItem('iyibiri_onboarding_city')
-      const radius = localStorage.getItem('iyibiri_onboarding_radius')
+      if (user) {
+        setIsLoggedIn(true)
+        // Save onboarding data if user is already logged in
+        const interests = JSON.parse(localStorage.getItem('iyibiri_onboarding_interests') || '[]')
+        const city = localStorage.getItem('iyibiri_onboarding_city')
+        const radius = localStorage.getItem('iyibiri_onboarding_radius')
 
-      if (!interests.length && !city) return
+        if (interests.length || city) {
+          await supabase.from('profiles').update({
+            interests,
+            city: city || null,
+            search_radius: radius ? Number(radius) : 10,
+          }).eq('id', user.id)
 
-      await supabase.from('profiles').update({
-        interests,
-        city: city || null,
-        search_radius: radius ? Number(radius) : 10,
-      }).eq('id', user.id)
-
-      localStorage.removeItem('iyibiri_onboarding_interests')
-      localStorage.removeItem('iyibiri_onboarding_city')
-      localStorage.removeItem('iyibiri_onboarding_radius')
+          localStorage.removeItem('iyibiri_onboarding_interests')
+          localStorage.removeItem('iyibiri_onboarding_city')
+          localStorage.removeItem('iyibiri_onboarding_radius')
+        }
+      }
     }
-    saveOnboardingData()
+    checkAndSave()
   }, [])
+
+  // Not logged in → go to auth, logged in → go to dashboard
+  const nextHref = isLoggedIn ? '/dashboard' : '/auth/login'
 
   return (
     <div
@@ -144,13 +151,15 @@ export default function OnboardingReady() {
             lineHeight: 1.6,
           }}
         >
-          Hesabını açtığın için teşekkürler. İlk görevini tamamladığında 250 daha gelecek — ve &ldquo;İyi Biri&rdquo; seviyesine iki adım kaldı.
+          {isLoggedIn
+            ? 'İlk görevini tamamladığında 250 daha gelecek — ve "İyi Biri" seviyesine iki adım kaldı.'
+            : 'Hesabını aç, ilk 100 Karma\'nı hemen kazan. İlk görevinde 250 daha gelecek.'}
         </p>
       </div>
 
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px 32px' }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+        <Link href={nextHref} style={{ textDecoration: 'none' }}>
           <button
             style={{
               width: '100%',
@@ -168,7 +177,7 @@ export default function OnboardingReady() {
               gap: 8,
             }}
           >
-            İlk görevimi bul
+            {isLoggedIn ? 'İlk görevimi bul' : 'Hesabımı oluştur'}
             <ArrowRight size={16} strokeWidth={2.5} />
           </button>
         </Link>

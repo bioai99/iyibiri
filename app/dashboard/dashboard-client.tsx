@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Bell, Calendar, Sparkles } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
@@ -88,6 +88,26 @@ const FILTERS = ['Tümü', 'Yakınımda', 'Bu hafta sonu', 'Online', 'Kısa', 'U
 
 export function DashboardClient({ profile, missions, userMissions, ngos }: Props) {
   const { colors: c } = useTheme()
+
+  // Save pending onboarding data from localStorage (app flow: onboarding → auth → dashboard)
+  useEffect(() => {
+    const interests = localStorage.getItem('iyibiri_onboarding_interests')
+    if (!interests) return
+    const { createClient } = require('@/lib/supabase/client')
+    const supabase = createClient()
+    const city = localStorage.getItem('iyibiri_onboarding_city')
+    const radius = localStorage.getItem('iyibiri_onboarding_radius')
+    supabase.from('profiles').update({
+      interests: JSON.parse(interests),
+      city: city || null,
+      search_radius: radius ? Number(radius) : 10,
+    }).eq('id', profile.id).then(() => {
+      localStorage.removeItem('iyibiri_onboarding_interests')
+      localStorage.removeItem('iyibiri_onboarding_city')
+      localStorage.removeItem('iyibiri_onboarding_radius')
+    })
+  }, [profile.id])
+
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
   const takenIds     = new Set(userMissions.filter(m => m.status === 'taken').map(m => m.mission_id))
 

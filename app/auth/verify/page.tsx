@@ -97,7 +97,10 @@ function VerifyContent() {
     }
 
     setLoading(false)
-    router.push('/onboarding/welcome')
+    // Onboarding zaten yapıldıysa (localStorage'da veri varsa) dashboard'a git
+    // Yapılmadıysa onboarding'e yönlendir
+    const hasOnboarding = localStorage.getItem('iyibiri_onboarding_interests')
+    router.push(hasOnboarding ? '/dashboard' : '/onboarding/welcome')
   }
 
   async function handleResend() {

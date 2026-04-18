@@ -32,14 +32,43 @@ export default function AuthLandingPage() {
 
   async function handleOAuthLogin(provider: 'google' | 'apple') {
     const supabase = createClient()
-    const { data } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
-      },
-    })
-    if (data.url) window.location.href = data.url
+    const isNative = typeof (window as any).Capacitor !== 'undefined'
+
+    if (isNative) {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: 'https://www.iyibiri.app/auth/callback',
+          skipBrowserRedirect: true,
+          ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
+        },
+      })
+      if (data.url) {
+        const { Browser } = await import('@capacitor/browser')
+        await Browser.open({ url: data.url, presentationStyle: 'popover' })
+
+        const { App } = await import('@capacitor/app')
+        App.addListener('appUrlOpen', async ({ url }) => {
+          if (url.includes('/auth/callback')) {
+            const code = new URL(url).searchParams.get('code')
+            if (code) {
+              await supabase.auth.exchangeCodeForSession(code)
+              await Browser.close()
+              window.location.href = '/dashboard'
+            }
+          }
+        })
+      }
+    } else {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          ...(provider === 'google' && { queryParams: { prompt: 'select_account' } }),
+        },
+      })
+      if (data.url) window.location.href = data.url
+    }
   }
 
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'

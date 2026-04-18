@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     // Point to Vercel deployment — replace with your actual URL
-    url: 'https://www.iyibiri.app',
+    url: 'https://www.iyibiri.app/app-start',
     cleartext: false,
   },
   ios: {
