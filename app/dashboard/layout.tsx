@@ -2,8 +2,10 @@ import { BottomNav } from "@/components/bottom-nav";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {children}
+    <div className="dark min-h-screen bg-background">
+      <div className="pb-20">
+        {children}
+      </div>
       <BottomNav />
     </div>
   );
