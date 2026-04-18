@@ -110,6 +110,10 @@ export interface Database {
           qr_code_data: string | null
           image_url: string | null
           participants: number
+          photo_url: string | null
+          location: string | null
+          date_label: string | null
+          spots_left: number
         }
         Insert: {
           id?: string
@@ -133,6 +137,10 @@ export interface Database {
           qr_code_data?: string | null
           image_url?: string | null
           participants?: number
+          photo_url?: string | null
+          location?: string | null
+          date_label?: string | null
+          spots_left?: number
         }
         Update: {
           id?: string
@@ -156,6 +164,10 @@ export interface Database {
           qr_code_data?: string | null
           image_url?: string | null
           participants?: number
+          photo_url?: string | null
+          location?: string | null
+          date_label?: string | null
+          spots_left?: number
         }
         Relationships: []
       }
@@ -169,6 +181,7 @@ export interface Database {
           karma_required: number
           category: string | null
           active: boolean
+          image_url: string | null
         }
         Insert: {
           id?: string
@@ -179,6 +192,7 @@ export interface Database {
           karma_required: number
           category?: string | null
           active?: boolean
+          image_url?: string | null
         }
         Update: {
           id?: string
@@ -189,6 +203,7 @@ export interface Database {
           karma_required?: number
           category?: string | null
           active?: boolean
+          image_url?: string | null
         }
         Relationships: []
       }
