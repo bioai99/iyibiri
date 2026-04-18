@@ -648,23 +648,35 @@ export default function LandingPage() {
         .stat-lbl{font-size:12px;color:#A89E8A;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
         .stat-trend{font-size:11px;color:#6B8E4E;margin-top:8px;font-family:'JetBrains Mono',monospace}
 
-        /* === BLOCKCHAIN PROOF === */
+        /* === ETKI KARTLARI === */
         .proof{padding:140px 0;background:#1A1612;position:relative}
-        .proof-canvas{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center;margin-top:60px}
-        .terminal{background:#0a0807;border:1px solid rgba(232,194,104,.16);border-radius:18px;padding:0;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#A89E8A;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-        .terminal-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:rgba(232,194,104,.04);border-bottom:1px solid rgba(232,194,104,.1)}
-        .terminal-bar .tc{width:10px;height:10px;border-radius:50%}
-        .terminal-bar .label{margin-left:12px;font-size:11px;color:#7A6F5E;letter-spacing:.1em}
-        .terminal-body{padding:20px 24px;min-height:360px}
-        .term-line{margin-bottom:4px}
-        .term-prompt{color:#E8C268}
-        .term-comment{color:#6B6358;font-style:italic}
-        .term-str{color:#C4CBAC}
-        .term-num{color:#E8C268}
-        .term-ok{color:#6B8E4E}
-        .term-key{color:#CEC5B2}
+        .impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+        .impact-card{background:#2E2923;border:1px solid rgba(232,194,104,.1);border-radius:20px;overflow:hidden;transition:all .3s}
+        .impact-card:hover{border-color:rgba(232,194,104,.3);transform:translateY(-4px)}
+        .impact-img{height:200px;background-size:cover;background-position:center;position:relative}
+        .impact-img::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(26,22,18,.8))}
+        .impact-body{padding:22px}
+        .impact-tag{display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#E8C268;font-weight:700;background:rgba(232,194,104,.1);padding:4px 10px;border-radius:999px;margin-bottom:12px}
+        .impact-card h4{font-family:var(--font-display),'Fraunces',serif;font-size:20px;font-weight:500;margin:0 0 8px;line-height:1.2}
+        .impact-card p{font-size:13px;color:#A89E8A;line-height:1.55;margin:0 0 16px}
+        .impact-stat{display:flex;gap:16px;padding-top:14px;border-top:1px solid rgba(232,194,104,.08)}
+        .impact-stat div{font-family:var(--font-display),'Fraunces',serif;font-size:18px;color:#F4EEDF}
+        .impact-stat span{display:block;font-family:var(--font-sans);font-size:10px;color:#A89E8A;margin-top:2px}
 
-        .chain-hash{display:inline-block;padding:2px 8px;background:rgba(232,194,104,.1);border-radius:4px;color:#E8C268;font-size:11px}
+        /* === ODÜLLER === */
+        .rewards-section{padding:140px 0;background:#24201B;position:relative}
+        .rewards-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:56px}
+        .reward-card{background:#1A1612;border:1px solid rgba(232,194,104,.12);border-radius:18px;padding:24px 18px;text-align:center;transition:all .3s}
+        .reward-card:hover{border-color:rgba(232,194,104,.35);transform:translateY(-4px)}
+        .reward-logo{width:56px;height:56px;border-radius:14px;background:#2E2923;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}
+        .reward-card h5{font-family:var(--font-display),'Fraunces',serif;font-size:16px;font-weight:500;margin:0 0 4px;color:#F4EEDF}
+        .reward-card .karma-cost{font-family:'JetBrains Mono',monospace;font-size:12px;color:#E8C268;font-weight:700}
+        .reward-card .reward-desc{font-size:11px;color:#A89E8A;margin-top:6px;line-height:1.4}
+
+        @media (max-width:960px){
+          .impact-grid{grid-template-columns:1fr}
+          .rewards-grid{grid-template-columns:1fr 1fr}
+        }
 
         /* === NETWORK MAP === */
         .network{padding:140px 0;position:relative;overflow:hidden}
@@ -767,9 +779,9 @@ export default function LandingPage() {
                 </Link>
               </div>
               <div className="hero-meta">
-                <div className="m"><b data-cu="18247">0</b><span>Aktif gonullu</span></div>
-                <div className="m"><b data-cu="248">0</b><span>Partner STK</span></div>
-                <div className="m"><b>4.9<span style={{ color: '#E8C268' }}>&#9733;</span></b><span>App Store puani</span></div>
+                <div className="m"><b>Ucretsiz</b><span>Tamamen bedava</span></div>
+                <div className="m"><b>30 sn</b><span>Hesap ac</span></div>
+                <div className="m"><b>4.9<span style={{ color: '#E8C268' }}>&#9733;</span></b><span>Kullanici puani</span></div>
               </div>
             </div>
 
@@ -965,7 +977,7 @@ export default function LandingPage() {
         <div className="wrap">
           <div className="sec-eyebrow">Canli sayilar</div>
           <h2 className="sec-title">Iyilik <em>su an</em> olusuyor.</h2>
-          <p className="sec-lead">Her metrik gercek, her saat guncellenir. Protokol verisi -- dashboard degil.</p>
+          <p className="sec-lead">Turkiye genelinde buyuyen bir iyilik hareketi. Her rakam gercek, her gun buyuyor.</p>
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-num"><em>+</em><span data-cu="18247">0</span></div>
@@ -996,63 +1008,93 @@ export default function LandingPage() {
         <div className="wrap">
           <div className="sec-eyebrow">Etki</div>
           <h2 className="sec-title"><em>Her</em> gorev, <em>gercek</em> bir degisim.</h2>
-          <p className="sec-lead">Gonullulerin tamamladigi her gorev, somut bir etki birakir. Iste gecen haftadan bir ornek.</p>
+          <p className="sec-lead">Gonullulerin tamamladigi her gorev, somut bir etki birakir. Iste son haftadan ornekler.</p>
 
-          <div className="proof-canvas">
-            <div className="terminal">
-              <div className="terminal-bar">
-                <div className="tc" style={{ background: '#FF5F57' }} />
-                <div className="tc" style={{ background: '#FEBC2E' }} />
-                <div className="tc" style={{ background: '#28C840' }} />
-                <div className="label">iyibiri &middot; etki raporu</div>
-              </div>
-              <div className="terminal-body">
-                <div className="term-line"><span className="term-prompt">&gt;</span> gorev: <span className="term-str">&quot;Kadikoy kitap toplama&quot;</span></div>
-                <div className="term-line term-comment">// Cumartesi 10:00 - 13:00</div>
-                <div className="term-line"><span className="term-key">stk</span>: <span className="term-str">&quot;Kitap Kurdu Dernegi&quot;</span></div>
-                <div className="term-line"><span className="term-key">gonullu</span>: <span className="term-num">12 kisi</span></div>
-                <div className="term-line"><span className="term-key">toplanan</span>: <span className="term-num">4.200 kitap</span></div>
-                <div className="term-line"><span className="term-key">hedef</span>: <span className="term-str">&quot;8 koy okulu&quot;</span></div>
-                <div className="term-line"><span className="term-key">sure</span>: <span className="term-num">3 saat</span></div>
-                <div className="term-line"><span className="term-key">karma</span>: <span className="term-num">+150 / gonullu</span></div>
-                <div className="term-line term-ok">&#10003; Gorev tamamlandi &middot; dogrulandi</div>
-                <div className="term-line">&nbsp;</div>
-                <div className="term-line"><span className="term-prompt">&gt;</span> <span style={{ animation: 'blink 1s steps(1) infinite' }}>&#9610;</span></div>
+          <div className="impact-grid">
+            <div className="impact-card fade-in">
+              <div className="impact-img" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&q=80&auto=format&fit=crop)' }} />
+              <div className="impact-body">
+                <div className="impact-tag">Egitim</div>
+                <h4>4.200 kitap, 8 koy okulu</h4>
+                <p>Kadikoy&apos;de 12 gonullu bir araya geldi. Toplanan kitaplar siniflandirip kutulanarak koy okullarina gonderildi.</p>
+                <div className="impact-stat">
+                  <div>12<span>Gonullu</span></div>
+                  <div>3s<span>Sure</span></div>
+                  <div>+150<span>Karma</span></div>
+                </div>
               </div>
             </div>
 
-            <div>
-              <h3 style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontWeight: 400, fontSize: 40, letterSpacing: '-.03em', margin: '0 0 20px', lineHeight: 1.05 }}>Neden <em style={{ fontStyle: 'italic', color: '#E8C268' }}>IyiBiri?</em> Cunku iyilik olculebilir.</h3>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>01</div>
-                  <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Gercek gorevler, gercek etki</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gorev bir STK tarafindan olusturulur ve koordine edilir. Soyut degil, somut.</div>
-                  </div>
-                </li>
-                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>02</div>
-                  <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Dogrulanmis katki</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>STK koordinatoru gorevi dogrular. Katkin kayit altinda, itibarin gorunur.</div>
-                  </div>
-                </li>
-                <li style={{ padding: '18px 0', borderBottom: '1px solid rgba(232,194,104,.1)', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>03</div>
-                  <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Karma ile odul</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gorev Karma kazandirir. Karma&apos;ni Starbucks, Migros, Nike gibi markalarda kullan.</div>
-                  </div>
-                </li>
-                <li style={{ padding: '18px 0', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                  <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontStyle: 'italic', color: '#E8C268', fontSize: 14, flexShrink: 0, minWidth: 24 }}>04</div>
-                  <div>
-                    <div style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 18, marginBottom: 4 }}>Topluluk etkisi</div>
-                    <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.55 }}>Her gonullu, topluluga ilham verir. Siralamada yuksel, rozetler kazan, arkadaslarini davet et.</div>
-                  </div>
-                </li>
-              </ul>
+            <div className="impact-card fade-in">
+              <div className="impact-img" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&q=80&auto=format&fit=crop)' }} />
+              <div className="impact-body">
+                <div className="impact-tag">Cevre</div>
+                <h4>Kilyos sahili yeniden temiz</h4>
+                <p>TEMA Vakfi koordinasyonunda 28 gonullu, 340 kg atik topladi. Sahil yeniden yuzulebilir hale geldi.</p>
+                <div className="impact-stat">
+                  <div>28<span>Gonullu</span></div>
+                  <div>4s<span>Sure</span></div>
+                  <div>+200<span>Karma</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="impact-card fade-in">
+              <div className="impact-img" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80&auto=format&fit=crop)' }} />
+              <div className="impact-body">
+                <div className="impact-tag">Hayvanlar</div>
+                <h4>120 sokak hayvani beslendi</h4>
+                <p>Haytap ile birlikte 8 farkli noktada mama dagitimi yapildi. Duzgun beslenme, saglikli yasam.</p>
+                <div className="impact-stat">
+                  <div>8<span>Gonullu</span></div>
+                  <div>2s<span>Sure</span></div>
+                  <div>+100<span>Karma</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ODULLER */}
+      <section className="rewards-section">
+        <div className="wrap">
+          <div className="sec-eyebrow">Oduller</div>
+          <h2 className="sec-title">Karma biriktir, <em>gercek oduller</em> kazan.</h2>
+          <p className="sec-lead">Her gorev Karma kazandirir. Biriktirdigin Karma&apos;yi sevdigin markalarda kullan.</p>
+
+          <div className="rewards-grid">
+            <div className="reward-card fade-in">
+              <div className="reward-logo" style={{ background: '#1e3932' }}>&#9749;</div>
+              <h5>Starbucks</h5>
+              <div className="karma-cost">500 Karma</div>
+              <div className="reward-desc">Ucretsiz icecek</div>
+            </div>
+            <div className="reward-card fade-in">
+              <div className="reward-logo" style={{ background: '#ff6600', color: '#fff', fontSize: 16, fontWeight: 700 }}>M</div>
+              <h5>Migros</h5>
+              <div className="karma-cost">750 Karma</div>
+              <div className="reward-desc">50 TL alisveris ceki</div>
+            </div>
+            <div className="reward-card fade-in">
+              <div className="reward-logo" style={{ background: '#F5F5F5', color: '#111' }}>
+                <svg width="28" height="10" viewBox="0 0 24 9" fill="currentColor"><path d="M24 0 H0 L4 9 H8 L6 4 H10 L12 9 H16 L14 4 H18 L24 0Z" /></svg>
+              </div>
+              <h5>Nike</h5>
+              <div className="karma-cost">1.000 Karma</div>
+              <div className="reward-desc">%20 indirim</div>
+            </div>
+            <div className="reward-card fade-in">
+              <div className="reward-logo" style={{ background: '#F27A1A', color: '#fff', fontSize: 14, fontWeight: 700 }}>T</div>
+              <h5>Trendyol</h5>
+              <div className="karma-cost">600 Karma</div>
+              <div className="reward-desc">30 TL kupon</div>
+            </div>
+            <div className="reward-card fade-in">
+              <div className="reward-logo" style={{ background: '#00854d', color: '#fff', fontSize: 14, fontWeight: 700 }}>G</div>
+              <h5>Garanti BBVA</h5>
+              <div className="karma-cost">1.500 Karma</div>
+              <div className="reward-desc">50 TL cashback</div>
             </div>
           </div>
         </div>
