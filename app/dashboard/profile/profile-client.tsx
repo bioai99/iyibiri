@@ -280,45 +280,76 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
         }}
       >
         {[
-          { label: 'GÖREV', value: completedCount, sub: 'tamamlandı' },
-          { label: 'SAAT', value: 38, sub: 'gönüllü' },
-          { label: 'NGO', value: 4, sub: 'destek' },
-        ].map(({ label, value, sub }) => (
+          { label: 'GÖREV', value: completedCount, sub: 'tamamlandı', href: undefined },
+          { label: 'SERİ', value: 7, sub: 'gün', href: '/dashboard/streak' },
+          { label: 'NGO', value: 4, sub: 'destek', href: undefined },
+        ].map(({ label, value, sub, href }) => {
+          const card = (
+            <div
+              style={{
+                background: c.ink800,
+                border: `1px solid ${href ? c.goldLine ?? c.ink600 : c.ink600}`,
+                borderRadius: 12,
+                padding: '14px 12px',
+                textAlign: 'center',
+                cursor: href ? 'pointer' : undefined,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: '.22em',
+                  textTransform: 'uppercase',
+                  color: c.ink300,
+                }}
+              >
+                {label}
+              </div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: c.cream,
+                  fontVariantNumeric: 'tabular-nums',
+                  marginTop: 4,
+                }}
+              >
+                {typeof value === 'number' ? value.toLocaleString('tr-TR') : value}
+              </div>
+              <div style={{ fontSize: 10, color: c.ink300, marginTop: 2 }}>{sub}</div>
+            </div>
+          )
+          return href ? (
+            <Link key={label} href={href} style={{ textDecoration: 'none' }}>
+              {card}
+            </Link>
+          ) : (
+            <div key={label}>{card}</div>
+          )
+        })}
+      </div>
+
+      {/* Leaderboard link */}
+      <div style={{ padding: '8px 16px 0' }}>
+        <Link href="/dashboard/leaderboard" style={{ textDecoration: 'none' }}>
           <div
-            key={label}
             style={{
               background: c.ink800,
               border: `1px solid ${c.ink600}`,
-              borderRadius: 12,
-              padding: '14px 12px',
-              textAlign: 'center',
+              borderRadius: 14,
+              padding: '14px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
-            <div
-              style={{
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: '.22em',
-                textTransform: 'uppercase',
-                color: c.ink300,
-              }}
-            >
-              {label}
-            </div>
-            <div
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                color: c.cream,
-                fontVariantNumeric: 'tabular-nums',
-                marginTop: 4,
-              }}
-            >
-              {typeof value === 'number' ? value.toLocaleString('tr-TR') : value}
-            </div>
-            <div style={{ fontSize: 10, color: c.ink300, marginTop: 2 }}>{sub}</div>
+            <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
+              Sıralama
+            </span>
+            <ChevronRight size={16} color={c.ink300} />
           </div>
-        ))}
+        </Link>
       </div>
 
       {/* Achievements */}

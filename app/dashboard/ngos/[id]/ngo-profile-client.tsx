@@ -269,6 +269,31 @@ export function NGOProfileClient({ ngo, missions }: NGOProfileClientProps) {
         </div>
       </div>
 
+      {/* Donation campaign card */}
+      <div style={{ padding: '20px 20px 0' }}>
+        <Link href="/dashboard/donations/demo-campaign" style={{ textDecoration: 'none' }}>
+          <div
+            style={{
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
+              borderRadius: 16,
+              padding: '16px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div style={{ ...EYEBROW, color: c.gold, marginBottom: 4 }}>BAĞIŞ</div>
+              <span style={{ fontSize: 15, fontWeight: 600, color: c.cream }}>
+                Bağış kampanyası
+              </span>
+            </div>
+            <ChevronRight size={16} color={c.ink300} />
+          </div>
+        </Link>
+      </div>
+
       {/* Active missions */}
       {missions.length > 0 && (
         <div style={{ padding: '28px 16px 0' }}>

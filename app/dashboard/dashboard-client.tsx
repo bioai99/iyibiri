@@ -11,6 +11,7 @@ import {
   ImpactSummary,
   ChipDS,
   IconButtonDS,
+  ThemeToggle,
 } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
 
@@ -142,6 +143,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
               icon={<Bell size={18} color={c.cream} />}
             />
           </Link>
+          <ThemeToggle size={38} />
           {/* Gold avatar circle */}
           <Link href="/dashboard/profile" style={{ textDecoration: 'none' }}>
             <div style={{

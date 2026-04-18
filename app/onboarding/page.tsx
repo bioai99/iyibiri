@@ -1,5 +1,5 @@
-import OnboardingClient from "./onboarding-client";
+import { redirect } from 'next/navigation'
 
 export default function OnboardingPage() {
-  return <OnboardingClient />;
+  redirect('/onboarding/welcome')
 }
