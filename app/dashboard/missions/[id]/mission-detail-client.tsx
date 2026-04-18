@@ -1,45 +1,26 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Sparkles, Clock, Zap, CheckCircle2, Camera, QrCode, Hash } from 'lucide-react'
+import {
+  ArrowLeft,
+  Share2,
+  Heart,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  ArrowRight,
+  Check,
+} from 'lucide-react'
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
+import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
 
 interface Props {
   mission: Mission & { ngos?: { name: string; color_accent: string | null; logo_url: string | null } | null }
   userMission: UserMission | null
   userId: string
-}
-
-const domainGradient: Record<string, string> = {
-  nature: 'from-emerald-500 to-teal-400',
-  education: 'from-blue-500 to-indigo-400',
-  social: 'from-rose-500 to-pink-400',
-  financial: 'from-amber-500 to-orange-400',
-  default: 'from-stone-500 to-stone-600',
-}
-
-const difficultyConfig: Record<string, { label: string; color: string }> = {
-  easy: { label: 'Kolay', color: 'bg-emerald-100 text-emerald-700' },
-  medium: { label: 'Orta', color: 'bg-amber-100 text-amber-700' },
-  hard: { label: 'Zor', color: 'bg-red-100 text-red-700' },
-}
-
-const verifyIcon: Record<string, React.ElementType> = {
-  auto: Zap,
-  code: Hash,
-  photo: Camera,
-  qr: QrCode,
-}
-
-const verifyLabel: Record<string, string> = {
-  auto: 'Otomatik',
-  code: 'Kod girişi',
-  photo: 'Fotoğraf',
-  qr: 'QR kod',
 }
 
 export function MissionDetailClient({ mission, userMission, userId }: Props) {
@@ -50,20 +31,6 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
 
   const isTaken = !!userMission
   const isCompleted = userMission?.status === 'completed'
-
-  const domain = mission.domain ?? 'default'
-  const gradient = domainGradient[domain] ?? domainGradient.default
-  const difficulty = difficultyConfig[mission.difficulty ?? 'easy']
-  const VerifyIcon = verifyIcon[mission.verify_method ?? 'auto']
-
-  let steps: string[] = []
-  try {
-    steps = Array.isArray(mission.steps)
-      ? mission.steps as string[]
-      : JSON.parse((mission.steps as string) ?? '[]')
-  } catch {
-    steps = []
-  }
 
   async function handleTakeMission() {
     setLoading(true)
@@ -79,147 +46,465 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
     router.push(`/dashboard/missions/${mission.id}/complete`)
   }
 
-  const imageUrl = (mission as Mission & { image_url?: string | null }).image_url
-
   return (
-    <div className="min-h-screen bg-background pb-32">
-      {/* Hero Band */}
-      <div className={`relative bg-gradient-to-br ${gradient} pt-12 pb-8 px-4`}>
-        {imageUrl && (
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{ backgroundImage: `url(${imageUrl})` }}
+    <div
+      style={{
+        background: '#24201B',
+        color: '#F4EEDF',
+        minHeight: '100%',
+        paddingBottom: 120,
+        position: 'relative',
+      }}
+    >
+      {/* ── 1. Full-bleed hero photo ── */}
+      <div style={{ position: 'relative', aspectRatio: '4/3', width: '100%', overflow: 'hidden' }}>
+        {/* Photo */}
+        {mission.photo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={mission.photo_url}
+            alt={mission.title}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
           />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, background: '#3F3830' }} />
         )}
-        <div className="relative">
-          <Link
-            href="/dashboard/missions"
-            className="inline-flex items-center gap-1.5 text-white/80 text-sm mb-6"
-          >
-            <ArrowLeft size={16} />
-            Görevler
-          </Link>
-          {mission.ngos && (
-            <div className="flex items-center gap-2 mb-2">
-              {mission.ngos.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={mission.ngos.logo_url}
-                  alt={mission.ngos.name}
-                  className="w-5 h-5 rounded object-contain bg-white/90 p-0.5"
-                />
-              ) : (
-                <div
-                  className="w-5 h-5 rounded flex items-center justify-center text-white text-[8px] font-bold"
-                  style={{ backgroundColor: mission.ngos.color_accent ?? '#00000040' }}
-                >
-                  {mission.ngos.name[0]}
-                </div>
-              )}
-              <span className="text-white/80 text-sm font-medium">{mission.ngos.name}</span>
+
+        {/* Gradient overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(180deg,rgba(26,22,18,.3) 0%,rgba(26,22,18,0) 30%,rgba(26,22,18,0) 70%,rgba(36,32,27,1) 100%)',
+          }}
+        />
+
+        {/* Top row: back + share/heart */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 58,
+            left: 16,
+            right: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <IconButtonDS
+            icon={<ArrowLeft size={18} />}
+            onClick={() => router.back()}
+          />
+          <div style={{ display: 'flex', gap: 8 }}>
+            <IconButtonDS icon={<Share2 size={18} />} />
+            <IconButtonDS icon={<Heart size={18} />} />
+          </div>
+        </div>
+
+        {/* Bottom: badge + title */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 24,
+            left: 20,
+            right: 20,
+          }}
+        >
+          {mission.category && (
+            <div style={{ marginBottom: 10 }}>
+              <BadgeDS variant="onImage">{mission.category}</BadgeDS>
             </div>
           )}
-          <h1 className="font-display font-extrabold text-white text-2xl leading-tight">
+          <h1
+            style={{
+              fontFamily: 'Fraunces, serif',
+              fontSize: 34,
+              fontWeight: 500,
+              letterSpacing: '-0.028em',
+              lineHeight: 1.05,
+              color: '#F4EEDF',
+              margin: 0,
+            }}
+          >
             {mission.title}
           </h1>
-          <div className="flex items-center gap-2 mt-4 flex-wrap">
-            <div className="bg-white/20 rounded-full px-3 py-1.5 flex items-center gap-1.5">
-              <Sparkles size={14} className="text-white" />
-              <span className="text-white font-bold text-sm">{mission.karma} karma</span>
-            </div>
-            {mission.duration && (
-              <div className="bg-white/20 rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                <Clock size={14} className="text-white" />
-                <span className="text-white text-sm">{mission.duration}</span>
-              </div>
-            )}
-            {mission.difficulty && (
-              <div className={`rounded-full px-3 py-1.5 text-sm font-semibold ${difficulty.color}`}>
-                {difficulty.label}
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-4 py-5 space-y-4">
-        <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5">
-          <h2 className="font-display font-bold text-base text-stone-900 mb-2">Görev Detayı</h2>
-          <p className="text-sm text-stone-500 leading-relaxed">
-            {mission.long_description ?? mission.description}
-          </p>
-        </div>
-
-        {steps.length > 0 && (
-          <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5">
-            <h2 className="font-display font-bold text-base text-stone-900 mb-3">Adımlar</h2>
-            <ol className="space-y-3">
-              {steps.map((step, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-stone-500">
-                  <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs mt-0.5">
-                    {i + 1}
-                  </span>
-                  {step}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5">
-          <h2 className="font-display font-bold text-base text-stone-900 mb-2">Doğrulama</h2>
-          <div className="flex items-center gap-2 mb-1">
-            <VerifyIcon size={16} className="text-stone-400" />
-            <span className="text-sm font-semibold text-stone-700">{verifyLabel[mission.verify_method ?? 'auto']}</span>
-          </div>
-          <p className="text-sm text-stone-500">{mission.verify_hint}</p>
-        </div>
-
-        {mission.impact_statement && (
-          <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-5">
-            <div className="flex items-start gap-2">
-              <Zap size={16} className="text-emerald-600 mt-0.5 flex-shrink-0" />
-              <p className="text-sm font-semibold text-emerald-700">{mission.impact_statement}</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {takeError && (
-        <motion.div
-          className="mx-4 bg-red-50 border border-red-100 rounded-2xl p-3 text-sm text-red-600 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+      {/* ── 2. NGO lockup row ── */}
+      {mission.ngos && (
+        <div
+          style={{
+            padding: '18px 20px 18px',
+            borderBottom: '1px solid #3F3830',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
         >
-          {takeError}
-        </motion.div>
+          {/* NGO logo circle */}
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: '#fff',
+              overflow: 'hidden',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {mission.ngos.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={mission.ngos.logo_url}
+                alt={mission.ngos.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: mission.ngos.color_accent ?? '#24201B',
+                }}
+              >
+                {mission.ngos.name[0]}
+              </span>
+            )}
+          </div>
+
+          {/* Name + subtitle */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#F4EEDF', lineHeight: 1.3 }}>
+              {mission.ngos.name}
+            </div>
+            <div style={{ fontSize: 11, color: '#A89E8A', marginTop: 2 }}>
+              27 yıldır · 12.4K gönüllü
+            </div>
+          </div>
+
+          {/* Follow button */}
+          <button
+            style={{
+              background: 'transparent',
+              border: '1px solid #5C5346',
+              color: '#F4EEDF',
+              borderRadius: 999,
+              fontSize: 13,
+              fontWeight: 500,
+              padding: '7px 16px',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            Takip et
+          </button>
+        </div>
       )}
 
-      <div className="fixed bottom-20 left-0 right-0 px-4">
-        {isCompleted ? (
-          <div className="bg-emerald-500 text-white text-center py-4 rounded-2xl font-display font-bold flex items-center justify-center gap-2">
-            <CheckCircle2 size={20} />
-            Tamamlandı
+      {/* ── 3. Facts grid ── */}
+      <div
+        style={{
+          padding: '20px 16px 0',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 10,
+        }}
+      >
+        <FactCard
+          label="TARİH"
+          value={mission.date_label ?? 'Esnek'}
+          icon={<Calendar size={16} color="#E8C268" />}
+        />
+        <FactCard
+          label="SÜRE"
+          value={mission.duration ?? '-'}
+          icon={<Clock size={16} color="#E8C268" />}
+        />
+        <FactCard
+          label="KONUM"
+          value={mission.location ?? 'Belirtilmemiş'}
+          icon={<MapPin size={16} color="#E8C268" />}
+        />
+        <FactCard
+          label="KONTENJAN"
+          value={`${mission.spots_left ?? 0} yer`}
+          icon={<Users size={16} color="#E8C268" />}
+          urgent={(mission.spots_left ?? 0) <= 5}
+        />
+      </div>
+
+      {/* ── 4. Impact section ── */}
+      {(mission.impact_statement || mission.long_description || mission.description) && (
+        <div style={{ padding: '24px 20px 0' }}>
+          {/* Gold eyebrow */}
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '.22em',
+              textTransform: 'uppercase',
+              color: '#E8C268',
+              marginBottom: 10,
+            }}
+          >
+            Bu Görevin Etkisi
           </div>
-        ) : isTaken ? (
-          <motion.div whileTap={{ scale: 0.97 }}>
-            <Link
-              href={`/dashboard/missions/${mission.id}/complete`}
-              className="block w-full bg-primary text-white text-center py-4 rounded-2xl font-display font-bold text-base shadow-[0_4px_20px_rgba(244,185,66,0.4)]"
+
+          {/* Impact quote */}
+          {mission.impact_statement && (
+            <p
+              style={{
+                fontFamily: 'Fraunces, serif',
+                fontSize: 22,
+                fontWeight: 400,
+                lineHeight: 1.3,
+                letterSpacing: '-0.015em',
+                fontStyle: 'italic',
+                color: '#F4EEDF',
+                margin: '0 0 0 0',
+              }}
             >
-              Tamamlamaya Devam Et →
-            </Link>
-          </motion.div>
+              &ldquo;{mission.impact_statement}&rdquo;
+            </p>
+          )}
+
+          {/* Description */}
+          {(mission.long_description || mission.description) && (
+            <p
+              style={{
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: '#CEC5B2',
+                marginTop: 16,
+                margin: mission.impact_statement ? '16px 0 0' : '0',
+              }}
+            >
+              {mission.long_description ?? mission.description}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ── 5. Karma reward card ── */}
+      <div style={{ padding: '24px 16px 0' }}>
+        <div
+          style={{
+            background: '#1E1B16',
+            border: '1px solid rgba(232,194,104,.32)',
+            borderRadius: 16,
+            padding: '18px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* Left side */}
+          <div>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '.22em',
+                textTransform: 'uppercase',
+                color: '#A89E8A',
+                marginBottom: 8,
+              }}
+            >
+              Kazanacağın
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+              <KarmaDotToken size={14} />
+              <span
+                style={{
+                  fontSize: 32,
+                  fontWeight: 700,
+                  color: '#E8C268',
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                +{mission.karma}
+              </span>
+            </div>
+            <div style={{ fontSize: 13, color: '#A89E8A', marginTop: 2 }}>Karma</div>
+          </div>
+
+          {/* Right side */}
+          <KarmaToken size={56} />
+        </div>
+      </div>
+
+      {/* ── 6. Participants section ── */}
+      <div style={{ padding: '24px 20px 24px' }}>
+        {/* Eyebrow */}
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '.22em',
+            textTransform: 'uppercase',
+            color: '#A89E8A',
+            marginBottom: 12,
+          }}
+        >
+          Katılanlar
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Avatar stack */}
+          <div style={{ display: 'flex' }}>
+            {[
+              { initial: 'E', bg: '#B58F3D' },
+              { initial: 'M', bg: '#C4CBAC' },
+              { initial: 'D', bg: '#E9CFC2' },
+              { initial: 'B', bg: '#574E42' },
+            ].map((avatar, i) => (
+              <div
+                key={i}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: '50%',
+                  background: avatar.bg,
+                  border: '2px solid #1A1612',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#F4EEDF',
+                  marginLeft: i === 0 ? 0 : -10,
+                  position: 'relative',
+                  zIndex: 4 - i,
+                }}
+              >
+                {avatar.initial}
+              </div>
+            ))}
+          </div>
+
+          {/* Text */}
+          <div style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.4 }}>
+            {mission.participants ?? 17} kişi katıldı · senin ağından 3&apos;ü
+          </div>
+        </div>
+      </div>
+
+      {/* ── Error message ── */}
+      {takeError && (
+        <div
+          style={{
+            margin: '0 16px 16px',
+            background: 'rgba(220,38,38,.12)',
+            border: '1px solid rgba(220,38,38,.3)',
+            borderRadius: 12,
+            padding: '10px 14px',
+            fontSize: 13,
+            color: '#F87171',
+            textAlign: 'center',
+          }}
+        >
+          {takeError}
+        </div>
+      )}
+
+      {/* ── 7. Sticky CTA ── */}
+      <div
+        style={{
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background:
+            'linear-gradient(180deg,rgba(36,32,27,0),rgba(36,32,27,.95) 30%)',
+          backdropFilter: 'blur(12px)',
+          padding: '16px 16px 28px',
+        }}
+      >
+        {isCompleted ? (
+          /* Completed state */
+          <button
+            disabled
+            style={{
+              width: '100%',
+              background: '#22543D',
+              color: '#86EFAC',
+              border: 'none',
+              borderRadius: 16,
+              padding: '16px 20px',
+              fontSize: 16,
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              cursor: 'default',
+              opacity: 0.8,
+            }}
+          >
+            <Check size={20} />
+            Tamamlandı · +{mission.karma} Karma
+          </button>
+        ) : isTaken ? (
+          /* Taken state */
+          <button
+            onClick={() => router.push(`/dashboard/missions/${mission.id}/complete`)}
+            style={{
+              width: '100%',
+              background: '#16A34A',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 16,
+              padding: '16px 20px',
+              fontSize: 16,
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              cursor: 'pointer',
+            }}
+          >
+            Tamamladım
+            <ArrowRight size={20} />
+          </button>
         ) : (
-          <motion.button
+          /* Default state */
+          <button
             onClick={handleTakeMission}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white py-4 rounded-2xl font-display font-bold text-base shadow-[0_4px_20px_rgba(244,185,66,0.4)] disabled:opacity-60"
-            whileTap={{ scale: 0.97 }}
+            style={{
+              width: '100%',
+              background: loading ? '#8A6A2C' : '#E8C268',
+              color: '#24201B',
+              border: 'none',
+              borderRadius: 16,
+              padding: '16px 20px',
+              fontSize: 16,
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1,
+              transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+            }}
           >
-            {loading ? 'Göreve Alınıyor...' : 'Görevi Al →'}
-          </motion.button>
+            {loading ? 'Göreve Alınıyor...' : 'Bu göreve katıl'}
+            {!loading && <ArrowRight size={20} />}
+          </button>
         )}
       </div>
     </div>
