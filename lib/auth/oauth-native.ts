@@ -117,22 +117,29 @@ export async function handleNativeAppleLogin(): Promise<void> {
   const rawNonce = generateNonce()
   const hashedNonce = await sha256(rawNonce)
 
-  let result
+  let result: any
   try {
     result = await SocialLogin.login({
       provider: 'apple',
       options: { scopes: ['email', 'name'], nonce: hashedNonce },
     })
   } catch (e: any) {
-    // Kullanıcı iptal etti
     if (e?.message?.includes('cancel') || e?.message?.includes('1001')) {
       throw new Error('Giriş iptal edildi')
     }
     throw new Error(`Apple giriş hatası: ${e?.message || 'Bilinmeyen hata'}`)
   }
 
-  const idToken = (result as any).result?.identityToken
-  if (!idToken) throw new Error('Apple identity token alınamadı')
+  // Token'ı farklı olası field'lardan al
+  const idToken = result?.result?.identityToken
+    || result?.result?.idToken
+    || result?.identityToken
+    || result?.idToken
+    || result?.result?.credential?.identityToken
+    || result?.result?.response?.identityToken
+  if (!idToken) {
+    throw new Error(`Apple token bulunamadı. Response: ${JSON.stringify(result).slice(0, 200)}`)
+  }
 
   const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
