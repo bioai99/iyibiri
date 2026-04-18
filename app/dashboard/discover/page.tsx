@@ -1,18 +1,20 @@
-import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { getAllMissions } from '@/lib/supabase/queries/missions'
 import { DiscoverClient } from './discover-client'
+import type { NGO, MissionWithNGO } from '@/lib/supabase/types'
 
 export default async function DiscoverPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: missions } = await supabase
-    .from('missions')
-    .select('*, ngos:ngo_id(id, name, short_name, logo_url, color_accent, cover_image_url)')
-    .eq('active', true)
+  const [missions, ngosResult] = await Promise.all([
+    getAllMissions(),
+    supabase.from('ngos').select('*'),
+  ])
 
-  const { data: ngos } = await supabase.from('ngos').select('*')
+  const ngos: NGO[] = ngosResult.data ?? []
 
-  return <DiscoverClient missions={missions ?? []} ngos={ngos ?? []} />
+  return <DiscoverClient missions={missions} ngos={ngos} />
 }

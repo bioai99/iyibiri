@@ -85,8 +85,6 @@ export function MissionsClient({ missions, userMissions }: Props) {
             >
               <MissionCard
                 mission={mission}
-                isCompleted={completedIds.has(mission.id)}
-                isTaken={takenIds.has(mission.id)}
               />
             </motion.div>
           ))}
