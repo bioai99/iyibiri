@@ -156,28 +156,36 @@ export default function LandingPage() {
       gsap.to('.cta-row', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.8 })
       gsap.to('.hero-meta', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 1 })
 
-      // Scroll-pinned story
+      // Scroll-pinned story (desktop only)
+      const isMobile = window.innerWidth <= 960
       const steps = document.querySelectorAll('.story-text')
       const layers = document.querySelectorAll('.story-screen-layer')
       const dots = document.querySelectorAll('.story-progress .dot')
 
-      function setStep(i: number) {
+      const setStep = (i: number) => {
         steps.forEach((s, j) => gsap.to(s, { opacity: j === i ? 1 : 0, duration: 0.5, ease: 'power2.out' }))
         layers.forEach((l, j) => gsap.to(l, { opacity: j === i ? 1 : 0, duration: 0.5, ease: 'power2.out' }))
         dots.forEach((d, j) => d.classList.toggle('active', j === i))
       }
-      setStep(0)
 
-      const st1 = ScrollTrigger.create({
-        trigger: '.story-pin',
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate(self: any) {
-          const i = Math.min(3, Math.floor(self.progress * 4))
-          setStep(i)
-        }
-      })
-      scrollTriggers.push(st1)
+      if (!isMobile) {
+        setStep(0)
+
+        const st1 = ScrollTrigger.create({
+          trigger: '.story-pin',
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate(self: any) {
+            const i = Math.min(3, Math.floor(self.progress * 4))
+            setStep(i)
+          }
+        })
+        scrollTriggers.push(st1)
+      } else {
+        // Mobile: all steps visible, no pinning
+        steps.forEach(s => gsap.set(s, { opacity: 1, position: 'relative' }))
+        layers.forEach(l => gsap.set(l, { opacity: 1 }))
+      }
 
       // Count up
       document.querySelectorAll('[data-cu]').forEach(el => {
@@ -676,8 +684,22 @@ export default function LandingPage() {
         .reward-card .reward-desc{font-size:11px;color:#A89E8A;margin-top:6px;line-height:1.4}
 
         @media (max-width:960px){
+          .hero-grid{grid-template-columns:1fr;gap:40px}
+          .hero-meta{gap:24px}
+          .token-stage{height:360px}
+          .story-grid{grid-template-columns:1fr}
+          .story-pin{height:auto !important}
+          .story-sticky{position:relative !important;height:auto !important;flex-direction:column;padding:40px 0}
+          .story-texts{position:relative;height:auto}
+          .story-text{position:relative !important;opacity:1 !important;margin-bottom:48px}
+          .story-phone{display:none}
+          .story-progress{display:none}
           .impact-grid{grid-template-columns:1fr}
           .rewards-grid{grid-template-columns:1fr 1fr}
+          nav.top .links{display:none}
+          .cursor-dot,.cursor-ring{display:none}
+          .proof-canvas{grid-template-columns:1fr}
+          footer .g{grid-template-columns:1fr 1fr}
         }
 
         /* === NETWORK MAP === */
