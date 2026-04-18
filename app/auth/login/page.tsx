@@ -7,9 +7,8 @@ import { useRouter } from 'next/navigation'
 import { Sparkles, Mail, Lock } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-const supabase = createClient()
-
 export default function LoginPage() {
+  const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
