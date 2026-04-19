@@ -279,7 +279,51 @@ export function DiscoverClient({ missions, posts, subscribedNgoIds }: DiscoverCl
               scrollbarWidth: 'none',
             }}
           >
-            {posts.map((post) => (
+            {posts.filter(p => {
+              const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
+              return ngoCategory !== 'sponsor'
+            }).map((post) => (
+              <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                <PostCard
+                  post={post}
+                  isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+                  c={c}
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sponsor posts */}
+      {posts.filter(p => {
+        const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
+        return ngoCategory === 'sponsor'
+      }).length > 0 && (
+        <div style={{ padding: '28px 0 0' }}>
+          <div style={{ padding: '0 20px 12px' }}>
+            <div style={{
+              fontSize: 11, fontWeight: 700, letterSpacing: '0.12em',
+              textTransform: 'uppercase', color: c.gold, marginBottom: 4,
+            }}>
+              Sponsorlardan
+            </div>
+            <h2 style={{
+              margin: 0, fontFamily: 'var(--font-display), Fraunces, serif',
+              fontSize: 20, fontWeight: 500, color: c.cream, letterSpacing: '-0.02em',
+            }}>
+              Sosyal Sorumluluk
+            </h2>
+          </div>
+          <div style={{
+            display: 'flex', gap: 12, overflowX: 'auto', padding: '0 16px',
+            scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch',
+            msOverflowStyle: 'none', scrollbarWidth: 'none',
+          }}>
+            {posts.filter(p => {
+              const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
+              return ngoCategory === 'sponsor'
+            }).map((post) => (
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                 <PostCard
                   post={post}
