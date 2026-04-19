@@ -43,7 +43,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
   return (
     <div
       style={{
-        width: 280,
+        width: 320, minWidth: 320,
         background: c.ink800,
         borderRadius: 16,
         border: isSubscribed ? `1.5px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
