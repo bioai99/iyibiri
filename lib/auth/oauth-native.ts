@@ -94,6 +94,10 @@ export async function handleNativeGoogleLogin(): Promise<void> {
   const idToken = (result as any).result?.idToken
   if (!idToken) throw new Error('Google ID token alınamadı')
 
+  // Google'dan isim bilgisini al
+  const googleProfile = (result as any).result?.profile || (result as any).result || {}
+  const googleName = googleProfile?.name || googleProfile?.displayName || googleProfile?.givenName || ''
+
   const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
@@ -103,6 +107,13 @@ export async function handleNativeGoogleLogin(): Promise<void> {
 
   if (error) throw new Error(`Google giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
+
+  // İsim varsa profile'a kaydet (sadece isim boşsa)
+  if (googleName && data.session.user?.id) {
+    await supabase.from('profiles').update({
+      name: googleName,
+    }).eq('id', data.session.user.id).is('name', null)
+  }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
@@ -141,6 +152,13 @@ export async function handleNativeAppleLogin(): Promise<void> {
     throw new Error(`Apple token bulunamadı. Response: ${JSON.stringify(result).slice(0, 200)}`)
   }
 
+  // İsim ve email'i Apple result'tan çıkar (sadece ilk girişte gelir!)
+  const appleProfile = result?.result?.profile || result?.result || {}
+  const givenName = appleProfile?.givenName || appleProfile?.name?.givenName || ''
+  const familyName = appleProfile?.familyName || appleProfile?.name?.familyName || ''
+  const fullName = [givenName, familyName].filter(Boolean).join(' ')
+  const appleEmail = appleProfile?.email || result?.result?.email || ''
+
   const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'apple',
@@ -150,6 +168,13 @@ export async function handleNativeAppleLogin(): Promise<void> {
 
   if (error) throw new Error(`Apple giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
+
+  // İsim varsa profile'a kaydet (Apple sadece ilk girişte gönderiyor)
+  if (fullName && data.session.user?.id) {
+    await supabase.from('profiles').update({
+      name: fullName,
+    }).eq('id', data.session.user.id).is('name', null) // sadece isim boşsa güncelle
+  }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
 }
