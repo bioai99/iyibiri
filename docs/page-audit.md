@@ -62,7 +62,7 @@
 
 | # | Sayfa | Route | Durum | UI | Veri | Not |
 |---|-------|-------|-------|-----|------|-----|
-| 18 | NGO List | `/dashboard/ngos` | 🟡 | 6/10 | Gerçek | Eski beyaz tema |
+| 18 | NGO List | `/dashboard/ngos` | 🟢 | 7/10 | Gerçek | Yeni tema, search, kart tasarımı |
 | 19 | NGO Detail | `/dashboard/ngos/[id]` | 🟢 | 7/10 | Gerçek | Profil + üyelik yönetimi |
 | 20 | Membership Form | `/dashboard/ngos/[id]/membership` | 🟢 | 7/10 | Gerçek | Parametrik form + KVKK |
 | 21 | Membership Success | `/dashboard/ngos/[id]/membership/success` | 🟢 | 7/10 | Gerçek | Konfeti + pending/active |
@@ -88,7 +88,7 @@
 |---|-------|-------|-------|-----|------|-----|
 | 27 | Profile | `/dashboard/profile` | 🟢 | 7/10 | Gerçek | Karma, üyelikler, timeline boş state |
 | 28 | Edit Profile | `/dashboard/profile/edit` | 🟢 | 8/10 | Gerçek | Form + kaydet |
-| 29 | Badges | `/dashboard/profile/badges` | 🔴 | 6/10 | **MOCK** | Eski tema, hardcoded |
+| 29 | Badges | `/dashboard/profile/badges` | 🟢 | 8/10 | Gerçek | 6 rozet gerçek kriterlerle, yeni tema |
 | 30 | Interests | `/dashboard/profile/interests` | 🟢 | 8/10 | Gerçek | Çalışan toggle + kaydet, yeni tema |
 
 ### DASHBOARD — ÖDÜLLER
@@ -130,10 +130,10 @@
 - [x] `/dashboard/my-missions` — mock kaldırıldı, gerçek user_missions'a bağlandı (2026-04-19)
 - [x] `/onboarding/quiz` — kullanılmıyordu, kaldırıldı (2026-04-19)
 
-### Öncelik 2: Eski Tema Güncellemesi
-- [ ] `/dashboard/ngos` list — yeni tema'ya taşı
-- [ ] `/dashboard/profile/badges` — yeni tema + gerçek veri
-- [ ] `/tesekkurler` — yeni tema
+### Öncelik 2: Eski Tema Güncellemesi ✅
+- [x] `/dashboard/ngos` list — yeni tema'ya taşındı, search + kart tasarımı (2026-04-19)
+- [x] `/dashboard/profile/badges` — yeni tema + gerçek veri, 6 rozet gerçek kriterlerle (2026-04-19)
+- [x] `/tesekkurler` — dead code, silindi (2026-04-19)
 
 ### Öncelik 3: Mock → Gerçek Veri
 - [ ] `/dashboard/streak` — profiles.current_streak + last_mission_week kullan
