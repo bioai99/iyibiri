@@ -156,7 +156,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
                 margin: 0,
               }}
             >
-              {profile.name ?? 'İsimsiz Kullanıcı'}
+              {profile.name ?? 'Adını henüz eklemedin'}
             </h1>
             <div
               style={{
@@ -168,7 +168,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             >
               <MapPin size={11} color={c.ink300} />
               <span style={{ fontSize: 12, color: c.ink300 }}>
-                {profile.city ?? 'Konum belirtilmedi'} · {new Date(profile.created_at).getFullYear()}&apos;ten beri
+                {profile.city ?? 'Konum eklenmedi'} · {new Date(profile.created_at).getFullYear()}&apos;den beri üye
               </span>
             </div>
           </div>
@@ -347,7 +347,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             }}
           >
             <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
-              Sıralama
+              Skor tablosu
             </span>
             <ChevronRight size={16} color={c.ink300} />
           </div>
@@ -568,7 +568,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             }}
           >
             <LogOut size={16} />
-            Çıkış Yap
+            Çıkış yap
           </button>
         </form>
       </div>

@@ -59,7 +59,7 @@ export default function OnboardingCauses() {
           Neye <em style={{ fontStyle: 'italic', color: c.gold }}>gönlün</em> yatıyor?
         </h1>
         <p style={{ fontSize: 14, color: c.ink300, margin: 0, lineHeight: 1.5 }}>
-          Sana özel görevler önerelim. İstediğin kadar seç.
+          Sana uygun görevler bulalım. Dilediğin kadar seç.
         </p>
       </div>
 
@@ -138,7 +138,7 @@ export default function OnboardingCauses() {
             border: 'none', borderRadius: 999, padding: '14px 20px',
             fontSize: 15, fontWeight: 600, cursor: 'pointer',
           }}>
-            {selected.length > 0 ? `${selected.length} alan seçildi — Devam` : 'Devam'}
+            {selected.length > 0 ? `${selected.length} alan seçtin — Devam` : 'Devam'}
           </button>
         </Link>
       </div>

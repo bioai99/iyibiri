@@ -89,7 +89,7 @@ function VerifyContent() {
     })
 
     if (error) {
-      setError('Kod geçersiz veya süresi dolmuş. Tekrar dene.')
+      setError('Bu kod çalışmadı. Yeni bir kod almayı dene.')
       setDigits(['', '', '', '', '', ''])
       inputRefs.current[0]?.focus()
       setLoading(false)
@@ -139,7 +139,7 @@ function VerifyContent() {
             </svg>
           </div>
         </Link>
-        <div style={{ flex: 1, textAlign: 'center', fontFamily: uiFont, fontSize: 13, fontWeight: 600, color: c.ink200 }}>Doğrulama</div>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: uiFont, fontSize: 13, fontWeight: 600, color: c.ink200 }}>E-posta doğrulama</div>
         <div style={{ width: 36 }} />
       </div>
 
@@ -248,7 +248,7 @@ function VerifyContent() {
           disabled={filled < 6 || loading}
           style={{ width: '100%', height: 52, borderRadius: 14, background: filled === 6 ? c.gold : c.ink700, border: 'none', color: filled === 6 ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === 6 ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === 6 ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
         >
-          {loading ? 'Doğrulanıyor...' : 'Doğrula →'}
+          {loading ? 'Doğrulanıyor...' : 'Doğrula'}
         </button>
         <p style={{ margin: '14px 0 0', fontFamily: uiFont, fontSize: 11, color: c.ink400, textAlign: 'center', lineHeight: 1.5 }}>
           Farklı bir{' '}

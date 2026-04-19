@@ -219,8 +219,8 @@ export default function OnboardingWelcome() {
             lineHeight: 1.6, margin: '0 0 28px', maxWidth: 320,
           }}
         >
-          Gönüllü ol, gerçek görevler tamamla, Karma biriktir.
-          Her iyilik seni ve çevrendeki insanları büyütür.
+          Gönüllü ol, görevler tamamla, Karma biriktir.
+          Her iyilik seni de çevreni de büyütür.
         </motion.p>
 
         <motion.div

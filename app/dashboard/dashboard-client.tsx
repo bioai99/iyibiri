@@ -226,14 +226,14 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           <QuickAction
             icon={<Calendar size={18} color={c.gold} />}
             title="Bu hafta sonu"
-            sub="12 görev yakında"
+            sub="Yakınında 12 görev var"
           />
         </Link>
         <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
           <QuickAction
             icon={<Sparkles size={18} color={c.gold} />}
             title="Önerilenler"
-            sub="Senin için 6 yeni"
+            sub="Sana özel 6 öneri"
           />
         </Link>
       </motion.div>
@@ -295,7 +295,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {featuredMissions.length === 0 ? (
           <p style={{ color: c.ink500, fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
-            Tüm öne çıkan görevleri tamamladın!
+            Harikasın! Tüm öne çıkan görevleri bitirdin.
           </p>
         ) : (
           featuredMissions.map(mission => (
@@ -326,7 +326,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
               }}>
-                Ortaklar
+                İş Birlikleri
               </p>
               <h2 style={{
                 margin: 0,

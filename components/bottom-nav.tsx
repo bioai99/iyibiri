@@ -7,7 +7,7 @@ import { Home, Search, ListChecks, Gift, User } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 
 const navItems = [
-  { href: '/dashboard',          label: 'Ana Sayfa', icon: Home },
+  { href: '/dashboard',          label: 'Anasayfa', icon: Home },
   { href: '/dashboard/discover', label: 'Keşfet',    icon: Search },
   { href: '/dashboard/missions', label: 'Görevler',  icon: ListChecks },
   { href: '/dashboard/rewards',  label: 'Ödüller',   icon: Gift },

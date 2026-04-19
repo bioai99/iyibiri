@@ -59,7 +59,7 @@ export default function AuthLandingPage() {
       }
     } catch (err: any) {
       console.error('OAuth error:', err)
-      setOauthError(err?.message || 'Giriş başarısız oldu. Tekrar deneyin.')
+      setOauthError(err?.message || 'Bir şeyler ters gitti. Tekrar dener misin?')
       setOauthLoading(null)
     }
   }
@@ -123,7 +123,7 @@ export default function AuthLandingPage() {
           transition={{ delay: 0.5, duration: 0.6 }}
           style={{ margin: '10px 0 0', fontFamily: uiFont, fontSize: 14, lineHeight: 1.55, color: c.ink200, textAlign: 'center' }}
         >
-          Hesabını aç, Türkiye'nin en büyük gönüllülük topluluğuna katıl.
+          Gönüllülerin buluşma noktasına hoş geldin.
         </motion.p>
 
         {/* Social buttons */}

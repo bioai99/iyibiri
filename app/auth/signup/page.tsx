@@ -47,11 +47,11 @@ export default function SignupPage() {
     if (error) {
       const msg = error.message.toLowerCase()
       if (msg.includes('already registered') || msg.includes('already exists')) {
-        setError('Bu e-posta adresi zaten kayıtlı')
+        setError('Bu e-posta zaten kayıtlı. Giriş yapmak ister misin?')
       } else if (msg.includes('password')) {
         setError('Şifre en az 6 karakter olmalı')
       } else {
-        setError('Kayıt olunamadı, tekrar dene')
+        setError('Bir aksaklık oldu, tekrar dener misin?')
       }
       setLoading(false)
       return
@@ -84,7 +84,7 @@ export default function SignupPage() {
             </svg>
           </div>
         </Link>
-        <div style={{ flex: 1, textAlign: 'center', fontFamily: uiFont, fontSize: 13, fontWeight: 600, color: c.ink200 }}>1 / 5 · Hesap</div>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: uiFont, fontSize: 13, fontWeight: 600, color: c.ink200 }}>Hesap oluştur</div>
         <div style={{ width: 36 }} />
       </div>
 
@@ -94,7 +94,7 @@ export default function SignupPage() {
           <span style={{ fontStyle: 'italic', color: c.gold }}>Tanışalım</span> —<br />birkaç bilgi yeter.
         </h1>
         <p style={{ margin: '8px 0 0', fontFamily: uiFont, fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
-          Hesabını oluşturduğunda, Karma bakiyen ve aldığın rozetler seninle kalır.
+          Karma bakiyen ve rozetlerin hep seninle.
         </p>
       </div>
 
@@ -125,7 +125,7 @@ export default function SignupPage() {
               onChange={e => setEmail(e.target.value)}
               required
               style={inputStyle}
-              placeholder="ornek@mail.com"
+              placeholder="sen@ornek.com"
             />
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function SignupPage() {
               onChange={e => setPassword(e.target.value)}
               required
               style={inputStyle}
-              placeholder="En az 8 karakter"
+              placeholder="Güçlü bir şifre seç"
             />
             <button
               type="button"
@@ -159,7 +159,7 @@ export default function SignupPage() {
           ))}
         </div>
         <div style={{ fontFamily: uiFont, fontSize: 11, color: c.ink400, marginTop: -8 }}>
-          En az 8 karakter, 1 rakam. Güçlü şifre.
+          En az 8 karakter ve 1 rakam olsun.
         </div>
 
         {/* KVKK checkbox */}
@@ -175,7 +175,7 @@ export default function SignupPage() {
             )}
           </div>
           <span style={{ fontFamily: uiFont, fontSize: 12, color: c.ink200, lineHeight: 1.5 }}>
-            <span style={{ color: c.cream, fontWeight: 600 }}>KVKK Aydınlatma Metni</span>'ni okudum, kabul ediyorum. E-posta ile ara sıra ilham verici görevler almayı kabul ediyorum.
+            <span style={{ color: c.cream, fontWeight: 600 }}>KVKK Aydınlatma Metni</span>'ni okudum, kabul ediyorum. Ara sıra görev önerileri almak da bana uyar.
           </span>
         </label>
 
@@ -194,7 +194,7 @@ export default function SignupPage() {
           disabled={!kvkk || loading}
           style={{ width: '100%', height: 52, borderRadius: 14, background: kvkk ? c.gold : c.ink700, border: 'none', color: kvkk ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: kvkk ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: kvkk ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
         >
-          {loading ? 'Hesap oluşturuluyor...' : 'Hesabımı oluştur →'}
+          {loading ? 'Hesap oluşturuluyor...' : 'Hesabımı oluştur'}
         </button>
         <div style={{ marginTop: 16 }}>
           {/* Progress dots */}

@@ -160,7 +160,7 @@ export default function OnboardingReady() {
           }}
         >
           İlk <em style={{ fontStyle: 'italic', color: c.gold }}>100 Karma</em>
-          {'\n'}senden.
+          {'\n'}senin.
         </motion.h1>
 
         <motion.p
@@ -173,8 +173,8 @@ export default function OnboardingReady() {
           }}
         >
           {isLoggedIn
-            ? 'İlk görevini tamamladığında 250 daha gelecek — "İyi Biri" seviyesine iki adım kaldı.'
-            : 'Hesabını aç, ilk 100 Karma\'nı hemen kazan. İlk görevinde 250 daha gelecek.'}
+            ? 'İlk görevini tamamla, 250 Karma daha kazanacaksın.'
+            : 'Hemen kayıt ol, 100 Karma\'nı kap. İlk görevinde 250 daha!'}
         </motion.p>
       </div>
 

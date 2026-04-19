@@ -60,7 +60,7 @@ export default function SigninPage() {
       }
     } catch (err: any) {
       console.error('OAuth error:', err)
-      setOauthError(err?.message || 'Giriş başarısız oldu. Tekrar deneyin.')
+      setOauthError(err?.message || 'Bir şeyler ters gitti. Tekrar dener misin?')
       setOauthLoading(null)
     }
   }
@@ -80,9 +80,9 @@ export default function SigninPage() {
       console.error('Login error details:', error.message, error.status, error.name)
       const msg = error.message.toLowerCase()
       if (msg.includes('email not confirmed')) {
-        setError('E-postanı onaylaman gerekiyor. Gelen kutunu kontrol et.')
+        setError('Önce e-postanı doğrulaman gerekiyor. Gelen kutunu kontrol et.')
       } else {
-        setError(`E-posta veya şifre hatalı (${error.message})`)
+        setError('E-posta ya da şifre yanlış gibi görünüyor.')
       }
       setLoading(false)
       return
@@ -149,7 +149,7 @@ export default function SigninPage() {
               onChange={e => setEmail(e.target.value)}
               required
               style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }}
-              placeholder="ornek@mail.com"
+              placeholder="sen@ornek.com"
             />
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function SigninPage() {
               onChange={e => setPassword(e.target.value)}
               required
               style={inputStyle}
-              placeholder="Şifreniz"
+              placeholder="Şifren"
             />
             <button
               type="button"
@@ -208,7 +208,7 @@ export default function SigninPage() {
           disabled={loading}
           style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: '#241E18', fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' }}
         >
-          {loading ? 'Giriş yapılıyor...' : 'Giriş yap →'}
+          {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
         </button>
 
         {/* Divider */}

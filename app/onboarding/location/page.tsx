@@ -81,7 +81,7 @@ export default function OnboardingLocation() {
           }}
         >
           {'Nerede '}
-          <em style={{ fontStyle: 'italic' }}>iyi olmak</em>
+          <em style={{ fontStyle: 'italic' }}>iyilik yapmak</em>
           {' istersin?'}
         </h1>
       </div>
@@ -176,7 +176,7 @@ export default function OnboardingLocation() {
                 color: c.ink300,
               }}
             >
-              Yarıçap
+              Mesafe
             </span>
             <span
               style={{
@@ -286,7 +286,7 @@ export default function OnboardingLocation() {
               lineHeight: 1.5,
             }}
           >
-            Online görevler konum fark etmeksizin sana önerilir.
+            Online görevler her yerden yapılabilir.
           </p>
         </div>
       </div>
@@ -314,7 +314,7 @@ export default function OnboardingLocation() {
               cursor: 'pointer',
             }}
           >
-            {radius} km içinde ara
+            Devam
           </button>
         </Link>
       </div>

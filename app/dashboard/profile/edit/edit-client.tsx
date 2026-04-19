@@ -92,7 +92,7 @@ export function EditProfileClient({
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>
         <h1 style={{ fontFamily: displayFont, fontSize: 20, fontWeight: 500, margin: 0, color: c.cream }}>
-          Profili Düzenle
+          Profilini düzenle
         </h1>
       </div>
 
@@ -105,7 +105,7 @@ export function EditProfileClient({
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="Adınız Soyadınız"
+              placeholder="Adın Soyadın"
               style={inputStyle}
             />
           </div>
@@ -129,14 +129,14 @@ export function EditProfileClient({
 
         {/* City */}
         <div>
-          <label style={labelStyle}>SEHIR</label>
+          <label style={labelStyle}>ŞEHİR</label>
           <div style={inputContainerStyle}>
             <MapPin size={16} color={c.ink400} style={{ marginLeft: 14, flexShrink: 0 }} />
             <input
               type="text"
               value={city}
               onChange={e => setCity(e.target.value)}
-              placeholder="Şehriniz"
+              placeholder="Şehrini yaz"
               style={{ ...inputStyle, paddingLeft: 10 }}
             />
           </div>
@@ -144,13 +144,13 @@ export function EditProfileClient({
 
         {/* Search radius */}
         <div>
-          <label style={labelStyle}>ARAMA YARICAPI</label>
+          <label style={labelStyle}>ARAMA MESAFESİ</label>
           <div style={{
             background: c.ink800, border: `1px solid ${c.ink600}`, borderRadius: 14,
             padding: '16px 18px',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
-              <span style={{ fontFamily: uiFont, fontSize: 13, color: c.ink300 }}>Yarıçap</span>
+              <span style={{ fontFamily: uiFont, fontSize: 13, color: c.ink300 }}>Mesafe</span>
               <span style={{ fontSize: 16, fontWeight: 700, color: c.gold, fontVariantNumeric: 'tabular-nums' }}>
                 {radius} km
               </span>
@@ -188,7 +188,7 @@ export function EditProfileClient({
 
         {/* Interests */}
         <div>
-          <label style={labelStyle}>ILGI ALANLARI</label>
+          <label style={labelStyle}>İLGİ ALANLARI</label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {causes.map(cause => {
               const isSelected = interests.includes(cause.name)
