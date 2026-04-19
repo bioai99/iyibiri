@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
@@ -69,63 +68,51 @@ export default function AuthLandingPage() {
 
   return (
     <div style={{ background: c.ink900, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
-      {/* Hero */}
-      <div style={{ flex: '1 1 auto', position: 'relative', overflow: 'hidden', minHeight: 240 }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: `radial-gradient(ellipse at 50% 30%, rgba(232,194,104,.22), transparent 65%), radial-gradient(ellipse at 20% 90%, rgba(233,207,194,.1), transparent 55%), ${c.ink900}`
-        }} />
-        {/* Logo cluster with motion */}
+      {/* Compact hero */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', flex: '0 0 auto',
+        padding: 'calc(env(safe-area-inset-top, 20px) + 48px) 28px 24px',
+      }}>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-          style={{ position: 'absolute', top: '32%', left: '50%', transform: 'translate(-50%,-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
         >
-          <KarmaToken size={92} />
-          <div style={{ fontFamily: displayFont, fontSize: 34, fontWeight: 500, letterSpacing: '-0.028em', color: c.cream }}>
+          <KarmaToken size={72} />
+          <div style={{ fontFamily: displayFont, fontSize: 28, fontWeight: 500, letterSpacing: '-0.025em', color: c.cream }}>
             İyi<span style={{ fontStyle: 'italic', color: c.gold }}>Biri</span>
           </div>
         </motion.div>
 
-        {/* Floating hearts */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 0.3, y: -5 }}
-          transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
-          style={{ position: 'absolute', top: '20%', left: '18%' }}
-        >
-          <Heart size={18} color={c.gold} fill={c.gold} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 0.25, y: -8 }}
-          transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', delay: 0.5 }}
-          style={{ position: 'absolute', top: '30%', right: '15%' }}
-        >
-          <Heart size={14} color={c.gold} fill={c.gold} />
-        </motion.div>
-      </div>
-
-      {/* Bottom section */}
-      <div style={{ padding: '24px 28px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          style={{ margin: 0, fontFamily: displayFont, fontSize: 30, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, color: c.cream, textAlign: 'center' }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          style={{
+            margin: '24px 0 0', fontFamily: displayFont, fontSize: 28, fontWeight: 400,
+            letterSpacing: '-0.03em', lineHeight: 1.15, color: c.cream, textAlign: 'center',
+          }}
         >
           Her iyilik <em style={{ fontStyle: 'italic', color: c.gold }}>fark</em> yaratır.
         </motion.h1>
+
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          style={{ margin: '10px 0 0', fontFamily: uiFont, fontSize: 14, lineHeight: 1.55, color: c.ink200, textAlign: 'center' }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          style={{
+            margin: '8px 0 0', fontFamily: uiFont, fontSize: 14,
+            lineHeight: 1.55, color: c.ink300, textAlign: 'center',
+          }}
         >
           Gönüllülerin buluşma noktasına hoş geldin.
         </motion.p>
+      </div>
 
+      {/* Action section */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '0 28px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         {/* Social buttons */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
