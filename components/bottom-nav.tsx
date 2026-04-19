@@ -23,7 +23,7 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0"
       style={{
         zIndex: 100,
-        background: 'rgba(26,22,18,.85)',
+        background: c.ink900,
         backdropFilter: 'blur(18px) saturate(140%)',
         borderTop: `1px solid ${c.ink600}`,
         padding: '10px 8px calc(10px + env(safe-area-inset-bottom, 18px))',

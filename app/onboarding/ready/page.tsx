@@ -17,13 +17,13 @@ export default function OnboardingReady() {
     import('canvas-confetti').then(mod => {
       const confetti = mod.default
       setTimeout(() => {
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 }, colors: ['#E8C268', '#F4EEDF', '#C8553D', '#6B8E4E'] })
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 }, colors: ['#E8C268', '#A89E8A', '#C8553D', '#6B8E4E'] })
       }, 800)
       setTimeout(() => {
-        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.3 }, colors: ['#E8C268', '#F4EEDF'] })
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.3 }, colors: ['#E8C268', '#A89E8A'] })
       }, 1200)
       setTimeout(() => {
-        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.7 }, colors: ['#E8C268', '#F4EEDF'] })
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.7 }, colors: ['#E8C268', '#A89E8A'] })
       }, 1400)
     }).catch(() => {})
 
@@ -99,7 +99,7 @@ export default function OnboardingReady() {
               }}
               style={{
                 position: 'absolute', inset: 0,
-                border: '1px solid #E8C268',
+                border: '1px solid ' + c.gold,
                 borderRadius: '50%',
               }}
             />
@@ -125,10 +125,10 @@ export default function OnboardingReady() {
             transition={{ duration: 0.5, delay: 1.2, ease: [0.23, 1, 0.32, 1] }}
             style={{
               position: 'absolute', bottom: 10, right: 10,
-              background: c.gold, color: '#241E18',
+              background: c.gold, color: c.ink,
               fontFamily: 'Fraunces, serif', fontWeight: 700, fontSize: 16,
               padding: '6px 12px', borderRadius: 12,
-              boxShadow: '0 4px 12px rgba(232,194,104,.4)',
+              boxShadow: '0 2px 8px rgba(0,0,0,.08)',
             }}
           >
             +100
@@ -187,11 +187,11 @@ export default function OnboardingReady() {
       >
         <Link href={nextHref} style={{ textDecoration: 'none' }}>
           <button style={{
-            width: '100%', background: c.gold, color: '#241E18',
+            width: '100%', background: c.gold, color: c.ink,
             border: 'none', borderRadius: 14, padding: '14px 20px',
             fontSize: 15, fontWeight: 700, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: '0 4px 16px rgba(232,194,104,.3)',
+            boxShadow: '0 2px 8px rgba(0,0,0,.08)',
           }}>
             {isLoggedIn ? 'İlk görevimi bul' : 'Hesabımı oluştur'}
             <ArrowRight size={16} strokeWidth={2.5} />

@@ -7,7 +7,7 @@ import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
 
 // İnsanları ve iyiliği temsil eden SVG hero animasyonu
-function GoodnesssHero() {
+function GoodnesssHero({ c }: { c: any }) {
   return (
     <div style={{ position: 'relative', width: 260, height: 260 }}>
       {/* Radial glow */}
@@ -17,7 +17,7 @@ function GoodnesssHero() {
         transition={{ duration: 1.2, ease: 'easeOut' }}
         style={{
           position: 'absolute', inset: -40,
-          background: 'radial-gradient(circle, rgba(232,194,104,.2), transparent 60%)',
+          background: `radial-gradient(circle, ${c.goldSoft}, transparent 60%)`,
           filter: 'blur(20px)',
         }}
       />
@@ -51,8 +51,8 @@ function GoodnesssHero() {
               width: 4 + (i % 3) * 2,
               height: 4 + (i % 3) * 2,
               borderRadius: '50%',
-              background: '#E8C268',
-              boxShadow: '0 0 8px rgba(232,194,104,.4)',
+              background: c.gold,
+              boxShadow: `0 0 8px ${c.goldSoft}`,
             }}
           />
         </motion.div>
@@ -65,7 +65,7 @@ function GoodnesssHero() {
         transition={{ duration: 1, delay: 0.3 }}
         style={{
           position: 'absolute', inset: 20,
-          border: '1px solid #E8C268', borderRadius: '50%',
+          border: '1px solid ' + c.gold, borderRadius: '50%',
         }}
       />
 
@@ -76,7 +76,7 @@ function GoodnesssHero() {
         transition={{ duration: 1.2, delay: 0.5 }}
         style={{
           position: 'absolute', inset: -10,
-          border: '1px solid #E8C268', borderRadius: '50%',
+          border: '1px solid ' + c.gold, borderRadius: '50%',
         }}
       />
 
@@ -97,7 +97,7 @@ function GoodnesssHero() {
             animate={{ pathLength: 1 }}
             transition={{ duration: 1.2, delay: 0.6, ease: 'easeInOut' }}
             d="M 30 105 Q 25 85 35 70 Q 45 55 55 60 Q 60 62 62 68"
-            stroke="#A89E8A" strokeWidth="2" strokeLinecap="round" fill="none"
+            stroke={c.ink300} strokeWidth="2" strokeLinecap="round" fill="none"
           />
           {/* Right hand cupping */}
           <motion.path
@@ -105,7 +105,7 @@ function GoodnesssHero() {
             animate={{ pathLength: 1 }}
             transition={{ duration: 1.2, delay: 0.8, ease: 'easeInOut' }}
             d="M 130 105 Q 135 85 125 70 Q 115 55 105 60 Q 100 62 98 68"
-            stroke="#A89E8A" strokeWidth="2" strokeLinecap="round" fill="none"
+            stroke={c.ink300} strokeWidth="2" strokeLinecap="round" fill="none"
           />
           {/* Bottom curve connecting hands */}
           <motion.path
@@ -113,7 +113,7 @@ function GoodnesssHero() {
             animate={{ pathLength: 1 }}
             transition={{ duration: 1, delay: 1, ease: 'easeInOut' }}
             d="M 30 105 Q 50 130 80 135 Q 110 130 130 105"
-            stroke="#A89E8A" strokeWidth="2" strokeLinecap="round" fill="none"
+            stroke={c.ink300} strokeWidth="2" strokeLinecap="round" fill="none"
           />
         </svg>
       </motion.div>
@@ -179,7 +179,7 @@ export default function OnboardingWelcome() {
         alignItems: 'center', justifyContent: 'center',
         padding: 'calc(env(safe-area-inset-top, 20px) + 60px) 24px 20px', minHeight: 360,
       }}>
-        <GoodnesssHero />
+        <GoodnesssHero c={c} />
 
         {/* Wordmark under hero */}
         <motion.div
@@ -232,11 +232,11 @@ export default function OnboardingWelcome() {
           <Link href="/onboarding/causes" style={{ textDecoration: 'none' }}>
             <button style={{
               width: '100%', height: 52, borderRadius: 14,
-              background: c.gold, border: 'none', color: '#241E18',
+              background: c.gold, border: 'none', color: c.ink,
               fontFamily: uiFont, fontSize: 15, fontWeight: 700,
               cursor: 'pointer', display: 'flex', alignItems: 'center',
               justifyContent: 'center', gap: 8,
-              boxShadow: '0 4px 16px rgba(232,194,104,.3)',
+              boxShadow: '0 2px 8px rgba(0,0,0,.08)',
             }}>
               Başlayalım <ArrowRight size={16} strokeWidth={2.5} />
             </button>

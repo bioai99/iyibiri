@@ -137,7 +137,7 @@ export default function AuthLandingPage() {
         </motion.div>
 
         {oauthError && (
-          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: '#C8553D', textAlign: 'center', lineHeight: 1.4 }}>
+          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: c.danger, textAlign: 'center', lineHeight: 1.4 }}>
             {oauthError}
           </p>
         )}
@@ -151,7 +151,7 @@ export default function AuthLandingPage() {
 
         {/* Email CTA */}
         <Link href="/auth/signup" style={{ textDecoration: 'none' }}>
-          <button style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: '#241E18', fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' }}>
+          <button style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: c.ink, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}>
             <MailIcon size={16} /> E-posta ile kayıt ol
           </button>
         </Link>

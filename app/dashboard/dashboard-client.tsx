@@ -186,7 +186,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
                 fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
                 fontSize: 16,
                 fontWeight: 600,
-                color: '#241E18',
+                color: '#FFFFFF',
               }}>
                 {firstName[0].toUpperCase()}
               </span>

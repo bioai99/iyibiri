@@ -198,7 +198,7 @@ export default function OnboardingLocation() {
               style={{
                 height: 6,
                 borderRadius: 999,
-                background: 'rgba(255,255,255,.05)',
+                background: c.ink600,
                 position: 'relative',
                 overflow: 'hidden',
               }}
@@ -229,7 +229,7 @@ export default function OnboardingLocation() {
                 height: 20,
                 borderRadius: '50%',
                 background: c.gold,
-                border: '3px solid #241E18',
+                border: '3px solid ' + c.ink900,
                 boxShadow: '0 2px 8px rgba(0,0,0,.45)',
                 pointerEvents: 'none',
                 transition: 'left 60ms linear',
@@ -305,7 +305,7 @@ export default function OnboardingLocation() {
             style={{
               width: '100%',
               background: c.gold,
-              color: '#241E18',
+              color: c.ink,
               border: 'none',
               borderRadius: 999,
               padding: '14px 20px',

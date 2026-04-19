@@ -118,7 +118,7 @@ export default function OnboardingCauses() {
                   width: 22, height: 22, borderRadius: '50%', background: c.gold,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Check size={13} color="#241E18" strokeWidth={2.5} />
+                  <Check size={13} color="#FFFFFF" strokeWidth={2.5} />
                 </div>
               )}
             </motion.button>
@@ -134,7 +134,7 @@ export default function OnboardingCauses() {
           style={{ textDecoration: 'none' }}
         >
           <button style={{
-            width: '100%', background: c.gold, color: '#241E18',
+            width: '100%', background: c.gold, color: c.ink,
             border: 'none', borderRadius: 999, padding: '14px 20px',
             fontSize: 15, fontWeight: 600, cursor: 'pointer',
           }}>

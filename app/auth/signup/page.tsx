@@ -169,7 +169,7 @@ export default function SignupPage() {
             style={{ width: 22, height: 22, borderRadius: 7, marginTop: 1, background: kvkk ? c.gold : 'transparent', border: `1.5px solid ${kvkk ? c.gold : c.ink500}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
           >
             {kvkk && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#241E18" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             )}
@@ -192,7 +192,7 @@ export default function SignupPage() {
           type="button"
           onClick={handleSignup}
           disabled={!kvkk || loading}
-          style={{ width: '100%', height: 52, borderRadius: 14, background: kvkk ? c.gold : c.ink700, border: 'none', color: kvkk ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: kvkk ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: kvkk ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
+          style={{ width: '100%', height: 52, borderRadius: 14, background: kvkk ? c.gold : c.ink700, border: 'none', color: kvkk ? c.ink : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: kvkk ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: kvkk ? '0 2px 8px rgba(0,0,0,.08)' : 'none' }}
         >
           {loading ? 'Hesap oluşturuluyor...' : 'Hesabımı oluştur'}
         </button>

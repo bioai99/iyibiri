@@ -186,7 +186,7 @@ export default function SigninPage() {
             style={{ width: 20, height: 20, borderRadius: 6, background: remember ? c.gold : 'transparent', border: `1.5px solid ${remember ? c.gold : c.ink500}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
           >
             {remember && (
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#241E18" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             )}
@@ -206,7 +206,7 @@ export default function SigninPage() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: '#241E18', fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' }}
+          style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: c.ink, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}
         >
           {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
         </button>
@@ -237,7 +237,7 @@ export default function SigninPage() {
         </div>
 
         {oauthError && (
-          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: '#C8553D', textAlign: 'center' }}>
+          <p style={{ margin: '12px 0 0', fontFamily: uiFont, fontSize: 13, color: c.danger, textAlign: 'center' }}>
             {oauthError}
           </p>
         )}
