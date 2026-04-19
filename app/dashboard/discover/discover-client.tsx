@@ -23,10 +23,10 @@ const categories = [
 ]
 
 const categoryBadgeColors: Record<string, { bg: string; text: string }> = {
-  article: { bg: 'rgba(196,203,172,0.18)', text: '#C4CBAC' },
-  update: { bg: 'rgba(234,221,184,0.18)', text: '#EADDB8' },
-  story: { bg: 'rgba(233,207,194,0.18)', text: '#E9CFC2' },
-  tip: { bg: 'rgba(232,180,168,0.18)', text: '#E8B4A8' },
+  article: { bg: 'rgba(107,142,78,0.15)', text: '#6B8E4E' },    // green
+  update: { bg: 'rgba(200,85,61,0.15)', text: '#C8553D' },      // clay/red
+  story: { bg: 'rgba(74,111,165,0.15)', text: '#4A6FA5' },      // blue
+  tip: { bg: 'rgba(232,168,56,0.15)', text: '#E8A838' },        // amber
 }
 
 const categoryLabels: Record<string, string> = {
@@ -44,7 +44,6 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
     <div
       style={{
         width: 280,
-        flexShrink: 0,
         background: c.ink800,
         borderRadius: 16,
         border: isSubscribed ? `1.5px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
@@ -279,12 +278,13 @@ export function DiscoverClient({ missions, posts, subscribedNgoIds }: DiscoverCl
             }}
           >
             {posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
-                c={c}
-              />
+              <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                <PostCard
+                  post={post}
+                  isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+                  c={c}
+                />
+              </Link>
             ))}
           </div>
         </div>
