@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Konsept E: Döngü Elleri — İyilik yap iyilik gör
+       İki el birbirini tutar, sonsuz döngü oluşturur
+       Yin-yang benzeri ama eller ile -->
+  <defs>
+    <linearGradient id="hand1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#B58F3D"/>
+    </linearGradient>
+    <linearGradient id="hand2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B8E4E"/>
+      <stop offset="100%" stop-color="#4a6237"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Dış halka -->
+  <circle cx="256" cy="248" r="140" fill="none" stroke="#F4EEDF" stroke-width="1.5" stroke-opacity=".1"/>
+
+  <!-- Üst el (altın — veren) saat yönünde eğri -->
+  <path d="M180 200 C180 160 220 130 256 130 C292 130 330 160 330 200"
+    stroke="url(#hand1)" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <!-- Parmak detayları üst -->
+  <circle cx="330" cy="200" r="12" fill="#E8C268"/>
+
+  <!-- Alt el (yeşil — alan) saat yönünde eğri -->
+  <path d="M330 296 C330 336 292 366 256 366 C220 366 180 336 180 296"
+    stroke="url(#hand2)" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <!-- Parmak detayları alt -->
+  <circle cx="180" cy="296" r="12" fill="#6B8E4E"/>
+
+  <!-- Bağlantı noktaları — transfer anı -->
+  <circle cx="180" cy="200" r="6" fill="#E8C268" opacity=".6"/>
+  <circle cx="330" cy="296" r="6" fill="#6B8E4E" opacity=".6"/>
+
+  <!-- Merkezdeki kalp — buluşma noktası -->
+  <path d="M256 228
+    C256 228 242 218 242 230
+    C242 240 256 252 256 252
+    C256 252 270 240 270 230
+    C270 218 256 228 256 228Z"
+    fill="#C8553D"/>
+
+  <!-- Parıltılar -->
+  <circle cx="220" cy="165" r="3" fill="#E8C268" opacity=".3"/>
+  <circle cx="295" cy="350" r="3" fill="#6B8E4E" opacity=".3"/>
+  <circle cx="310" cy="170" r="2" fill="#F4D98A" opacity=".25"/>
+  <circle cx="205" cy="340" r="2" fill="#6B8E4E" opacity=".25"/>
+</svg>

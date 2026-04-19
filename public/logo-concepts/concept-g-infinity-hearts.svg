@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Konsept G: Sonsuz Kalp — İyilik yap iyilik gör döngüsü
+       Sonsuzluk sembolü iki kalpten oluşur
+       Sol kalp = veren (altın), sağ kalp = alan (terrakota)
+       Kesişimde birleşir (gradient) -->
+  <defs>
+    <linearGradient id="left-loop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#D19B3C"/>
+    </linearGradient>
+    <linearGradient id="right-loop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C8553D"/>
+      <stop offset="100%" stop-color="#D4627A"/>
+    </linearGradient>
+    <linearGradient id="merge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D19B3C"/>
+      <stop offset="100%" stop-color="#C8553D"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol döngü (altın) -->
+  <path d="M256 255
+    C230 230 190 190 155 195
+    C120 200 110 240 120 260
+    C135 290 200 310 256 255Z"
+    fill="url(#left-loop)"/>
+
+  <!-- Sağ döngü (terrakota) -->
+  <path d="M256 255
+    C282 230 322 190 357 195
+    C392 200 402 240 392 260
+    C377 290 312 310 256 255Z"
+    fill="url(#right-loop)"/>
+
+  <!-- Merkez birleşim noktası -->
+  <circle cx="256" cy="252" r="14" fill="url(#merge)"/>
+  <circle cx="256" cy="252" r="8" fill="#F4EEDF" opacity=".2"/>
+
+  <!-- Hareket okları (döngü yönü) -->
+  <path d="M175 220 L170 210 L182 215" stroke="#F4EEDF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+  <path d="M337 220 L342 210 L330 215" stroke="#F4EEDF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+
+  <!-- Işıltılar -->
+  <circle cx="140" cy="235" r="3" fill="#E8C268" opacity=".3"/>
+  <circle cx="372" cy="235" r="3" fill="#C8553D" opacity=".3"/>
+  <circle cx="256" cy="195" r="2.5" fill="#F4EEDF" opacity=".2"/>
+
+  <!-- Küçük kalpler yüzeliyor -->
+  <path d="M210 180 C210 180 205 175 205 179 C205 183 210 187 210 187 C210 187 215 183 215 179 C215 175 210 180 210 180Z" fill="#E8C268" opacity=".25"/>
+  <path d="M300 175 C300 175 296 171 296 174 C296 177 300 180 300 180 C300 180 304 177 304 174 C304 171 300 175 300 175Z" fill="#C8553D" opacity=".25"/>
+</svg>

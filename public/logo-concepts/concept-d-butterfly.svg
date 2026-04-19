@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Konsept D: Kelebek — Dönüşüm
+       İyilik insanı dönüştürür. İki kanat = veren + alan
+       Her kanat farklı renk, ortada buluşuyorlar -->
+  <defs>
+    <linearGradient id="wingL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#D19B3C"/>
+    </linearGradient>
+    <linearGradient id="wingR" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8553D"/>
+      <stop offset="100%" stop-color="#D4627A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol kanat (altın — veren) -->
+  <path d="M256 240 C220 180 140 140 130 200 C120 260 190 280 256 260Z" fill="url(#wingL)"/>
+  <path d="M256 270 C220 310 160 350 170 300 C175 270 220 260 256 270Z" fill="url(#wingL)" opacity=".7"/>
+
+  <!-- Sağ kanat (terrakota — alan) -->
+  <path d="M256 240 C292 180 372 140 382 200 C392 260 322 280 256 260Z" fill="url(#wingR)"/>
+  <path d="M256 270 C292 310 352 350 342 300 C337 270 292 260 256 270Z" fill="url(#wingR)" opacity=".7"/>
+
+  <!-- Gövde -->
+  <ellipse cx="256" cy="258" rx="6" ry="40" fill="#F4EEDF"/>
+
+  <!-- Antenler -->
+  <path d="M254 220 C245 195 230 180 225 175" stroke="#F4EEDF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M258 220 C267 195 282 180 287 175" stroke="#F4EEDF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="223" cy="174" r="4" fill="#E8C268"/>
+  <circle cx="289" cy="174" r="4" fill="#C8553D"/>
+
+  <!-- Kanat desenleri -->
+  <circle cx="200" cy="215" r="12" fill="none" stroke="#F4EEDF" stroke-width="1.5" stroke-opacity=".3"/>
+  <circle cx="312" cy="215" r="12" fill="none" stroke="#F4EEDF" stroke-width="1.5" stroke-opacity=".3"/>
+</svg>
