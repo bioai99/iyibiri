@@ -52,16 +52,21 @@
   html {
     -webkit-text-size-adjust: 100%;
     background-color: #24201B;
-    overflow-x: hidden;
+    overflow: hidden;
     width: 100%;
+    height: 100%;
   }
   body {
     @apply bg-background text-foreground;
     overscroll-behavior: none;
     background-color: #24201B;
-    overflow-x: hidden;
+    overflow: hidden;
     width: 100%;
-    max-width: 100vw;
+    height: 100%;
+  }
+  /* Scrollbar gizle */
+  ::-webkit-scrollbar {
+    display: none;
   }
   button, a, [role="button"] {
     -webkit-tap-highlight-color: transparent;
