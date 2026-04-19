@@ -110,12 +110,10 @@ export async function handleNativeGoogleLogin(): Promise<void> {
 
   // İsim ve email'i profile'a kaydet
   if (data.session.user?.id) {
-    const updates: Record<string, any> = {}
-    if (googleName) updates.name = googleName
-    if (data.session.user.email) updates.email = data.session.user.email
-    if (Object.keys(updates).length > 0) {
-      await supabase.from('profiles').update(updates).eq('id', data.session.user.id)
-    }
+    await supabase.from('profiles').update({
+      name: googleName || undefined,
+      email: data.session.user.email || undefined,
+    }).eq('id', data.session.user.id)
   }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
@@ -174,13 +172,10 @@ export async function handleNativeAppleLogin(): Promise<void> {
 
   // İsim ve email'i profile'a kaydet (Apple sadece ilk girişte gönderiyor)
   if (data.session.user?.id) {
-    const updates: Record<string, any> = {}
-    if (fullName) updates.name = fullName
-    const email = appleEmail || data.session.user.email
-    if (email) updates.email = email
-    if (Object.keys(updates).length > 0) {
-      await supabase.from('profiles').update(updates).eq('id', data.session.user.id)
-    }
+    await supabase.from('profiles').update({
+      name: fullName || undefined,
+      email: (appleEmail || data.session.user.email) || undefined,
+    }).eq('id', data.session.user.id)
   }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
