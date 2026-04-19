@@ -7,11 +7,11 @@
 
 | Seviye | Sayfa | Oran |
 |--------|-------|------|
-| 🟢 Production | 21 | %52 |
-| 🟡 Beta | 7 | %18 |
-| 🔴 Prototype | 9 | %22 |
-| ⚫ Broken | 1 | %3 |
-| **Toplam** | **40** | |
+| 🟢 Production | 30 | %79 |
+| 🟡 Beta | 3 | %8 |
+| 🔴 Prototype | 4 | %11 |
+| ⚫ Broken | 0 | %0 |
+| **Toplam** | **38** | (2 dead page silindi) |
 
 ## Sistemik Sorunlar
 
@@ -103,9 +103,9 @@
 | # | Sayfa | Route | Durum | UI | Veri | Not |
 |---|-------|-------|-------|-----|------|-----|
 | 33 | Saved Missions | `/dashboard/saved` | 🟡 | 7/10 | Gerçek | Kayıtlı görevler |
-| 34 | Leaderboard | `/dashboard/leaderboard` | 🔴 | 8/10 | **MOCK** | Güzel podium, sıfır veri |
-| 35 | Notifications | `/dashboard/notifications` | 🔴 | 8/10 | **MOCK** | Güzel kartlar, sıfır veri |
-| 36 | Streak | `/dashboard/streak` | 🔴 | 9/10 | **MOCK** | Güzel coin, sıfır veri |
+| 34 | Leaderboard | `/dashboard/leaderboard` | 🟢 | 8/10 | Gerçek | Top 20 karma, kullanıcı rank |
+| 35 | Notifications | `/dashboard/notifications` | 🟢 | 7/10 | Gerçek | Aktivite feed (karma, üyelik, görev) |
+| 36 | Streak | `/dashboard/streak` | 🟢 | 9/10 | Gerçek | Haftalık dots + milestone'lar |
 
 ### ADMİN
 
@@ -135,10 +135,10 @@
 - [x] `/dashboard/profile/badges` — yeni tema + gerçek veri, 6 rozet gerçek kriterlerle (2026-04-19)
 - [x] `/tesekkurler` — dead code, silindi (2026-04-19)
 
-### Öncelik 3: Mock → Gerçek Veri
-- [ ] `/dashboard/streak` — profiles.current_streak + last_mission_week kullan
-- [ ] `/dashboard/leaderboard` — gerçek karma sıralaması query'si
-- [ ] `/dashboard/notifications` — bildirim tablosu + tetikleyiciler
+### Öncelik 3: Mock → Gerçek Veri ✅
+- [x] `/dashboard/streak` — gerçek streak + haftalık görev dots (2026-04-19)
+- [x] `/dashboard/leaderboard` — gerçek karma sıralaması, top 20 + kullanıcı rank (2026-04-19)
+- [x] `/dashboard/notifications` — gerçek aktivite feed (karma, üyelik, yeni görevler) (2026-04-19)
 
 ### Öncelik 4: Bağış Akışı
 - [ ] Ödeme entegrasyonu araştırması (iyzico/Stripe)

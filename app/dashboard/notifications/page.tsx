@@ -1,276 +1,107 @@
-'use client'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import NotificationsClient, { timeAgo } from './notifications-client'
+import type { ActivityItem } from './notifications-client'
 
-import { useState } from 'react'
-import { Sparkles, Star, Flame, Clock, Users } from 'lucide-react'
-import { KarmaDotToken } from '@/components/ui/ds'
-import { useTheme } from '@/lib/theme'
+export default async function NotificationsPage() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
 
-type NotifKind = 'karma' | 'match' | 'tier' | 'streak' | 'reminder' | 'social'
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const sevenDaysAgoISO = sevenDaysAgo.toISOString()
 
-interface Notif {
-  kind: NotifKind
-  title: string
-  sub: string
-  time: string
-  fresh?: boolean
-}
+  // Fetch data in parallel
+  const [karmaResult, membershipsResult, memberNgoIdsResult] = await Promise.all([
+    // Recent karma transactions (last 10)
+    supabase
+      .from('karma_transactions')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(10),
 
-const todayNotifs: Notif[] = [
-  { kind: 'karma', title: '+300 Karma kazandın', sub: 'Kan Bağışı Kampanyası · Kızılay', time: '2 dk', fresh: true },
-  { kind: 'match', title: 'Sana uygun yeni görev', sub: 'Kodluyoruz · Kodlama Mentorluğu', time: '3 saat', fresh: true },
-]
+    // Recent NGO memberships (joined in last 7 days)
+    supabase
+      .from('ngo_memberships')
+      .select('id, ngo_id, joined_at, ngos(id, name)')
+      .eq('user_id', user.id)
+      .gte('joined_at', sevenDaysAgoISO)
+      .order('joined_at', { ascending: false }),
 
-const earlierNotifs: Notif[] = [
-  { kind: 'tier', title: 'Çok İyi Biri oldun', sub: 'Yeni tier açıldı — ödüller güncellendi', time: 'Dün' },
-  { kind: 'streak', title: '7 günlük serin sürüyor', sub: 'Yarın da bir görev tamamla, kaybetme', time: 'Dün' },
-  { kind: 'reminder', title: 'Sahil Temizliği yarın', sub: 'Kilyos · 09:30 · 1 gün kaldı', time: '2 gün' },
-  { kind: 'social', title: 'Zeynep ekibine katıldı', sub: 'Barınakta Gönüllü Günü · Haytap', time: '3 gün' },
-]
+    // Get all NGO IDs the user is a member of (for new missions)
+    supabase
+      .from('ngo_memberships')
+      .select('ngo_id')
+      .eq('user_id', user.id)
+      .eq('status', 'active'),
+  ])
 
-function NotifRow({ notif }: { notif: Notif }) {
-  const { colors: c } = useTheme()
+  // Fetch new missions from member NGOs (last 7 days)
+  const memberNgoIds = (memberNgoIdsResult.data ?? []).map((m) => m.ngo_id)
+  let newMissions: { id: string; title: string; ngo_id: string | null; created_at?: string; ngos: { name: string } | null }[] = []
 
-  const iconConfig: Record<NotifKind, { bg: string; content: React.ReactNode }> = {
-    karma: {
-      bg: c.goldSoft,
-      content: <KarmaDotToken size={18} />,
-    },
-    match: {
-      bg: 'rgba(196,203,172,.15)',
-      content: <Sparkles size={18} color={c.sage} />,
-    },
-    tier: {
-      bg: c.goldSoft,
-      content: <Star size={18} color={c.gold} />,
-    },
-    streak: {
-      bg: c.goldSoft,
-      content: <Flame size={18} color={c.gold} />,
-    },
-    reminder: {
-      bg: 'rgba(233,207,194,.15)',
-      content: <Clock size={18} color={c.blush} />,
-    },
-    social: {
-      bg: 'rgba(244,238,223,.06)',
-      content: <Users size={18} color={c.cream} />,
-    },
+  if (memberNgoIds.length > 0) {
+    const { data } = await supabase
+      .from('missions')
+      .select('id, title, ngo_id, ngos(name)')
+      .in('ngo_id', memberNgoIds)
+      .eq('active', true)
+      .order('id', { ascending: false })
+      .limit(5)
+
+    newMissions = (data ?? []) as unknown as typeof newMissions
   }
 
-  const { bg, content } = iconConfig[notif.kind]
-  return (
-    <div
-      style={{
-        background: notif.fresh ? 'rgba(232,194,104,.04)' : c.ink800,
-        border: notif.fresh ? `1px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
-        borderRadius: 14,
-        padding: '14px 16px',
-        display: 'flex',
-        gap: 12,
-        alignItems: 'flex-start',
-        position: 'relative',
-      }}
-    >
-      {/* Icon square */}
-      <div
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 11,
-          background: bg,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        {content}
-      </div>
+  // Build activity feed
+  const activities: ActivityItem[] = []
 
-      {/* Text */}
-      <div style={{ flex: 1 }}>
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: c.cream,
-            paddingTop: 2,
-          }}
-        >
-          {notif.title}
-        </div>
-        <div
-          style={{
-            fontSize: 12,
-            color: c.ink300,
-            marginTop: 3,
-          }}
-        >
-          {notif.sub}
-        </div>
-      </div>
+  // Karma transactions
+  const karmaTransactions = karmaResult.data ?? []
+  for (const tx of karmaTransactions) {
+    if (tx.type === 'mission_complete') {
+      activities.push({
+        kind: 'karma',
+        title: `+${tx.amount} Karma kazandın`,
+        sub: tx.description || 'Görev tamamlandı',
+        time: timeAgo(tx.created_at),
+      })
+    } else if (tx.type === 'reward_redemption') {
+      activities.push({
+        kind: 'karma',
+        title: `${tx.amount} Karma harcandı`,
+        sub: tx.description || 'Ödül kullanımı',
+        time: timeAgo(tx.created_at),
+      })
+    }
+  }
 
-      {/* Time */}
-      <div
-        style={{
-          fontSize: 11,
-          color: c.ink400,
-          whiteSpace: 'nowrap',
-          paddingTop: 3,
-        }}
-      >
-        {notif.time}
-      </div>
+  // Memberships
+  const memberships = membershipsResult.data ?? []
+  for (const m of memberships) {
+    const ngoName = (m as unknown as { ngos: { name: string } | null }).ngos?.name ?? 'STK'
+    activities.push({
+      kind: 'membership',
+      title: `${ngoName}'e üye oldun`,
+      sub: 'Yeni üyelik',
+      time: timeAgo(m.joined_at),
+    })
+  }
 
-      {/* Fresh dot */}
-      {notif.fresh && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            width: 7,
-            height: 7,
-            borderRadius: '50%',
-            background: c.gold,
-            boxShadow: `0 0 0 3px ${c.goldSoft}`,
-          }}
-        />
-      )}
-    </div>
-  )
-}
+  // New missions from member NGOs
+  for (const mission of newMissions) {
+    const ngoName = mission.ngos?.name ?? 'STK'
+    activities.push({
+      kind: 'new_mission',
+      title: `${ngoName} yeni görev paylaştı`,
+      sub: mission.title,
+      time: '',
+    })
+  }
 
-export default function NotificationsPage() {
-  const { colors: c } = useTheme()
-  const [allRead, setAllRead] = useState(false)
+  // Sort by time (most recent first) — karma transactions already have created_at order
+  // We'll keep the order as-is since karma transactions come first and are already sorted
 
-  return (
-    <div
-      style={{
-        background: c.ink900,
-        color: c.cream,
-        minHeight: '100%',
-        paddingBottom: 40,
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: c.ink300,
-            }}
-          >
-            BİLDİRİMLER
-          </div>
-          <h1
-            style={{
-              fontFamily: 'Fraunces, serif',
-              fontSize: 28,
-              fontWeight: 500,
-              letterSpacing: '-0.025em',
-              lineHeight: 1.05,
-              margin: 0,
-            }}
-          >
-            Yeni{' '}
-            <em
-              style={{
-                fontStyle: 'italic',
-                color: c.gold,
-              }}
-            >
-              iyilikler
-            </em>
-          </h1>
-        </div>
-
-        <button
-          onClick={() => setAllRead(true)}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: c.gold,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: '0.04em',
-            cursor: allRead ? 'default' : 'pointer',
-            padding: 0,
-          }}
-        >
-          {allRead ? 'OKUNDU ✓' : 'TÜMÜNÜ OKU'}
-        </button>
-      </div>
-
-      {/* Today section */}
-      <div>
-        <div
-          style={{
-            padding: '24px 20px 8px',
-            marginBottom: 10,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: c.gold,
-          }}
-        >
-          BUGÜN
-        </div>
-        <div
-          style={{
-            padding: '0 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}
-        >
-          {todayNotifs.map((notif, i) => (
-            <NotifRow key={i} notif={notif} />
-          ))}
-        </div>
-      </div>
-
-      {/* Earlier section */}
-      <div>
-        <div
-          style={{
-            padding: '24px 20px 8px',
-            marginBottom: 10,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: c.ink300,
-          }}
-        >
-          DAHA ÖNCE
-        </div>
-        <div
-          style={{
-            padding: '0 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}
-        >
-          {earlierNotifs.map((notif, i) => (
-            <NotifRow key={i} notif={notif} />
-          ))}
-        </div>
-      </div>
-    </div>
-  )
+  return <NotificationsClient activities={activities} />
 }
