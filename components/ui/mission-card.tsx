@@ -79,9 +79,9 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
         onMouseUp={() => setPressed(false)}
         onMouseLeave={() => setPressed(false)}
         style={{
-          background: '#2E2923',
+          background: c.ink800,
           borderRadius: 16,
-          border: '1px solid #3F3830',
+          border: `1px solid ${c.ink600}`,
           overflow: 'hidden',
           cursor: 'pointer',
           transform: pressed ? 'scale(0.985)' : 'scale(1)',
@@ -209,7 +209,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
           <h2 style={{
             margin: 0,
             fontSize: 20, fontWeight: 700, lineHeight: 1.25,
-            color: '#F4EEDF',
+            color: c.cream,
             letterSpacing: '-0.02em',
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -224,7 +224,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
             <p style={{
               margin: '6px 0 14px',
               fontSize: 13, lineHeight: 1.5,
-              color: '#A89E8A',
+              color: c.ink300,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -262,7 +262,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
           {/* Urgency row — only when spotsLeft <= 5 */}
           {spotsLeft <= 5 && (
             <div style={{
-              borderTop: '1px solid #3F3830',
+              borderTop: `1px solid ${c.ink600}`,
               marginTop: 12,
               paddingTop: 12,
               display: 'flex',

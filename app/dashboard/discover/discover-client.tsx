@@ -36,7 +36,7 @@ const categoryLabels: Record<string, string> = {
   tip: 'İpucu',
 }
 
-function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boolean }) {
+function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: boolean; c: any }) {
   const badge = post.category ? categoryBadgeColors[post.category] : null
   const label = post.category ? categoryLabels[post.category] : null
 
@@ -45,9 +45,9 @@ function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boo
       style={{
         width: 280,
         flexShrink: 0,
-        background: '#2E2923',
+        background: c.ink800,
         borderRadius: 16,
-        border: isSubscribed ? '1.5px solid rgba(212,175,55,0.45)' : '1px solid #3F3830',
+        border: isSubscribed ? `1.5px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
         overflow: 'hidden',
         scrollSnapAlign: 'start',
         boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08)' : 'none',
@@ -101,7 +101,7 @@ function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boo
               {(post.ngos?.short_name ?? '?')[0]}
             </div>
           )}
-          <span style={{ fontSize: 11, color: '#A89E8A', fontWeight: 500 }}>
+          <span style={{ fontSize: 11, color: c.ink300, fontWeight: 500 }}>
             {post.ngos?.short_name ?? post.ngos?.name}
           </span>
           <span style={{ fontSize: 10, color: '#7A6F5E' }}>
@@ -129,7 +129,7 @@ function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boo
           style={{
             fontSize: 15,
             fontWeight: 600,
-            color: '#F4EEDF',
+            color: c.cream,
             margin: '0 0 4px',
             lineHeight: 1.3,
             display: '-webkit-box',
@@ -143,7 +143,7 @@ function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boo
         <p
           style={{
             fontSize: 12,
-            color: '#A89E8A',
+            color: c.ink300,
             margin: 0,
             lineHeight: 1.4,
             display: '-webkit-box',
@@ -283,6 +283,7 @@ export function DiscoverClient({ missions, posts, subscribedNgoIds }: DiscoverCl
                 key={post.id}
                 post={post}
                 isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+                c={c}
               />
             ))}
           </div>
