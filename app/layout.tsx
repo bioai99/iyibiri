@@ -20,8 +20,19 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: "İyiBiri",
-  description: "İyiBiri — İyi insanlarla bağlantı kur",
+  description: "Gönüllü ol, Karma biriktir, fark yarat.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "İyiBiri — İyilik biriktirilir.",
+    description: "Gönüllü ol, Karma biriktir, fark yarat.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+    locale: "tr_TR",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

@@ -63,7 +63,7 @@ const LIGHT: SemanticColors = {
   ink700: '#EBE3CE',
   ink600: '#D9CFB4',
   ink500: '#B8AD92',
-  ink400: '#B8AD92',
+  ink400: '#9E9580',
   ink300: '#7A6F5E',
   ink200: '#3E3830',
   ink100: '#241E18',

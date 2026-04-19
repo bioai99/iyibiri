@@ -1,11 +1,11 @@
 {
   "name": "İyiBiri",
   "short_name": "İyiBiri",
-  "description": "İyi insanlarla bağlantı kur",
+  "description": "Gönüllü ol, Karma biriktir, fark yarat.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#F2B705",
+  "background_color": "#24201B",
+  "theme_color": "#E8C268",
   "orientation": "portrait",
   "icons": [
     {

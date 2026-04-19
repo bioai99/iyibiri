@@ -51,14 +51,12 @@
   }
   html {
     -webkit-text-size-adjust: 100%;
-    background-color: #24201B;
     overflow-x: hidden;
     width: 100%;
   }
   body {
     @apply bg-background text-foreground;
     overscroll-behavior: none;
-    background-color: #24201B;
     overflow-x: hidden;
     width: 100%;
   }
