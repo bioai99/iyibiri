@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
-import { KarmaToken } from '@/components/ui/ds'
+import { BrandLogo } from '@/components/ui/brand-logo'
 import { createClient } from '@/lib/supabase/client'
 
 const AppleIcon = ({ size = 18 }: { size?: number }) => (
@@ -74,17 +74,7 @@ export default function AuthLandingPage() {
         justifyContent: 'center', flex: '0 0 auto',
         padding: 'calc(env(safe-area-inset-top, 20px) + 48px) 28px 24px',
       }}>
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
-        >
-          <KarmaToken size={72} />
-          <div style={{ fontFamily: displayFont, fontSize: 28, fontWeight: 500, letterSpacing: '-0.025em', color: c.cream }}>
-            İyi<span style={{ fontStyle: 'italic', color: c.gold }}>Biri</span>
-          </div>
-        </motion.div>
+        <BrandLogo size={80} animate showWordmark />
 
         <motion.h1
           initial={{ opacity: 0, y: 12 }}

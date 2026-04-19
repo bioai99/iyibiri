@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
-import { KarmaToken } from '@/components/ui/ds'
+import { BrandLogo } from '@/components/ui/brand-logo'
 
 const AppleIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -121,7 +121,7 @@ export default function SigninPage() {
 
       {/* Brand mark */}
       <div style={{ padding: '16px 24px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <KarmaToken size={44} />
+        <BrandLogo size={36} />
         <div style={{ fontFamily: displayFont, fontSize: 22, fontWeight: 500, letterSpacing: '-0.025em', color: c.cream }}>
           İyi<span style={{ fontStyle: 'italic', color: c.gold }}>Biri</span>
         </div>

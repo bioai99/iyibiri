@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { BrandLogo } from '@/components/ui/brand-logo'
 
 export default function AppStartPage() {
   const router = useRouter()
@@ -32,12 +33,7 @@ export default function AppStartPage() {
       background: '#24201B', minHeight: '100vh',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
-      <div style={{
-        fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 500,
-        letterSpacing: '-0.028em', color: '#F4EEDF',
-      }}>
-        İyi<span style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</span>
-      </div>
+      <BrandLogo size={70} animate showWordmark />
     </div>
   )
 }

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
-import { KarmaToken } from '@/components/ui/ds'
+import { BrandLogo } from '@/components/ui/brand-logo'
 import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingReady() {
@@ -83,40 +83,9 @@ export default function OnboardingReady() {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', textAlign: 'center',
       }}>
-        {/* KarmaToken with celebration rings */}
-        <div style={{ position: 'relative', width: 200, height: 200, marginBottom: 20 }}>
-          {/* Pulsing rings */}
-          {[0, 1, 2].map(i => (
-            <motion.div
-              key={i}
-              initial={{ scale: 0.5, opacity: 0.4 }}
-              animate={{ scale: 1.5 + i * 0.3, opacity: 0 }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.6,
-                ease: 'easeOut',
-              }}
-              style={{
-                position: 'absolute', inset: 0,
-                border: '1px solid ' + c.gold,
-                borderRadius: '50%',
-              }}
-            />
-          ))}
-
-          {/* Main token */}
-          <motion.div
-            initial={{ scale: 0, rotate: -30 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
-            style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            <KarmaToken size={110} />
-          </motion.div>
+        {/* Brand logo with +100 badge */}
+        <div style={{ position: 'relative', marginBottom: 20 }}>
+          <BrandLogo size={100} animate />
 
           {/* +100 badge */}
           <motion.div
@@ -124,7 +93,7 @@ export default function OnboardingReady() {
             animate={{ scale: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2, ease: [0.23, 1, 0.32, 1] }}
             style={{
-              position: 'absolute', bottom: 10, right: 10,
+              position: 'absolute', bottom: 0, right: -10,
               background: c.gold, color: c.ink,
               fontFamily: 'Fraunces, serif', fontWeight: 700, fontSize: 16,
               padding: '6px 12px', borderRadius: 12,
