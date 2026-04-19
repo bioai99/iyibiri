@@ -761,7 +761,7 @@ export default function LandingPage() {
           <div className="links">
             <a href="#nasil">Nasil calisir</a>
             <a href="#karma">Karma</a>
-            <a href="#stklar">STK&apos;lar</a>
+            <a href="#stklar">İyilik Öncüleri</a>
             <a href="#manifesto">Manifesto</a>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -790,7 +790,7 @@ export default function LandingPage() {
                 <span className="word">biriktirilir.</span>
               </h1>
               <p className="lead">
-                Mahallendeki STK&apos;lara gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her iyilik gorunur, her katki degerli.
+                Mahallendeki İyilik Öncülerine gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her iyilik gorunur, her katki degerli.
               </p>
               <div className="cta-row">
                 <Link className="store-btn" href="/auth/login">
@@ -804,7 +804,7 @@ export default function LandingPage() {
               </div>
               <div className="hero-meta">
                 <div className="m"><b data-cu="18247">0</b><span>Aktif gonullu</span></div>
-                <div className="m"><b data-cu="248">0</b><span>Partner STK</span></div>
+                <div className="m"><b data-cu="248">0</b><span>İyilik Öncüsü</span></div>
                 <div className="m"><b data-cu="62103">0</b><span>Tamamlanan gorev</span></div>
               </div>
             </div>
@@ -843,12 +843,12 @@ export default function LandingPage() {
                 <div className="story-text" data-step="0">
                   <div className="num">01 &middot; BUL</div>
                   <h3>Mahallende <em>sana uygun</em> gorev.</h3>
-                  <p>Konum, ilgi alani, sure filtresi. Yakinindaki her STK&apos;nin aktif cagrilari tek yerde. Kitap paketleme, yasliya market, park temizligi -- hepsi gercek, hepsi dogrulanmis.</p>
+                  <p>Konum, ilgi alani, sure filtresi. Yakinindaki her öncünün aktif cagrilari tek yerde. Kitap paketleme, yasliya market, park temizligi -- hepsi gercek, hepsi dogrulanmis.</p>
                 </div>
                 <div className="story-text" data-step="1">
                   <div className="num">02 &middot; KATIL</div>
                   <h3>Tek dokunusla <em>basvur.</em></h3>
-                  <p>STK koordinatoru seni gorur, onaylar. Takvimine eklenir. Hatirlatma gelir. Uygulamadan cikmadan her sey hallolur.</p>
+                  <p>Koordinatör seni gorur, onaylar. Takvimine eklenir. Hatirlatma gelir. Uygulamadan cikmadan her sey hallolur.</p>
                 </div>
                 <div className="story-text" data-step="2">
                   <div className="num">03 &middot; YAP</div>
@@ -1111,7 +1111,7 @@ export default function LandingPage() {
       <section className="network" id="stklar">
         <div className="wrap">
           <div className="sec-eyebrow">Ag</div>
-          <h2 className="sec-title">81 sehirde, <em>248 STK.</em> <br />Turkiye&apos;nin gonulluluk agi.</h2>
+          <h2 className="sec-title">81 sehirde, <em>248 İyilik Öncüsü.</em> <br />Turkiye&apos;nin gonulluluk agi.</h2>
           <canvas id="network-canvas" ref={networkCanvasRef} />
         </div>
       </section>
@@ -1163,9 +1163,9 @@ export default function LandingPage() {
               </div>
               <p style={{ fontSize: 13, color: '#A89E8A', lineHeight: 1.6, maxWidth: 280 }}>Turkiye&apos;nin iyilik adresi. Gonullu ol, Karma biriktir, fark yarat.</p>
             </div>
-            <div><h5>Urun</h5><ul><li><a href="#">Indir</a></li><li><a href="#">Nasil calisir</a></li><li><a href="#">STK&apos;lar</a></li><li><a href="#">Karma</a></li></ul></div>
+            <div><h5>Urun</h5><ul><li><a href="#">Indir</a></li><li><a href="#">Nasil calisir</a></li><li><a href="#">İyilik Öncüleri</a></li><li><a href="#">Karma</a></li></ul></div>
             <div><h5>Kurum</h5><ul><li><a href="#">Hakkimizda</a></li><li><a href="#">Manifesto</a></li><li><a href="#">Basin</a></li><li><a href="#">Iletisim</a></li></ul></div>
-            <div><h5>Topluluk</h5><ul><li><a href="#">Gonullu ol</a></li><li><a href="#">STK partneri ol</a></li><li><a href="#">Sikca sorulan sorular</a></li><li><a href="#">Destek</a></li></ul></div>
+            <div><h5>Topluluk</h5><ul><li><a href="#">Gonullu ol</a></li><li><a href="#">İyilik Öncüsü ol</a></li><li><a href="#">Sikca sorulan sorular</a></li><li><a href="#">Destek</a></li></ul></div>
           </div>
           <div className="copy">
             <div>&copy; 2026 IyiBiri &middot; Karma Teknoloji A.S.</div>

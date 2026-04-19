@@ -332,7 +332,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
               }}>
-                İş Birlikleri
+                İyilik Öncüleri
               </p>
               <h2 style={{
                 margin: 0,

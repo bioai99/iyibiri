@@ -86,7 +86,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="NGO, kategori veya şehir"
+            placeholder="Öncü, kategori veya şehir"
             style={{
               width: '100%',
               background: c.ink800,

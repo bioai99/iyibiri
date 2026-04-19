@@ -20,7 +20,7 @@ export default async function NGOsPage() {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="bg-white border-b border-border px-4 pt-12 pb-4">
-        <h1 className="font-display font-extrabold text-2xl text-stone-900">Kuruluşlar</h1>
+        <h1 className="font-display font-extrabold text-2xl text-stone-900">İyilik Öncüleri</h1>
         <p className="text-stone-500 text-sm mt-1">STK, vakıf, dernek ve belediyeler</p>
       </div>
       <div className="px-4 py-4 space-y-3">

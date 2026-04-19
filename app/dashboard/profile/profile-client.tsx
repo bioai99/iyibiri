@@ -33,7 +33,7 @@ const tierThresholds: Record<number, number> = {
 const achievements = [
   { icon: 'i', name: 'İlk Adım', locked: false, sub: 'İlk görevin' },
   { icon: '✿', name: 'Çevre Dostu', locked: false, sub: '3 çevre görevi' },
-  { icon: '♥', name: 'Kalp Kalbe', locked: false, sub: '5 farklı NGO' },
+  { icon: '♥', name: 'Kalp Kalbe', locked: false, sub: '5 farklı öncü' },
   { icon: '⚡', name: 'Yıldırım', locked: true, sub: '30 gün seri' },
   { icon: '◈', name: 'Elmas', locked: true, sub: '10.000 Karma' },
   { icon: '♛', name: 'Liderlik', locked: true, sub: 'Top 10' },
@@ -284,7 +284,7 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
         {[
           { label: 'GÖREV', value: completedCount, sub: 'tamamlandı', href: undefined },
           { label: 'SERİ', value: 7, sub: 'gün', href: '/dashboard/streak' },
-          { label: 'NGO', value: 4, sub: 'destek', href: undefined },
+          { label: 'ÖNCÜ', value: 4, sub: 'destek', href: undefined },
         ].map(({ label, value, sub, href }) => {
           const card = (
             <div
@@ -330,6 +330,28 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
             <div key={label}>{card}</div>
           )
         })}
+      </div>
+
+      {/* Saved missions link */}
+      <div style={{ padding: '8px 16px 0' }}>
+        <Link href="/dashboard/saved" style={{ textDecoration: 'none' }}>
+          <div
+            style={{
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
+              borderRadius: 14,
+              padding: '14px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
+              Kaydedilenler
+            </span>
+            <ChevronRight size={16} color={c.ink300} />
+          </div>
+        </Link>
       </div>
 
       {/* Leaderboard link */}

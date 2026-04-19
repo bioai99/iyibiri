@@ -117,6 +117,13 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
             pointerEvents: 'none',
           }} />
 
+          {/* Top gradient scrim for badge/bookmark readability */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, rgba(0,0,0,.35) 0%, transparent 40%)',
+            pointerEvents: 'none',
+          }} />
+
           {/* Top-left: category badge */}
           <div style={{ position: 'absolute', top: 10, left: 10 }}>
             <BadgeDS variant="onImage">
