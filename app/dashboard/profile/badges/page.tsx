@@ -27,7 +27,7 @@ export default async function BadgesPage() {
   return (
     <BadgesClient
       karma={profile.karma_total}
-      streak={profile.streak ?? profile.current_streak ?? 0}
+      streak={profile.current_streak ?? profile.streak ?? 0}
       completedCount={completedCount}
       memberNgoCount={memberNgoCount}
     />

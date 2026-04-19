@@ -38,7 +38,7 @@ export default async function NotificationsPage() {
       .eq('status', 'active'),
   ])
 
-  // Fetch new missions from member NGOs (last 7 days)
+  // Fetch recent missions from member NGOs
   const memberNgoIds = (memberNgoIdsResult.data ?? []).map((m) => m.ngo_id)
   let newMissions: { id: string; title: string; ngo_id: string | null; created_at?: string; ngos: { name: string } | null }[] = []
 
@@ -96,7 +96,7 @@ export default async function NotificationsPage() {
       kind: 'new_mission',
       title: `${ngoName} yeni görev paylaştı`,
       sub: mission.title,
-      time: '',
+      time: 'Yeni',
     })
   }
 

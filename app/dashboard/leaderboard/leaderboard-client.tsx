@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
 import type { SemanticColors } from '@/lib/theme'
@@ -192,9 +191,6 @@ export default function LeaderboardClient({
   currentUserProfile,
 }: LeaderboardClientProps) {
   const { colors: c } = useTheme()
-  const [period, setPeriod] = useState<string>('Tüm zamanlar')
-
-  const periods = ['Bu hafta', 'Bu ay', 'Tüm zamanlar']
 
   // Build podium (top 3)
   const podiumUsers = topUsers.slice(0, 3)
@@ -250,43 +246,6 @@ export default function LeaderboardClient({
           Topluluğun en{' '}
           <em style={{ fontStyle: 'italic', color: c.gold }}>iyileri</em>
         </h1>
-      </div>
-
-      {/* Period segmented control */}
-      <div style={{ padding: '18px 20px 0' }}>
-        <div
-          style={{
-            display: 'inline-flex',
-            background: c.ink,
-            border: `1px solid ${c.ink600}`,
-            borderRadius: 10,
-            padding: 3,
-          }}
-        >
-          {periods.map((p) => {
-            const active = period === p
-            return (
-              <button
-                key={p}
-                onClick={() => setPeriod(p)}
-                style={{
-                  padding: '7px 12px',
-                  border: 'none',
-                  borderRadius: 8,
-                  fontSize: 11,
-                  fontWeight: active ? 700 : 500,
-                  color: active ? AVATAR_TEXT_DARK : c.ink300,
-                  background: active ? c.gold : 'transparent',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all .15s',
-                }}
-              >
-                {p}
-              </button>
-            )
-          })}
-        </div>
       </div>
 
       {/* Podium */}
