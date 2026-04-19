@@ -17,10 +17,12 @@ export interface Database {
           interests: string[]
           city: string | null
           search_radius: number
+          email: string | null
         }
         Insert: {
           id: string
           name?: string | null
+          email?: string | null
           avatar_url?: string | null
           avatar_type?: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total?: number
@@ -35,6 +37,7 @@ export interface Database {
         Update: {
           id?: string
           name?: string | null
+          email?: string | null
           avatar_url?: string | null
           avatar_type?: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total?: number

@@ -108,11 +108,14 @@ export async function handleNativeGoogleLogin(): Promise<void> {
   if (error) throw new Error(`Google giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
 
-  // İsim varsa profile'a kaydet (sadece isim boşsa)
-  if (googleName && data.session.user?.id) {
-    await supabase.from('profiles').update({
-      name: googleName,
-    }).eq('id', data.session.user.id).is('name', null)
+  // İsim ve email'i profile'a kaydet
+  if (data.session.user?.id) {
+    const updates: Record<string, any> = {}
+    if (googleName) updates.name = googleName
+    if (data.session.user.email) updates.email = data.session.user.email
+    if (Object.keys(updates).length > 0) {
+      await supabase.from('profiles').update(updates).eq('id', data.session.user.id)
+    }
   }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
@@ -169,11 +172,15 @@ export async function handleNativeAppleLogin(): Promise<void> {
   if (error) throw new Error(`Apple giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
 
-  // İsim varsa profile'a kaydet (Apple sadece ilk girişte gönderiyor)
-  if (fullName && data.session.user?.id) {
-    await supabase.from('profiles').update({
-      name: fullName,
-    }).eq('id', data.session.user.id).is('name', null) // sadece isim boşsa güncelle
+  // İsim ve email'i profile'a kaydet (Apple sadece ilk girişte gönderiyor)
+  if (data.session.user?.id) {
+    const updates: Record<string, any> = {}
+    if (fullName) updates.name = fullName
+    const email = appleEmail || data.session.user.email
+    if (email) updates.email = email
+    if (Object.keys(updates).length > 0) {
+      await supabase.from('profiles').update(updates).eq('id', data.session.user.id)
+    }
   }
 
   await syncSessionToCookies(data.session.access_token, data.session.refresh_token)
