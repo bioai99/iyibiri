@@ -108,11 +108,17 @@ export async function handleNativeGoogleLogin(): Promise<void> {
   if (error) throw new Error(`Google giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
 
-  // İsim ve email'i profile'a kaydet
-  if (data.session.user?.id) {
+  // İsmi birden fazla kaynaktan dene
+  const finalGoogleName = googleName
+    || data.session.user?.user_metadata?.full_name
+    || data.session.user?.user_metadata?.name
+    || ''
+  const finalGoogleEmail = data.session.user.email || ''
+
+  if (data.session.user?.id && (finalGoogleName || finalGoogleEmail)) {
     await supabase.from('profiles').update({
-      name: googleName || undefined,
-      email: data.session.user.email || undefined,
+      ...(finalGoogleName ? { name: finalGoogleName } : {}),
+      ...(finalGoogleEmail ? { email: finalGoogleEmail } : {}),
     }).eq('id', data.session.user.id)
   }
 
@@ -153,12 +159,23 @@ export async function handleNativeAppleLogin(): Promise<void> {
     throw new Error(`Apple token bulunamadı. Response: ${JSON.stringify(result).slice(0, 200)}`)
   }
 
-  // İsim ve email'i Apple result'tan çıkar (sadece ilk girişte gelir!)
-  const appleProfile = result?.result?.profile || result?.result || {}
-  const givenName = appleProfile?.givenName || appleProfile?.name?.givenName || ''
-  const familyName = appleProfile?.familyName || appleProfile?.name?.familyName || ''
+  // Apple result'ın tüm yapısını logla (debug)
+  console.log('Apple login result:', JSON.stringify(result, null, 2))
+
+  // İsim ve email'i Apple result'tan çıkar
+  // Capgo plugin farklı yerlerde tutabilir, hepsini dene
+  const r = result?.result || result || {}
+  const profile = r?.profile || r?.user || r || {}
+  const givenName = r?.givenName || profile?.givenName || r?.name?.givenName || profile?.name?.givenName || ''
+  const familyName = r?.familyName || profile?.familyName || r?.name?.familyName || profile?.name?.familyName || ''
   const fullName = [givenName, familyName].filter(Boolean).join(' ')
-  const appleEmail = appleProfile?.email || result?.result?.email || ''
+  const appleEmail = r?.email || profile?.email || ''
+
+  // İsim bulunamazsa user_metadata'dan dene (Supabase bazen kaydeder)
+  // Bu bilgiyi hata mesajında göster ki debug edebilelim
+  if (!fullName) {
+    console.warn('Apple isim bulunamadı. Result keys:', Object.keys(r), 'Profile keys:', Object.keys(profile))
+  }
 
   const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithIdToken({
@@ -170,11 +187,19 @@ export async function handleNativeAppleLogin(): Promise<void> {
   if (error) throw new Error(`Apple giriş hatası: ${error.message}`)
   if (!data.session) throw new Error('Session oluşturulamadı')
 
-  // İsim ve email'i profile'a kaydet (Apple sadece ilk girişte gönderiyor)
-  if (data.session.user?.id) {
+  // İsmi birden fazla kaynaktan dene
+  const finalName = fullName
+    || data.session.user?.user_metadata?.full_name
+    || data.session.user?.user_metadata?.name
+    || [data.session.user?.user_metadata?.given_name, data.session.user?.user_metadata?.family_name].filter(Boolean).join(' ')
+    || ''
+  const finalEmail = appleEmail || data.session.user.email || ''
+
+  // Profile'a kaydet
+  if (data.session.user?.id && (finalName || finalEmail)) {
     await supabase.from('profiles').update({
-      name: fullName || undefined,
-      email: (appleEmail || data.session.user.email) || undefined,
+      ...(finalName ? { name: finalName } : {}),
+      ...(finalEmail ? { email: finalEmail } : {}),
     }).eq('id', data.session.user.id)
   }
 

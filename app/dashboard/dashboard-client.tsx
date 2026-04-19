@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Bell, Calendar, Sparkles } from 'lucide-react'
+import { Bell, Calendar, Sparkles, UserPen } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 import {
