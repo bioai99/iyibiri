@@ -51,7 +51,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
         border: isSubscribed ? `1.5px solid ${c.goldLine}` : `1px solid ${c.ink600}`,
         overflow: 'hidden',
         scrollSnapAlign: 'start',
-        boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08)' : 'none',
+        boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08), 0 1px 4px rgba(0,0,0,.06)' : '0 1px 4px rgba(0,0,0,.06)',
       }}
     >
       <div style={{ height: 160, overflow: 'hidden' }}>
@@ -382,6 +382,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
                   borderRadius: 100,
                   padding: '10px 16px 10px 12px',
                   cursor: 'pointer',
+                  boxShadow: '0 1px 4px rgba(0,0,0,.06)',
                 }}
               >
                 <div

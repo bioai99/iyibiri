@@ -87,6 +87,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
           cursor: 'pointer',
           transform: pressed ? 'scale(0.985)' : 'scale(1)',
           transition: 'transform 220ms cubic-bezier(.2,.8,.2,1)',
+          boxShadow: '0 1px 4px rgba(0,0,0,.06)',
         }}
       >
         {/* ── Photo / Domain gradient header ── */}

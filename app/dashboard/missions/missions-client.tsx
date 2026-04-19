@@ -10,6 +10,9 @@ import { useTheme } from '@/lib/theme'
 interface Props {
   missions: MissionWithNGO[]
   userMissions: UserMission[]
+  savedMissionIds?: string[]
+  memberNgoIds?: string[]
+  userId?: string
 }
 
 const filters = [
@@ -22,7 +25,7 @@ const filters = [
   { value: 'culture',   label: '🎭 Kültür' },
 ]
 
-export function MissionsClient({ missions, userMissions }: Props) {
+export function MissionsClient({ missions, userMissions, savedMissionIds = [], memberNgoIds = [], userId }: Props) {
   const { colors: c } = useTheme()
   const [activeFilter, setActiveFilter] = useState('all')
 
@@ -87,6 +90,9 @@ export function MissionsClient({ missions, userMissions }: Props) {
             >
               <MissionCard
                 mission={mission}
+                isSaved={savedMissionIds.includes(mission.id)}
+                isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
+                userId={userId}
               />
             </motion.div>
           ))}

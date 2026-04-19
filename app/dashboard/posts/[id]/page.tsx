@@ -27,5 +27,13 @@ export default async function PostDetailPage({ params }: { params: { id: string 
     .select('*', { count: 'exact', head: true })
     .eq('post_id', params.id)
 
-  return <PostDetailClient post={post as any} userId={user.id} initialLiked={!!like} initialLikeCount={likeCount ?? 0} />
+  const { data: membership } = await supabase
+    .from('ngo_memberships')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('ngo_id', post.ngo_id ?? '')
+    .eq('status', 'active')
+    .maybeSingle()
+
+  return <PostDetailClient post={post as any} userId={user.id} initialLiked={!!like} initialLikeCount={likeCount ?? 0} isMember={!!membership} />
 }

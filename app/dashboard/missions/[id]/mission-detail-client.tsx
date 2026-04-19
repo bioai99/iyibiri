@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   ArrowLeft,
   Share2,
@@ -12,6 +13,7 @@ import {
   Users,
   ArrowRight,
   Check,
+  ChevronRight,
 } from 'lucide-react'
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
@@ -19,12 +21,13 @@ import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/co
 import { useTheme } from '@/lib/theme'
 
 interface Props {
-  mission: Mission & { ngos?: { name: string; color_accent: string | null; logo_url: string | null } | null }
+  mission: Mission & { ngos?: { name: string; short_name?: string | null; color_accent: string | null; logo_url: string | null } | null }
   userMission: UserMission | null
   userId: string
+  isMember?: boolean
 }
 
-export function MissionDetailClient({ mission, userMission, userId }: Props) {
+export function MissionDetailClient({ mission, userMission, userId, isMember = false }: Props) {
   const { colors: c } = useTheme()
   const [loading, setLoading] = useState(false)
   const [takeError, setTakeError] = useState<string | null>(null)
@@ -227,6 +230,35 @@ export function MissionDetailClient({ mission, userMission, userId }: Props) {
           >
             {following ? 'Takip ediliyor ✓' : 'Takip et'}
           </button>
+        </div>
+      )}
+
+      {/* Membership CTA / badge */}
+      {!isMember && mission.ngo_id && (
+        <Link href={`/dashboard/ngos/${mission.ngo_id}/membership`} style={{ textDecoration: 'none' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+            borderRadius: 12, padding: '10px 14px', margin: '0 20px', marginTop: 12,
+          }}>
+            <span style={{ fontSize: 13, color: c.gold, fontWeight: 600 }}>
+              {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} gönüllüsü ol
+            </span>
+            <ChevronRight size={14} color={c.gold} />
+          </div>
+        </Link>
+      )}
+      {isMember && (
+        <div style={{
+          margin: '0 20px', marginTop: 8,
+        }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            background: c.goldSoft, borderRadius: 999, padding: '4px 10px',
+            fontSize: 11, fontWeight: 600, color: c.gold,
+          }}>
+            ✓ {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} üyesi
+          </div>
         </div>
       )}
 

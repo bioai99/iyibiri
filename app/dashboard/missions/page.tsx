@@ -8,10 +8,15 @@ export default async function MissionsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [missions, userMissions] = await Promise.all([
+  const [missions, userMissions, savedMissionsResult, membershipsResult] = await Promise.all([
     getAllMissions(),
     getUserMissions(user.id),
+    supabase.from('user_saved_missions').select('mission_id').eq('user_id', user.id),
+    supabase.from('ngo_memberships').select('ngo_id').eq('user_id', user.id).eq('status', 'active'),
   ])
 
-  return <MissionsClient missions={missions} userMissions={userMissions} />
+  const savedMissionIds = (savedMissionsResult.data ?? []).map((s: any) => s.mission_id)
+  const memberNgoIds = (membershipsResult.data ?? []).map((m: any) => m.ngo_id)
+
+  return <MissionsClient missions={missions} userMissions={userMissions} savedMissionIds={savedMissionIds} memberNgoIds={memberNgoIds} userId={user.id} />
 }

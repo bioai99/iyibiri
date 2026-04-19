@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Heart, Clock, Share2 } from 'lucide-react'
+import { ArrowLeft, Heart, Clock, Share2, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
@@ -13,13 +13,14 @@ interface Props {
   userId: string
   initialLiked: boolean
   initialLikeCount: number
+  isMember?: boolean
 }
 
 const categoryLabels: Record<string, string> = {
   article: 'Makale', update: 'Güncelleme', story: 'Hikaye', tip: 'İpucu',
 }
 
-export function PostDetailClient({ post, userId, initialLiked, initialLikeCount }: Props) {
+export function PostDetailClient({ post, userId, initialLiked, initialLikeCount, isMember = false }: Props) {
   const { colors: c } = useTheme()
   const [liked, setLiked] = useState(initialLiked)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
@@ -140,6 +141,28 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount 
           }}>
             {post.content}
           </div>
+        )}
+
+        {/* Membership CTA */}
+        {!isMember && post.ngo_id && (
+          <Link href={`/dashboard/ngos/${post.ngo_id}/membership`} style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+              borderRadius: 14, padding: '14px 16px', margin: '20px 0',
+            }}>
+              {ngo?.logo_url && (
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <img src={ngo.logo_url} alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
+                </div>
+              )}
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>{ngo?.short_name ?? ngo?.name} gönüllüsü ol</div>
+                <div style={{ fontSize: 12, color: c.ink300 }}>Görevlerden öncelikli haberdar ol</div>
+              </div>
+              <ChevronRight size={16} color={c.gold} />
+            </div>
+          </Link>
         )}
 
         {/* Like + Share bar */}

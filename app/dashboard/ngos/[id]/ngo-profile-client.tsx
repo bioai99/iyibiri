@@ -40,11 +40,10 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
   const { colors: c } = useTheme()
   const router = useRouter()
   const [cancelling, setCancelling] = useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
 
   const handleCancelMembership = async () => {
     if (!membership?.id || !userId) return
-    const confirmed = window.confirm('Üyeliğini iptal etmek istediğine emin misin?')
-    if (!confirmed) return
     setCancelling(true)
     try {
       const supabase = createClient()
@@ -100,20 +99,49 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             <IconButtonDS icon={<Share2 size={16} />} theme="dark" />
             <IconButtonDS icon={<Heart size={16} />} theme="dark" />
             {membership?.status === 'active' ? (
-              <button
-                onClick={handleCancelMembership}
-                disabled={cancelling}
-                style={{
-                  height: 40, padding: '0 16px', borderRadius: 12,
-                  background: c.goldSoft, border: `1px solid ${c.goldLine}`,
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  fontSize: 13, fontWeight: 600, color: c.gold,
-                  cursor: 'pointer',
-                  opacity: cancelling ? 0.6 : 1,
-                }}
-              >
-                {cancelling ? '...' : '✓ Üyesin'}
-              </button>
+              showCancelConfirm ? (
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                  <button
+                    onClick={handleCancelMembership}
+                    disabled={cancelling}
+                    style={{
+                      height: 36, padding: '0 14px', borderRadius: 10,
+                      background: 'rgba(220,38,38,.15)', border: '1px solid rgba(220,38,38,.3)',
+                      fontSize: 12, fontWeight: 600, color: '#F87171',
+                      cursor: cancelling ? 'not-allowed' : 'pointer',
+                      opacity: cancelling ? 0.6 : 1,
+                    }}
+                  >
+                    {cancelling ? '...' : 'İptal et'}
+                  </button>
+                  <button
+                    onClick={() => setShowCancelConfirm(false)}
+                    style={{
+                      height: 36, padding: '0 14px', borderRadius: 10,
+                      background: c.ink800, border: `1px solid ${c.ink600}`,
+                      fontSize: 12, fontWeight: 600, color: c.ink300,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Vazgeç
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowCancelConfirm(true)}
+                  disabled={cancelling}
+                  style={{
+                    height: 40, padding: '0 16px', borderRadius: 12,
+                    background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: 13, fontWeight: 600, color: c.gold,
+                    cursor: 'pointer',
+                    opacity: cancelling ? 0.6 : 1,
+                  }}
+                >
+                  {cancelling ? '...' : '✓ Üyesin'}
+                </button>
+              )
             ) : (
               <Link href={`/dashboard/ngos/${ngo.id}/membership`}>
                 <button style={{
@@ -253,68 +281,102 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
 
       {/* Membership teaser card */}
       <div style={{ padding: '24px 20px 0' }}>
-        <div
-          style={{
-            background: c.ink800,
-            border: `1px solid ${c.goldLine}`,
-            borderRadius: 16,
-            padding: 18,
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Concentric rings SVG */}
-          <svg
-            width="180"
-            height="180"
-            viewBox="0 0 180 180"
-            style={{ position: 'absolute', right: -60, top: -60, opacity: 0.1, pointerEvents: 'none' }}
-          >
-            {[80, 60, 40, 20].map((r) => (
-              <circle key={r} cx="90" cy="90" r={r} stroke={c.gold} strokeWidth=".7" fill="none" />
-            ))}
-          </svg>
-
-          <div style={{ ...EYEBROW, color: c.gold, marginBottom: 6 }}>
-            {ngo.short_name ?? ngo.name} ÜYESİ OL
+        {membership?.status === 'active' ? (
+          <div style={{ background: c.ink800, border: `1px solid ${c.goldLine}`, borderRadius: 16, padding: '18px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 999, background: '#6B8E4E' }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#6B8E4E' }}>Aktif üye</span>
+            </div>
+            <p style={{ fontSize: 14, color: c.cream, margin: '0 0 4px', fontWeight: 600 }}>
+              {ngo.short_name ?? ngo.name} gönüllüsüsün
+            </p>
+            <p style={{ fontSize: 12, color: c.ink300, margin: '0 0 14px' }}>
+              {membership.joined_at ? new Date(membership.joined_at).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long' }) : ''} tarihinden beri
+            </p>
+            <Link
+              href="/dashboard/missions"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: c.gold,
+                border: 'none',
+                color: '#241E18',
+                padding: '12px 18px',
+                borderRadius: 12,
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+            >
+              Görevleri gör <ChevronRight size={14} color="#241E18" />
+            </Link>
           </div>
-          <h3
+        ) : (
+          <div
             style={{
-              margin: 0,
-              fontFamily: 'var(--font-fraunces, Georgia, serif)',
-              fontSize: 22,
-              fontWeight: 500,
-              letterSpacing: '-0.025em',
-              color: c.cream,
-              lineHeight: 1.15,
+              background: c.ink800,
+              border: `1px solid ${c.goldLine}`,
+              borderRadius: 16,
+              padding: 18,
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            Aylık destek,{' '}
-            <span style={{ fontStyle: 'italic', color: c.gold }}>her ay Karma</span>.
-          </h3>
-          <p style={{ margin: '8px 0 14px', fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
-            {ngo.membership_description ?? `${ngo.short_name ?? ngo.name} üyeliğinle her ay otomatik katkı yap. Her ay için ekstra Karma kazan.`}
-          </p>
-          <Link
-            href={`/dashboard/ngos/${ngo.id}/membership`}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              background: c.gold,
-              border: 'none',
-              color: '#241E18',
-              padding: '12px 18px',
-              borderRadius: 12,
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: 'pointer',
-              textDecoration: 'none',
-            }}
-          >
-            Planları gör <ChevronRight size={14} color="#241E18" />
-          </Link>
-        </div>
+            {/* Concentric rings SVG */}
+            <svg
+              width="180"
+              height="180"
+              viewBox="0 0 180 180"
+              style={{ position: 'absolute', right: -60, top: -60, opacity: 0.1, pointerEvents: 'none' }}
+            >
+              {[80, 60, 40, 20].map((r) => (
+                <circle key={r} cx="90" cy="90" r={r} stroke={c.gold} strokeWidth=".7" fill="none" />
+              ))}
+            </svg>
+
+            <div style={{ ...EYEBROW, color: c.gold, marginBottom: 6 }}>
+              {ngo.short_name ?? ngo.name} ÜYESİ OL
+            </div>
+            <h3
+              style={{
+                margin: 0,
+                fontFamily: 'var(--font-fraunces, Georgia, serif)',
+                fontSize: 22,
+                fontWeight: 500,
+                letterSpacing: '-0.025em',
+                color: c.cream,
+                lineHeight: 1.15,
+              }}
+            >
+              Aylık destek,{' '}
+              <span style={{ fontStyle: 'italic', color: c.gold }}>her ay Karma</span>.
+            </h3>
+            <p style={{ margin: '8px 0 14px', fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
+              {ngo.membership_description ?? `${ngo.short_name ?? ngo.name} üyeliğinle her ay otomatik katkı yap. Her ay için ekstra Karma kazan.`}
+            </p>
+            <Link
+              href={`/dashboard/ngos/${ngo.id}/membership`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: c.gold,
+                border: 'none',
+                color: '#241E18',
+                padding: '12px 18px',
+                borderRadius: 12,
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+            >
+              Planları gör <ChevronRight size={14} color="#241E18" />
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Donation campaign card */}
