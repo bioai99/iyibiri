@@ -52,19 +52,16 @@
   html {
     -webkit-text-size-adjust: 100%;
     background-color: #24201B;
-    overflow: hidden;
+    overflow-x: hidden;
     width: 100%;
-    height: 100%;
   }
   body {
     @apply bg-background text-foreground;
     overscroll-behavior: none;
     background-color: #24201B;
-    overflow: hidden;
+    overflow-x: hidden;
     width: 100%;
-    height: 100%;
   }
-  /* Scrollbar gizle */
   ::-webkit-scrollbar {
     display: none;
   }
