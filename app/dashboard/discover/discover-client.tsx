@@ -160,7 +160,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
   )
 }
 
-export function DiscoverClient({ missions, posts, subscribedNgoIds }: DiscoverClientProps) {
+export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds }: DiscoverClientProps) {
   const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
