@@ -83,7 +83,8 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
   return (
     <div style={{
       background: c.ink900, color: c.cream,
-      minHeight: '100%', display: 'flex', flexDirection: 'column',
+      height: '100%', display: 'flex', flexDirection: 'column',
+      overflow: 'hidden',
     }}>
       {/* Header */}
       <div style={{
@@ -96,7 +97,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 20px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 20px', WebkitOverflowScrolling: 'touch' }}>
         {/* NGO Hero */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
