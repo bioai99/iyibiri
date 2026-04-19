@@ -97,7 +97,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 20px', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 100px', WebkitOverflowScrolling: 'touch' }}>
         {/* NGO Hero */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -327,14 +327,9 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
             </label>
           )}
         </motion.div>
-      </div>
 
-      {/* Submit CTA — sabit alt */}
-      <div style={{
-        padding: '14px 20px calc(env(safe-area-inset-bottom, 16px) + 12px)',
-        borderTop: `1px solid ${c.ink600}`,
-        background: c.ink900,
-      }}>
+        {/* Submit CTA */}
+        <div style={{ padding: '20px 20px 0' }}>
         {error && (
           <div style={{
             background: 'rgba(200,60,60,0.1)', border: '1px solid rgba(200,60,60,0.25)',
@@ -360,6 +355,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         >
           {submitting ? 'Kaydediliyor...' : 'Gönüllü Ol'}
         </motion.button>
+        </div>
       </div>
     </div>
   )
