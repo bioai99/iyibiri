@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Konsept C: İnsanlar — Bir araya gelen eller/figürler
+       İki insan figürü yan yana, aralarında bir ışık/kalp.
+       Topluluk, birlik, birlikte iyilik -->
+
+  <!-- Arka plan -->
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol figür -->
+  <circle cx="200" cy="190" r="30" fill="#E8C268"/>
+  <path d="M200 225 C200 225 180 240 175 280 C172 300 185 310 200 310"
+    stroke="#E8C268" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Sol kol uzanır -->
+  <path d="M200 260 C215 250 230 245 244 250"
+    stroke="#E8C268" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+  <!-- Sağ figür -->
+  <circle cx="312" cy="190" r="30" fill="#E8C268"/>
+  <path d="M312 225 C312 225 332 240 337 280 C340 300 327 310 312 310"
+    stroke="#E8C268" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Sağ kol uzanır -->
+  <path d="M312 260 C297 250 282 245 268 250"
+    stroke="#E8C268" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+  <!-- Ortadaki ışık / kalp — bağlantı noktası -->
+  <path d="M256 230
+    C256 230 240 218 240 232
+    C240 242 256 255 256 255
+    C256 255 272 242 272 232
+    C272 218 256 230 256 230Z"
+    fill="#C8553D" opacity=".9"/>
+
+  <!-- Parlama halesi -->
+  <circle cx="256" cy="242" r="40" fill="#E8C268" opacity=".06"/>
+  <circle cx="256" cy="242" r="24" fill="#E8C268" opacity=".08"/>
+
+  <!-- Küçük yıldızlar / parıltı -->
+  <circle cx="230" cy="220" r="2" fill="#F4D98A" opacity=".5"/>
+  <circle cx="280" cy="225" r="2.5" fill="#F4D98A" opacity=".4"/>
+  <circle cx="256" cy="210" r="1.5" fill="#F4D98A" opacity=".6"/>
+
+  <!-- Alt çizgi -->
+  <rect x="180" y="330" width="152" height="4" rx="2" fill="#E8C268" opacity=".2"/>
+
+  <!-- Wordmark -->
+  <text x="256" y="410" text-anchor="middle" font-family="'Fraunces', Georgia, serif" font-size="44" font-weight="500" fill="#F4EEDF" letter-spacing="-1">
+    <tspan>İyi</tspan><tspan font-style="italic" fill="#E8C268">Biri</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="256" y="450" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#A89E8A" letter-spacing="3">
+    İYİLİK BİRİKTİRİLİR
+  </text>
+</svg>

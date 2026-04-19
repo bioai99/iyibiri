@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Konsept B: Filiz / Tohum — İyilik ek, büyüsün
+       "i" harfi bir fidana dönüşür.
+       Gövde = gövde, nokta = yaprak/tomurcuk -->
+
+  <!-- Arka plan -->
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Toprak / zemin -->
+  <ellipse cx="256" cy="370" rx="80" ry="6" fill="#E8C268" opacity=".2"/>
+
+  <!-- Gövde — ince, hafif eğimli -->
+  <path d="M256 370 C256 370 252 280 256 220"
+    stroke="#E8C268" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+  <!-- Sol yaprak -->
+  <path d="M256 280 C230 260 210 240 220 220 C230 200 250 230 256 260"
+    fill="#6B8E4E" opacity=".9"/>
+
+  <!-- Sağ yaprak (küçük) -->
+  <path d="M256 310 C270 295 285 285 280 270 C275 260 260 280 256 300"
+    fill="#6B8E4E" opacity=".7"/>
+
+  <!-- Tomurcuk / çiçek — "i" noktası -->
+  <circle cx="256" cy="192" r="28" fill="#E8C268"/>
+  <!-- İç parlama -->
+  <circle cx="252" cy="188" r="10" fill="#F4D98A" opacity=".6"/>
+
+  <!-- Küçük parıltılar -->
+  <circle cx="220" cy="180" r="3" fill="#E8C268" opacity=".4"/>
+  <circle cx="292" cy="200" r="2.5" fill="#E8C268" opacity=".3"/>
+  <circle cx="236" cy="160" r="2" fill="#E8C268" opacity=".35"/>
+
+  <!-- Wordmark -->
+  <text x="256" y="440" text-anchor="middle" font-family="'Fraunces', Georgia, serif" font-size="44" font-weight="500" fill="#F4EEDF" letter-spacing="-1">
+    <tspan>İyi</tspan><tspan font-style="italic" fill="#E8C268">Biri</tspan>
+  </text>
+</svg>
