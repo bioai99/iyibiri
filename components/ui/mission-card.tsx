@@ -119,35 +119,50 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
 
           {/* Top gradient scrim for badge/bookmark readability */}
           <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(0,0,0,.35) 0%, transparent 40%)',
+            position: 'absolute', top: 0, left: 0, right: 0, height: '50%',
+            background: 'linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 60%, transparent 100%)',
             pointerEvents: 'none',
           }} />
 
           {/* Top-left: category badge */}
           <div style={{ position: 'absolute', top: 10, left: 10 }}>
-            <BadgeDS variant="onImage">
+            <div style={{
+              background: 'rgba(0,0,0,.55)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              borderRadius: 999,
+              padding: '4px 10px',
+              fontSize: 11,
+              fontWeight: 600,
+              color: '#F4EEDF',
+              letterSpacing: '0.02em',
+            }}>
               {mission.category ?? domain}
-            </BadgeDS>
+            </div>
           </div>
 
           {/* Top-right: bookmark save button */}
-          <div style={{ position: 'absolute', top: 8, right: 8 }}>
-            <IconButtonDS
-              size={32}
-              theme="dark"
-              onClick={toggleSave}
-              icon={
-                <Bookmark
-                  size={14}
-                  style={{
-                    fill: saved ? c.gold : 'none',
-                    color: saved ? c.gold : c.cream,
-                    transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
-                  }}
-                />
-              }
-            />
+          <div
+            style={{ position: 'absolute', top: 8, right: 8 }}
+            onClick={toggleSave}
+          >
+            <div style={{
+              width: 34, height: 34, borderRadius: '50%',
+              background: 'rgba(0,0,0,.5)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}>
+              <Bookmark
+                size={15}
+                style={{
+                  fill: saved ? c.gold : 'none',
+                  color: saved ? c.gold : '#F4EEDF',
+                  transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+                }}
+              />
+            </div>
           </div>
 
           {/* Bottom-left: NGO logo disk + name */}

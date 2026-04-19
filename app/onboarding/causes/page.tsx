@@ -120,11 +120,13 @@ export default function OnboardingCauses() {
             >
               {/* Icon strip */}
               <div style={{
-                height: 52, background: isSelected ? cause.gradient : c.ink700,
+                height: 48, minHeight: 48, maxHeight: 48,
+                background: isSelected ? cause.gradient : c.ink700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 200ms ease',
+                borderRadius: '14px 14px 0 0',
               }}>
-                <Icon size={22} color={isSelected ? '#F4EEDF' : c.ink300} strokeWidth={1.8} />
+                <Icon size={22} color={isSelected ? '#F4EEDF' : c.ink300} strokeWidth={1.8} style={{ display: 'block' }} />
               </div>
 
               {/* Text */}
