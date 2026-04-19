@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- D2: Kelebek-İnsan — Gövde bir insan figürü
+       Kanatlar açık kollar gibi, baş kelebek noktası
+       Basit, tanınabilir, insani -->
+  <defs>
+    <linearGradient id="wL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#D19B3C"/>
+    </linearGradient>
+    <linearGradient id="wR" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8553D"/>
+      <stop offset="100%" stop-color="#D4627A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol kanat -->
+  <path d="M248 240 C210 185 130 155 125 215 C120 270 195 285 248 258Z" fill="url(#wL)"/>
+  <path d="M248 268 C215 300 155 330 165 290 C170 265 215 258 248 268Z" fill="url(#wL)" opacity=".65"/>
+
+  <!-- Sağ kanat -->
+  <path d="M264 240 C302 185 382 155 387 215 C392 270 317 285 264 258Z" fill="url(#wR)"/>
+  <path d="M264 268 C297 300 357 330 347 290 C342 265 297 258 264 268Z" fill="url(#wR)" opacity=".65"/>
+
+  <!-- İnsan figürü (basit, zarif) -->
+  <!-- Baş -->
+  <circle cx="256" cy="210" r="22" fill="#F4EEDF"/>
+  <!-- Gövde -->
+  <path d="M256 232 L256 310" stroke="#F4EEDF" stroke-width="6" stroke-linecap="round"/>
+  <!-- Kollar (kısa, kanatlarla birleşir) -->
+  <path d="M256 255 L235 245" stroke="#F4EEDF" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+  <path d="M256 255 L277 245" stroke="#F4EEDF" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+  <!-- Bacaklar (kısa) -->
+  <path d="M256 310 L244 335" stroke="#F4EEDF" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+  <path d="M256 310 L268 335" stroke="#F4EEDF" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+
+  <!-- Kanat desenleri -->
+  <circle cx="190" cy="220" r="10" fill="none" stroke="#F4EEDF" stroke-width="1" opacity=".2"/>
+  <circle cx="322" cy="220" r="10" fill="none" stroke="#F4EEDF" stroke-width="1" opacity=".2"/>
+</svg>

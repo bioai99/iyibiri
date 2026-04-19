@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- D4: Kucaklayan Kanatlar — En minimal versiyon
+       Kişi silüeti + kanatlar = kucaklama hareketi
+       Sanki birini kucaklamaya hazır, kollar açık
+       Kalp noktası ile iyilik vurgusu -->
+  <defs>
+    <linearGradient id="wL4" x1="0" y1=".2" x2=".8" y2=".8">
+      <stop offset="0%" stop-color="#F4D98A"/>
+      <stop offset="100%" stop-color="#E8C268"/>
+    </linearGradient>
+    <linearGradient id="wR4" x1="1" y1=".2" x2=".2" y2=".8">
+      <stop offset="0%" stop-color="#D4627A"/>
+      <stop offset="100%" stop-color="#C8553D"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol kanat — tek büyük, akıcı form -->
+  <path d="M246 248
+    C220 210 170 170 140 190
+    C110 210 120 260 160 280
+    C195 296 235 275 246 260Z"
+    fill="url(#wL4)"/>
+
+  <!-- Sağ kanat -->
+  <path d="M266 248
+    C292 210 342 170 372 190
+    C402 210 392 260 352 280
+    C317 296 277 275 266 260Z"
+    fill="url(#wR4)"/>
+
+  <!-- Baş (minimal daire) -->
+  <circle cx="256" cy="215" r="26" fill="#F4EEDF"/>
+
+  <!-- Gövde (tek çizgi, zarif) -->
+  <line x1="256" y1="241" x2="256" y2="330" stroke="#F4EEDF" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Kalp göğüste (küçük, ince) -->
+  <path d="M256 268
+    C256 268 249 263 249 268
+    C249 273 256 278 256 278
+    C256 278 263 273 263 268
+    C263 263 256 268 256 268Z"
+    fill="#E8C268" opacity=".8"/>
+
+  <!-- Ayaklar -->
+  <line x1="256" y1="326" x2="242" y2="355" stroke="#F4EEDF" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+  <line x1="256" y1="326" x2="270" y2="355" stroke="#F4EEDF" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+</svg>
