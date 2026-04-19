@@ -13,6 +13,8 @@ interface DiscoverClientProps {
   ngos: NGO[]
   posts: PostWithNGO[]
   subscribedNgoIds: string[]
+  memberNgoIds?: string[]
+  userId?: string
 }
 
 const categories = [
@@ -160,7 +162,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
   )
 }
 
-export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds }: DiscoverClientProps) {
+export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, memberNgoIds = [], userId }: DiscoverClientProps) {
   const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
@@ -438,7 +440,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds }: Disc
 
       {trendingMission && (
         <div style={{ padding: '0 16px' }}>
-          <MissionCard mission={trendingMission} />
+          <MissionCard mission={trendingMission} isMember={memberNgoIds.includes(trendingMission.ngo_id ?? '')} userId={userId} />
         </div>
       )}
     </div>

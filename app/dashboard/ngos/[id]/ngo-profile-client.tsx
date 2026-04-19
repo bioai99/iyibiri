@@ -1,11 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Heart, ChevronRight, Leaf } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
+import { createClient } from '@/lib/supabase/client'
 import type { NGO, MissionWithNGO, NgoMembership } from '@/lib/supabase/types'
 
 interface NGOProfileClientProps {
@@ -37,6 +39,24 @@ const difficultyColor: Record<string, string> = {
 export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfileClientProps) {
   const { colors: c } = useTheme()
   const router = useRouter()
+  const [cancelling, setCancelling] = useState(false)
+
+  const handleCancelMembership = async () => {
+    if (!membership?.id || !userId) return
+    const confirmed = window.confirm('Üyeliğini iptal etmek istediğine emin misin?')
+    if (!confirmed) return
+    setCancelling(true)
+    try {
+      const supabase = createClient()
+      await supabase
+        .from('ngo_memberships')
+        .update({ status: 'cancelled' })
+        .eq('id', membership.id)
+      router.refresh()
+    } catch {
+      setCancelling(false)
+    }
+  }
 
   const coverImageUrl = ngo.cover_image_url
   const founded = ngo.founded
@@ -80,14 +100,20 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             <IconButtonDS icon={<Share2 size={16} />} theme="dark" />
             <IconButtonDS icon={<Heart size={16} />} theme="dark" />
             {membership?.status === 'active' ? (
-              <div style={{
-                height: 40, padding: '0 16px', borderRadius: 12,
-                background: c.goldSoft, border: `1px solid ${c.goldLine}`,
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontSize: 13, fontWeight: 600, color: c.gold,
-              }}>
-                &#10003; Üyesin
-              </div>
+              <button
+                onClick={handleCancelMembership}
+                disabled={cancelling}
+                style={{
+                  height: 40, padding: '0 16px', borderRadius: 12,
+                  background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  fontSize: 13, fontWeight: 600, color: c.gold,
+                  cursor: 'pointer',
+                  opacity: cancelling ? 0.6 : 1,
+                }}
+              >
+                {cancelling ? '...' : '✓ Üyesin'}
+              </button>
             ) : (
               <Link href={`/dashboard/ngos/${ngo.id}/membership`}>
                 <button style={{

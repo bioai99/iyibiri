@@ -417,6 +417,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
                         justifyContent: 'center',
                         overflow: 'hidden',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                        border: memberNgoIds.includes(ngo.id) ? `2px solid ${c.gold}` : undefined,
                       }}>
                         {ngo.logo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element

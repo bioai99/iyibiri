@@ -39,6 +39,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
   const [kvkkChecked, setKvkkChecked] = useState(false)
   const [termsChecked, setTermsChecked] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const requiredFieldsFilled = formFields
     .filter(f => f.required)
@@ -50,22 +51,25 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
   const handleSubmit = async () => {
     if (!canSubmit) return
     setSubmitting(true)
+    setError(null)
     try {
       const supabase = createClient()
       const status = ngo.membership_approval_required ? 'pending' : 'active'
-      const { error } = await supabase.from('ngo_memberships').insert({
+      const { error: insertError } = await supabase.from('ngo_memberships').insert({
         user_id: userId,
         ngo_id: ngo.id,
         status,
         form_data: hasForm ? formData : {},
       })
-      if (error) {
-        console.error('Membership insert error:', error)
+      if (insertError) {
+        console.error('Membership insert error:', insertError)
+        setError('Üyelik kaydı sırasında bir sorun oluştu. Lütfen tekrar dene.')
         setSubmitting(false)
         return
       }
       router.push(`/dashboard/ngos/${ngo.id}/membership/success`)
     } catch {
+      setError('Bir hata oluştu. Lütfen internet bağlantını kontrol edip tekrar dene.')
       setSubmitting(false)
     }
   }
@@ -243,6 +247,22 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
           background: c.ink900,
         }}
       >
+        {error && (
+          <div
+            style={{
+              background: 'rgba(200,60,60,0.12)',
+              border: '1px solid rgba(200,60,60,0.3)',
+              borderRadius: 12,
+              padding: '12px 16px',
+              marginBottom: 14,
+              fontSize: 13,
+              color: '#E05252',
+              lineHeight: 1.5,
+            }}
+          >
+            {error}
+          </div>
+        )}
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}

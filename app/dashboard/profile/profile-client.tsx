@@ -368,7 +368,31 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
       </div>
 
       {/* Üyeliklerim */}
-      {memberships.length > 0 && (
+      {memberships.length === 0 ? (
+        <div style={{ padding: '24px 20px 0' }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+              fontSize: 20,
+              fontWeight: 500,
+              color: c.cream,
+              margin: '0 0 12px',
+            }}
+          >
+            Üyeliklerim
+          </h2>
+          <Link href="/dashboard/ngos" style={{ textDecoration: 'none' }}>
+            <div style={{
+              background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+              borderRadius: 14, padding: '14px 18px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <span style={{ fontSize: 14, color: c.gold }}>İyilik Öncülerini keşfet</span>
+              <ChevronRight size={16} color={c.gold} />
+            </div>
+          </Link>
+        </div>
+      ) : (
         <div style={{ padding: '24px 20px 0' }}>
           <h2
             style={{

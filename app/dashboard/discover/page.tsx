@@ -9,7 +9,7 @@ export default async function DiscoverPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [missions, ngosResult, postsResult, subscriptionsResult] = await Promise.all([
+  const [missions, ngosResult, postsResult, subscriptionsResult, membershipsResult] = await Promise.all([
     getAllMissions(),
     supabase.from('ngos').select('*'),
     supabase
@@ -22,11 +22,17 @@ export default async function DiscoverPage() {
       .from('user_ngo_subscriptions')
       .select('ngo_id')
       .eq('user_id', user.id),
+    supabase
+      .from('ngo_memberships')
+      .select('ngo_id')
+      .eq('user_id', user.id)
+      .eq('status', 'active'),
   ])
 
   const ngos: NGO[] = ngosResult.data ?? []
   const posts: PostWithNGO[] = (postsResult.data as unknown as PostWithNGO[]) ?? []
   const subscribedNgoIds: string[] = (subscriptionsResult.data ?? []).map((s: { ngo_id: string }) => s.ngo_id)
+  const memberNgoIds: string[] = (membershipsResult.data ?? []).map((m: any) => m.ngo_id)
 
-  return <DiscoverClient missions={missions} ngos={ngos} posts={posts} subscribedNgoIds={subscribedNgoIds} />
+  return <DiscoverClient missions={missions} ngos={ngos} posts={posts} subscribedNgoIds={subscribedNgoIds} memberNgoIds={memberNgoIds} userId={user.id} />
 }

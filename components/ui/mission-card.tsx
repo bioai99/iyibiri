@@ -214,7 +214,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               borderRadius: 999, padding: '3px 8px', marginBottom: 8,
               fontSize: 10, fontWeight: 600, color: c.gold,
             }}>
-              &#10003; Üyesin
+              &#10003; {mission.ngos?.short_name ?? ''} üyesi
             </div>
           )}
           {/* Title */}

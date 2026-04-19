@@ -8,6 +8,7 @@ import type { NGO } from '@/lib/supabase/types'
 
 interface MembershipSuccessClientProps {
   ngo: NGO
+  isPending?: boolean
 }
 
 const EYEBROW: React.CSSProperties = {
@@ -17,10 +18,11 @@ const EYEBROW: React.CSSProperties = {
   textTransform: 'uppercase' as const,
 }
 
-export function MembershipSuccessClient({ ngo }: MembershipSuccessClientProps) {
+export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSuccessClientProps) {
   const { colors: c } = useTheme()
 
   useEffect(() => {
+    if (isPending) return
     import('canvas-confetti').then(mod => {
       mod.default({
         particleCount: 80,
@@ -29,7 +31,7 @@ export function MembershipSuccessClient({ ngo }: MembershipSuccessClientProps) {
         colors: ['#E8C268', '#B58F3D', '#F4D98A', '#D4A843'],
       })
     })
-  }, [])
+  }, [isPending])
 
   return (
     <div
@@ -153,7 +155,9 @@ export function MembershipSuccessClient({ ngo }: MembershipSuccessClientProps) {
 
         {/* Text */}
         <div style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ ...EYEBROW, color: c.gold, marginBottom: 10 }}>ÜYELİĞİN BAŞLADI</div>
+          <div style={{ ...EYEBROW, color: c.gold, marginBottom: 10 }}>
+            {isPending ? 'BAŞVURUN ALINDI' : 'ÜYELİĞİN BAŞLADI'}
+          </div>
           <h1
             style={{
               margin: 0,
@@ -165,22 +169,25 @@ export function MembershipSuccessClient({ ngo }: MembershipSuccessClientProps) {
               color: c.cream,
             }}
           >
-            {ngo.name}&apos;na{' '}
-            <span style={{ fontStyle: 'italic', color: c.gold }}>hos geldin!</span>
+            {isPending ? (
+              <>Başvurun <span style={{ fontStyle: 'italic', color: c.gold }}>inceleniyor</span></>
+            ) : (
+              <>Hoş geldin, <span style={{ fontStyle: 'italic', color: c.gold }}>{ngo.short_name ?? ngo.name} gönüllüsü!</span></>
+            )}
           </h1>
-          {ngo.membership_description && (
-            <p
-              style={{
-                margin: '16px auto 0',
-                fontSize: 14,
-                color: c.ink200,
-                lineHeight: 1.55,
-                maxWidth: 300,
-              }}
-            >
-              {ngo.membership_description}
-            </p>
-          )}
+          <p
+            style={{
+              margin: '16px auto 0',
+              fontSize: 14,
+              color: c.ink200,
+              lineHeight: 1.55,
+              maxWidth: 300,
+            }}
+          >
+            {isPending
+              ? `${ngo.short_name ?? ngo.name} başvurunu inceleyecek. Onaylandığında seni bilgilendireceğiz.`
+              : ngo.membership_description ?? ''}
+          </p>
         </div>
       </div>
 
@@ -252,26 +259,28 @@ export function MembershipSuccessClient({ ngo }: MembershipSuccessClientProps) {
             textDecoration: 'none',
           }}
         >
-          Görevleri kesfet
+          {isPending ? 'STK profiline dön' : 'Görevleri kesfet'}
         </Link>
-        <Link
-          href="/dashboard/profile"
-          style={{
-            display: 'block',
-            background: 'transparent',
-            border: `1px solid ${c.ink600}`,
-            color: c.cream,
-            padding: '12px 20px',
-            borderRadius: 14,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: 'pointer',
-            textAlign: 'center',
-            textDecoration: 'none',
-          }}
-        >
-          Profilime git
-        </Link>
+        {!isPending && (
+          <Link
+            href="/dashboard/profile"
+            style={{
+              display: 'block',
+              background: 'transparent',
+              border: `1px solid ${c.ink600}`,
+              color: c.cream,
+              padding: '12px 20px',
+              borderRadius: 14,
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+              textAlign: 'center',
+              textDecoration: 'none',
+            }}
+          >
+            Profilime git
+          </Link>
+        )}
       </div>
     </div>
   )
