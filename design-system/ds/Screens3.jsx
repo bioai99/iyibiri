@@ -112,7 +112,7 @@ function MembershipPlans() {
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:40,height:'844px',display:'flex',flexDirection:'column'}}>
       {/* Header */}
-      <div style={{padding:'58px 20px 0',display:'flex',alignItems:'center',gap:10}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',alignItems:'center',gap:10}}>
         <IconButton icon={<Icon.chevron size={16} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{flex:1}}>
           <div style={{...window.IYI.typo('eyebrow'),color:c.gold,fontFamily:_ff().ui}}>TEMA VAKFI · ÜYELİK</div>
@@ -358,7 +358,7 @@ function DonationAmount() {
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',height:'844px',display:'flex',flexDirection:'column'}}>
       {/* Header */}
-      <div style={{padding:'58px 20px 0',display:'flex',alignItems:'center',gap:10}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',alignItems:'center',gap:10}}>
         <IconButton icon={<Icon.chevron size={16} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{flex:1}}>
           <div style={{...window.IYI.typo('eyebrow'),color:c.gold,fontFamily:_ff().ui}}>KIZILAY · KIŞ YARDIMI</div>
@@ -436,7 +436,7 @@ function DonationReview() {
   const c = _Cf();
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',height:'844px',display:'flex',flexDirection:'column'}}>
-      <div style={{padding:'58px 20px 0',display:'flex',alignItems:'center',gap:10}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',alignItems:'center',gap:10}}>
         <IconButton icon={<Icon.chevron size={16} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{flex:1}}>
           <div style={{...window.IYI.typo('eyebrow'),color:c.gold,fontFamily:_ff().ui}}>BAĞIŞ ÖZETİ</div>

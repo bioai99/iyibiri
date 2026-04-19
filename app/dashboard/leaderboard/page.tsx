@@ -192,7 +192,7 @@ export default function LeaderboardPage() {
       }}
     >
       {/* Header */}
-      <div style={{ padding: '58px 20px 0' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <p
           style={{
             margin: '0 0 4px',

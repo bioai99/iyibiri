@@ -128,7 +128,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       }}
     >
       {/* ── 1. Header ── */}
-      <div style={{ padding: '58px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         {/* Left */}
         <div>
           <p style={{

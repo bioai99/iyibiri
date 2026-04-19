@@ -43,7 +43,7 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
       }}
     >
       {/* Header */}
-      <div style={{ padding: '58px 20px 0' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <h1
           style={{
             margin: 0,

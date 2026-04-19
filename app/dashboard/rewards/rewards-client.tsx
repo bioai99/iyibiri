@@ -57,7 +57,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       }}
     >
       {/* ── 1. Header ── */}
-      <div style={{ padding: '58px 20px 0' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <p
           style={{
             fontSize: 10,

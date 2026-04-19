@@ -17,7 +17,7 @@ function Dashboard() {
   return (
     <div style={{background: c.ink900, color: c.cream, minHeight:'100%', paddingBottom: 100}}>
       {/* Header */}
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
           <div style={{...window.IYI.typo('eyebrow'), color: c.ink300, fontFamily:_fs().ui}}>18 NİSAN · CUMARTESİ</div>
           <div style={{

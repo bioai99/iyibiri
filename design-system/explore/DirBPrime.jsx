@@ -25,7 +25,7 @@ function DirBPrime() {
       paddingBottom: 100,
     }}>
       {/* Header */}
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
           <div style={{fontSize:11,letterSpacing:'.14em',textTransform:'uppercase',color:C.muted,fontWeight:600}}>18 NİSAN · CUMARTESİ</div>
           <div style={{fontFamily:'"Plus Jakarta Sans", sans-serif',fontSize:20,fontWeight:600,letterSpacing:'-0.02em',marginTop:2,color:C.text}}>

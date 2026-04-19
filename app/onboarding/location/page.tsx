@@ -27,7 +27,7 @@ export default function OnboardingLocation() {
       {/* Header */}
       <div
         style={{
-          padding: '58px 20px 0',
+          padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',
           display: 'flex',
           alignItems: 'center',
           gap: 12,

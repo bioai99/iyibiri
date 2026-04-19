@@ -19,7 +19,7 @@ function Discover() {
 
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:140}}>
-      <div style={{padding:'58px 20px 0'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0'}}>
         <h1 style={{margin:0,fontFamily:__f().display,fontSize:30,fontWeight:500,letterSpacing:'-0.025em',lineHeight:1.05,color:c.cream}}>
           Bugün <span style={{fontStyle:'italic',color:c.gold}}>iyi</span> yapacağın şey?
         </h1>
@@ -130,7 +130,7 @@ function Rewards() {
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:140}}>
       {/* Header with balance */}
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
         <div>
           <div style={{...window.IYI.typo('eyebrow'),color:c.ink300,fontFamily:__f().ui}}>KARMA MARKETİ</div>
           <h1 style={{margin:'6px 0 0',fontFamily:__f().display,fontSize:28,fontWeight:500,letterSpacing:'-0.025em',color:c.cream,lineHeight:1.05}}>
@@ -434,7 +434,7 @@ function OnboardingCauses() {
 
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',display:'flex',flexDirection:'column',paddingBottom:24,height:'844px'}}>
-      <div style={{padding:'58px 20px 0',display:'flex',alignItems:'center',gap:12}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',alignItems:'center',gap:12}}>
         <IconButton icon={<Icon.chevron size={16} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{flex:1,display:'flex',gap:4}}>
           <div style={{flex:1,height:3,borderRadius:999,background:c.gold}}/>
@@ -488,7 +488,7 @@ function OnboardingLocation() {
   const [radius, setRadius] = React.useState(15);
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',display:'flex',flexDirection:'column',paddingBottom:24,height:'844px'}}>
-      <div style={{padding:'58px 20px 0',display:'flex',alignItems:'center',gap:12}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',alignItems:'center',gap:12}}>
         <IconButton icon={<Icon.chevron size={16} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{flex:1,display:'flex',gap:4}}>
           {[1,1,1,0].map((x,i)=>(<div key={i} style={{flex:1,height:3,borderRadius:999,background:x?c.gold:c.ink600}}/>))}
@@ -543,7 +543,7 @@ function OnboardingReady() {
   const c = __C();
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',display:'flex',flexDirection:'column',height:'844px'}}>
-      <div style={{padding:'58px 20px 0',display:'flex',gap:4}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',gap:4}}>
         {[1,1,1,1].map((_,i)=>(<div key={i} style={{flex:1,height:3,borderRadius:999,background:c.gold}}/>))}
       </div>
 
@@ -787,7 +787,7 @@ function Notifications() {
 
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:40}}>
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
         <div>
           <div style={{...window.IYI.typo('eyebrow'),color:c.ink300,fontFamily:__f().ui}}>BİLDİRİMLER</div>
           <h1 style={{margin:'4px 0 0',fontFamily:__f().display,fontSize:28,fontWeight:500,letterSpacing:'-0.025em',color:c.cream,lineHeight:1.05}}>
@@ -850,7 +850,7 @@ function Streak() {
 
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:40}}>
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <IconButton icon={<Icon.chevron size={18} style={{transform:'rotate(180deg)'}}/>}/>
         <div style={{...window.IYI.typo('eyebrow'),color:c.ink300,fontFamily:__f().ui}}>SERİ</div>
         <IconButton icon={<Icon.share size={14}/>}/>
@@ -934,7 +934,7 @@ function Leaderboard() {
 
   return (
     <div style={{background:c.ink900,color:c.cream,minHeight:'100%',paddingBottom:140}}>
-      <div style={{padding:'58px 20px 0'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0'}}>
         <div style={{...window.IYI.typo('eyebrow'),color:c.gold,fontFamily:__f().ui,marginBottom:4}}>SIRALAMA</div>
         <h1 style={{margin:'4px 0 0',fontFamily:__f().display,fontSize:28,fontWeight:500,letterSpacing:'-0.025em',color:c.cream,lineHeight:1.1}}>
           Şehrin en <span style={{fontStyle:'italic',color:c.gold}}>iyileri</span>

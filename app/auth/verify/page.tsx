@@ -131,7 +131,7 @@ function VerifyContent() {
       <style>{`@keyframes blink { 50% { opacity: 0; } }`}</style>
 
       {/* Header */}
-      <div style={{ padding: '58px 20px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
         <Link href="/auth/signup" style={{ textDecoration: 'none' }}>
           <div style={{ width: 36, height: 36, borderRadius: '50%', background: c.ink800, border: `1px solid ${c.ink600}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.cream, cursor: 'pointer' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

@@ -87,7 +87,7 @@ export function EditProfileClient({
   return (
     <div style={{ background: c.ink900, minHeight: '100vh', color: c.cream }}>
       {/* Header */}
-      <div style={{ padding: '58px 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
         <Link href="/dashboard/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>

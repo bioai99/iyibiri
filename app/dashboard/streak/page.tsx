@@ -33,7 +33,7 @@ export default function StreakPage() {
       {/* Header */}
       <div
         style={{
-          padding: '58px 20px 0',
+          padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',

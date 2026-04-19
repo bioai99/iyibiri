@@ -32,7 +32,7 @@ export default function OnboardingCauses() {
       background: c.ink900, overflow: 'hidden',
     }}>
       {/* Header */}
-      <div style={{ padding: '58px 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
         <Link href="/onboarding/welcome" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>

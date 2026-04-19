@@ -47,7 +47,7 @@ export default function DonationAmountPage({ params }: { params: { id: string } 
           display: 'flex',
           alignItems: 'center',
           gap: 14,
-          padding: '58px 16px 20px',
+          padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 16px 20px',
           flexShrink: 0,
         }}
       >

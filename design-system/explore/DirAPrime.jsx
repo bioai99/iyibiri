@@ -12,7 +12,7 @@ function DirAPrime() {
       paddingBottom: 100,
     }}>
       {/* Header — sade, mobil */}
-      <div style={{padding:'58px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{padding:'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
           <div style={{fontSize:11,letterSpacing:'.14em',textTransform:'uppercase',color:'#8B8578',fontWeight:600}}>Cumartesi · 18 Nisan</div>
           <div style={{fontFamily:'"Fraunces", serif',fontSize:22,fontWeight:500,letterSpacing:'-0.02em',marginTop:2,color:'#1A1A1A'}}>
