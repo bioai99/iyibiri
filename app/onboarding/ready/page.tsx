@@ -4,32 +4,28 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/lib/theme'
 import { KarmaToken } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
 
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
-
 export default function OnboardingReady() {
   const { colors: c } = useTheme()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [lottieData, setLottieData] = useState<any>(null)
 
   useEffect(() => {
     // Konfeti
     import('canvas-confetti').then(mod => {
       const confetti = mod.default
       setTimeout(() => {
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#E8C268', '#F4EEDF', '#C8553D'] })
-      }, 600)
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 }, colors: ['#E8C268', '#F4EEDF', '#C8553D', '#6B8E4E'] })
+      }, 800)
+      setTimeout(() => {
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.3 }, colors: ['#E8C268', '#F4EEDF'] })
+      }, 1200)
+      setTimeout(() => {
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.55, x: 0.7 }, colors: ['#E8C268', '#F4EEDF'] })
+      }, 1400)
     }).catch(() => {})
-
-    // Lottie
-    fetch('/animations/party.json')
-      .then(r => r.json())
-      .then(setLottieData)
-      .catch(() => {})
 
     // Auth check + save onboarding data
     async function checkAndSave() {
@@ -74,10 +70,10 @@ export default function OnboardingReady() {
 
       {/* Radial glow */}
       <div style={{
-        position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)',
-        width: 400, height: 400,
-        background: `radial-gradient(circle, rgba(232,194,104,.2), transparent 60%)`,
-        filter: 'blur(30px)', pointerEvents: 'none',
+        position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 500, height: 500,
+        background: `radial-gradient(circle, rgba(232,194,104,.22), transparent 55%)`,
+        filter: 'blur(40px)', pointerEvents: 'none',
       }} />
 
       {/* Content */}
@@ -86,24 +82,62 @@ export default function OnboardingReady() {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', textAlign: 'center',
       }}>
-        {/* Lottie or KarmaToken */}
-        <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-          style={{ marginBottom: 24, position: 'relative' }}
-        >
-          {lottieData ? (
-            <Lottie animationData={lottieData} loop style={{ width: 160, height: 160 }} />
-          ) : (
-            <KarmaToken size={100} />
-          )}
-        </motion.div>
+        {/* KarmaToken with celebration rings */}
+        <div style={{ position: 'relative', width: 200, height: 200, marginBottom: 20 }}>
+          {/* Pulsing rings */}
+          {[0, 1, 2].map(i => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0.5, opacity: 0.4 }}
+              animate={{ scale: 1.5 + i * 0.3, opacity: 0 }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: i * 0.6,
+                ease: 'easeOut',
+              }}
+              style={{
+                position: 'absolute', inset: 0,
+                border: '1px solid #E8C268',
+                borderRadius: '50%',
+              }}
+            />
+          ))}
+
+          {/* Main token */}
+          <motion.div
+            initial={{ scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+            style={{
+              position: 'absolute', inset: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <KarmaToken size={110} />
+          </motion.div>
+
+          {/* +100 badge */}
+          <motion.div
+            initial={{ scale: 0, y: 10 }}
+            animate={{ scale: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2, ease: [0.23, 1, 0.32, 1] }}
+            style={{
+              position: 'absolute', bottom: 10, right: 10,
+              background: c.gold, color: '#241E18',
+              fontFamily: 'Fraunces, serif', fontWeight: 700, fontSize: 16,
+              padding: '6px 12px', borderRadius: 12,
+              boxShadow: '0 4px 12px rgba(232,194,104,.4)',
+            }}
+          >
+            +100
+          </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '6px 14px', background: c.goldSoft,
@@ -118,10 +152,10 @@ export default function OnboardingReady() {
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
           style={{
-            fontFamily: displayFont, fontSize: 42, fontWeight: 400,
-            letterSpacing: '-0.032em', lineHeight: 1, color: c.cream, margin: 0,
+            fontFamily: displayFont, fontSize: 40, fontWeight: 400,
+            letterSpacing: '-0.032em', lineHeight: 1.05, color: c.cream, margin: 0,
           }}
         >
           İlk <em style={{ fontStyle: 'italic', color: c.gold }}>100 Karma</em>
@@ -131,10 +165,10 @@ export default function OnboardingReady() {
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          transition={{ delay: 1, duration: 0.5 }}
           style={{
             fontFamily: uiFont, fontSize: 15, color: c.ink200,
-            maxWidth: 300, marginTop: 18, lineHeight: 1.6,
+            maxWidth: 300, marginTop: 16, lineHeight: 1.6,
           }}
         >
           {isLoggedIn
@@ -147,8 +181,8 @@ export default function OnboardingReady() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        style={{ padding: '0 16px 36px' }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+        style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 20px)' }}
       >
         <Link href={nextHref} style={{ textDecoration: 'none' }}>
           <button style={{
