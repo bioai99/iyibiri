@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Bell, Calendar, Sparkles, UserPen } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
+import { EmptyState } from '@/components/ui/empty-state'
 import {
   HeroCard,
   QuickAction,
@@ -294,9 +295,11 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       {/* ── 6. Mission cards (vertical) ── */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {featuredMissions.length === 0 ? (
-          <p style={{ color: c.ink500, fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
-            Harikasın! Tüm öne çıkan görevleri bitirdin.
-          </p>
+          <EmptyState
+            title="Harikasın!"
+            description="Tüm öne çıkan görevleri bitirdin. Yenileri yakında gelecek."
+            action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
+          />
         ) : (
           featuredMissions.map(mission => (
             <MissionCard
