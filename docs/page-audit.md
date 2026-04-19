@@ -56,7 +56,7 @@
 | 14 | Missions List | `/dashboard/missions` | 🟢 | 7/10 | Gerçek | Filter + liste |
 | 15 | Mission Detail | `/dashboard/missions/[id]` | 🟢 | 8/10 | Gerçek | Katıl + state management |
 | 16 | Mission Complete | `/dashboard/missions/[id]/complete` | 🟢 | 7/10 | Gerçek | QR/kod doğrulama + karma |
-| 17 | My Missions | `/dashboard/my-missions` | 🔴 | 5/10 | **MOCK** | Legacy, mock-data import, eski tema |
+| 17 | My Missions | `/dashboard/my-missions` | 🟢 | 7/10 | Gerçek | Aktif/Tamamlanan tab, gerçek user_missions |
 
 ### DASHBOARD — İYİLİK ÖNCÜLERİ
 
@@ -89,7 +89,7 @@
 | 27 | Profile | `/dashboard/profile` | 🟢 | 7/10 | Gerçek | Karma, üyelikler, timeline boş state |
 | 28 | Edit Profile | `/dashboard/profile/edit` | 🟢 | 8/10 | Gerçek | Form + kaydet |
 | 29 | Badges | `/dashboard/profile/badges` | 🔴 | 6/10 | **MOCK** | Eski tema, hardcoded |
-| 30 | Interests | `/dashboard/profile/interests` | ⚫ | 5/10 | **KIRIK** | Kaydet butonu ölü |
+| 30 | Interests | `/dashboard/profile/interests` | 🟢 | 8/10 | Gerçek | Çalışan toggle + kaydet, yeni tema |
 
 ### DASHBOARD — ÖDÜLLER
 
@@ -125,10 +125,10 @@
 
 ## Aksiyon Önerileri (Öncelik Sırasıyla)
 
-### Öncelik 1: Kırık/Legacy Temizliği
-- [ ] `/dashboard/profile/interests` — ya düzelt ya kaldır (kaydet butonu ölü)
-- [ ] `/dashboard/my-missions` — legacy mock kodu kaldır, gerçek user_missions'a bağla
-- [ ] `/onboarding/quiz` — kullanılıyorsa yeni temaya taşı, yoksa kaldır
+### Öncelik 1: Kırık/Legacy Temizliği ✅
+- [x] `/dashboard/profile/interests` — tamamen yeniden yazıldı, gerçek DB kayıt (2026-04-19)
+- [x] `/dashboard/my-missions` — mock kaldırıldı, gerçek user_missions'a bağlandı (2026-04-19)
+- [x] `/onboarding/quiz` — kullanılmıyordu, kaldırıldı (2026-04-19)
 
 ### Öncelik 2: Eski Tema Güncellemesi
 - [ ] `/dashboard/ngos` list — yeni tema'ya taşı

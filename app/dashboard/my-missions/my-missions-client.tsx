@@ -1,46 +1,91 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Clock, Zap, ChevronRight, CheckCircle2, Target } from "lucide-react";
-import { MISSIONS, NGO_BASE_MISSIONS, CATEGORY_COLORS } from "@/lib/mock-data";
+import { useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { useTheme } from '@/lib/theme'
+import { IconButtonDS } from '@/components/ui/ds'
+import { MissionCard } from '@/components/ui/mission-card'
+import { EmptyState } from '@/components/ui/empty-state'
+import type { MissionWithNGO } from '@/lib/supabase/types'
 
-const ALL_MISSIONS = [...MISSIONS, ...NGO_BASE_MISSIONS];
+interface Props {
+  activeMissions: MissionWithNGO[]
+  completedMissions: MissionWithNGO[]
+  savedMissionIds: string[]
+  memberNgoIds: string[]
+  userId: string
+}
 
-export default function MyMissionsClient() {
-  const [activeIds, setActiveIds]       = useState<string[]>([]);
-  const [completedIds, setCompletedIds] = useState<string[]>([]);
-  const [tab, setTab]                   = useState<"active" | "completed">("active");
+export default function MyMissionsClient({
+  activeMissions,
+  completedMissions,
+  savedMissionIds,
+  memberNgoIds,
+  userId,
+}: Props) {
+  const { colors: c } = useTheme()
+  const [tab, setTab] = useState<'active' | 'completed'>('active')
 
-  useEffect(() => {
-    setActiveIds(JSON.parse(localStorage.getItem("iyibiri_active_missions") || "[]"));
-    setCompletedIds(JSON.parse(localStorage.getItem("iyibiri_completed_missions") || "[]"));
-  }, []);
+  const displayFont = 'var(--font-display), Fraunces, serif'
 
-  const activeMissions    = ALL_MISSIONS.filter((m) => activeIds.includes(m.id));
-  const completedMissions = ALL_MISSIONS.filter((m) => completedIds.includes(m.id));
+  const tabs: { key: 'active' | 'completed'; label: string; count?: number }[] = [
+    { key: 'active', label: 'Aktif', count: activeMissions.length || undefined },
+    { key: 'completed', label: 'Tamamlanan', count: completedMissions.length || undefined },
+  ]
 
   return (
-    <div className="flex flex-col min-h-screen bg-background pb-24">
+    <div style={{
+      display: 'flex', flexDirection: 'column', minHeight: '100dvh',
+      background: c.ink900, paddingBottom: 96,
+    }}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border px-5 pt-12 pb-0">
-        <h1 className="text-xl font-headline font-bold text-foreground mb-3">Benimkiler</h1>
-        {/* Tabs */}
-        <div className="flex">
-          {(["active", "completed"] as const).map((t) => (
+      <header style={{
+        position: 'sticky', top: 0, zIndex: 40,
+        background: c.ink900,
+        borderBottom: `1px solid ${c.ink600}`,
+        padding: 'calc(env(safe-area-inset-top, 0px) + 12px) 16px 0',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+          <Link href="/dashboard" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          </Link>
+          <h1 style={{
+            fontFamily: displayFont, fontSize: 20, fontWeight: 600,
+            color: c.cream, margin: 0, flex: 1,
+            letterSpacing: '-0.01em',
+          }}>
+            Görevlerim
+          </h1>
+        </div>
+
+        {/* Tab toggle */}
+        <div style={{ display: 'flex' }}>
+          {tabs.map(t => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 pb-2.5 text-sm font-semibold transition-colors border-b-2 ${
-                tab === t
-                  ? "text-foreground border-primary"
-                  : "text-muted-foreground border-transparent hover:text-foreground"
-              }`}
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              style={{
+                flex: 1, padding: '0 0 10px', cursor: 'pointer',
+                background: 'none', border: 'none',
+                borderBottom: `2px solid ${tab === t.key ? c.gold : 'transparent'}`,
+                fontSize: 14, fontWeight: 600,
+                color: tab === t.key ? c.cream : c.ink400,
+                transition: 'all 200ms ease',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}
             >
-              {t === "active" ? `Aktif Görevler` : "Tamamlananlar"}
-              {t === "active" && activeMissions.length > 0 && (
-                <span className="ml-1.5 text-[10px] bg-primary text-primary-foreground rounded-full px-1.5 py-0.5">
-                  {activeMissions.length}
+              {t.label}
+              {t.count != null && t.count > 0 && (
+                <span style={{
+                  fontSize: 10, fontWeight: 700,
+                  background: tab === t.key ? c.gold : c.ink600,
+                  color: tab === t.key ? c.ink : c.ink300,
+                  borderRadius: 999,
+                  padding: '2px 7px',
+                  lineHeight: '14px',
+                }}>
+                  {t.count}
                 </span>
               )}
             </button>
@@ -48,82 +93,57 @@ export default function MyMissionsClient() {
         </div>
       </header>
 
-      <div className="px-5 py-5">
-        {tab === "active" ? (
+      {/* Content */}
+      <div style={{ padding: '16px 16px 0' }}>
+        {tab === 'active' ? (
           activeMissions.length === 0 ? (
-            /* Empty state */
-            <div className="flex flex-col items-center justify-center py-20 gap-5">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-                <Target size={36} className="text-primary" strokeWidth={1.5} />
-              </div>
-              <div className="text-center">
-                <p className="font-headline font-bold text-lg text-foreground">Henüz Görev Almadın</p>
-                <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-                  Gönüllü olmak için bir görev seç ve etki yaratmaya başla!
-                </p>
-              </div>
-              <div className="w-full bg-card border border-border rounded-2xl p-4">
-                <div className="flex items-center gap-3">
-                  <Zap size={18} className="text-primary fill-primary/20 shrink-0" />
-                  <p className="text-sm font-medium text-foreground">Her görev Karma kazandırır</p>
-                  <ChevronRight size={14} className="text-muted-foreground ml-auto shrink-0" />
-                </div>
-              </div>
-              <Link
-                href="/dashboard/missions"
-                className="w-full bg-primary text-primary-foreground font-bold text-sm py-3.5 rounded-2xl text-center block"
-                style={{ boxShadow: "0 4px 20px rgba(242,183,5,0.35)" }}
-              >
-                Görevleri Keşfet
-              </Link>
-              <p className="text-xs text-muted-foreground">Sana özel {MISSIONS.length} görev seni bekliyor</p>
-            </div>
+            <EmptyState
+              title="Henüz aktif görev yok"
+              description="Gönüllü olmak için bir görev seç ve etki yaratmaya başla!"
+              action={{ label: 'Görevleri Keşfet', href: '/dashboard/missions' }}
+            />
           ) : (
-            <div className="flex flex-col gap-3">
-              {activeMissions.map((m) => (
-                <Link key={m.id} href={`/dashboard/missions/${m.id}/complete`}>
-                  <div className="bg-card rounded-2xl border border-border p-4 flex items-center gap-3 active:scale-[0.99] transition-transform">
-                    <div className="flex-1 flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-trust">{m.ngo}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full ${CATEGORY_COLORS[m.category]}`}>
-                          {m.category}
-                        </span>
-                      </div>
-                      <p className="text-sm font-bold text-foreground leading-snug">{m.title}</p>
-                      <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Clock size={11} /> {m.duration}
-                        </span>
-                        <span className="flex items-center gap-1 text-xs font-semibold text-primary">
-                          <Zap size={11} className="fill-primary" /> +{m.karma} Karma
-                        </span>
-                      </div>
-                    </div>
-                    <div className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-xl shrink-0">
-                      Tamamla →
-                    </div>
-                  </div>
-                </Link>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {activeMissions.map(mission => (
+                <MissionCard
+                  key={mission.id}
+                  mission={mission}
+                  isSaved={savedMissionIds.includes(mission.id)}
+                  isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
+                  userId={userId}
+                />
               ))}
             </div>
           )
         ) : (
           completedMissions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <CheckCircle2 size={48} className="text-muted-foreground/30" strokeWidth={1.2} />
-              <p className="text-sm font-semibold text-foreground">Henüz tamamlanan görev yok</p>
-              <p className="text-xs text-muted-foreground text-center">Aktif görevlerini tamamlayarak buraya taşı.</p>
-            </div>
+            <EmptyState
+              title="Henüz tamamlanan görev yok"
+              description="Aktif görevlerini tamamlayarak buraya taşı."
+            />
           ) : (
-            <div className="flex flex-col gap-3">
-              {completedMissions.map((m) => (
-                <div key={m.id} className="bg-card rounded-2xl border border-border p-4 flex items-center gap-3 opacity-75">
-                  <CheckCircle2 size={20} className="text-impact shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground truncate">{m.title}</p>
-                    <span className="flex items-center gap-1 text-xs font-semibold text-impact">
-                      <Zap size={11} /> +{m.karma} Karma kazanıldı
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {completedMissions.map(mission => (
+                <div key={mission.id} style={{ position: 'relative' }}>
+                  <MissionCard
+                    mission={mission}
+                    isSaved={savedMissionIds.includes(mission.id)}
+                    isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
+                    userId={userId}
+                  />
+                  {/* Completed badge overlay */}
+                  <div style={{
+                    position: 'absolute', top: 10, right: 52,
+                    background: c.success,
+                    borderRadius: 999,
+                    padding: '4px 10px',
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
+                    zIndex: 2,
+                  }}>
+                    <CheckCircle2 size={12} color="#fff" strokeWidth={2.5} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>
+                      Tamamlandı
                     </span>
                   </div>
                 </div>
@@ -133,5 +153,5 @@ export default function MyMissionsClient() {
         )}
       </div>
     </div>
-  );
+  )
 }
