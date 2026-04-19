@@ -33,7 +33,7 @@ export default function AppStartPage() {
       background: '#24201B', minHeight: '100vh',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
-      <BrandLogo size={70} animate showWordmark />
+      <BrandLogo size={140} animate idle showWordmark />
     </div>
   )
 }
