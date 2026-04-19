@@ -10,7 +10,7 @@ const config: CapacitorConfig = {
   },
   ios: {
     scheme: 'iyibiri',
-    contentInset: 'automatic',
+    contentInset: 'never',
   },
   android: {
     allowMixedContent: false,
@@ -24,8 +24,6 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'LIGHT',
-      backgroundColor: '#24201B',
-      overlaysWebView: true,
     },
   },
 };

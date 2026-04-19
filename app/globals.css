@@ -51,11 +51,13 @@
   }
   html {
     -webkit-text-size-adjust: 100%;
+    background-color: #24201B;
   }
   body {
     @apply bg-background text-foreground;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
+    overscroll-behavior: none;
+    background-color: #24201B;
   }
   button, a, [role="button"] {
     -webkit-tap-highlight-color: transparent;
