@@ -16,17 +16,19 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [profile, missions, userMissions, ngos, savedMissionsResult] = await Promise.all([
+  const [profile, missions, userMissions, ngos, savedMissionsResult, membershipsResult] = await Promise.all([
     getProfile(user.id),
     getAllMissions(),
     getUserMissions(user.id),
     getNGOs(),
     supabase.from('user_saved_missions').select('mission_id').eq('user_id', user.id),
+    supabase.from('ngo_memberships').select('ngo_id').eq('user_id', user.id).eq('status', 'active'),
   ])
 
   if (!profile) redirect('/onboarding')
 
   const savedMissionIds = (savedMissionsResult.data ?? []).map(s => s.mission_id)
+  const memberNgoIds = (membershipsResult.data ?? []).map(m => m.ngo_id)
 
   return (
     <DashboardClient
@@ -35,6 +37,7 @@ export default async function DashboardPage() {
       userMissions={userMissions}
       ngos={ngos}
       savedMissionIds={savedMissionIds}
+      memberNgoIds={memberNgoIds}
     />
   )
 }

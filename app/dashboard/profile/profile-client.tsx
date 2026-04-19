@@ -8,10 +8,23 @@ import { logoutAction } from './actions'
 import type { Profile } from '@/lib/supabase/types'
 import { useTheme } from '@/lib/theme'
 
+interface MembershipWithNGO {
+  id: string
+  ngo_id: string
+  ngos: {
+    id: string
+    name: string
+    short_name: string | null
+    logo_url: string | null
+    color_accent: string | null
+  } | null
+}
+
 interface ProfileClientProps {
   profile: Profile
   completedCount: number
   karma: number
+  memberships?: MembershipWithNGO[]
 }
 
 const tierNames: Record<number, string> = {
@@ -45,7 +58,7 @@ const timeline = [
   { title: 'Okuma Desteği', ngo: 'ÇYDD', karma: 250, date: '2 hafta önce' },
 ]
 
-export function ProfileClient({ profile, completedCount, karma }: ProfileClientProps) {
+export function ProfileClient({ profile, completedCount, karma, memberships = [] }: ProfileClientProps) {
   const { colors: c } = useTheme()
   const tier = getTierFromKarma(karma)
   const tierName = tierNames[tier] ?? tierNames[1]
@@ -353,6 +366,51 @@ export function ProfileClient({ profile, completedCount, karma }: ProfileClientP
           </div>
         </Link>
       </div>
+
+      {/* Üyeliklerim */}
+      {memberships.length > 0 && (
+        <div style={{ padding: '24px 20px 0' }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+              fontSize: 20,
+              fontWeight: 500,
+              color: c.cream,
+              margin: '0 0 12px',
+            }}
+          >
+            Üyeliklerim
+          </h2>
+          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+            {memberships.map(m => (
+              <Link key={m.id} href={`/dashboard/ngos/${m.ngo_id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                <div style={{
+                  width: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                }}>
+                  <div style={{
+                    width: 56, height: 56, borderRadius: 16,
+                    background: 'white', border: `2px solid ${c.goldLine}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}>
+                    {m.ngos?.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.ngos.logo_url} alt={m.ngos.name} style={{ width: '65%', height: '65%', objectFit: 'contain' }} />
+                    ) : (
+                      <span style={{ fontSize: 18, fontWeight: 700, color: m.ngos?.color_accent ?? c.gold }}>
+                        {(m.ngos?.short_name ?? '?')[0]}
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: 11, color: c.ink300, textAlign: 'center', lineHeight: 1.2 }}>
+                    {m.ngos?.short_name ?? m.ngos?.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Leaderboard link */}
       <div style={{ padding: '8px 16px 0' }}>

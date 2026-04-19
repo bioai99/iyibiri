@@ -81,6 +81,7 @@ interface Props {
   userMissions: UserMission[]
   ngos: NGO[]
   savedMissionIds?: string[]
+  memberNgoIds?: string[]
 }
 
 // ── Filter chips ───────────────────────────────────────────────
@@ -89,7 +90,7 @@ const FILTERS = ['Tümü', 'Yakınımda', 'Bu hafta sonu', 'Online', 'Kısa', 'U
 
 // ── Component ─────────────────────────────────────────────────
 
-export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [] }: Props) {
+export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [] }: Props) {
   const { colors: c } = useTheme()
 
   // Save pending onboarding data from localStorage (app flow: onboarding → auth → dashboard)
@@ -310,6 +311,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
               key={mission.id}
               mission={mission}
               isSaved={savedMissionIds.includes(mission.id)}
+              isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
               userId={profile.id}
             />
           ))

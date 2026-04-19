@@ -6,11 +6,13 @@ import { ArrowLeft, Share2, Heart, ChevronRight, Leaf } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
-import type { NGO, MissionWithNGO } from '@/lib/supabase/types'
+import type { NGO, MissionWithNGO, NgoMembership } from '@/lib/supabase/types'
 
 interface NGOProfileClientProps {
   ngo: NGO
   missions: MissionWithNGO[]
+  userId?: string
+  membership?: NgoMembership | null
 }
 
 const EYEBROW: React.CSSProperties = {
@@ -32,7 +34,7 @@ const difficultyColor: Record<string, string> = {
   hard: '#B84E3B',
 }
 
-export function NGOProfileClient({ ngo, missions }: NGOProfileClientProps) {
+export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfileClientProps) {
   const { colors: c } = useTheme()
   const router = useRouter()
 
@@ -74,9 +76,29 @@ export function NGOProfileClient({ ngo, missions }: NGOProfileClientProps) {
             onClick={() => router.back()}
             theme="dark"
           />
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <IconButtonDS icon={<Share2 size={16} />} theme="dark" />
             <IconButtonDS icon={<Heart size={16} />} theme="dark" />
+            {membership?.status === 'active' ? (
+              <div style={{
+                height: 40, padding: '0 16px', borderRadius: 12,
+                background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+                display: 'flex', alignItems: 'center', gap: 6,
+                fontSize: 13, fontWeight: 600, color: c.gold,
+              }}>
+                &#10003; Üyesin
+              </div>
+            ) : (
+              <Link href={`/dashboard/ngos/${ngo.id}/membership`}>
+                <button style={{
+                  height: 40, padding: '0 20px', borderRadius: 12,
+                  background: c.gold, color: '#241E18', border: 'none',
+                  fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                }}>
+                  Üye Ol
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -245,7 +267,7 @@ export function NGOProfileClient({ ngo, missions }: NGOProfileClientProps) {
             <span style={{ fontStyle: 'italic', color: c.gold }}>her ay Karma</span>.
           </h3>
           <p style={{ margin: '8px 0 14px', fontSize: 13, color: c.ink300, lineHeight: 1.55 }}>
-            {ngo.short_name ?? ngo.name} üyeliğinle her ay otomatik katkı yap. Her ay için ekstra Karma kazan.
+            {ngo.membership_description ?? `${ngo.short_name ?? ngo.name} üyeliğinle her ay otomatik katkı yap. Her ay için ekstra Karma kazan.`}
           </p>
           <Link
             href={`/dashboard/ngos/${ngo.id}/membership`}

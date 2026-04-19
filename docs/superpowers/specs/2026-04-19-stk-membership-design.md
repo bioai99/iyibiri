@@ -156,7 +156,18 @@ Profilde yeni bölüm:
 
 ---
 
-## 8. Kapsam Dışı (MVP)
+## 8. Yasal Dokümanlar (Not)
+
+Üyelik akışında ele alınması gereken yasal konular:
+- **KVKK bilgilendirmesi**: Kullanıcı bilgileri STK ile paylaşılırken açık rıza
+- **Üyelik sözleşmesi**: STK'nın kendi üyelik sözleşmesi varsa form adımında gösterilmeli (checkbox ile onay)
+- **Bilgi paylaşım kapsamı**: Hangi bilgilerin STK ile paylaşıldığı kullanıcıya açıkça belirtilmeli
+
+MVP'de basit bir onay metni yeterli. STK bazında özel sözleşmeler ileride `ngos` tablosuna `membership_terms_url` kolonu eklenerek yönetilebilir.
+
+---
+
+## 9. Kapsam Dışı (MVP)
 
 - Ödeme entegrasyonu
 - STK admin paneli

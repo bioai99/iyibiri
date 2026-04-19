@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import type { NGO, MissionWithNGO } from '@/lib/supabase/types'
+import type { NGO, MissionWithNGO, NgoMembership } from '@/lib/supabase/types'
 import { NGOProfileClient } from './ngo-profile-client'
 
 async function getNGOWithMissions(id: string): Promise<{ ngo: NGO; missions: MissionWithNGO[] } | null> {
@@ -28,5 +28,12 @@ export default async function NGODetailPage({ params }: { params: { id: string }
 
   const { ngo, missions } = result
 
-  return <NGOProfileClient ngo={ngo} missions={missions} />
+  const { data: membership } = await supabase
+    .from('ngo_memberships')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('ngo_id', params.id)
+    .maybeSingle()
+
+  return <NGOProfileClient ngo={ngo} missions={missions} userId={user.id} membership={membership as NgoMembership | null} />
 }

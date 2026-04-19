@@ -13,6 +13,7 @@ interface MissionCardProps {
   onClick?: () => void
   isSaved?: boolean
   userId?: string
+  isMember?: boolean
 }
 
 const domainGradient: Record<string, string> = {
@@ -30,7 +31,7 @@ const domainEmoji: Record<string, string> = {
   financial: '🪙', animals: '🐾', culture: '🎭', default: '✦',
 }
 
-export function MissionCard({ mission, onClick, isSaved = false, userId }: MissionCardProps) {
+export function MissionCard({ mission, onClick, isSaved = false, userId, isMember = false }: MissionCardProps) {
   const { colors: c } = useTheme()
   const [saved, setSaved] = useState(isSaved)
   const [pressed, setPressed] = useState(false)
@@ -205,6 +206,17 @@ export function MissionCard({ mission, onClick, isSaved = false, userId }: Missi
 
         {/* ── Body ── */}
         <div style={{ padding: '16px 18px 16px' }}>
+          {/* Member badge */}
+          {isMember && (
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              background: c.goldSoft, border: `1px solid ${c.goldLine}`,
+              borderRadius: 999, padding: '3px 8px', marginBottom: 8,
+              fontSize: 10, fontWeight: 600, color: c.gold,
+            }}>
+              &#10003; Üyesin
+            </div>
+          )}
           {/* Title */}
           <h2 style={{
             margin: 0,

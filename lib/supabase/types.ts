@@ -78,6 +78,11 @@ export interface Database {
           member_count: number
           volunteer_count: number
           founded: number | null
+          membership_enabled: boolean
+          membership_form_fields: any
+          membership_approval_required: boolean
+          membership_description: string | null
+          membership_terms_url: string | null
         }
         Insert: {
           id?: string
@@ -93,6 +98,11 @@ export interface Database {
           member_count?: number
           volunteer_count?: number
           founded?: number | null
+          membership_enabled?: boolean
+          membership_form_fields?: any
+          membership_approval_required?: boolean
+          membership_description?: string | null
+          membership_terms_url?: string | null
         }
         Update: {
           id?: string
@@ -108,6 +118,11 @@ export interface Database {
           member_count?: number
           volunteer_count?: number
           founded?: number | null
+          membership_enabled?: boolean
+          membership_form_fields?: any
+          membership_approval_required?: boolean
+          membership_description?: string | null
+          membership_terms_url?: string | null
         }
         Relationships: []
       }
@@ -423,6 +438,39 @@ export interface Database {
         Update: { id?: string; user_id?: string; post_id?: string; created_at?: string }
         Relationships: []
       }
+      ngo_memberships: {
+        Row: {
+          id: string
+          user_id: string
+          ngo_id: string
+          status: 'pending' | 'active' | 'rejected' | 'expired' | 'cancelled'
+          tier: 'free' | 'basic' | 'premium'
+          form_data: any
+          joined_at: string
+          expires_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          ngo_id: string
+          status?: 'pending' | 'active' | 'rejected' | 'expired' | 'cancelled'
+          tier?: 'free' | 'basic' | 'premium'
+          form_data?: any
+          joined_at?: string
+          expires_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          ngo_id?: string
+          status?: 'pending' | 'active' | 'rejected' | 'expired' | 'cancelled'
+          tier?: 'free' | 'basic' | 'premium'
+          form_data?: any
+          joined_at?: string
+          expires_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -442,6 +490,7 @@ export type KarmaTransaction = Database['public']['Tables']['karma_transactions'
 export type RewardRedemption = Database['public']['Tables']['reward_redemptions']['Row']
 export type UserSavedMission = Database['public']['Tables']['user_saved_missions']['Row']
 export type UserNgoSubscription = Database['public']['Tables']['user_ngo_subscriptions']['Row']
+export type NgoMembership = Database['public']['Tables']['ngo_memberships']['Row']
 
 // Extended types for joined queries
 export type NGOBrief = {
