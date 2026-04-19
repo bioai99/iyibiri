@@ -52,14 +52,16 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
         boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08)' : 'none',
       }}
     >
-      {post.cover_image_url && (
-        <img
-          src={post.cover_image_url}
-          alt={post.title}
-          style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block' }}
-        />
-      )}
-      <div style={{ padding: 14 }}>
+      <div style={{ height: 160, overflow: 'hidden' }}>
+        {post.cover_image_url && (
+          <img
+            src={post.cover_image_url}
+            alt={post.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        )}
+      </div>
+      <div style={{ padding: 14, height: 150, display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
           {post.ngos?.logo_url ? (
             <div
