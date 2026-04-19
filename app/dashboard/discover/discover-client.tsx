@@ -2,23 +2,18 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, MapPin, Maximize2, Leaf, BookOpen, Heart } from 'lucide-react'
+import { Search, Leaf, BookOpen, Heart, Clock } from 'lucide-react'
 import { PawPrint } from 'lucide-react'
 import { MissionCard } from '@/components/ui/mission-card'
-import type { MissionWithNGO, NGO } from '@/lib/supabase/types'
+import type { MissionWithNGO, NGO, PostWithNGO } from '@/lib/supabase/types'
 import { useTheme } from '@/lib/theme'
 
 interface DiscoverClientProps {
   missions: MissionWithNGO[]
   ngos: NGO[]
+  posts: PostWithNGO[]
+  subscribedNgoIds: string[]
 }
-
-const pins = [
-  { x: 28, y: 45, count: 8, active: true },
-  { x: 56, y: 62, count: 3, active: false },
-  { x: 72, y: 38, count: 12, active: false },
-  { x: 42, y: 78, count: 5, active: false },
-]
 
 const categories = [
   { name: 'Çevre', count: 18, color: '#C4CBAC', bg: 'rgba(196,203,172,0.12)', icon: Leaf },
@@ -27,7 +22,144 @@ const categories = [
   { name: 'Sağlık', count: 9, color: '#E8B4A8', bg: 'rgba(232,180,168,0.12)', icon: Heart },
 ]
 
-export function DiscoverClient({ missions }: DiscoverClientProps) {
+const categoryBadgeColors: Record<string, { bg: string; text: string }> = {
+  article: { bg: 'rgba(196,203,172,0.18)', text: '#C4CBAC' },
+  update: { bg: 'rgba(234,221,184,0.18)', text: '#EADDB8' },
+  story: { bg: 'rgba(233,207,194,0.18)', text: '#E9CFC2' },
+  tip: { bg: 'rgba(232,180,168,0.18)', text: '#E8B4A8' },
+}
+
+const categoryLabels: Record<string, string> = {
+  article: 'Makale',
+  update: 'Güncelleme',
+  story: 'Hikaye',
+  tip: 'İpucu',
+}
+
+function PostCard({ post, isSubscribed }: { post: PostWithNGO; isSubscribed: boolean }) {
+  const badge = post.category ? categoryBadgeColors[post.category] : null
+  const label = post.category ? categoryLabels[post.category] : null
+
+  return (
+    <div
+      style={{
+        width: 280,
+        flexShrink: 0,
+        background: '#2E2923',
+        borderRadius: 16,
+        border: isSubscribed ? '1.5px solid rgba(212,175,55,0.45)' : '1px solid #3F3830',
+        overflow: 'hidden',
+        scrollSnapAlign: 'start',
+        boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08)' : 'none',
+      }}
+    >
+      {post.cover_image_url && (
+        <img
+          src={post.cover_image_url}
+          alt={post.title}
+          style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block' }}
+        />
+      )}
+      <div style={{ padding: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+          {post.ngos?.logo_url ? (
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: 'white',
+                overflow: 'hidden',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={post.ngos.logo_url}
+                alt={post.ngos.short_name ?? ''}
+                style={{ width: 16, height: 16, objectFit: 'contain' }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: post.ngos?.color_accent ?? '#6B6154',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 10,
+                fontWeight: 700,
+                color: '#fff',
+              }}
+            >
+              {(post.ngos?.short_name ?? '?')[0]}
+            </div>
+          )}
+          <span style={{ fontSize: 11, color: '#A89E8A', fontWeight: 500 }}>
+            {post.ngos?.short_name ?? post.ngos?.name}
+          </span>
+          <span style={{ fontSize: 10, color: '#7A6F5E' }}>
+            · {post.read_time} dk
+          </span>
+          {badge && label && (
+            <span
+              style={{
+                marginLeft: 'auto',
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                background: badge.bg,
+                color: badge.text,
+                padding: '2px 7px',
+                borderRadius: 6,
+              }}
+            >
+              {label}
+            </span>
+          )}
+        </div>
+        <h3
+          style={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: '#F4EEDF',
+            margin: '0 0 4px',
+            lineHeight: 1.3,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical' as const,
+            overflow: 'hidden',
+          }}
+        >
+          {post.title}
+        </h3>
+        <p
+          style={{
+            fontSize: 12,
+            color: '#A89E8A',
+            margin: 0,
+            lineHeight: 1.4,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical' as const,
+            overflow: 'hidden',
+          }}
+        >
+          {post.summary}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export function DiscoverClient({ missions, posts, subscribedNgoIds }: DiscoverClientProps) {
   const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
@@ -105,124 +237,63 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
         </div>
       </div>
 
-      {/* Map preview */}
-      <div style={{ padding: '16px 16px 0' }}>
-        <div
-          style={{
-            position: 'relative',
-            aspectRatio: '16/9',
-            background: c.ink800,
-            borderRadius: 16,
-            overflow: 'hidden',
-            border: `1px solid ${c.ink600}`,
-          }}
-        >
-          {/* Grid SVG pattern — v2.1: semantic tokens for strokes */}
-          <svg
-            viewBox="0 0 400 225"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.5 }}
-          >
-            <defs>
-              <pattern id="gMap" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke={c.ink600} strokeWidth=".5" />
-              </pattern>
-            </defs>
-            <rect width="400" height="225" fill="url(#gMap)" />
-            <path d="M20 80 Q80 60 140 80 T260 90 T380 70" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".3" />
-            <path d="M30 140 Q100 120 180 150 T320 145" stroke={c.sage} strokeWidth="1" fill="none" opacity=".3" />
-          </svg>
-
-          {/* Pin markers */}
-          {pins.map((pin, i) => (
+      {/* Blog posts section */}
+      {posts.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <div style={{ padding: '0 20px', marginBottom: 14 }}>
             <div
-              key={i}
               style={{
-                position: 'absolute',
-                left: `${pin.x}%`,
-                top: `${pin.y}%`,
-                transform: 'translate(-50%, -100%)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: c.gold,
+                marginBottom: 6,
               }}
             >
-              <div
-                style={{
-                  background: pin.active ? c.gold : c.ink800,
-                  color: pin.active ? '#241E18' : c.cream,
-                  border: pin.active ? 'none' : '1px solid #4A4237',
-                  borderRadius: 20,
-                  padding: '3px 8px',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
-                }}
-              >
-                {pin.count}
-              </div>
-              <div
-                style={{
-                  width: 1.5,
-                  height: 8,
-                  background: pin.active ? c.gold : '#4A4237',
-                  marginTop: 1,
-                }}
-              />
+              Öncülerden
             </div>
-          ))}
-
-          {/* Bottom-left: location pill */}
+            <h2
+              style={{
+                margin: 0,
+                fontFamily: 'var(--font-fraunces), Fraunces, serif',
+                fontSize: 20,
+                fontWeight: 500,
+                color: c.cream,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Öncülerden Haberler
+            </h2>
+          </div>
           <div
             style={{
-              position: 'absolute',
-              bottom: 10,
-              left: 10,
               display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              background: 'rgba(26,22,18,0.75)',
-              backdropFilter: 'blur(8px)',
-              borderRadius: 20,
-              padding: '5px 10px 5px 8px',
-              border: '1px solid rgba(255,255,255,0.08)',
+              gap: 12,
+              overflowX: 'auto',
+              padding: '0 16px',
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
             }}
           >
-            <MapPin size={12} style={{ color: c.gold }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: c.cream }}>
-              İstanbul · 47 görev
-            </span>
+            {posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+              />
+            ))}
           </div>
-
-          {/* Top-right: expand button */}
-          <button
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              width: 36,
-              height: 36,
-              background: 'rgba(46,41,35,0.8)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 10,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <Maximize2 size={14} style={{ color: c.cream }} />
-          </button>
         </div>
-      </div>
+      )}
 
-      {/* Categories heading */}
-      <div style={{ padding: '24px 20px 0' }}>
+      {/* Categories — horizontal scroll chips */}
+      <div style={{ padding: '28px 20px 0' }}>
         <h2
           style={{
-            margin: 0,
+            margin: '0 0 12px',
             fontFamily: 'var(--font-fraunces), Fraunces, serif',
             fontSize: 20,
             fontWeight: 500,
@@ -233,14 +304,15 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
           Kategoriler
         </h2>
       </div>
-
-      {/* Categories grid */}
       <div
         style={{
-          padding: '14px 16px 0',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 10,
+          display: 'flex',
+          gap: 8,
+          overflowX: 'auto',
+          padding: '0 16px',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {categories.map((cat) => {
@@ -249,45 +321,40 @@ export function DiscoverClient({ missions }: DiscoverClientProps) {
             <Link
               key={cat.name}
               href="/dashboard/missions"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: 'none', flexShrink: 0 }}
             >
               <div
                 style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
                   background: c.ink800,
                   border: `1px solid ${c.ink600}`,
-                  borderRadius: 14,
-                  padding: 16,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 12,
+                  borderRadius: 100,
+                  padding: '10px 16px 10px 12px',
                   cursor: 'pointer',
                 }}
               >
-                {/* Icon square */}
                 <div
                   style={{
-                    width: 40,
-                    height: 40,
+                    width: 28,
+                    height: 28,
                     background: cat.bg,
-                    borderRadius: 12,
+                    borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
-                  <Icon size={18} style={{ color: cat.color }} />
+                  <Icon size={14} style={{ color: cat.color }} />
                 </div>
-                {/* Text */}
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
-                    {cat.name}
-                  </div>
-                  <div style={{ fontSize: 11, color: '#6B6154', marginTop: 2 }}>
-                    {cat.count} görev
-                  </div>
-                </div>
+                <span style={{ fontSize: 13, fontWeight: 600, color: c.cream, whiteSpace: 'nowrap' }}>
+                  {cat.name}
+                </span>
+                <span style={{ fontSize: 11, color: '#6B6154' }}>
+                  {cat.count}
+                </span>
               </div>
             </Link>
           )

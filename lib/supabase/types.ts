@@ -378,6 +378,51 @@ export interface Database {
         }
         Relationships: []
       }
+      posts: {
+        Row: {
+          id: string
+          ngo_id: string
+          title: string
+          summary: string | null
+          content: string | null
+          cover_image_url: string | null
+          category: 'article' | 'update' | 'story' | 'tip' | null
+          read_time: number
+          published: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          ngo_id: string
+          title: string
+          summary?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          category?: 'article' | 'update' | 'story' | 'tip' | null
+          read_time?: number
+          published?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          ngo_id?: string
+          title?: string
+          summary?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          category?: 'article' | 'update' | 'story' | 'tip' | null
+          read_time?: number
+          published?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      post_likes: {
+        Row: { id: string; user_id: string; post_id: string; created_at: string }
+        Insert: { id?: string; user_id: string; post_id: string; created_at?: string }
+        Update: { id?: string; user_id?: string; post_id?: string; created_at?: string }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -409,3 +454,6 @@ export type NGOBrief = {
 }
 
 export type MissionWithNGO = Mission & { ngos: NGOBrief | null }
+export type Post = Database['public']['Tables']['posts']['Row']
+export type PostLike = Database['public']['Tables']['post_likes']['Row']
+export type PostWithNGO = Post & { ngos: NGOBrief | null }
