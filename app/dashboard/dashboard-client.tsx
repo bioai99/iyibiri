@@ -100,14 +100,17 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
     const supabase = createClient()
     const city = localStorage.getItem('iyibiri_onboarding_city')
     const radius = localStorage.getItem('iyibiri_onboarding_radius')
+    const age = localStorage.getItem('iyibiri_onboarding_age')
     supabase.from('profiles').update({
       interests: JSON.parse(interests),
       city: city || null,
       search_radius: radius ? Number(radius) : 10,
+      age_range: age || null,
     }).eq('id', profile.id).then(() => {
       localStorage.removeItem('iyibiri_onboarding_interests')
       localStorage.removeItem('iyibiri_onboarding_city')
       localStorage.removeItem('iyibiri_onboarding_radius')
+      localStorage.removeItem('iyibiri_onboarding_age')
     })
   }, [profile.id])
 

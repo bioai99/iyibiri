@@ -42,18 +42,17 @@ export default function OnboardingCauses() {
         <Link href="/onboarding/welcome" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>
-        {/* Progress bar — 4 segments, adım 2 */}
+        {/* Progress bar — 2 segments, adım 1 */}
         <div style={{ display: 'flex', flex: 1, gap: 4 }}>
-          {[0, 1, 2, 3].map(i => {
-            const isFilled = i < 1  // önceki adımlar statik dolu
-            const isCurrentStep = i === 1  // bu adım animasyonla dolacak
+          {[0, 1].map(i => {
+            const isCurrentStep = i === 0
             return (
               <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
-                {(isFilled || isCurrentStep) && (
+                {isCurrentStep && (
                   <motion.div
-                    initial={{ width: isFilled ? '100%' : '0%' }}
+                    initial={{ width: '0%' }}
                     animate={{ width: '100%' }}
-                    transition={isCurrentStep ? { duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] } : { duration: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
                     style={{ height: '100%', background: c.gold, borderRadius: 999 }}
                   />
                 )}
@@ -71,7 +70,7 @@ export default function OnboardingCauses() {
           transition={{ delay: 0.2 }}
           style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: c.gold, margin: '0 0 8px' }}
         >
-          ADIM 2 / 4
+          ADIM 1 / 2
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
@@ -121,7 +120,7 @@ export default function OnboardingCauses() {
             >
               {/* Icon strip */}
               <div style={{
-                height: 48, background: isSelected ? cause.gradient : c.ink700,
+                height: 52, background: isSelected ? cause.gradient : c.ink700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 200ms ease',
               }}>

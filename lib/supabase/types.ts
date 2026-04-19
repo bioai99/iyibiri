@@ -21,6 +21,7 @@ export interface Database {
           current_streak: number
           longest_streak: number
           last_mission_week: string | null
+          age_range: string | null
         }
         Insert: {
           id: string
@@ -39,6 +40,7 @@ export interface Database {
           current_streak?: number
           longest_streak?: number
           last_mission_week?: string | null
+          age_range?: string | null
         }
         Update: {
           id?: string
@@ -57,6 +59,7 @@ export interface Database {
           current_streak?: number
           longest_streak?: number
           last_mission_week?: string | null
+          age_range?: string | null
         }
         Relationships: []
       }
