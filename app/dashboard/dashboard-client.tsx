@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Bell, Calendar, Sparkles } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
@@ -128,7 +129,11 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
       }}
     >
       {/* ── 1. Header ── */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         {/* Left */}
         <div>
           <p style={{
@@ -188,10 +193,14 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             </div>
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── 2. HeroCard ── */}
-      <div style={{ padding: '20px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+        style={{ padding: '20px 16px 0' }}>
         <HeroCard profile={{
           karma,
           completed: completedIds.size,
@@ -200,15 +209,19 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
           nextTier: getNextTierName(karma),
           karmaToNext: getKarmaToNext(karma),
         }} />
-      </div>
+      </motion.div>
 
       {/* ── 3. Quick Actions ── */}
-      <div style={{
-        padding: '16px 16px 0',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 8,
-      }}>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        style={{
+          padding: '16px 16px 0',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 8,
+        }}>
         <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
           <QuickAction
             icon={<Calendar size={18} color={c.gold} />}
@@ -223,7 +236,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos }: Props
             sub="Senin için 6 yeni"
           />
         </Link>
-      </div>
+      </motion.div>
 
       {/* ── 4. Filter chips ── */}
       <div style={{ padding: '24px 0 4px' }}>
