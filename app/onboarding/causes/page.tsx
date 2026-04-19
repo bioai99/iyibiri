@@ -28,8 +28,9 @@ export default function OnboardingCauses() {
 
   return (
     <div style={{
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      background: c.ink900, overflow: 'hidden',
+      height: '100vh', display: 'flex', flexDirection: 'column',
+      background: c.ink900, overflow: 'hidden', position: 'fixed',
+      top: 0, left: 0, right: 0, bottom: 0,
     }}>
       {/* Header */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>

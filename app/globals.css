@@ -52,12 +52,17 @@
   html {
     -webkit-text-size-adjust: 100%;
     background-color: #24201B;
+    overflow-x: hidden;
+    width: 100%;
   }
   body {
     @apply bg-background text-foreground;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
     background-color: #24201B;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
   }
   button, a, [role="button"] {
     -webkit-tap-highlight-color: transparent;

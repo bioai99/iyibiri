@@ -68,7 +68,7 @@ export default function AuthLandingPage() {
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
 
   return (
-    <div style={{ background: c.ink900, minHeight: '100vh', display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div style={{ background: c.ink900, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Hero */}
       <div style={{ flex: '1 1 auto', position: 'relative', overflow: 'hidden', minHeight: 320 }}>
         <div style={{

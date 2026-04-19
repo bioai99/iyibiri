@@ -16,11 +16,12 @@ export default function OnboardingLocation() {
   return (
     <div
       style={{
-        height: '844px',
         display: 'flex',
         flexDirection: 'column',
         background: c.ink900,
         overflow: 'hidden',
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
         paddingBottom: 24,
       }}
     >

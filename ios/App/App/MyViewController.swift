@@ -24,6 +24,10 @@ class MyViewController: CAPBridgeViewController {
         // Sayfa bounce'unu kapat
         webView.scrollView.bounces = false
 
+        // Scroll indicator'ları gizle
+        webView.scrollView.showsVerticalScrollIndicator = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+
         // Arka plan rengini app ile eşleştir
         let bgColor = UIColor(red: 0.141, green: 0.125, blue: 0.106, alpha: 1.0) // #24201B
         webView.isOpaque = false
