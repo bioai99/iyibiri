@@ -63,7 +63,7 @@ export default function OnboardingReady() {
       {/* Progress bar */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <div style={{ display: 'flex', gap: 4 }}>
-          {[0, 1, 2].map(i => (
+          {[0, 1, 2, 3].map(i => (
             <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
               <motion.div
                 initial={{ width: 0 }}

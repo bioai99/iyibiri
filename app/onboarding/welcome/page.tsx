@@ -85,9 +85,9 @@ export default function OnboardingWelcome() {
           </Link>
         </motion.div>
 
-        {/* Progress — 3 adım */}
+        {/* Progress — 4 adım */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 20 }}>
-          {[0, 1, 2].map(i => (
+          {[0, 1, 2, 3].map(i => (
             <motion.div
               key={i}
               initial={{ scale: 0.5, opacity: 0 }}

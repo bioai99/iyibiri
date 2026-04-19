@@ -1,15 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Clock, MapPin, Heart, Flame } from 'lucide-react'
+import { Clock, MapPin, Bookmark, Flame } from 'lucide-react'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
+import { createClient } from '@/lib/supabase/client'
 
 interface MissionCardProps {
   mission: MissionWithNGO
   onClick?: () => void
+  isSaved?: boolean
+  userId?: string
 }
 
 const domainGradient: Record<string, string> = {
@@ -27,10 +30,36 @@ const domainEmoji: Record<string, string> = {
   financial: '🪙', animals: '🐾', culture: '🎭', default: '✦',
 }
 
-export function MissionCard({ mission, onClick }: MissionCardProps) {
+export function MissionCard({ mission, onClick, isSaved = false, userId }: MissionCardProps) {
   const { colors: c } = useTheme()
-  const [saved, setSaved] = useState(false)
+  const [saved, setSaved] = useState(isSaved)
   const [pressed, setPressed] = useState(false)
+
+  const toggleSave = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!userId) return
+
+    const prev = saved
+    setSaved(!prev)
+
+    try {
+      const supabase = createClient()
+      if (prev) {
+        await supabase
+          .from('user_saved_missions')
+          .delete()
+          .eq('user_id', userId)
+          .eq('mission_id', mission.id)
+      } else {
+        await supabase
+          .from('user_saved_missions')
+          .insert({ user_id: userId, mission_id: mission.id })
+      }
+    } catch {
+      setSaved(prev)
+    }
+  }, [saved, userId, mission.id])
 
   const domain = mission.domain ?? 'default'
   const gradient = domainGradient[domain] ?? domainGradient.default
@@ -95,14 +124,14 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
             </BadgeDS>
           </div>
 
-          {/* Top-right: heart save button */}
+          {/* Top-right: bookmark save button */}
           <div style={{ position: 'absolute', top: 8, right: 8 }}>
             <IconButtonDS
               size={32}
               theme="dark"
-              onClick={(e) => { e.preventDefault(); setSaved(s => !s) }}
+              onClick={toggleSave}
               icon={
-                <Heart
+                <Bookmark
                   size={14}
                   style={{
                     fill: saved ? c.gold : 'none',

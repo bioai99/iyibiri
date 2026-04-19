@@ -42,9 +42,9 @@ export default function OnboardingCauses() {
         <Link href="/onboarding/welcome" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>
-        {/* Animated progress bar — 3 segments */}
+        {/* Animated progress bar — 4 segments */}
         <div style={{ display: 'flex', flex: 1, gap: 4 }}>
-          {[0, 1, 2].map(i => (
+          {[0, 1, 2, 3].map(i => (
             <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
               <motion.div
                 initial={{ width: 0 }}
@@ -65,7 +65,7 @@ export default function OnboardingCauses() {
           transition={{ delay: 0.2 }}
           style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: c.gold, margin: '0 0 8px' }}
         >
-          ADIM 2 / 3
+          ADIM 2 / 4
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
@@ -164,7 +164,7 @@ export default function OnboardingCauses() {
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         <Link
-          href="/onboarding/ready"
+          href="/onboarding/city"
           onClick={() => localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))}
           style={{ textDecoration: 'none' }}
         >

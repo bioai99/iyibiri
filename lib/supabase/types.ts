@@ -18,6 +18,9 @@ export interface Database {
           city: string | null
           search_radius: number
           email: string | null
+          current_streak: number
+          longest_streak: number
+          last_mission_week: string | null
         }
         Insert: {
           id: string
@@ -33,6 +36,9 @@ export interface Database {
           interests?: string[]
           city?: string | null
           search_radius?: number
+          current_streak?: number
+          longest_streak?: number
+          last_mission_week?: string | null
         }
         Update: {
           id?: string
@@ -48,6 +54,9 @@ export interface Database {
           interests?: string[]
           city?: string | null
           search_radius?: number
+          current_streak?: number
+          longest_streak?: number
+          last_mission_week?: string | null
         }
         Relationships: []
       }
@@ -330,6 +339,18 @@ export interface Database {
         }
         Relationships: []
       }
+      user_saved_missions: {
+        Row: { id: string; user_id: string; mission_id: string; saved_at: string }
+        Insert: { id?: string; user_id: string; mission_id: string; saved_at?: string }
+        Update: { id?: string; user_id?: string; mission_id?: string; saved_at?: string }
+        Relationships: []
+      }
+      user_ngo_subscriptions: {
+        Row: { id: string; user_id: string; ngo_id: string; subscribed_at: string }
+        Insert: { id?: string; user_id: string; ngo_id: string; subscribed_at?: string }
+        Update: { id?: string; user_id?: string; ngo_id?: string; subscribed_at?: string }
+        Relationships: []
+      }
       support_requests: {
         Row: {
           id: string
@@ -371,6 +392,8 @@ export type Reward = Database['public']['Tables']['rewards']['Row']
 export type UserMission = Database['public']['Tables']['user_missions']['Row']
 export type KarmaTransaction = Database['public']['Tables']['karma_transactions']['Row']
 export type RewardRedemption = Database['public']['Tables']['reward_redemptions']['Row']
+export type UserSavedMission = Database['public']['Tables']['user_saved_missions']['Row']
+export type UserNgoSubscription = Database['public']['Tables']['user_ngo_subscriptions']['Row']
 
 // Extended types for joined queries
 export type NGOBrief = {
