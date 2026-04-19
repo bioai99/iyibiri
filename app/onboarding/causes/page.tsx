@@ -28,7 +28,7 @@ export default function OnboardingCauses() {
 
   return (
     <div style={{
-      height: '100vh', display: 'flex', flexDirection: 'column',
+      display: 'flex', flexDirection: 'column',
       background: c.ink900, overflow: 'hidden', position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
     }}>
@@ -127,7 +127,7 @@ export default function OnboardingCauses() {
       </div>
 
       {/* Bottom CTA */}
-      <div style={{ padding: '0 16px 36px' }}>
+      <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 20px)' }}>
         <Link
           href="/onboarding/location"
           onClick={() => localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))}

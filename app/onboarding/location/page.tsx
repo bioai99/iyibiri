@@ -19,7 +19,7 @@ export default function OnboardingLocation() {
         display: 'flex',
         flexDirection: 'column',
         background: c.ink900,
-        overflow: 'hidden',
+        overflowY: 'auto',
         position: 'fixed',
         top: 0, left: 0, right: 0, bottom: 0,
         paddingBottom: 24,
@@ -292,7 +292,7 @@ export default function OnboardingLocation() {
       </div>
 
       {/* Bottom CTA */}
-      <div style={{ padding: '0 16px' }}>
+      <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 8px)' }}>
         <Link
           href="/onboarding/ready"
           onClick={() => {

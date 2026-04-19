@@ -4,7 +4,7 @@ export async function GET() {
       apps: [],
       details: [{
         appID: "F55594YN87.com.iyibiri.app",
-        paths: ["/auth/callback*", "/auth/native-callback*", "/g/*", "/stk/*"],
+        paths: ["/auth/callback*", "/g/*", "/stk/*"],
       }],
     },
   }, {

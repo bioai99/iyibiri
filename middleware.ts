@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
-  if (user && request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.includes('native-callback') && !request.nextUrl.pathname.includes('callback')) {
+  if (user && request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.includes('callback')) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 

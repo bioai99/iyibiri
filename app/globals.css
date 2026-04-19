@@ -57,7 +57,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
     background-color: #24201B;
     overflow-x: hidden;

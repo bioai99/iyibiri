@@ -56,7 +56,7 @@ export default function OnboardingReady() {
 
   return (
     <div style={{
-      height: '100vh', display: 'flex', flexDirection: 'column',
+      display: 'flex', flexDirection: 'column',
       background: c.ink900, overflow: 'hidden', position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
     }}>

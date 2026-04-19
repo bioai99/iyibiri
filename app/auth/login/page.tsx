@@ -70,7 +70,7 @@ export default function AuthLandingPage() {
   return (
     <div style={{ background: c.ink900, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Hero */}
-      <div style={{ flex: '1 1 auto', position: 'relative', overflow: 'hidden', minHeight: 320 }}>
+      <div style={{ flex: '1 1 auto', position: 'relative', overflow: 'hidden', minHeight: 240 }}>
         <div style={{
           position: 'absolute', inset: 0,
           background: `radial-gradient(ellipse at 50% 30%, rgba(232,194,104,.22), transparent 65%), radial-gradient(ellipse at 20% 90%, rgba(233,207,194,.1), transparent 55%), ${c.ink900}`
@@ -108,7 +108,7 @@ export default function AuthLandingPage() {
       </div>
 
       {/* Bottom section */}
-      <div style={{ padding: '24px 28px 44px' }}>
+      <div style={{ padding: '24px 28px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
