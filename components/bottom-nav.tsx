@@ -26,7 +26,7 @@ export function BottomNav() {
         background: 'rgba(26,22,18,.85)',
         backdropFilter: 'blur(18px) saturate(140%)',
         borderTop: `1px solid ${c.ink600}`,
-        padding: '10px 8px 28px',
+        padding: '10px 8px calc(10px + env(safe-area-inset-bottom, 18px))',
         display: 'flex',
         justifyContent: 'space-around',
       }}
