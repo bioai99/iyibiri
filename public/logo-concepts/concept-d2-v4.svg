@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- D2-V4: Siluet Kelebek — En sofistike
+       İnsan silueti + kelebek kanatları
+       Gövde tek akıcı eğri, baş hafif yukarı bakıyor
+       Kanatlar yumuşak, asimetrik (doğal his)
+       Göğüste ince kalp işareti -->
+  <defs>
+    <linearGradient id="wL4" x1="0" y1="0" x2=".7" y2="1">
+      <stop offset="0%" stop-color="#F4D98A"/>
+      <stop offset="40%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#C89E3D"/>
+    </linearGradient>
+    <linearGradient id="wR4" x1="1" y1="0" x2=".3" y2="1">
+      <stop offset="0%" stop-color="#E07A6A"/>
+      <stop offset="40%" stop-color="#C8553D"/>
+      <stop offset="100%" stop-color="#A84030"/>
+    </linearGradient>
+    <linearGradient id="bod4" x1=".5" y1="0" x2=".5" y2="1">
+      <stop offset="0%" stop-color="#F4EEDF"/>
+      <stop offset="80%" stop-color="#D9CFB4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol üst kanat — geniş, zarif eğri -->
+  <path d="M248 248
+    C230 210 180 172 148 188
+    C116 204 118 248 148 270
+    C178 292 238 275 248 258Z"
+    fill="url(#wL4)"/>
+  <!-- Sol alt kanat — küçük, zerafet -->
+  <path d="M247 264
+    C232 282 185 300 188 278
+    C190 260 228 256 247 264Z"
+    fill="url(#wL4)" opacity=".5"/>
+
+  <!-- Sağ üst kanat -->
+  <path d="M264 248
+    C282 210 332 172 364 188
+    C396 204 394 248 364 270
+    C334 292 274 275 264 258Z"
+    fill="url(#wR4)"/>
+  <!-- Sağ alt kanat -->
+  <path d="M265 264
+    C280 282 327 300 324 278
+    C322 260 284 256 265 264Z"
+    fill="url(#wR4)" opacity=".5"/>
+
+  <!-- İnsan formu — tek akıcı siluet -->
+  <!-- Baş (hafif yukarı bakıyor) -->
+  <ellipse cx="256" cy="208" rx="22" ry="24" fill="url(#bod4)"/>
+
+  <!-- Boyun + Gövde (tek eğri, damla formu) -->
+  <path d="M256 232
+    C264 235 268 245 268 258
+    C268 280 265 310 262 325
+    C260 332 252 332 250 325
+    C247 310 244 280 244 258
+    C244 245 248 235 256 232Z"
+    fill="url(#bod4)"/>
+
+  <!-- Göğüste kalp (çok ince, neredeyse hissedilen) -->
+  <path d="M256 262
+    C256 262 252 259 252 262
+    C252 265 256 268 256 268
+    C256 268 260 265 260 262
+    C260 259 256 262 256 262Z"
+    fill="#E8C268" opacity=".7"/>
+
+  <!-- Kanat dokusu — ince damarlar -->
+  <path d="M200 225 C210 240 230 250 245 252" stroke="#F4EEDF" stroke-width=".6" fill="none" opacity=".12"/>
+  <path d="M312 225 C302 240 282 250 267 252" stroke="#F4EEDF" stroke-width=".6" fill="none" opacity=".12"/>
+  <path d="M165 240 C185 250 215 258 245 258" stroke="#F4EEDF" stroke-width=".5" fill="none" opacity=".08"/>
+  <path d="M347 240 C327 250 297 258 267 258" stroke="#F4EEDF" stroke-width=".5" fill="none" opacity=".08"/>
+</svg>

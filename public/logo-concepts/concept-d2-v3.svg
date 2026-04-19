@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- D2-V3: Ultra Minimal — Soyut insan+kelebek
+       Sadece baş (daire) + gövde (oval) + kanatlar
+       Yüz yok, detay yok — saf form
+       En temiz, en logo-uygun versiyon -->
+  <defs>
+    <linearGradient id="wL3" x1="0" y1=".3" x2="1" y2=".7">
+      <stop offset="0%" stop-color="#E8C268"/>
+      <stop offset="100%" stop-color="#B58F3D"/>
+    </linearGradient>
+    <linearGradient id="wR3" x1="1" y1=".3" x2="0" y2=".7">
+      <stop offset="0%" stop-color="#C8553D"/>
+      <stop offset="100%" stop-color="#9E3A2A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol kanat — tek akıcı form -->
+  <path d="M245 250
+    C220 205 150 170 135 205
+    C120 240 155 275 205 285
+    C230 290 242 270 245 258Z"
+    fill="url(#wL3)"/>
+  <path d="M245 265
+    C225 288 170 305 175 282
+    C178 265 220 258 245 265Z"
+    fill="url(#wL3)" opacity=".5"/>
+
+  <!-- Sağ kanat -->
+  <path d="M267 250
+    C292 205 362 170 377 205
+    C392 240 357 275 307 285
+    C282 290 270 270 267 258Z"
+    fill="url(#wR3)"/>
+  <path d="M267 265
+    C287 288 342 305 337 282
+    C334 265 292 258 267 265Z"
+    fill="url(#wR3)" opacity=".5"/>
+
+  <!-- Baş — sade daire -->
+  <circle cx="256" cy="212" r="24" fill="#F4EEDF"/>
+
+  <!-- Gövde — zarif oval -->
+  <ellipse cx="256" cy="280" rx="12" ry="42" fill="#F4EEDF"/>
+
+  <!-- Bağlantı (boyun) -->
+  <rect x="250" y="234" width="12" height="14" rx="6" fill="#F4EEDF"/>
+</svg>

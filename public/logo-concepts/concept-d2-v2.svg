@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- D2-V2: İnsan-Kelebek Birleşimi — Rafine
+       Kol/bacak yok. Gövde akıcı bir damla/form.
+       Baş + gövde tek organik şekil = insan hissi
+       Kanatlar gövdeden doğal çıkıyor -->
+  <defs>
+    <linearGradient id="wL" x1="0" y1=".2" x2=".9" y2=".8">
+      <stop offset="0%" stop-color="#F4D98A"/>
+      <stop offset="100%" stop-color="#D19B3C"/>
+    </linearGradient>
+    <linearGradient id="wR" x1="1" y1=".2" x2=".1" y2=".8">
+      <stop offset="0%" stop-color="#D4627A"/>
+      <stop offset="100%" stop-color="#C8553D"/>
+    </linearGradient>
+    <linearGradient id="body" x1=".5" y1="0" x2=".5" y2="1">
+      <stop offset="0%" stop-color="#F4EEDF"/>
+      <stop offset="100%" stop-color="#CEC5B2"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#24201B"/>
+
+  <!-- Sol kanat üst (büyük) -->
+  <path d="M248 245
+    C225 200 165 165 140 190
+    C115 215 130 260 175 278
+    C210 290 240 270 248 255Z"
+    fill="url(#wL)"/>
+  <!-- Sol kanat alt (küçük) -->
+  <path d="M248 262
+    C228 285 175 305 180 280
+    C183 262 225 255 248 262Z"
+    fill="url(#wL)" opacity=".55"/>
+
+  <!-- Sağ kanat üst (büyük) -->
+  <path d="M264 245
+    C287 200 347 165 372 190
+    C397 215 382 260 337 278
+    C302 290 272 270 264 255Z"
+    fill="url(#wR)"/>
+  <!-- Sağ kanat alt (küçük) -->
+  <path d="M264 262
+    C284 285 337 305 332 280
+    C329 262 287 255 264 262Z"
+    fill="url(#wR)" opacity=".55"/>
+
+  <!-- İnsan gövde — organik damla formu (baş+gövde tek parça) -->
+  <path d="M256 195
+    C270 195 280 205 280 218
+    C280 230 272 238 268 245
+    C272 265 270 295 268 320
+    C265 335 247 335 244 320
+    C242 295 240 265 244 245
+    C240 238 232 230 232 218
+    C232 205 242 195 256 195Z"
+    fill="url(#body)"/>
+
+  <!-- Yüz detayı — sadece gözler (minimal, sıcak) -->
+  <circle cx="248" cy="214" r="2.5" fill="#3E2F14" opacity=".6"/>
+  <circle cx="264" cy="214" r="2.5" fill="#3E2F14" opacity=".6"/>
+  <!-- Hafif gülümseme -->
+  <path d="M250 224 Q256 228 262 224" stroke="#3E2F14" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/>
+
+  <!-- Kanat içi doku -->
+  <circle cx="190" cy="225" r="12" fill="none" stroke="#F4EEDF" stroke-width=".8" opacity=".15"/>
+  <circle cx="322" cy="225" r="12" fill="none" stroke="#F4EEDF" stroke-width=".8" opacity=".15"/>
+  <circle cx="165" cy="245" r="8" fill="none" stroke="#F4EEDF" stroke-width=".6" opacity=".1"/>
+  <circle cx="347" cy="245" r="8" fill="none" stroke="#F4EEDF" stroke-width=".6" opacity=".1"/>
+</svg>
