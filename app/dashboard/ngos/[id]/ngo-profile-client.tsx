@@ -60,7 +60,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
   const coverImageUrl = ngo.cover_image_url
   const founded = ngo.founded
   const memberCount = ngo.member_count?.toLocaleString('tr-TR') ?? '—'
-  const trees = '485M' // demo value for tree-planting NGOs
+  const [descExpanded, setDescExpanded] = useState(false)
 
   return (
     <div style={{ background: c.ink900, color: c.cream, minHeight: '100%', paddingBottom: 140 }}>
@@ -76,7 +76,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           style={{
             position: 'absolute',
             inset: 0,
-            background: `linear-gradient(180deg,rgba(26,22,18,.45) 0%,rgba(26,22,18,0) 30%,rgba(26,22,18,0) 60%,${c.ink900} 100%)`,
+            background: `linear-gradient(180deg, ${c.ink900}73 0%, transparent 30%, transparent 60%, ${c.ink900} 100%)`,
           }}
         />
         {/* Top buttons */}
@@ -145,9 +145,10 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             ) : (
               <Link href={`/dashboard/ngos/${ngo.id}/membership`}>
                 <button style={{
-                  height: 40, padding: '0 20px', borderRadius: 12,
+                  height: 42, padding: '0 20px', borderRadius: 12,
                   background: c.gold, color: '#241E18', border: 'none',
-                  fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                  fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,.1)',
                 }}>
                   Üye Ol
                 </button>
@@ -180,7 +181,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             justifyContent: 'center',
             padding: 8,
             flexShrink: 0,
-            boxShadow: '0 8px 24px rgba(0,0,0,.3)',
+            boxShadow: '0 8px 24px rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.1)',
           }}
         >
           {ngo.logo_url ? (
@@ -226,9 +227,9 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
       {/* Stats row */}
       <div style={{ padding: '20px 20px 0', display: 'flex', gap: 8 }}>
         {[
-          ['YIL', founded ?? '—'],
+          ['YIL', founded ? new Date().getFullYear() - founded : '—'],
           ['ÜYE', memberCount],
-          ['FİDAN', trees],
+          ['GÖREV', missions.length],
         ].map(([k, v]) => (
           <div
             key={k}
@@ -273,9 +274,40 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           >
             Biz kimiz?
           </h3>
-          <p style={{ margin: '8px 0 0', fontSize: 13, color: c.ink200, lineHeight: 1.6 }}>
+          <p
+            style={{
+              margin: '8px 0 0',
+              fontSize: 13,
+              color: c.ink200,
+              lineHeight: 1.6,
+              ...(!descExpanded
+                ? {
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical' as const,
+                    overflow: 'hidden',
+                  }
+                : {}),
+            }}
+          >
             {ngo.description}
           </p>
+          {!descExpanded && (
+            <button
+              onClick={() => setDescExpanded(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: c.gold,
+                fontSize: 13,
+                fontWeight: 600,
+                padding: '6px 0 0',
+                cursor: 'pointer',
+              }}
+            >
+              Devamını oku
+            </button>
+          )}
         </div>
       )}
 
@@ -379,30 +411,32 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
         )}
       </div>
 
-      {/* Donation campaign card */}
-      <div style={{ padding: '20px 20px 0' }}>
-        <Link href="/dashboard/donations/demo-campaign" style={{ textDecoration: 'none' }}>
-          <div
-            style={{
-              background: c.ink800,
-              border: `1px solid ${c.ink600}`,
-              borderRadius: 16,
-              padding: '16px 18px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <div style={{ ...EYEBROW, color: c.gold, marginBottom: 4 }}>BAĞIŞ</div>
-              <span style={{ fontSize: 15, fontWeight: 600, color: c.cream }}>
-                Bağış kampanyası
-              </span>
+      {/* Donation campaign card — hidden until real campaign data is available */}
+      {false && (
+        <div style={{ padding: '20px 20px 0' }}>
+          <Link href="/dashboard/donations/demo-campaign" style={{ textDecoration: 'none' }}>
+            <div
+              style={{
+                background: c.ink800,
+                border: `1px solid ${c.ink600}`,
+                borderRadius: 16,
+                padding: '16px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <div style={{ ...EYEBROW, color: c.gold, marginBottom: 4 }}>BAĞIŞ</div>
+                <span style={{ fontSize: 15, fontWeight: 600, color: c.cream }}>
+                  Bağış kampanyası
+                </span>
+              </div>
+              <ChevronRight size={16} color={c.ink300} />
             </div>
-            <ChevronRight size={16} color={c.ink300} />
-          </div>
-        </Link>
-      </div>
+          </Link>
+        </div>
+      )}
 
       {/* Active missions */}
       {missions.length > 0 && (

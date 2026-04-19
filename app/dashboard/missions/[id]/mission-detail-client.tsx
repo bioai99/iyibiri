@@ -89,7 +89,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg,rgba(26,22,18,.3) 0%,rgba(26,22,18,0) 30%,rgba(26,22,18,0) 70%,rgba(36,32,27,1) 100%)',
+              `linear-gradient(180deg, ${c.ink900}4D 0%, transparent 30%, transparent 70%, ${c.ink900} 100%)`,
           }}
         />
 
@@ -208,9 +208,6 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             <div style={{ fontSize: 15, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
               {mission.ngos.name}
             </div>
-            <div style={{ fontSize: 11, color: c.ink300, marginTop: 2 }}>
-              27 yıldır · 12.4K gönüllü
-            </div>
           </div>
 
           {/* Follow button */}
@@ -218,7 +215,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             onClick={() => setFollowing(f => !f)}
             style={{
               background: 'transparent',
-              border: `1px solid #5C5346`,
+              border: `1px solid ${c.ink500}`,
               color: c.cream,
               borderRadius: 999,
               fontSize: 13,
@@ -350,7 +347,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       <div style={{ padding: '24px 16px 0' }}>
         <div
           style={{
-            background: '#1E1B16',
+            background: c.ink800,
             border: `1px solid ${c.goldLine}`,
             borderRadius: 16,
             padding: '18px 20px',
@@ -412,41 +409,9 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Avatar stack */}
-          <div style={{ display: 'flex' }}>
-            {[
-              { initial: 'E', bg: c.goldDim },
-              { initial: 'M', bg: c.sage },
-              { initial: 'D', bg: c.blush },
-              { initial: 'B', bg: c.ink500 },
-            ].map((avatar, i) => (
-              <div
-                key={i}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: '50%',
-                  background: avatar.bg,
-                  border: `2px solid ${c.ink}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: c.cream,
-                  marginLeft: i === 0 ? 0 : -10,
-                  position: 'relative',
-                  zIndex: 4 - i,
-                }}
-              >
-                {avatar.initial}
-              </div>
-            ))}
-          </div>
-
-          {/* Text */}
+          <Users size={16} color={c.ink300} />
           <div style={{ fontSize: 13, color: c.ink300, lineHeight: 1.4 }}>
-            {mission.participants ?? 17} kişi katıldı · senin ağından 3&apos;ü
+            {mission.participants ?? 0} kişi katıldı
           </div>
         </div>
       </div>
@@ -477,7 +442,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
           right: 0,
           bottom: 0,
           background:
-            'linear-gradient(180deg,rgba(36,32,27,0),rgba(36,32,27,.95) 30%)',
+            `linear-gradient(180deg, ${c.ink900}00 0%, ${c.ink900}F2 30%)`,
           backdropFilter: 'blur(12px)',
           padding: '16px 16px 28px',
         }}
@@ -550,6 +515,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
               cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.7 : 1,
               transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+              boxShadow: '0 4px 16px rgba(0,0,0,.12)',
             }}
           >
             {loading ? 'Göreve Alınıyor...' : 'Bu göreve katıl'}

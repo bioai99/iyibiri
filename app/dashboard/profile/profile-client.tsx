@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Settings, Share2, MapPin, LogOut, ChevronRight } from 'lucide-react'
+import { Settings, Share2, MapPin, LogOut, ChevronRight, Footprints, Flower2, Heart, Zap, Diamond, Crown } from 'lucide-react'
 import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
 import { logoutAction } from './actions'
@@ -44,19 +44,14 @@ const tierThresholds: Record<number, number> = {
 }
 
 const achievements = [
-  { icon: 'i', name: 'İlk Adım', locked: false, sub: 'İlk görevin' },
-  { icon: '✿', name: 'Çevre Dostu', locked: false, sub: '3 çevre görevi' },
-  { icon: '♥', name: 'Kalp Kalbe', locked: false, sub: '5 farklı öncü' },
-  { icon: '⚡', name: 'Yıldırım', locked: true, sub: '30 gün seri' },
-  { icon: '◈', name: 'Elmas', locked: true, sub: '10.000 Karma' },
-  { icon: '♛', name: 'Liderlik', locked: true, sub: 'Top 10' },
+  { icon: <Footprints size={20} />, name: 'İlk Adım', locked: false, sub: 'İlk görevin' },
+  { icon: <Flower2 size={20} />, name: 'Çevre Dostu', locked: false, sub: '3 çevre görevi' },
+  { icon: <Heart size={20} />, name: 'Kalp Kalbe', locked: false, sub: '5 farklı öncü' },
+  { icon: <Zap size={20} />, name: 'Yıldırım', locked: true, sub: '30 gün seri' },
+  { icon: <Diamond size={20} />, name: 'Elmas', locked: true, sub: '10.000 Karma' },
+  { icon: <Crown size={20} />, name: 'Liderlik', locked: true, sub: 'Top 10' },
 ]
 
-const timeline = [
-  { title: 'Sahil Temizliği', ngo: 'TEMA Vakfı', karma: 150, date: '3 gün önce' },
-  { title: 'Kan Bağışı Kampanyası', ngo: 'Kızılay', karma: 300, date: '1 hafta önce' },
-  { title: 'Okuma Desteği', ngo: 'ÇYDD', karma: 250, date: '2 hafta önce' },
-]
 
 export function ProfileClient({ profile, completedCount, karma, memberships = [] }: ProfileClientProps) {
   const { colors: c } = useTheme()
@@ -83,19 +78,20 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
     >
       {/* Cover + avatar section */}
       <div style={{ position: 'relative', height: 180, flexShrink: 0 }}>
-        {/* Cover image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900&q=70"
-          alt="cover"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        {/* Cover gradient background */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `linear-gradient(135deg, ${c.ink700}, ${c.ink800})`,
+          }}
         />
         {/* Gradient overlay */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(26,22,18,.3), rgba(26,22,18,.85))',
+            background: `linear-gradient(180deg, ${c.ink900}4D, ${c.ink900}D9)`,
           }}
         />
         {/* Top row: Settings + Share */}
@@ -169,7 +165,11 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
                 margin: 0,
               }}
             >
-              {profile.name ?? 'Adını henüz eklemedin'}
+              {profile.name ?? (
+                <Link href="/dashboard/profile/edit" style={{ color: c.gold, textDecoration: 'none' }}>
+                  Adını henüz eklemedin
+                </Link>
+              )}
             </h1>
             <div
               style={{
@@ -265,8 +265,8 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               </div>
               <div
                 style={{
-                  height: 5,
-                  background: 'rgba(255,255,255,.05)',
+                  height: 6,
+                  background: c.ink600,
                   borderRadius: 999,
                   overflow: 'hidden',
                 }}
@@ -296,8 +296,8 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
       >
         {[
           { label: 'GÖREV', value: completedCount, sub: 'tamamlandı', href: undefined },
-          { label: 'SERİ', value: 7, sub: 'gün', href: '/dashboard/streak' },
-          { label: 'ÖNCÜ', value: 4, sub: 'destek', href: undefined },
+          { label: 'SERİ', value: profile.streak ?? 0, sub: 'gün', href: '/dashboard/streak' },
+          { label: 'ÖNCÜ', value: memberships.length, sub: 'destek', href: undefined },
         ].map(({ label, value, sub, href }) => {
           const card = (
             <div
@@ -552,7 +552,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
         </Link>
       </div>
 
-      {/* Activity timeline */}
+      {/* Activity timeline — empty state (no real data passed yet) */}
       <div>
         <div style={{ padding: '30px 20px 12px' }}>
           <h2
@@ -568,86 +568,22 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
           </h2>
         </div>
         <div style={{ padding: '0 20px' }}>
-          {timeline.map(({ title, ngo, karma: k, date }, idx) => (
-            <div
-              key={title}
-              style={{
-                display: 'flex',
-                gap: 14,
-                paddingBottom: idx < timeline.length - 1 ? 20 : 0,
-              }}
-            >
-              {/* Left column: dot + line */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  flexShrink: 0,
-                  paddingTop: 3,
-                }}
-              >
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    background: c.gold,
-                    boxShadow: `0 0 0 3px ${c.goldSoft}`,
-                    flexShrink: 0,
-                  }}
-                />
-                {idx < timeline.length - 1 && (
-                  <div
-                    style={{
-                      width: 1,
-                      flex: 1,
-                      background: c.ink600,
-                      marginTop: 6,
-                    }}
-                  />
-                )}
-              </div>
-              {/* Right: content */}
-              <div style={{ paddingBottom: idx < timeline.length - 1 ? 0 : 0 }}>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: c.cream,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {title}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    marginTop: 4,
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <span style={{ fontSize: 12, color: c.ink300 }}>{ngo}</span>
-                  <span style={{ fontSize: 12, color: c.ink600 }}>·</span>
-                  <span style={{ fontSize: 12, color: c.ink300 }}>{date}</span>
-                  <span style={{ fontSize: 12, color: c.ink600 }}>·</span>
-                  <KarmaDotToken size={12} />
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: c.gold,
-                      fontVariantNumeric: 'tabular-nums',
-                    }}
-                  >
-                    +{k}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+          <div
+            style={{
+              background: c.ink800,
+              border: `1px solid ${c.ink600}`,
+              borderRadius: 14,
+              padding: '20px 18px',
+              textAlign: 'center',
+            }}
+          >
+            <p style={{ fontSize: 14, color: c.ink300, margin: 0, lineHeight: 1.5 }}>
+              Henüz tamamlanmış görev yok.{' '}
+              <Link href="/dashboard/missions" style={{ color: c.gold, fontWeight: 600, textDecoration: 'none' }}>
+                İlk görevini bul!
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
 
