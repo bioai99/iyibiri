@@ -42,18 +42,24 @@ export default function OnboardingCauses() {
         <Link href="/onboarding/welcome" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
         </Link>
-        {/* Animated progress bar — 4 segments */}
+        {/* Progress bar — 4 segments, adım 2 */}
         <div style={{ display: 'flex', flex: 1, gap: 4 }}>
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: i < 2 ? '100%' : '0%' }}
-                transition={{ duration: 0.6, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
-                style={{ height: '100%', background: c.gold, borderRadius: 999 }}
-              />
-            </div>
-          ))}
+          {[0, 1, 2, 3].map(i => {
+            const isFilled = i < 1  // önceki adımlar statik dolu
+            const isCurrentStep = i === 1  // bu adım animasyonla dolacak
+            return (
+              <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
+                {(isFilled || isCurrentStep) && (
+                  <motion.div
+                    initial={{ width: isFilled ? '100%' : '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={isCurrentStep ? { duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] } : { duration: 0 }}
+                    style={{ height: '100%', background: c.gold, borderRadius: 999 }}
+                  />
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
 

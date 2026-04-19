@@ -60,19 +60,23 @@ export default function OnboardingReady() {
       background: c.ink900, overflow: 'hidden', position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
     }}>
-      {/* Progress bar */}
+      {/* Progress bar — tümü dolu, son adım animasyonlu */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <div style={{ display: 'flex', gap: 4 }}>
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.6, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
-                style={{ height: '100%', background: c.gold, borderRadius: 999 }}
-              />
-            </div>
-          ))}
+          {[0, 1, 2, 3].map(i => {
+            const isFilled = i < 3
+            const isCurrentStep = i === 3
+            return (
+              <div key={i} style={{ flex: 1, height: 4, borderRadius: 999, background: c.ink600, overflow: 'hidden' }}>
+                <motion.div
+                  initial={{ width: isFilled ? '100%' : '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={isCurrentStep ? { duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] } : { duration: 0 }}
+                  style={{ height: '100%', background: c.gold, borderRadius: 999 }}
+                />
+              </div>
+            )
+          })}
         </div>
       </div>
 
