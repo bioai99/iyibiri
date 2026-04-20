@@ -371,7 +371,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
             padding: '0 20px 20px',
             scrollbarWidth: 'none',
           }}>
-            {ngos.map(ngo => {
+            {ngos.filter(ngo => ngo.category !== 'sponsor').map(ngo => {
               const coverUrl = ngo.cover_image_url
               const activeMissionCount = missions.filter(m => m.ngos?.id === ngo.id).length
 

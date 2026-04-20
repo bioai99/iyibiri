@@ -14,12 +14,13 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
   const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
+  const nonSponsors = ngos.filter(n => n.category !== 'sponsor')
   const filtered = query.trim()
-    ? ngos.filter(n =>
+    ? nonSponsors.filter(n =>
         n.name.toLowerCase().includes(query.toLowerCase()) ||
         (n.tagline ?? '').toLowerCase().includes(query.toLowerCase())
       )
-    : ngos
+    : nonSponsors
 
   return (
     <div style={{ minHeight: '100vh', background: c.ink900, color: c.cream, paddingBottom: 100 }}>
