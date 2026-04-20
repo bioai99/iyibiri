@@ -3,59 +3,18 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Bell, Calendar, Sparkles, UserPen } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 import { EmptyState } from '@/components/ui/empty-state'
 import {
   HeroCard,
-  QuickAction,
   ImpactSummary,
   ChipDS,
   IconButtonDS,
   ThemeToggle,
 } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
-
-// ── Tier helpers ───────────────────────────────────────────────
-
-const TIER_THRESHOLDS = [0, 500, 2000, 5000, 10000]
-const TIER_NAMES = [
-  'İyi Biri',
-  'Çok İyi Biri',
-  'Çoook İyi Biri',
-  'Gerçekten İyi Biri',
-  'İyiliğin Öncüsü',
-]
-const TIER_NEXT = [
-  'Çok İyi Biri',
-  'Çoook İyi Biri',
-  'Gerçekten İyi Biri',
-  'İyiliğin Öncüsü',
-  '',
-]
-
-function getTierIndex(karma: number): number {
-  let idx = 0
-  for (let i = TIER_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (karma >= TIER_THRESHOLDS[i]) { idx = i; break }
-  }
-  return idx
-}
-
-function getTierName(karma: number): string {
-  return TIER_NAMES[getTierIndex(karma)]
-}
-
-function getNextTierName(karma: number): string {
-  return TIER_NEXT[getTierIndex(karma)]
-}
-
-function getKarmaToNext(karma: number): number {
-  const idx = getTierIndex(karma)
-  if (idx >= TIER_THRESHOLDS.length - 1) return 0
-  return TIER_THRESHOLDS[idx + 1] - karma
-}
 
 // ── Date helpers ───────────────────────────────────────────────
 
@@ -82,15 +41,18 @@ interface Props {
   ngos: NGO[]
   savedMissionIds?: string[]
   memberNgoIds?: string[]
+  recommendedMissions: MissionWithNGO[]
+  userActiveMissions: UserMission[]
+  activeMissionsWithNGO: MissionWithNGO[]
 }
 
-// ── Filter chips ───────────────────────────────────────────────
+// ── Tab key ────────────────────────────────────────────────────
 
-const FILTERS = ['Tümü', 'Yakınımda', 'Bu hafta sonu', 'Online', 'Kısa', 'Uzun']
+type TabKey = 'recommended' | 'active'
 
 // ── Component ─────────────────────────────────────────────────
 
-export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [] }: Props) {
+export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [], recommendedMissions, activeMissionsWithNGO }: Props) {
   const { colors: c } = useTheme()
 
   // Save pending onboarding data from localStorage (app flow: onboarding → auth → dashboard)
@@ -116,14 +78,17 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
   }, [profile.id])
 
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
-  const takenIds     = new Set(userMissions.filter(m => m.status === 'taken').map(m => m.mission_id))
-
-  const featuredMissions = missions.filter(m => m.featured && !completedIds.has(m.id)).slice(0, 3)
 
   const karma = profile.karma_total ?? 0
   const firstName = (profile.name ?? 'Biri').split(' ')[0]
 
-  const [activeFilter, setActiveFilter] = useState('Tümü')
+  const [activeTab, setActiveTab] = useState<TabKey>('recommended')
+
+  const displayMissions = activeTab === 'recommended'
+    ? recommendedMissions
+    : activeMissionsWithNGO
+
+  const sectionTitle = activeTab === 'recommended' ? 'Senin için seçtik' : 'Görevlerin'
 
   return (
     <div
@@ -171,7 +136,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
             <IconButtonDS
               size={38}
               theme="dark"
-              icon={<Bell size={18} color={c.cream} />}
+              icon={<Bell size={18} color={c.gold} />}
             />
           </Link>
           <ThemeToggle size={38} />
@@ -210,60 +175,23 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         <HeroCard profile={{
           karma,
           completed: completedIds.size,
-          streak: profile.streak ?? 0,
+          streak: profile.current_streak ?? profile.streak ?? 0,
         }} />
       </motion.div>
 
-      {/* ── 3. Quick Actions ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
-        style={{
-          padding: '16px 16px 0',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 8,
-        }}>
-        <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
-          <QuickAction
-            icon={<Calendar size={18} color={c.gold} />}
-            title="Bu hafta sonu"
-            sub="Yakınında 12 görev var"
-          />
-        </Link>
-        <Link href="/dashboard/missions" style={{ textDecoration: 'none' }}>
-          <QuickAction
-            icon={<Sparkles size={18} color={c.gold} />}
-            title="Önerilenler"
-            sub="Sana özel 6 öneri"
-          />
-        </Link>
-      </motion.div>
-
-      {/* ── 4. Filter chips ── */}
+      {/* ── 3. Tab chips ── */}
       <div style={{ padding: '24px 0 4px' }}>
-        <div style={{
-          display: 'flex',
-          gap: 8,
-          overflowX: 'auto',
-          paddingLeft: 20,
-          paddingRight: 20,
-          scrollbarWidth: 'none',
-        }}>
-          {FILTERS.map(filter => (
-            <ChipDS
-              key={filter}
-              active={activeFilter === filter}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </ChipDS>
-          ))}
+        <div style={{ display: 'flex', gap: 8, paddingLeft: 20, paddingRight: 20 }}>
+          <ChipDS active={activeTab === 'recommended'} onClick={() => setActiveTab('recommended')}>
+            Senin için
+          </ChipDS>
+          <ChipDS active={activeTab === 'active'} onClick={() => setActiveTab('active')}>
+            Katıldıkların
+          </ChipDS>
         </div>
       </div>
 
-      {/* ── 5. Mission section header ── */}
+      {/* ── 4. Mission section header ── */}
       <div style={{
         padding: '24px 20px 12px',
         display: 'flex',
@@ -278,7 +206,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
           letterSpacing: '-0.02em',
           color: c.cream,
         }}>
-          Senin için seçtik
+          {sectionTitle}
         </h2>
         <Link
           href="/dashboard/missions"
@@ -294,16 +222,24 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         </Link>
       </div>
 
-      {/* ── 6. Mission cards (vertical) ── */}
+      {/* ── 5. Mission cards (vertical) ── */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {featuredMissions.length === 0 ? (
-          <EmptyState
-            title="Harikasın!"
-            description="Tüm öne çıkan görevleri bitirdin. Yenileri yakında gelecek."
-            action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
-          />
+        {displayMissions.length === 0 ? (
+          activeTab === 'recommended' ? (
+            <EmptyState
+              title="Henüz öneri yok"
+              description="İlgi alanlarını ve şehrini profilinden belirle, sana özel görevler önerelim."
+              action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
+            />
+          ) : (
+            <EmptyState
+              title="Henüz katıldığın görev yok"
+              description="Görevlere katılarak burada takip edebilirsin."
+              action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
+            />
+          )
         ) : (
-          featuredMissions.map(mission => (
+          displayMissions.map(mission => (
             <MissionCard
               key={mission.id}
               mission={mission}
@@ -315,7 +251,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         )}
       </div>
 
-      {/* ── 7. NGO rail ── */}
+      {/* ── 6. NGO rail ── */}
       {ngos.length > 0 && (
         <div style={{ padding: '32px 0 0' }}>
           {/* Section header */}
@@ -457,7 +393,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         </div>
       )}
 
-      {/* ── 8. Impact summary ── */}
+      {/* ── 7. Impact summary ── */}
       <div style={{ padding: '8px 16px 20px' }}>
         <ImpactSummary completed={completedIds.size} karma={karma} />
       </div>

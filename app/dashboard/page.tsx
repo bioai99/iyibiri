@@ -52,10 +52,10 @@ export default async function DashboardPage() {
     .filter(m => !takenOrCompletedIds.has(m.id))
     .map(m => {
       let score = 0
-      if (memberNgoIds.includes(m.ngo_id)) score += 100
+      if (m.ngo_id && memberNgoIds.includes(m.ngo_id)) score += 100
       if (m.domain && interests.includes(m.domain)) score += 50
       if (profileCity && m.location && m.location.toLowerCase().includes(profileCity)) score += 25
-      if (m.is_featured) score += 10
+      if (m.featured) score += 10
       return { mission: m, score }
     })
     .sort((a, b) => b.score - a.score)
