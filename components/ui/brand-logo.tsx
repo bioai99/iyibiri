@@ -12,26 +12,28 @@ interface BrandLogoProps {
   tierLevel?: number
 }
 
+// Wing fold angles (rotateY degrees): 0°=open, 65°=nearly closed
+// Left wing uses positive rotateY, right wing uses negated values
 const TIER_CONFIG = [
-  // Tier 1 — İyi Biri: pastel, gentle breathing only
+  // Tier 1 — İyi Biri: gentle sway
   { size: 120, glowOpacity: 0,    particles: 0,
-    flapPattern: [1, 0.9, 1],                                       flapDuration: 3.0,
+    foldPattern: [0, 15, 0],                                        foldDuration: 3.0,
     wL: ['#E8D9A8', '#D4C488', '#B8A56A'], wR: ['#D4A090', '#BC7A6A', '#9E6050'] },
-  // Tier 2 — İyi Yürekli: breathe + one flutter
+  // Tier 2 — İyi Yürekli: breathe + one fold
   { size: 128, glowOpacity: 0.15, particles: 0,
-    flapPattern: [1, 0.92, 1, 1, 0.35, 0.92, 1, 0.92, 1],          flapDuration: 5.0,
+    foldPattern: [0, 10, 0, 0, 55, 10, 0, 10, 0],                  foldDuration: 5.0,
     wL: ['#F4D98A', '#E8C268', '#C89E3D'], wR: ['#E07A6A', '#C8553D', '#A84030'] },
-  // Tier 3 — İyilik Elçisi: confident flutter
+  // Tier 3 — İyilik Elçisi: confident fold
   { size: 136, glowOpacity: 0.3,  particles: 0,
-    flapPattern: [1, 0.9, 1, 0.3, 0.9, 0.35, 1, 0.9, 1],          flapDuration: 4.0,
+    foldPattern: [0, 10, 0, 55, 10, 50, 0, 10, 0],                 foldDuration: 4.0,
     wL: ['#F0D070', '#D4A838', '#B08820'], wR: ['#D45A4A', '#B83828', '#982818'] },
-  // Tier 4 — İyilik Savaşçısı: active fluttering
+  // Tier 4 — İyilik Savaşçısı: active folding
   { size: 144, glowOpacity: 0.4,  particles: 4,
-    flapPattern: [1, 0.25, 0.88, 0.3, 0.92, 1, 0.9, 1],            flapDuration: 3.2,
+    foldPattern: [0, 60, 10, 55, 10, 0, 10, 0],                    foldDuration: 3.2,
     wL: ['#7ECFB8', '#4DB896', '#2E9E7A'], wR: ['#E8965A', '#D07038', '#B05020'] },
-  // Tier 5 — İyiliğin Işığı: dramatic multi-flutter
+  // Tier 5 — İyiliğin Işığı: dramatic multi-fold
   { size: 152, glowOpacity: 0.6,  particles: 8,
-    flapPattern: [1, 0.2, 0.88, 0.25, 0.9, 0.3, 1, 0.92, 1],      flapDuration: 2.8,
+    foldPattern: [0, 65, 10, 60, 8, 55, 0, 10, 0],                 foldDuration: 2.8,
     wL: ['#C4A0E8', '#9B6ED0', '#7A4CB8'], wR: ['#F4D98A', '#E8C268', '#C89E3D'] },
 ]
 
@@ -57,16 +59,29 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
   const d = animate ? 0.12 : 0
   const uid = `bl-${Math.random().toString(36).slice(2, 8)}`
 
-  // --- Wing animation: scaleX for natural folding ---
-  // scaleX 1 = wings open, scaleX 0.2 = wings nearly closed
-  // Transform-origin at body edge so wings fold toward body
-  // Both wings use SAME scaleX values (origins mirror naturally)
-  const wingAnimProps = (tier ? true : idle) ? {
-    animate: { scaleX: tier?.flapPattern ?? [1, 0.88, 1] },
+  // --- Wing animation: rotateY for 3D fold ---
+  // 0° = wings flat/open, 55-65° = wings nearly closed (edge-on)
+  // Transform-origin at body edge: thin part stays fixed, wide part folds back
+  // Left wing uses positive rotateY, right wing uses negative (mirror)
+  const foldValues = tier?.foldPattern ?? [0, 12, 0]
+  const foldDuration = tier?.foldDuration ?? 2.6
+
+  const leftWingAnimProps = (tier ? true : idle) ? {
+    animate: { rotateY: foldValues },
     transition: {
-      duration: tier?.flapDuration ?? 2.6,
+      duration: foldDuration,
       repeat: Infinity,
       ease: 'easeInOut' as const,
+    } as Transition,
+  } : {}
+
+  const rightWingAnimProps = (tier ? true : idle) ? {
+    animate: { rotateY: foldValues.map((v: number) => -v) },
+    transition: {
+      duration: foldDuration,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+      delay: 0.05,
     } as Transition,
   } : {}
 
@@ -106,7 +121,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
   const glowTransition: Transition | undefined = tier
     ? tier.glowOpacity > 0
-      ? { duration: (tier?.flapDuration ?? 2.6), repeat: Infinity, ease: 'easeInOut' as const }
+      ? { duration: (tier?.foldDuration ?? 2.6), repeat: Infinity, ease: 'easeInOut' as const }
       : undefined
     : idle
     ? { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: animate ? 1 : 0 }
@@ -147,10 +162,10 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
               scale: [0.8, 1.2, 0.8],
             }}
             transition={{
-              duration: (tier?.flapDuration ?? 2.6) * 2.5,
+              duration: (tier?.foldDuration ?? 2.6) * 2.5,
               repeat: Infinity,
               ease: 'linear' as const,
-              delay: (i / tier.particles) * (tier?.flapDuration ?? 2.6),
+              delay: (i / tier.particles) * (tier?.foldDuration ?? 2.6),
             }}
           />
         )
@@ -249,7 +264,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Left wings */}
           <motion.g
-            {...wingAnimProps}
+            {...leftWingAnimProps}
             style={{ transformOrigin: '248px 250px' }}
           >
             <motion.path
@@ -272,7 +287,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Right wings */}
           <motion.g
-            {...wingAnimProps}
+            {...rightWingAnimProps}
             style={{ transformOrigin: '264px 250px' }}
           >
             <motion.path
