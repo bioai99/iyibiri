@@ -33,11 +33,15 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
   const [takeError, setTakeError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [following, setFollowing] = useState(false)
+  const [kvkkChecked, setKvkkChecked] = useState(false)
+  const [joinSuccess, setJoinSuccess] = useState(false)
+  const [becameMember, setBecameMember] = useState(false)
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
   const isTaken = !!userMission
   const isCompleted = userMission?.status === 'completed'
+  const effectiveMember = isMember || becameMember
 
   async function handleTakeMission() {
     setLoading(true)
@@ -51,6 +55,45 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       return
     }
     router.push(`/dashboard/missions/${mission.id}/complete`)
+  }
+
+  async function handleJoinAndTakeMission() {
+    setLoading(true)
+    setTakeError(null)
+
+    // Step 1: Create membership
+    const { error: memberError } = await supabase
+      .from('ngo_memberships')
+      .insert({ user_id: userId, ngo_id: mission.ngo_id!, status: 'active' })
+
+    if (memberError && !memberError.message?.includes('duplicate')) {
+      setTakeError('Üyelik oluşturulamadı, tekrar dene')
+      setLoading(false)
+      return
+    }
+
+    // Step 2: Take mission
+    const { error: missionError } = await supabase
+      .from('user_missions')
+      .insert({ user_id: userId, mission_id: mission.id, status: 'taken' })
+
+    if (missionError) {
+      setTakeError('Görev alınamadı, tekrar dene')
+      setLoading(false)
+      return
+    }
+
+    setBecameMember(true)
+    setJoinSuccess(true)
+    setLoading(false)
+
+    // Confetti
+    import('canvas-confetti').then(mod => {
+      mod.default({ particleCount: 60, spread: 60, origin: { y: 0.8 } })
+    })
+
+    // After 2s, refresh to show taken state
+    setTimeout(() => router.refresh(), 2000)
   }
 
   return (
@@ -494,33 +537,131 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             Tamamladım
             <ArrowRight size={20} />
           </button>
+        ) : effectiveMember ? (
+          /* State 3: Member + not taken — direct join */
+          <div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              background: c.goldSoft, borderRadius: 999, padding: '4px 10px',
+              fontSize: 11, fontWeight: 600, color: c.gold, marginBottom: 8,
+            }}>
+              ✓ {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} üyesi
+            </div>
+            <button
+              onClick={handleTakeMission}
+              disabled={loading}
+              style={{
+                width: '100%',
+                background: loading ? '#8A6A2C' : c.gold,
+                color: '#24201B',
+                border: 'none',
+                borderRadius: 16,
+                padding: '16px 20px',
+                fontSize: 16,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+                boxShadow: '0 4px 16px rgba(0,0,0,.12)',
+              }}
+            >
+              {loading ? 'Göreve Alınıyor...' : 'Bu göreve katıl'}
+              {!loading && <ArrowRight size={20} />}
+            </button>
+          </div>
+        ) : joinSuccess ? (
+          /* Just joined + took mission — success state */
+          <div style={{ textAlign: 'center', padding: 16 }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: c.gold }}>
+              {'\uD83C\uDF89'} Harika!
+            </div>
+            <div style={{ fontSize: 14, color: c.ink300, marginTop: 4 }}>
+              {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} gönüllüsü oldun ve göreve katıldın
+            </div>
+          </div>
         ) : (
-          /* Default state */
-          <button
-            onClick={handleTakeMission}
-            disabled={loading}
-            style={{
-              width: '100%',
-              background: loading ? '#8A6A2C' : c.gold,
-              color: '#24201B',
-              border: 'none',
-              borderRadius: 16,
-              padding: '16px 20px',
-              fontSize: 16,
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-              transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
-              boxShadow: '0 4px 16px rgba(0,0,0,.12)',
-            }}
-          >
-            {loading ? 'Göreve Alınıyor...' : 'Bu göreve katıl'}
-            {!loading && <ArrowRight size={20} />}
-          </button>
+          /* State 4: NOT member — membership awareness + join */
+          <div>
+            {/* NGO info + KVKK card */}
+            <div style={{
+              background: c.ink800, border: `1px solid ${c.ink600}`,
+              borderRadius: 16, padding: 16, marginBottom: 12,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                {mission.ngos?.logo_url && (
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 10, background: 'white',
+                    overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={mission.ngos.logo_url}
+                      alt=""
+                      style={{ width: '70%', height: '70%', objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
+                    {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} gönüllüsü ol
+                  </div>
+                  <div style={{ fontSize: 12, color: c.ink300 }}>
+                    Bu göreve katılmak için gönüllü olman gerekiyor
+                  </div>
+                </div>
+              </div>
+
+              {/* KVKK checkbox */}
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', cursor: 'pointer' }}>
+                <div
+                  onClick={() => setKvkkChecked(!kvkkChecked)}
+                  style={{
+                    width: 20, height: 20, borderRadius: 6, marginTop: 1,
+                    background: kvkkChecked ? c.gold : 'transparent',
+                    border: `1.5px solid ${kvkkChecked ? c.gold : c.ink500}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {kvkkChecked && <Check size={12} color="#fff" strokeWidth={3} />}
+                </div>
+                <span style={{ fontSize: 12, color: c.ink300, lineHeight: 1.4 }}>
+                  Bilgilerimin <span style={{ color: c.cream, fontWeight: 600 }}>{mission.ngos?.name ?? ''}</span> ile paylaşılmasını kabul ediyorum
+                </span>
+              </label>
+            </div>
+
+            {/* Combined CTA button */}
+            <button
+              onClick={handleJoinAndTakeMission}
+              disabled={!kvkkChecked || loading}
+              style={{
+                width: '100%',
+                background: kvkkChecked && !loading ? c.gold : c.ink600,
+                color: kvkkChecked ? '#24201B' : c.ink300,
+                border: 'none',
+                borderRadius: 16,
+                padding: '16px 20px',
+                fontSize: 16,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                cursor: kvkkChecked && !loading ? 'pointer' : 'not-allowed',
+                boxShadow: kvkkChecked ? '0 4px 16px rgba(0,0,0,.12)' : 'none',
+                transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+              }}
+            >
+              {loading ? 'Kaydediliyor...' : 'Gönüllü ol ve katıl'}
+              {!loading && <ArrowRight size={20} />}
+            </button>
+          </div>
         )}
       </div>
     </div>
