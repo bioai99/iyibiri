@@ -175,6 +175,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         <HeroCard profile={{
           karma,
           completed: completedIds.size,
+          taken: userMissions.filter(m => m.status === 'taken').length,
           streak: profile.current_streak ?? profile.streak ?? 0,
         }} />
       </motion.div>

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { Flame, CheckCircle2, ChevronRight } from 'lucide-react'
+import { Flame, Zap, Trophy } from 'lucide-react'
 import { KarmaDotToken } from './karma-dot-token'
 import { BrandLogo } from '@/components/ui/brand-logo'
 import { useTheme } from '@/lib/theme'
@@ -19,7 +19,53 @@ function computeTier(karma: number) {
 }
 
 interface HeroCardProps {
-  profile: { karma: number; completed: number; streak: number }
+  profile: { karma: number; completed: number; taken: number; streak: number }
+}
+
+function StatCell({ icon, iconBg, value, label, href }: {
+  icon: React.ReactNode
+  iconBg: string
+  value: string | number
+  label: string
+  href: string
+}) {
+  const { colors: c } = useTheme()
+  return (
+    <Link href={href} style={{
+      flex: 1,
+      textDecoration: 'none',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '14px 4px 12px',
+      gap: 0,
+    }}>
+      <div style={{
+        width: 30,
+        height: 30,
+        borderRadius: 10,
+        background: iconBg,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 6,
+      }}>
+        {icon}
+      </div>
+      <div style={{
+        fontSize: 17,
+        fontWeight: 700,
+        color: c.cream,
+        fontVariantNumeric: 'tabular-nums',
+        lineHeight: 1.1,
+      }}>
+        {value}
+      </div>
+      <div style={{ fontSize: 10, color: c.ink300, marginTop: 3 }}>
+        {label}
+      </div>
+    </Link>
+  )
 }
 
 export function HeroCard({ profile }: HeroCardProps) {
@@ -36,11 +82,11 @@ export function HeroCard({ profile }: HeroCardProps) {
         overflow: 'hidden',
       }}
     >
-      {/* ── Main content: karma left, butterfly right ── */}
+      {/* ── Main: karma left, butterfly right ── */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '20px 12px 20px 22px',
+        padding: '20px 12px 16px 22px',
         gap: 8,
       }}>
         {/* Left: Karma */}
@@ -63,17 +109,14 @@ export function HeroCard({ profile }: HeroCardProps) {
           </div>
         </div>
 
-        {/* Right: Butterfly + tier name + dots — tappable */}
+        {/* Right: Butterfly + tier name + dots → tappable */}
         <Link href="/dashboard/tiers" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 0,
           }}>
             <BrandLogo tierLevel={tierLevel} />
-
-            {/* Tier name */}
             <div style={{
               fontFamily: "'Fraunces', var(--font-display), ui-serif, Georgia, serif",
               fontStyle: 'italic',
@@ -81,78 +124,49 @@ export function HeroCard({ profile }: HeroCardProps) {
               fontWeight: 500,
               color: c.gold,
               marginTop: -6,
-              letterSpacing: '-0.01em',
             }}>
               {tierName}
             </div>
-
-            {/* 5 tier dots */}
-            <div style={{
-              display: 'flex',
-              gap: 5,
-              marginTop: 6,
-            }}>
+            <div style={{ display: 'flex', gap: 5, marginTop: 6 }}>
               {[1, 2, 3, 4, 5].map(t => (
-                <div
-                  key={t}
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: t <= tierLevel ? c.gold : c.ink600,
-                    transition: 'background 300ms',
-                  }}
-                />
+                <div key={t} style={{
+                  width: 6, height: 6, borderRadius: '50%',
+                  background: t <= tierLevel ? c.gold : c.ink600,
+                }} />
               ))}
             </div>
           </div>
         </Link>
       </div>
 
-      {/* ── Bottom stats — tappable ── */}
+      {/* ── Stats row — 3 tappable cells with icon badges ── */}
       <div style={{
         display: 'flex',
         borderTop: `1px solid ${c.ink600}`,
       }}>
-        {/* Completed missions → /dashboard/my-missions */}
-        <Link href="/dashboard/my-missions" style={{
-          flex: 1,
-          textDecoration: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 5,
-          padding: '13px 12px',
-          transition: 'opacity 150ms',
-        }}>
-          <CheckCircle2 size={14} color={c.gold} />
-          <span style={{ fontSize: 14, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
-            {profile.completed}
-          </span>
-          <span style={{ fontSize: 12, color: c.ink300 }}>görev</span>
-          <ChevronRight size={12} color={c.ink400} style={{ marginLeft: 2 }} />
-        </Link>
-
+        <StatCell
+          icon={<Zap size={14} color={c.gold} strokeWidth={2.5} />}
+          iconBg={c.goldSoft}
+          value={profile.taken}
+          label="aktif görev"
+          href="/dashboard/my-missions"
+        />
         <div style={{ width: 1, background: c.ink600 }} />
-
-        {/* Streak → /dashboard/streak */}
-        <Link href="/dashboard/streak" style={{
-          flex: 1,
-          textDecoration: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 5,
-          padding: '13px 12px',
-          transition: 'opacity 150ms',
-        }}>
-          <Flame size={14} color={c.gold} />
-          <span style={{ fontSize: 14, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
-            {profile.streak} gün
-          </span>
-          <span style={{ fontSize: 12, color: c.ink300 }}>seri</span>
-          <ChevronRight size={12} color={c.ink400} style={{ marginLeft: 2 }} />
-        </Link>
+        <StatCell
+          icon={<Trophy size={14} color={c.sage} strokeWidth={2.5} />}
+          iconBg="rgba(196,203,172,0.12)"
+          value={profile.completed}
+          label="tamamlandı"
+          href="/dashboard/my-missions"
+        />
+        <div style={{ width: 1, background: c.ink600 }} />
+        <StatCell
+          icon={<Flame size={14} color="#D19B3C" strokeWidth={2.5} />}
+          iconBg="rgba(209,155,60,0.12)"
+          value={`${profile.streak}`}
+          label="gün seri"
+          href="/dashboard/streak"
+        />
       </div>
     </div>
   )
