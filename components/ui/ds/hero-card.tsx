@@ -39,147 +39,143 @@ export function HeroCard({ profile }: HeroCardProps) {
   return (
     <div
       style={{
-        background: `linear-gradient(155deg, ${c.ink800} 0%, ${c.ink900} 100%)`,
-        borderRadius: 24,
+        background: c.ink800,
+        borderRadius: 20,
         border: `1px solid ${c.ink600}`,
         position: 'relative',
         overflow: 'hidden',
-        display: 'flex',
-        minHeight: 200,
+        padding: '20px 20px 16px',
       }}
     >
-      {/* Decorative arcs — very subtle background texture */}
-      <svg
-        width="300" height="300" viewBox="0 0 300 300"
-        style={{ position: 'absolute', right: -60, top: -60, opacity: 0.06, pointerEvents: 'none' }}
-      >
-        {[140, 110, 80, 50].map(r => (
-          <circle key={r} cx="150" cy="150" r={r} stroke={c.gold} strokeWidth="0.5" fill="none" />
-        ))}
-      </svg>
-
-      {/* ── Left: Information hierarchy ── */}
+      {/* ── Top row: Tier name left, Butterfly right ── */}
       <div style={{
-        flex: 1,
-        padding: '24px 0 20px 24px',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        position: 'relative',
-        zIndex: 1,
-        minWidth: 0,
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        gap: 12,
       }}>
-        {/* Tier name — gold eyebrow */}
-        <div style={{
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: c.gold,
-          marginBottom: 8,
-        }}>
-          {tierName}
-        </div>
-
-        {/* Karma number — THE primary metric, large and prominent */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          marginBottom: 2,
-        }}>
-          <KarmaDotToken size={14} />
-          <span style={{
-            fontSize: 38,
-            fontWeight: 700,
-            color: c.cream,
-            letterSpacing: '-0.03em',
-            fontVariantNumeric: 'tabular-nums',
-            lineHeight: 1,
+        {/* Left column: all info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Tier badge */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 5,
+            background: c.goldSoft,
+            border: `1px solid ${c.goldLine}`,
+            borderRadius: 999,
+            padding: '4px 10px 4px 8px',
+            marginBottom: 14,
           }}>
-            {profile.karma.toLocaleString('tr-TR')}
-          </span>
-        </div>
-        <div style={{
-          fontSize: 13,
-          color: c.ink300,
-          marginBottom: 16,
-        }}>
-          karma
-        </div>
-
-        {/* Progress bar — compact, under the number */}
-        {!isMax && (
-          <div style={{ maxWidth: '85%' }}>
-            <div style={{
-              height: 4,
-              background: 'rgba(255,255,255,.1)',
-              borderRadius: 999,
-              overflow: 'hidden',
-              marginBottom: 6,
+            <svg width="10" height="10" viewBox="0 0 12 12">
+              <path d="M6 1l1.5 3L11 4.5l-2.5 2L9 10 6 8.3 3 10l.5-3.5L1 4.5 4.5 4z" fill={c.gold} />
+            </svg>
+            <span style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: c.gold,
+              letterSpacing: '0.02em',
             }}>
-              <div style={{
-                height: '100%',
-                width: `${Math.max(pct, 3)}%`,
-                background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
-                borderRadius: 999,
-                transition: 'width 400ms cubic-bezier(.2,.8,.2,1)',
-              }} />
-            </div>
-            <div style={{ fontSize: 11, color: c.ink300 }}>
-              <span style={{
-                fontFamily: "'Fraunces', var(--font-display), ui-serif, Georgia, serif",
-                fontStyle: 'italic',
-                color: c.cream,
-              }}>
-                {nextTierName}
-              </span>
-              &apos;ye{' '}
-              <span style={{ color: c.gold, fontWeight: 600 }}>
-                {karmaToNext!.toLocaleString('tr-TR')}
-              </span>
-              {' '}kaldı
-            </div>
+              {tierName}
+            </span>
           </div>
-        )}
 
-        {/* Stats row — compact, at the bottom */}
+          {/* Karma number */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 2 }}>
+            <KarmaDotToken size={14} />
+            <span style={{
+              fontSize: 44,
+              fontWeight: 700,
+              color: c.cream,
+              letterSpacing: '-0.035em',
+              fontVariantNumeric: 'tabular-nums',
+              lineHeight: 0.95,
+            }}>
+              {profile.karma.toLocaleString('tr-TR')}
+            </span>
+          </div>
+          <div style={{ fontSize: 13, color: c.ink300, marginBottom: 16 }}>
+            Karma
+          </div>
+
+          {/* Progress */}
+          {!isMax && (
+            <div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+                fontSize: 11,
+                marginBottom: 6,
+              }}>
+                <span style={{ color: c.ink300 }}>
+                  <span style={{
+                    fontFamily: "'Fraunces', var(--font-display), ui-serif, Georgia, serif",
+                    fontStyle: 'italic',
+                    color: c.cream,
+                  }}>
+                    {nextTierName}
+                  </span>
+                  &apos;ye
+                </span>
+                <span style={{ color: c.gold, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
+                  {karmaToNext!.toLocaleString('tr-TR')} kaldı
+                </span>
+              </div>
+              <div style={{
+                height: 5,
+                background: 'rgba(255,255,255,.1)',
+                borderRadius: 999,
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${Math.max(pct, 3)}%`,
+                  background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
+                  borderRadius: 999,
+                }} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Butterfly — the star */}
         <div style={{
+          flexShrink: 0,
           display: 'flex',
           alignItems: 'center',
-          gap: 16,
-          marginTop: 14,
+          marginTop: -8,
+          marginRight: -8,
+          marginBottom: -8,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Flame size={13} color={c.gold} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
-              {profile.streak}
-            </span>
-            <span style={{ fontSize: 11, color: c.ink300 }}>gün seri</span>
-          </div>
-          <div style={{ width: 1, height: 14, background: c.ink600 }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <CheckCircle2 size={13} color={c.gold} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
-              {profile.completed}
-            </span>
-            <span style={{ fontSize: 11, color: c.ink300 }}>görev</span>
-          </div>
+          <BrandLogo tierLevel={tierLevel} />
         </div>
       </div>
 
-      {/* ── Right: Butterfly hero — the STAR of the card ── */}
+      {/* ── Bottom stats row ── */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: -16,
-        marginTop: -12,
-        marginBottom: -12,
-        flexShrink: 0,
-        position: 'relative',
+        gap: 16,
+        marginTop: 14,
+        paddingTop: 14,
+        borderTop: `1px solid ${c.ink600}`,
       }}>
-        <BrandLogo tierLevel={tierLevel} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <CheckCircle2 size={13} color={c.gold} />
+          <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
+            {profile.completed}
+          </span>
+          <span style={{ fontSize: 11, color: c.ink300 }}>görev</span>
+        </div>
+        <div style={{ width: 1, height: 14, background: c.ink600 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Flame size={13} color={c.gold} />
+          <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
+            {profile.streak} gün
+          </span>
+          <span style={{ fontSize: 11, color: c.ink300 }}>seri</span>
+        </div>
       </div>
     </div>
   )

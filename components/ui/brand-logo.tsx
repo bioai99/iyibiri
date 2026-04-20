@@ -13,19 +13,19 @@ interface BrandLogoProps {
 }
 
 const TIER_CONFIG = [
-  { size: 140, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null,                                      flutterCycle: 0 },   // Tier 1
-  { size: 150, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],               flutterCycle: 4 },   // Tier 2
-  { size: 160, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
-  { size: 170, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
-  { size: 180, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
+  { size: 120, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null,                                      flutterCycle: 0 },   // Tier 1
+  { size: 128, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],               flutterCycle: 4 },   // Tier 2
+  { size: 136, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
+  { size: 144, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
+  { size: 152, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
 ]
 
 export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style, tierLevel }: BrandLogoProps) {
   const { mode } = useTheme()
 
-  const bodyFill = mode === 'dark' ? '#F4EEDF' : '#3E2F14'
-  const bodyFillEnd = mode === 'dark' ? '#D9CFB4' : '#24201B'
-  const veinColor = mode === 'dark' ? '#F4EEDF' : '#24201B'
+  const bodyFill = mode === 'dark' ? '#F4EEDF' : '#8B7A60'
+  const bodyFillEnd = mode === 'dark' ? '#D9CFB4' : '#6B5B45'
+  const veinColor = mode === 'dark' ? '#F4EEDF' : '#6B5B45'
   const wingLeftGrad = ['#F4D98A', '#E8C268', '#C89E3D']
   const wingRightGrad = ['#E07A6A', '#C8553D', '#A84030']
   const wordIyi = mode === 'dark' ? '#F4EEDF' : '#24201B'
@@ -224,8 +224,8 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
         <motion.svg
           width={effectiveSize}
-          height={effectiveSize}
-          viewBox="0 0 512 512"
+          height={tier ? effectiveSize * 0.68 : effectiveSize}
+          viewBox={tier ? '90 130 332 225' : '0 0 512 512'}
           style={{ display: 'block', position: 'relative', zIndex: 1 }}
           initial={animate ? { scale: 0, opacity: 0 } : undefined}
           animate={animate ? { scale: 1, opacity: 1 } : undefined}
