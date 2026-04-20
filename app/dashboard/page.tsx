@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/supabase/queries/profiles'
 import { getAllMissions, getUserMissions } from '@/lib/supabase/queries/missions'
 import { DashboardClient } from './dashboard-client'
-import type { NGO } from '@/lib/supabase/types'
+import type { NGO, MissionWithNGO, UserMission } from '@/lib/supabase/types'
 
 async function getNGOs(): Promise<NGO[]> {
   const supabase = createClient()
@@ -30,6 +30,38 @@ export default async function DashboardPage() {
   const savedMissionIds = (savedMissionsResult.data ?? []).map(s => s.mission_id)
   const memberNgoIds = (membershipsResult.data ?? []).map(m => m.ngo_id)
 
+  // User active missions (taken or completed), capped at 10
+  const userActiveMissions: UserMission[] = userMissions
+    .filter(um => um.status === 'taken' || um.status === 'completed')
+    .slice(0, 10)
+
+  const activeMissionIds = new Set(userActiveMissions.map(um => um.mission_id))
+  const activeMissionsWithNGO: MissionWithNGO[] = missions.filter(m => activeMissionIds.has(m.id))
+
+  // Recommendation scoring — exclude missions already taken/completed
+  const takenOrCompletedIds = new Set(
+    userMissions
+      .filter(um => um.status === 'taken' || um.status === 'completed')
+      .map(um => um.mission_id)
+  )
+
+  const interests: string[] = Array.isArray(profile.interests) ? (profile.interests as string[]) : []
+  const profileCity: string = (profile.city ?? '').toLowerCase()
+
+  const recommendedMissions: MissionWithNGO[] = missions
+    .filter(m => !takenOrCompletedIds.has(m.id))
+    .map(m => {
+      let score = 0
+      if (memberNgoIds.includes(m.ngo_id)) score += 100
+      if (m.domain && interests.includes(m.domain)) score += 50
+      if (profileCity && m.location && m.location.toLowerCase().includes(profileCity)) score += 25
+      if (m.is_featured) score += 10
+      return { mission: m, score }
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map(({ mission }) => mission)
+
   return (
     <DashboardClient
       profile={profile}
@@ -38,6 +70,9 @@ export default async function DashboardPage() {
       ngos={ngos}
       savedMissionIds={savedMissionIds}
       memberNgoIds={memberNgoIds}
+      recommendedMissions={recommendedMissions}
+      userActiveMissions={userActiveMissions}
+      activeMissionsWithNGO={activeMissionsWithNGO}
     />
   )
 }
