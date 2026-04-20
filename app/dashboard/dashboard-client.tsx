@@ -211,9 +211,6 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
           karma,
           completed: completedIds.size,
           streak: profile.streak ?? 0,
-          tierName: getTierName(karma),
-          nextTier: getNextTierName(karma),
-          karmaToNext: getKarmaToNext(karma),
         }} />
       </motion.div>
 
