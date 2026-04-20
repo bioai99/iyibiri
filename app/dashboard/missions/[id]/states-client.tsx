@@ -180,14 +180,14 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
 
 // ─── Applied state body ─────────────────────────────────────────────────────
 
-function AppliedBody({ onCancel }: { onCancel: () => void }) {
+function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: string }) {
   const { colors: c } = useTheme()
   const steps = [
     {
       num: 1,
       active: true,
       title: 'NGO onayı',
-      sub: 'TEMA 24 saat içinde katılımını onaylar',
+      sub: `${ngoName} 24 saat içinde katılımını onaylar`,
     },
     {
       num: 2,
@@ -379,10 +379,11 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
 
 // ─── Completed state body ───────────────────────────────────────────────────
 
-function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission }: {
+function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onNewMission }: {
   karma: number
   photoUrl: string | null
   impactStatement: string | null
+  ngoName: string
   onShare: () => void
   onNewMission: () => void
 }) {
@@ -515,7 +516,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, onShare, onNewMission
           }}
         >
           <div style={{ fontSize: 14, fontWeight: 600, color: c.cream, marginBottom: 12 }}>
-            TEMA Vakfı&apos;nı nasıl buldun?
+            {ngoName}&apos;nı nasıl buldun?
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {[1, 2, 3, 4, 5].map((star) => (
@@ -596,7 +597,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
         background: c.ink900,
         color: c.cream,
         minHeight: '100%',
-        paddingBottom: 120,
+        paddingBottom: 160,
       }}
     >
       {/* ── Hero photo ── */}
@@ -687,7 +688,10 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
 
       {/* ── State-specific body ── */}
       {state === 'applied' && (
-        <AppliedBody onCancel={() => router.push('/dashboard/missions')} />
+        <AppliedBody
+          onCancel={() => router.push('/dashboard/missions')}
+          ngoName={mission.ngos?.name ?? 'STK'}
+        />
       )}
       {state === 'checkin' && (
         <CheckInBody
@@ -700,6 +704,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
           karma={mission.karma}
           photoUrl={mission.photo_url}
           impactStatement={mission.impact_statement}
+          ngoName={mission.ngos?.name ?? 'STK'}
           onShare={handleShare}
           onNewMission={() => router.push('/dashboard/missions')}
         />

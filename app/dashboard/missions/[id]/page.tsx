@@ -16,14 +16,24 @@ export default async function MissionDetailPage({ params }: { params: { id: stri
 
   if (!mission) notFound()
 
-  const { data: membership } = await supabase
-    .from('ngo_memberships')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('ngo_id', mission.ngo_id ?? '')
-    .eq('status', 'active')
-    .maybeSingle()
+  const [membershipResult, savedResult] = await Promise.all([
+    supabase
+      .from('ngo_memberships')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('ngo_id', mission.ngo_id ?? '')
+      .eq('status', 'active')
+      .maybeSingle(),
+    supabase
+      .from('user_saved_missions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('mission_id', params.id)
+      .maybeSingle(),
+  ])
 
+  const membership = membershipResult.data
+  const isSaved = !!savedResult.data
   const userMission = userMissions.find(m => m.mission_id === params.id)
 
   if (userMission?.status === 'taken') {
@@ -40,6 +50,7 @@ export default async function MissionDetailPage({ params }: { params: { id: stri
       userMission={userMission ?? null}
       userId={user.id}
       isMember={!!membership}
+      isSaved={isSaved}
     />
   )
 }
