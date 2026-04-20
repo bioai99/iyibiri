@@ -13,11 +13,11 @@ interface BrandLogoProps {
 }
 
 const TIER_CONFIG = [
-  { size: 100, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,   particles: 0, flutterPattern: null,                                      flutterCycle: 0 },   // Tier 1
-  { size: 110, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],               flutterCycle: 4 },   // Tier 2
-  { size: 120, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3, particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
-  { size: 130, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4, particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
-  { size: 140, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6, particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
+  { size: 140, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null,                                      flutterCycle: 0 },   // Tier 1
+  { size: 150, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],               flutterCycle: 4 },   // Tier 2
+  { size: 160, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
+  { size: 170, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
+  { size: 180, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
 ]
 
 export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style, tierLevel }: BrandLogoProps) {
