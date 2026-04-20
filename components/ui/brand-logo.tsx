@@ -13,20 +13,25 @@ interface BrandLogoProps {
 }
 
 const TIER_CONFIG = [
-  // Tier 1 — İyi Biri: pastel, humble beginning
-  { size: 120, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null, flutterCycle: 0,
+  // Tier 1 — İyi Biri: pastel, gentle breathing only
+  { size: 120, glowOpacity: 0,    particles: 0,
+    flapPattern: [1, 0.9, 1],                                       flapDuration: 3.0,
     wL: ['#E8D9A8', '#D4C488', '#B8A56A'], wR: ['#D4A090', '#BC7A6A', '#9E6050'] },
-  // Tier 2 — İyi Yürekli: brand colors, full saturation
-  { size: 128, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0], flutterCycle: 4,
+  // Tier 2 — İyi Yürekli: breathe + one flutter
+  { size: 128, glowOpacity: 0.15, particles: 0,
+    flapPattern: [1, 0.92, 1, 1, 0.35, 0.92, 1, 0.92, 1],          flapDuration: 5.0,
     wL: ['#F4D98A', '#E8C268', '#C89E3D'], wR: ['#E07A6A', '#C8553D', '#A84030'] },
-  // Tier 3 — İyilik Elçisi: deeper, richer, confident
-  { size: 136, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0], flutterCycle: 3.5,
+  // Tier 3 — İyilik Elçisi: confident flutter
+  { size: 136, glowOpacity: 0.3,  particles: 0,
+    flapPattern: [1, 0.9, 1, 0.3, 0.9, 0.35, 1, 0.9, 1],          flapDuration: 4.0,
     wL: ['#F0D070', '#D4A838', '#B08820'], wR: ['#D45A4A', '#B83828', '#982818'] },
-  // Tier 4 — İyilik Savaşçısı: emerald + deep amber, nature warrior
-  { size: 144, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0], flutterCycle: 3,
+  // Tier 4 — İyilik Savaşçısı: active fluttering
+  { size: 144, glowOpacity: 0.4,  particles: 4,
+    flapPattern: [1, 0.25, 0.88, 0.3, 0.92, 1, 0.9, 1],            flapDuration: 3.2,
     wL: ['#7ECFB8', '#4DB896', '#2E9E7A'], wR: ['#E8965A', '#D07038', '#B05020'] },
-  // Tier 5 — İyiliğin Işığı: royal purple + bright gold, legendary
-  { size: 152, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0], flutterCycle: 2.5,
+  // Tier 5 — İyiliğin Işığı: dramatic multi-flutter
+  { size: 152, glowOpacity: 0.6,  particles: 8,
+    flapPattern: [1, 0.2, 0.88, 0.25, 0.9, 0.3, 1, 0.92, 1],      flapDuration: 2.8,
     wL: ['#C4A0E8', '#9B6ED0', '#7A4CB8'], wR: ['#F4D98A', '#E8C268', '#C89E3D'] },
 ]
 
@@ -52,32 +57,16 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
   const d = animate ? 0.12 : 0
   const uid = `bl-${Math.random().toString(36).slice(2, 8)}`
 
-  // --- Wing animation props ---
-  // Tier mode: use tier wingRotation + cycleDuration; also apply flutter pattern if defined
-  // Non-tier mode: existing idle behavior (±8°, 2.4s)
-  const wingRotation = tier ? tier.wingRotation : 8
-  const wingCycleDuration = tier ? tier.cycleDuration : 2.4
-
-  const leftWingAnimProps = (tier ? true : idle) ? {
-    animate: tier?.flutterPattern
-      ? { rotate: tier.flutterPattern }
-      : { rotate: [0, wingRotation, 0] },
+  // --- Wing animation: scaleX for natural folding ---
+  // scaleX 1 = wings open, scaleX 0.2 = wings nearly closed
+  // Transform-origin at body edge so wings fold toward body
+  // Both wings use SAME scaleX values (origins mirror naturally)
+  const wingAnimProps = (tier ? true : idle) ? {
+    animate: { scaleX: tier?.flapPattern ?? [1, 0.88, 1] },
     transition: {
-      duration: tier?.flutterPattern ? tier.flutterCycle : wingCycleDuration,
+      duration: tier?.flapDuration ?? 2.6,
       repeat: Infinity,
       ease: 'easeInOut' as const,
-    } as Transition,
-  } : {}
-
-  const rightWingAnimProps = (tier ? true : idle) ? {
-    animate: tier?.flutterPattern
-      ? { rotate: tier.flutterPattern.map((v: number) => -v) }
-      : { rotate: [0, -wingRotation, 0] },
-    transition: {
-      duration: tier?.flutterPattern ? tier.flutterCycle : wingCycleDuration,
-      repeat: Infinity,
-      ease: 'easeInOut' as const,
-      delay: 0.1,
     } as Transition,
   } : {}
 
@@ -117,7 +106,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
   const glowTransition: Transition | undefined = tier
     ? tier.glowOpacity > 0
-      ? { duration: wingCycleDuration, repeat: Infinity, ease: 'easeInOut' as const }
+      ? { duration: (tier?.flapDuration ?? 2.6), repeat: Infinity, ease: 'easeInOut' as const }
       : undefined
     : idle
     ? { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: animate ? 1 : 0 }
@@ -158,10 +147,10 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
               scale: [0.8, 1.2, 0.8],
             }}
             transition={{
-              duration: wingCycleDuration * 2.5,
+              duration: (tier?.flapDuration ?? 2.6) * 2.5,
               repeat: Infinity,
               ease: 'linear' as const,
-              delay: (i / tier.particles) * wingCycleDuration,
+              delay: (i / tier.particles) * (tier?.flapDuration ?? 2.6),
             }}
           />
         )
@@ -260,7 +249,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Left wings */}
           <motion.g
-            {...leftWingAnimProps}
+            {...wingAnimProps}
             style={{ transformOrigin: '248px 250px' }}
           >
             <motion.path
@@ -283,7 +272,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Right wings */}
           <motion.g
-            {...rightWingAnimProps}
+            {...wingAnimProps}
             style={{ transformOrigin: '264px 250px' }}
           >
             <motion.path
