@@ -13,28 +13,38 @@ interface BrandLogoProps {
 }
 
 const TIER_CONFIG = [
-  { size: 120, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null,                                      flutterCycle: 0 },   // Tier 1
-  { size: 128, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],               flutterCycle: 4 },   // Tier 2
-  { size: 136, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
-  { size: 144, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
-  { size: 152, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
+  // Tier 1 — İyi Biri: pastel, humble beginning
+  { size: 120, wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,    particles: 0, flutterPattern: null, flutterCycle: 0,
+    wL: ['#E8D9A8', '#D4C488', '#B8A56A'], wR: ['#D4A090', '#BC7A6A', '#9E6050'] },
+  // Tier 2 — İyi Yürekli: brand colors, full saturation
+  { size: 128, wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0.15, particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0], flutterCycle: 4,
+    wL: ['#F4D98A', '#E8C268', '#C89E3D'], wR: ['#E07A6A', '#C8553D', '#A84030'] },
+  // Tier 3 — İyilik Elçisi: deeper, richer, confident
+  { size: 136, wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3,  particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0], flutterCycle: 3.5,
+    wL: ['#F0D070', '#D4A838', '#B08820'], wR: ['#D45A4A', '#B83828', '#982818'] },
+  // Tier 4 — İyilik Savaşçısı: emerald + deep amber, nature warrior
+  { size: 144, wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4,  particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0], flutterCycle: 3,
+    wL: ['#7ECFB8', '#4DB896', '#2E9E7A'], wR: ['#E8965A', '#D07038', '#B05020'] },
+  // Tier 5 — İyiliğin Işığı: royal purple + bright gold, legendary
+  { size: 152, wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6,  particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0], flutterCycle: 2.5,
+    wL: ['#C4A0E8', '#9B6ED0', '#7A4CB8'], wR: ['#F4D98A', '#E8C268', '#C89E3D'] },
 ]
 
 export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style, tierLevel }: BrandLogoProps) {
   const { mode } = useTheme()
 
-  const bodyFill = mode === 'dark' ? '#F4EEDF' : '#8B7A60'
-  const bodyFillEnd = mode === 'dark' ? '#D9CFB4' : '#6B5B45'
-  const veinColor = mode === 'dark' ? '#F4EEDF' : '#6B5B45'
-  const wingLeftGrad = ['#F4D98A', '#E8C268', '#C89E3D']
-  const wingRightGrad = ['#E07A6A', '#C8553D', '#A84030']
-  const wordIyi = mode === 'dark' ? '#F4EEDF' : '#24201B'
-  const wordBiri = mode === 'dark' ? '#E8C268' : '#B58F3D'
-
   // Resolve tier config when tierLevel is set
   const tier = (tierLevel != null && tierLevel >= 1 && tierLevel <= 5)
     ? TIER_CONFIG[tierLevel - 1]
     : null
+
+  const bodyFill = mode === 'dark' ? '#F4EEDF' : '#8B7A60'
+  const bodyFillEnd = mode === 'dark' ? '#D9CFB4' : '#6B5B45'
+  const veinColor = mode === 'dark' ? '#F4EEDF' : '#6B5B45'
+  const wingLeftGrad = tier?.wL ?? ['#F4D98A', '#E8C268', '#C89E3D']
+  const wingRightGrad = tier?.wR ?? ['#E07A6A', '#C8553D', '#A84030']
+  const wordIyi = mode === 'dark' ? '#F4EEDF' : '#24201B'
+  const wordBiri = mode === 'dark' ? '#E8C268' : '#B58F3D'
 
   // Effective size: tier overrides prop
   const effectiveSize = tier ? tier.size : size

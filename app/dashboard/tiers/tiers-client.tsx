@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Lock } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/brand-logo'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
@@ -75,7 +75,7 @@ export function TiersClient({ karma }: TiersClientProps) {
         </div>
       </div>
 
-      {/* Current karma display */}
+      {/* Current karma */}
       <div style={{
         padding: '24px 20px 8px',
         display: 'flex',
@@ -95,7 +95,8 @@ export function TiersClient({ karma }: TiersClientProps) {
       <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {TIERS.map(tier => {
           const isCurrent = tier.level === currentLevel
-          const isLocked = tier.level > currentLevel
+          const isUnlocked = tier.level <= currentLevel
+          const isLocked = !isUnlocked
           const karmaNeeded = isLocked ? tier.karma - karma : 0
 
           return (
@@ -103,21 +104,43 @@ export function TiersClient({ karma }: TiersClientProps) {
               key={tier.level}
               style={{
                 background: isCurrent
-                  ? `linear-gradient(135deg, rgba(232,194,104,0.08) 0%, ${c.ink800} 100%)`
+                  ? `linear-gradient(135deg, rgba(232,194,104,0.1) 0%, ${c.ink800} 100%)`
                   : c.ink800,
-                border: `1px solid ${isCurrent ? c.gold : c.ink600}`,
+                border: isCurrent
+                  ? `2px solid ${c.gold}`
+                  : isLocked
+                    ? `1px dashed ${c.ink500}`
+                    : `1px solid ${c.ink600}`,
                 borderRadius: 16,
-                padding: '16px 18px',
+                padding: isCurrent ? '15px 17px' : '16px 18px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,
-                opacity: isLocked ? 0.5 : 1,
-                transition: 'opacity 200ms',
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
-              {/* Butterfly preview */}
-              <div style={{ flexShrink: 0, opacity: isLocked ? 0.4 : 1 }}>
+              {/* Butterfly — always full opacity, always beautiful */}
+              <div style={{ flexShrink: 0, position: 'relative' }}>
                 <BrandLogo tierLevel={tier.level} />
+                {/* Lock badge for locked tiers */}
+                {isLocked && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 4,
+                    right: 4,
+                    width: 20,
+                    height: 20,
+                    borderRadius: '50%',
+                    background: c.ink700,
+                    border: `1px solid ${c.ink500}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Lock size={10} color={c.ink300} />
+                  </div>
+                )}
               </div>
 
               {/* Info */}
@@ -133,7 +156,7 @@ export function TiersClient({ karma }: TiersClientProps) {
                     fontStyle: 'italic',
                     fontSize: 16,
                     fontWeight: 500,
-                    color: isCurrent ? c.gold : c.cream,
+                    color: isCurrent ? c.gold : isLocked ? c.ink200 : c.cream,
                   }}>
                     {tier.name}
                   </span>
@@ -152,7 +175,9 @@ export function TiersClient({ karma }: TiersClientProps) {
                   )}
                 </div>
                 <p style={{
-                  margin: 0, fontSize: 12, color: c.ink300, lineHeight: 1.4,
+                  margin: 0, fontSize: 12,
+                  color: isLocked ? c.ink400 : c.ink300,
+                  lineHeight: 1.4,
                 }}>
                   {tier.desc}
                 </p>
