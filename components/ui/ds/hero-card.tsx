@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Flame, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
+import { Flame, CheckCircle2, ChevronRight } from 'lucide-react'
 import { KarmaDotToken } from './karma-dot-token'
 import { BrandLogo } from '@/components/ui/brand-logo'
 import { useTheme } from '@/lib/theme'
@@ -14,17 +15,7 @@ function computeTier(karma: number) {
   for (let i = TIER_THRESHOLDS.length - 1; i >= 0; i--) {
     if (karma >= TIER_THRESHOLDS[i]) { tierLevel = i + 1; break }
   }
-  const tierName = TIER_NAMES[tierLevel - 1]
-  const isMax = tierLevel >= TIER_THRESHOLDS.length
-  if (isMax) return { tierLevel, tierName, nextTierName: null, karmaToNext: null, pct: 100 }
-  const cur = TIER_THRESHOLDS[tierLevel - 1]
-  const next = TIER_THRESHOLDS[tierLevel]
-  return {
-    tierLevel, tierName,
-    nextTierName: TIER_NAMES[tierLevel],
-    karmaToNext: next - karma,
-    pct: Math.round(((karma - cur) / (next - cur)) * 100),
-  }
+  return { tierLevel, tierName: TIER_NAMES[tierLevel - 1] }
 }
 
 interface HeroCardProps {
@@ -33,8 +24,7 @@ interface HeroCardProps {
 
 export function HeroCard({ profile }: HeroCardProps) {
   const { colors: c } = useTheme()
-  const { tierLevel, tierName, nextTierName, karmaToNext, pct } = computeTier(profile.karma)
-  const isMax = nextTierName === null
+  const { tierLevel, tierName } = computeTier(profile.karma)
 
   return (
     <div
@@ -44,43 +34,17 @@ export function HeroCard({ profile }: HeroCardProps) {
         border: `1px solid ${c.ink600}`,
         position: 'relative',
         overflow: 'hidden',
-        padding: '20px 20px 16px',
       }}
     >
-      {/* ── Top row: Tier name left, Butterfly right ── */}
+      {/* ── Main content: karma left, butterfly right ── */}
       <div style={{
         display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: 12,
+        alignItems: 'center',
+        padding: '20px 12px 20px 22px',
+        gap: 8,
       }}>
-        {/* Left column: all info */}
+        {/* Left: Karma */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Tier badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 5,
-            background: c.goldSoft,
-            border: `1px solid ${c.goldLine}`,
-            borderRadius: 999,
-            padding: '4px 10px 4px 8px',
-            marginBottom: 14,
-          }}>
-            <svg width="10" height="10" viewBox="0 0 12 12">
-              <path d="M6 1l1.5 3L11 4.5l-2.5 2L9 10 6 8.3 3 10l.5-3.5L1 4.5 4.5 4z" fill={c.gold} />
-            </svg>
-            <span style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: c.gold,
-              letterSpacing: '0.02em',
-            }}>
-              {tierName}
-            </span>
-          </div>
-
-          {/* Karma number */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 2 }}>
             <KarmaDotToken size={14} />
             <span style={{
@@ -94,88 +58,101 @@ export function HeroCard({ profile }: HeroCardProps) {
               {profile.karma.toLocaleString('tr-TR')}
             </span>
           </div>
-          <div style={{ fontSize: 13, color: c.ink300, marginBottom: 16 }}>
+          <div style={{ fontSize: 13, color: c.ink300 }}>
             Karma
           </div>
+        </div>
 
-          {/* Progress */}
-          {!isMax && (
-            <div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-                fontSize: 11,
-                marginBottom: 6,
-              }}>
-                <span style={{ color: c.ink300 }}>
-                  <span style={{
-                    fontFamily: "'Fraunces', var(--font-display), ui-serif, Georgia, serif",
-                    fontStyle: 'italic',
-                    color: c.cream,
-                  }}>
-                    {nextTierName}
-                  </span>
-                  &apos;ye
-                </span>
-                <span style={{ color: c.gold, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
-                  {karmaToNext!.toLocaleString('tr-TR')} kaldı
-                </span>
-              </div>
-              <div style={{
-                height: 5,
-                background: 'rgba(255,255,255,.1)',
-                borderRadius: 999,
-                overflow: 'hidden',
-              }}>
-                <div style={{
-                  height: '100%',
-                  width: `${Math.max(pct, 3)}%`,
-                  background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
-                  borderRadius: 999,
-                }} />
-              </div>
+        {/* Right: Butterfly + tier name + dots — tappable */}
+        <Link href="/dashboard/tiers" style={{ textDecoration: 'none', flexShrink: 0 }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 0,
+          }}>
+            <BrandLogo tierLevel={tierLevel} />
+
+            {/* Tier name */}
+            <div style={{
+              fontFamily: "'Fraunces', var(--font-display), ui-serif, Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: 13,
+              fontWeight: 500,
+              color: c.gold,
+              marginTop: -6,
+              letterSpacing: '-0.01em',
+            }}>
+              {tierName}
             </div>
-          )}
-        </div>
 
-        {/* Right: Butterfly — the star */}
-        <div style={{
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: -8,
-          marginRight: -8,
-          marginBottom: -8,
-        }}>
-          <BrandLogo tierLevel={tierLevel} />
-        </div>
+            {/* 5 tier dots */}
+            <div style={{
+              display: 'flex',
+              gap: 5,
+              marginTop: 6,
+            }}>
+              {[1, 2, 3, 4, 5].map(t => (
+                <div
+                  key={t}
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: t <= tierLevel ? c.gold : c.ink600,
+                    transition: 'background 300ms',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </Link>
       </div>
 
-      {/* ── Bottom stats row ── */}
+      {/* ── Bottom stats — tappable ── */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        marginTop: 14,
-        paddingTop: 14,
         borderTop: `1px solid ${c.ink600}`,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <CheckCircle2 size={13} color={c.gold} />
-          <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
+        {/* Completed missions → /dashboard/my-missions */}
+        <Link href="/dashboard/my-missions" style={{
+          flex: 1,
+          textDecoration: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 5,
+          padding: '13px 12px',
+          transition: 'opacity 150ms',
+        }}>
+          <CheckCircle2 size={14} color={c.gold} />
+          <span style={{ fontSize: 14, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
             {profile.completed}
           </span>
-          <span style={{ fontSize: 11, color: c.ink300 }}>görev</span>
-        </div>
-        <div style={{ width: 1, height: 14, background: c.ink600 }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <Flame size={13} color={c.gold} />
-          <span style={{ fontSize: 13, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: 12, color: c.ink300 }}>görev</span>
+          <ChevronRight size={12} color={c.ink400} style={{ marginLeft: 2 }} />
+        </Link>
+
+        <div style={{ width: 1, background: c.ink600 }} />
+
+        {/* Streak → /dashboard/streak */}
+        <Link href="/dashboard/streak" style={{
+          flex: 1,
+          textDecoration: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 5,
+          padding: '13px 12px',
+          transition: 'opacity 150ms',
+        }}>
+          <Flame size={14} color={c.gold} />
+          <span style={{ fontSize: 14, fontWeight: 700, color: c.cream, fontVariantNumeric: 'tabular-nums' }}>
             {profile.streak} gün
           </span>
-          <span style={{ fontSize: 11, color: c.ink300 }}>seri</span>
-        </div>
+          <span style={{ fontSize: 12, color: c.ink300 }}>seri</span>
+          <ChevronRight size={12} color={c.ink400} style={{ marginLeft: 2 }} />
+        </Link>
       </div>
     </div>
   )
