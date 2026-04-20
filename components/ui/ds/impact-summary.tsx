@@ -20,9 +20,27 @@ export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
         overflow: 'hidden',
       }}
     >
+      {/* Concentric gold arcs decoration */}
+      <svg
+        width="180"
+        height="180"
+        viewBox="0 0 180 180"
+        style={{
+          position: 'absolute',
+          right: -60,
+          top: -60,
+          opacity: 0.08,
+          pointerEvents: 'none',
+        }}
+      >
+        {[80, 58, 36, 14].map((r) => (
+          <circle key={r} cx="90" cy="90" r={r} stroke={c.gold} strokeWidth="0.8" fill="none" />
+        ))}
+      </svg>
+
       <div style={{
         fontSize: 9, fontWeight: 700, letterSpacing: '.22em',
-        textTransform: 'uppercase', color: c.ink300, marginBottom: 8,
+        textTransform: 'uppercase', color: c.gold, marginBottom: 8,
       }}>
         Senin etkin
       </div>

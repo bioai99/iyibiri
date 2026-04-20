@@ -87,7 +87,7 @@ function HeroStat({
           style={{
             fontSize: 16,
             fontWeight: 700,
-            color: c.cream,
+            color: c.gold,
             letterSpacing: '-0.015em',
             fontVariantNumeric: 'tabular-nums',
           }}
@@ -135,7 +135,7 @@ export function HeroCard({ profile }: HeroCardProps) {
       </svg>
 
       {/* Butterfly — centered */}
-      <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', marginBottom: 4 }}>
         <BrandLogo tierLevel={tierLevel} />
       </div>
 
@@ -155,11 +155,11 @@ export function HeroCard({ profile }: HeroCardProps) {
 
       {/* Karma value */}
       <div style={{ textAlign: 'center', lineHeight: 1 }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <KarmaDotToken size={18} />
           <span
             style={{
-              fontSize: 48,
+              fontSize: 42,
               fontWeight: 700,
               color: c.gold,
               letterSpacing: '-0.035em',
@@ -186,29 +186,11 @@ export function HeroCard({ profile }: HeroCardProps) {
         <div style={{ marginTop: 20 }}>
           <div
             style={{
-              height: 6,
-              background: 'rgba(255,255,255,.08)',
-              borderRadius: 999,
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                width: `${pct}%`,
-                background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
-                borderRadius: 999,
-                transition: 'width 220ms cubic-bezier(.2,.8,.2,1)',
-              }}
-            />
-          </div>
-          <div
-            style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'baseline',
               fontSize: 11,
-              marginTop: 8,
+              marginBottom: 8,
               gap: 12,
             }}
           >
@@ -244,6 +226,24 @@ export function HeroCard({ profile }: HeroCardProps) {
             >
               {karmaToNext!.toLocaleString('tr-TR')} kaldı
             </span>
+          </div>
+          <div
+            style={{
+              height: 6,
+              background: 'rgba(255,255,255,.1)',
+              borderRadius: 999,
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                height: '100%',
+                width: `${pct}%`,
+                background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
+                borderRadius: 999,
+                transition: 'width 220ms cubic-bezier(.2,.8,.2,1)',
+              }}
+            />
           </div>
         </div>
       )}

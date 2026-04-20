@@ -14,10 +14,10 @@ interface BrandLogoProps {
 
 const TIER_CONFIG = [
   { size: 48,  wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,   particles: 0, flutterPattern: null,                       flutterCycle: 0 },   // Tier 1
-  { size: 54,  wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0,   particles: 0, flutterPattern: [0, 15, -8, 5, 0],           flutterCycle: 4 },   // Tier 2
-  { size: 60,  wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3, particles: 0, flutterPattern: [0, 18, -10, 6, 0],          flutterCycle: 3.5 }, // Tier 3
-  { size: 66,  wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4, particles: 4, flutterPattern: [0, 25, -15, 10, -5, 0],     flutterCycle: 3 },   // Tier 4
-  { size: 72,  wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6, particles: 8, flutterPattern: [0, 30, -20, 15, -8, 3, 0],  flutterCycle: 2.5 }, // Tier 5
+  { size: 54,  wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0,   particles: 0, flutterPattern: [0, 0, 0, 0, 15, -8, 5, 0],                 flutterCycle: 4 },   // Tier 2
+  { size: 60,  wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3, particles: 0, flutterPattern: [0, 0, 0, 18, -10, 6, 0],                  flutterCycle: 3.5 }, // Tier 3
+  { size: 66,  wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4, particles: 4, flutterPattern: [0, 0, 0, 25, -15, 10, -5, 0],             flutterCycle: 3 },   // Tier 4
+  { size: 72,  wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6, particles: 8, flutterPattern: [0, 0, 0, 0, 30, -20, 15, -8, 3, 0],      flutterCycle: 2.5 }, // Tier 5
 ]
 
 export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style, tierLevel }: BrandLogoProps) {
@@ -119,17 +119,18 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
   const tierParticles = (tier && tier.particles > 0)
     ? Array.from({ length: tier.particles }).map((_, i) => {
         const startAngle = (i / tier.particles) * Math.PI * 2
-        const orbitRadius = effectiveSize * 0.62
+        const orbitRadius = effectiveSize * 0.5
         // Each particle orbits; stagger phase by index
         return (
           <motion.div
             key={`tp-${i}`}
             style={{
               position: 'absolute',
-              width: effectiveSize * 0.07,
-              height: effectiveSize * 0.07,
+              width: effectiveSize * 0.04,
+              height: effectiveSize * 0.04,
               borderRadius: '50%',
               background: i % 2 === 0 ? '#F4D98A' : '#E8C268',
+              boxShadow: '0 0 6px rgba(232,194,104,0.5)',
               pointerEvents: 'none',
             }}
             animate={{
