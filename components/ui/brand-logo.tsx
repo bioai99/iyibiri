@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, type Transition } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 
 interface BrandLogoProps {
@@ -9,9 +9,18 @@ interface BrandLogoProps {
   idle?: boolean
   showWordmark?: boolean
   style?: React.CSSProperties
+  tierLevel?: number
 }
 
-export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style }: BrandLogoProps) {
+const TIER_CONFIG = [
+  { size: 48,  wingRotation: 3,  cycleDuration: 3.0, glowOpacity: 0,   particles: 0, flutterPattern: null,                       flutterCycle: 0 },   // Tier 1
+  { size: 54,  wingRotation: 5,  cycleDuration: 2.6, glowOpacity: 0,   particles: 0, flutterPattern: [0, 15, -8, 5, 0],           flutterCycle: 4 },   // Tier 2
+  { size: 60,  wingRotation: 6,  cycleDuration: 2.4, glowOpacity: 0.3, particles: 0, flutterPattern: [0, 18, -10, 6, 0],          flutterCycle: 3.5 }, // Tier 3
+  { size: 66,  wingRotation: 8,  cycleDuration: 2.2, glowOpacity: 0.4, particles: 4, flutterPattern: [0, 25, -15, 10, -5, 0],     flutterCycle: 3 },   // Tier 4
+  { size: 72,  wingRotation: 10, cycleDuration: 2.0, glowOpacity: 0.6, particles: 8, flutterPattern: [0, 30, -20, 15, -8, 3, 0],  flutterCycle: 2.5 }, // Tier 5
+]
+
+export function BrandLogo({ size = 120, animate = false, idle = false, showWordmark = false, style, tierLevel }: BrandLogoProps) {
   const { mode } = useTheme()
 
   const bodyFill = mode === 'dark' ? '#F4EEDF' : '#3E2F14'
@@ -22,20 +31,143 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
   const wordIyi = mode === 'dark' ? '#F4EEDF' : '#24201B'
   const wordBiri = mode === 'dark' ? '#E8C268' : '#B58F3D'
 
+  // Resolve tier config when tierLevel is set
+  const tier = (tierLevel != null && tierLevel >= 1 && tierLevel <= 5)
+    ? TIER_CONFIG[tierLevel - 1]
+    : null
+
+  // Effective size: tier overrides prop
+  const effectiveSize = tier ? tier.size : size
+
   const d = animate ? 0.12 : 0
   const uid = `bl-${Math.random().toString(36).slice(2, 8)}`
 
-  // 8 gold particles that burst outward when wings unfold
-  const particles = animate ? Array.from({ length: 10 }).map((_, i) => {
+  // --- Wing animation props ---
+  // Tier mode: use tier wingRotation + cycleDuration; also apply flutter pattern if defined
+  // Non-tier mode: existing idle behavior (±8°, 2.4s)
+  const wingRotation = tier ? tier.wingRotation : 8
+  const wingCycleDuration = tier ? tier.cycleDuration : 2.4
+
+  const leftWingAnimProps = (tier ? true : idle) ? {
+    animate: tier?.flutterPattern
+      ? { rotate: tier.flutterPattern }
+      : { rotate: [0, wingRotation, 0] },
+    transition: {
+      duration: tier?.flutterPattern ? tier.flutterCycle : wingCycleDuration,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+    } as Transition,
+  } : {}
+
+  const rightWingAnimProps = (tier ? true : idle) ? {
+    animate: tier?.flutterPattern
+      ? { rotate: tier.flutterPattern.map((v: number) => -v) }
+      : { rotate: [0, -wingRotation, 0] },
+    transition: {
+      duration: tier?.flutterPattern ? tier.flutterCycle : wingCycleDuration,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+      delay: 0.1,
+    } as Transition,
+  } : {}
+
+  // --- Float animation props (wrapper div) ---
+  // Tier mode: always float (y: [0, -5, 0], 3.2s)
+  // Non-tier mode: existing idle behavior
+  const floatAnimProps = tier
+    ? {
+        animate: { y: [0, -5, 0] },
+        transition: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' as const } as Transition,
+      }
+    : idle
+    ? {
+        animate: { y: [0, -5, 0] },
+        transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.2 } as Transition,
+      }
+    : {}
+
+  // --- Glow ---
+  // Tier mode: pulsing between 70%-100% of tier.glowOpacity if > 0, else hidden
+  // Non-tier mode: existing animate/idle behavior
+  const glowInitial = tier
+    ? { opacity: tier.glowOpacity > 0 ? tier.glowOpacity * 0.7 : 0 }
+    : animate
+    ? { opacity: 0, scale: 0.2 }
+    : { opacity: idle ? 0.6 : 0 }
+
+  const glowAnimate = tier
+    ? tier.glowOpacity > 0
+      ? { opacity: [tier.glowOpacity * 0.7, tier.glowOpacity, tier.glowOpacity * 0.7], scale: [0.95, 1.05, 0.95] }
+      : { opacity: 0 }
+    : idle
+    ? { opacity: [0.4, 0.7, 0.4], scale: [0.95, 1.05, 0.95] }
+    : animate
+    ? { opacity: 0.6, scale: 1 }
+    : { opacity: 0 }
+
+  const glowTransition: Transition | undefined = tier
+    ? tier.glowOpacity > 0
+      ? { duration: wingCycleDuration, repeat: Infinity, ease: 'easeInOut' as const }
+      : undefined
+    : idle
+    ? { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: animate ? 1 : 0 }
+    : animate
+    ? { duration: 1.5, ease: 'easeOut' as const, delay: d + 0.2 }
+    : undefined
+
+  // --- Orbiting tier particles ---
+  const tierParticles = (tier && tier.particles > 0)
+    ? Array.from({ length: tier.particles }).map((_, i) => {
+        const startAngle = (i / tier.particles) * Math.PI * 2
+        const orbitRadius = effectiveSize * 0.62
+        // Each particle orbits; stagger phase by index
+        return (
+          <motion.div
+            key={`tp-${i}`}
+            style={{
+              position: 'absolute',
+              width: effectiveSize * 0.07,
+              height: effectiveSize * 0.07,
+              borderRadius: '50%',
+              background: i % 2 === 0 ? '#F4D98A' : '#E8C268',
+              pointerEvents: 'none',
+            }}
+            animate={{
+              x: [
+                Math.cos(startAngle) * orbitRadius,
+                Math.cos(startAngle + Math.PI) * orbitRadius,
+                Math.cos(startAngle + Math.PI * 2) * orbitRadius,
+              ],
+              y: [
+                Math.sin(startAngle) * orbitRadius,
+                Math.sin(startAngle + Math.PI) * orbitRadius,
+                Math.sin(startAngle + Math.PI * 2) * orbitRadius,
+              ],
+              opacity: [0.6, 1, 0.6],
+              scale: [0.8, 1.2, 0.8],
+            }}
+            transition={{
+              duration: wingCycleDuration * 2.5,
+              repeat: Infinity,
+              ease: 'linear' as const,
+              delay: (i / tier.particles) * wingCycleDuration,
+            }}
+          />
+        )
+      })
+    : null
+
+  // --- Burst particles (existing, only when animate=true and no tier) ---
+  const burstParticles = (!tier && animate) ? Array.from({ length: 10 }).map((_, i) => {
     const angle = (i / 10) * Math.PI * 2 + Math.PI / 10
-    const dist = size * 0.5
+    const dist = effectiveSize * 0.5
     return (
       <motion.div
         key={i}
         style={{
           position: 'absolute',
-          width: size * 0.022,
-          height: size * 0.022,
+          width: effectiveSize * 0.022,
+          height: effectiveSize * 0.022,
           borderRadius: '50%',
           background: i % 3 === 0 ? '#F4D98A' : i % 3 === 1 ? '#E8C268' : '#C8553D',
         }}
@@ -65,43 +197,33 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        {...(idle ? {
-          animate: { y: [0, -5, 0] },
-          transition: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.2 },
-        } : {})}
+        {...floatAnimProps}
       >
         {/* Gold glow — bigger, more visible */}
         <motion.div
           style={{
             position: 'absolute',
-            width: size * 1,
-            height: size * 0.8,
+            width: effectiveSize * 1,
+            height: effectiveSize * 0.8,
             borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(232,194,104,0.25) 0%, rgba(232,194,104,0.08) 45%, transparent 70%)',
-            filter: `blur(${size * 0.12}px)`,
+            filter: `blur(${effectiveSize * 0.12}px)`,
             pointerEvents: 'none',
           }}
-          initial={animate ? { opacity: 0, scale: 0.2 } : { opacity: idle ? 0.6 : 0 }}
-          animate={idle
-            ? { opacity: [0.4, 0.7, 0.4], scale: [0.95, 1.05, 0.95] }
-            : animate
-              ? { opacity: 0.6, scale: 1 }
-              : { opacity: 0 }
-          }
-          transition={idle
-            ? { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: animate ? 1 : 0 }
-            : animate
-              ? { duration: 1.5, ease: 'easeOut', delay: d + 0.2 }
-              : undefined
-          }
+          initial={glowInitial}
+          animate={glowAnimate}
+          transition={glowTransition}
         />
 
-        {/* Particle burst */}
-        {particles}
+        {/* Orbiting tier particles */}
+        {tierParticles}
+
+        {/* Burst particles (non-tier animate mode) */}
+        {burstParticles}
 
         <motion.svg
-          width={size}
-          height={size}
+          width={effectiveSize}
+          height={effectiveSize}
           viewBox="0 0 512 512"
           style={{ display: 'block', position: 'relative', zIndex: 1 }}
           initial={animate ? { scale: 0, opacity: 0 } : undefined}
@@ -127,10 +249,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Left wings */}
           <motion.g
-            {...(idle ? {
-              animate: { rotate: [0, 8, 0] },
-              transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' },
-            } : {})}
+            {...leftWingAnimProps}
             style={{ transformOrigin: '248px 250px' }}
           >
             <motion.path
@@ -153,10 +272,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
 
           {/* Right wings */}
           <motion.g
-            {...(idle ? {
-              animate: { rotate: [0, -8, 0] },
-              transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.1 },
-            } : {})}
+            {...rightWingAnimProps}
             style={{ transformOrigin: '264px 250px' }}
           >
             <motion.path
@@ -209,12 +325,12 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
           transition={animate ? { duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: d + 0.65 } : undefined}
           style={{
             fontFamily: "'Fraunces', var(--font-display), Georgia, serif",
-            fontSize: size * 0.28,
+            fontSize: effectiveSize * 0.28,
             fontWeight: 500,
             letterSpacing: '-0.025em',
             color: wordIyi,
             lineHeight: 1,
-            marginTop: -(size * 0.26),
+            marginTop: -(effectiveSize * 0.26),
           }}
         >
           İyi<span style={{ fontStyle: 'italic', color: wordBiri }}>Biri</span>
