@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ArrowLeft, Check, Trees, BookOpen, PawPrint, HeartPulse, Flame, Users } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
+import { createClient } from '@/lib/supabase/client'
 
 const causes = [
   { name: 'Çevre', sub: 'Ağaç dikimi, temizlik, geri dönüşüm', icon: Trees, gradient: 'linear-gradient(135deg, #6B8E4E, #4a6237)' },
@@ -18,7 +20,9 @@ const causes = [
 
 export default function OnboardingCauses() {
   const { colors: c } = useTheme()
+  const router = useRouter()
   const [selected, setSelected] = useState<string[]>([])
+  const [saving, setSaving] = useState(false)
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
   const displayFont = 'var(--font-display), Fraunces, serif'
 
@@ -26,6 +30,29 @@ export default function OnboardingCauses() {
     setSelected(prev =>
       prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
     )
+  }
+
+  async function handleContinue() {
+    setSaving(true)
+    // Fallback: always localStorage for onboarding pre-auth flow
+    try {
+      localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))
+    } catch { /* localStorage disabled veya full */ }
+
+    // Eğer kullanıcı zaten auth'luysa (nadir, ama güvenli taraf) — profile'a doğrudan yaz
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && selected.length > 0) {
+        await supabase.from('profiles').update({ interests: selected }).eq('id', user.id)
+      }
+    } catch (err) {
+      console.warn('Interests direct save skipped:', err)
+      // Dashboard sync fallback devreye girer
+    }
+
+    setSaving(false)
+    router.push('/onboarding/city')
   }
 
   return (
@@ -170,24 +197,25 @@ export default function OnboardingCauses() {
 
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
-        <Link
-          href="/onboarding/city"
-          onClick={() => localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))}
-          style={{ textDecoration: 'none' }}
+        <motion.button
+          onClick={handleContinue}
+          disabled={saving}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            width: '100%', height: 52, background: c.gold, color: c.ink,
+            border: 'none', borderRadius: 14, padding: '0 20px',
+            fontSize: 15, fontWeight: 700, cursor: saving ? 'wait' : 'pointer',
+            fontFamily: uiFont,
+            boxShadow: '0 2px 8px rgba(0,0,0,.08)',
+            opacity: saving ? 0.7 : 1,
+          }}
         >
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            style={{
-              width: '100%', height: 52, background: c.gold, color: c.ink,
-              border: 'none', borderRadius: 14, padding: '0 20px',
-              fontSize: 15, fontWeight: 700, cursor: 'pointer',
-              fontFamily: uiFont,
-              boxShadow: '0 2px 8px rgba(0,0,0,.08)',
-            }}
-          >
-            {selected.length > 0 ? `${selected.length} alan seçtin — Devam` : 'Atla'}
-          </motion.button>
-        </Link>
+          {saving
+            ? 'Kaydediliyor...'
+            : selected.length > 0
+              ? `${selected.length} alan seçtin — Devam`
+              : 'Atla'}
+        </motion.button>
       </div>
     </div>
   )

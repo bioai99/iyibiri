@@ -1,23 +1,10 @@
-"use client";
+// DEPRECATED — 2026-04-24
+//
+// Bu dosya eski tasarımdan artefakt: mission alma işlemini localStorage'da
+// tutuyordu (Supabase öncesi). Artık `lib/missions/actions.ts#takeMission`
+// server action kullanılıyor, state `user_missions` tablosunda.
+//
+// UX audit (2026-04-24) P0 #3 audit — "dead code" olarak flag etti.
+// Hiçbir yerde import edilmiyor, dosya silinemediği için shim.
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-
-export default function TakeMission({ missionId }: { missionId: string }) {
-  const router = useRouter();
-
-  function handleTake() {
-    // Aktif görevleri localStorage'da tutuyoruz (Supabase entegrasyonuna kadar)
-    const active: string[] = JSON.parse(localStorage.getItem("iyibiri_active_missions") || "[]");
-    if (!active.includes(missionId)) {
-      localStorage.setItem("iyibiri_active_missions", JSON.stringify([...active, missionId]));
-    }
-    router.push("/dashboard/my-missions");
-  }
-
-  return (
-    <Button size="lg" className="w-full" onClick={handleTake}>
-      Görevi Al
-    </Button>
-  );
-}
+export {}

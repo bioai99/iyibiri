@@ -1,5 +1,22 @@
 # İyiBiri Design System
 
+> ### ⚠️ OUTDATED — 2026-04-24 güncelleme
+>
+> Bu doküman **eski palet + eski font** referansları içeriyor (amber #F4B942, Inter).
+> Ürün "Premium × Warm" temasına evrilmiş durumda (ink + cream + gold #E8C268, Fraunces + Plus Jakarta Sans).
+>
+> **Güncel kaynak:**
+> - **`docs/project-atlas.md` Bölüm 6 — Design system (GERÇEK — kod-tarafı)** ← tek doğru referans
+> - Kod: `tailwind.config.ts` + `app/globals.css`
+>
+> Bu dokümanın **ton, tipografi yapı, component paterni** bölümleri (aşağısı) hâlâ geçerli;
+> ancak **somut renk kodları / font adları atlas'taki gerçek token'larla değiştirilmiştir.**
+>
+> design-system-keeper agent'ının ileriki turda bu dokümanı tam güncel veya retire etmesi bekleniyor.
+> Ajan okumadan önce atlas Bölüm 6'ya göz atsın.
+>
+> ---
+
 > İyilik yapmak, Karma kazanmak, gerçek ödüller almak. Türk sivil toplum ekosistemi için bir PWA.
 
 **İyiBiri**, Türkiye'deki sivil toplum kuruluşlarıyla (TEMA, ÇYDD, Haytap, Kızılay, Kodluyoruz) ortaklık kuran, kullanıcılara STK'lardan gerçek gönüllülük görevleri veren, tamamladıkları her göreve karşılık **Karma** puanı dağıtan ve biriken Karma'yı Sponsor Markalardan (Starbucks, Migros, Nike, Trendyol, Garanti BBVA) gerçek ödüllere dönüştüren bir mobil-öncelikli (PWA) üründür.

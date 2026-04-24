@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   ArrowLeft,
   Share2,
@@ -12,11 +13,14 @@ import {
   Users,
   ArrowRight,
   Check,
+  Info,
+  ShieldCheck,
 } from 'lucide-react'
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
+import { takeMission } from '@/lib/missions/actions'
 
 interface Props {
   mission: Mission & { ngos?: { name: string; short_name?: string | null; color_accent: string | null; logo_url: string | null } | null }
@@ -28,19 +32,24 @@ interface Props {
 
 export function MissionDetailClient({ mission, userMission, userId, isMember = false, isSaved: initialSaved = false }: Props) {
   const { colors: c } = useTheme()
-  const [loading, setLoading] = useState(false)
+  // ADR-012 Yol D: Public mission için kullanıcı üye olmadan da alabilir,
+  // hafif KVKK onayı yeterli. Members_only görev için state zaten
+  // `requires_membership`'a düşer (page.tsx tarafından) — bu client hiç render olmaz.
+  const [publicKvkkChecked, setPublicKvkkChecked] = useState(false)
   const [takeError, setTakeError] = useState<string | null>(null)
   const [saved, setSaved] = useState(initialSaved)
   const [following, setFollowing] = useState(false)
-  const [kvkkChecked, setKvkkChecked] = useState(false)
-  const [joinSuccess, setJoinSuccess] = useState(false)
-  const [becameMember, setBecameMember] = useState(false)
+  const [pending, startTransition] = useTransition()
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
   const isTaken = !!userMission
   const isCompleted = userMission?.status === 'completed'
-  const effectiveMember = isMember || becameMember
+
+  // Public mission için hafif KVKK gerekir (üye olmayan kullanıcı)
+  const isPublicMission = mission.access_level === 'public'
+  const needsPublicKvkk =
+    isPublicMission && !!mission.ngo_id && !isMember && !isTaken && !isCompleted
 
   const toggleSave = useCallback(async () => {
     const prev = saved
@@ -62,59 +71,19 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
     }
   }, [saved, userId, mission.id, supabase])
 
-  async function handleTakeMission() {
-    setLoading(true)
+  function handleTakeMission() {
     setTakeError(null)
-    const { error } = await supabase
-      .from('user_missions')
-      .insert({ user_id: userId, mission_id: mission.id, status: 'taken' })
-    setLoading(false)
-    if (error) {
-      setTakeError('Görev alınamadı, tekrar dene')
-      return
-    }
-    // Refresh so page.tsx renders the applied/taken state
-    router.refresh()
-  }
-
-  async function handleJoinAndTakeMission() {
-    setLoading(true)
-    setTakeError(null)
-
-    // Step 1: Create membership
-    const { error: memberError } = await supabase
-      .from('ngo_memberships')
-      .insert({ user_id: userId, ngo_id: mission.ngo_id!, status: 'active' })
-
-    if (memberError && !memberError.message?.includes('duplicate')) {
-      setTakeError('Üyelik oluşturulamadı, tekrar dene')
-      setLoading(false)
-      return
-    }
-
-    // Step 2: Take mission
-    const { error: missionError } = await supabase
-      .from('user_missions')
-      .insert({ user_id: userId, mission_id: mission.id, status: 'taken' })
-
-    if (missionError) {
-      setTakeError('Görev alınamadı, tekrar dene')
-      setLoading(false)
-      return
-    }
-
-    setBecameMember(true)
-    setJoinSuccess(true)
-    setLoading(false)
-
-    // Confetti
-    import('canvas-confetti').then(mod => {
-      mod.default({ particleCount: 60, spread: 60, origin: { y: 0.8 } })
+    startTransition(async () => {
+      const result = await takeMission(mission.id)
+      if (!result.ok) {
+        setTakeError(result.error)
+        return
+      }
+      router.refresh()
     })
-
-    // After 2s, refresh to show taken state
-    setTimeout(() => router.refresh(), 2000)
   }
+
+  const loading = pending
 
   return (
     <div
@@ -294,7 +263,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       )}
 
       {/* Membership badge */}
-      {effectiveMember && (
+      {isMember && (
         <div style={{
           margin: '0 20px', marginTop: 8,
         }}>
@@ -463,8 +432,12 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         </div>
       </div>
 
-      {/* ── 6.5. Inline membership card (non-member, scrollable) ── */}
-      {!effectiveMember && !isTaken && !isCompleted && mission.ngo_id && !joinSuccess && (
+      {/* ── 6.5. Public Mission hafif KVKK onayı ── */}
+      {/* ADR-012 Yol D + ADR-009 hafif onay:
+          Public görevler için kullanıcı üye olmadan katılabilir; sadece ad+e-posta+şehir
+          STK ile paylaşıldığına dair hafif KVKK onayı yeterli. Members_only görevlerde
+          bu client hiç render olmaz (page.tsx requires_membership state'e yönlendirir). */}
+      {needsPublicKvkk && (
         <div style={{ padding: '0 16px 16px' }}>
           <div style={{
             background: c.ink800,
@@ -473,66 +446,56 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             padding: 16,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              {mission.ngos?.logo_url && (
-                <div style={{
-                  width: 32, height: 32, borderRadius: 10, background: 'white',
-                  overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              <div
+                style={{
+                  width: 32, height: 32, borderRadius: 10,
+                  background: c.goldSoft,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
-                }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={mission.ngos.logo_url}
-                    alt=""
-                    style={{ width: '70%', height: '70%', objectFit: 'contain' }}
-                  />
-                </div>
-              )}
+                }}
+                aria-hidden="true"
+              >
+                <ShieldCheck size={16} color={c.gold} />
+              </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
-                  {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} gönüllüsü ol
+                <div style={{ fontSize: 12, fontWeight: 700, color: c.gold, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  Veri paylaşımı
                 </div>
-                <div style={{ fontSize: 12, color: c.ink300 }}>
-                  Bu göreve katılmak için gönüllü olman gerekiyor
+                <div style={{ fontSize: 12, color: c.ink300, marginTop: 2 }}>
+                  Tek seferlik — üye olmana gerek yok
                 </div>
               </div>
             </div>
             <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', cursor: 'pointer' }}>
               <div
-                onClick={() => setKvkkChecked(!kvkkChecked)}
+                onClick={() => setPublicKvkkChecked(!publicKvkkChecked)}
                 style={{
                   width: 20, height: 20, borderRadius: 6, marginTop: 1,
-                  background: kvkkChecked ? c.gold : 'transparent',
-                  border: `1.5px solid ${kvkkChecked ? c.gold : c.ink500}`,
+                  background: publicKvkkChecked ? c.gold : 'transparent',
+                  border: `1.5px solid ${publicKvkkChecked ? c.gold : c.ink500}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                {kvkkChecked && <Check size={12} color="#fff" strokeWidth={3} />}
+                {publicKvkkChecked && <Check size={12} color="#fff" strokeWidth={3} />}
               </div>
-              <span style={{ fontSize: 12, color: c.ink300, lineHeight: 1.4 }}>
-                Bilgilerimin <span style={{ color: c.cream, fontWeight: 600 }}>{mission.ngos?.name ?? ''}</span> ile paylaşılmasını kabul ediyorum
+              <span style={{ fontSize: 12, color: c.ink300, lineHeight: 1.5 }}>
+                Bu göreve katıldığımda <span style={{ color: c.cream, fontWeight: 600 }}>ad, e-posta, şehir</span> bilgilerimin{' '}
+                <span style={{ color: c.cream, fontWeight: 600 }}>{mission.ngos?.short_name ?? mission.ngos?.name ?? 'STK'}</span>{' '}
+                ile paylaşılmasını kabul ediyorum.
               </span>
             </label>
-          </div>
-        </div>
-      )}
-
-      {/* ── 6.6. Join success inline ── */}
-      {joinSuccess && (
-        <div style={{ padding: '0 16px 16px' }}>
-          <div style={{
-            background: 'rgba(232,194,104,.08)',
-            border: `1px solid ${c.goldLine}`,
-            borderRadius: 16,
-            padding: '16px 20px',
-            textAlign: 'center',
-          }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: c.gold }}>
-              Harika!
-            </div>
-            <div style={{ fontSize: 13, color: c.ink300, marginTop: 4 }}>
-              {mission.ngos?.short_name ?? mission.ngos?.name ?? ''} gönüllüsü oldun ve göreve katıldın
-            </div>
+            <Link
+              href="/legal/kvkk"
+              style={{
+                marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 4,
+                fontSize: 11, color: c.gold, fontWeight: 600,
+                textDecoration: 'none', paddingLeft: 28,
+              }}
+            >
+              <Info size={11} />
+              Aydınlatma metnini oku
+            </Link>
           </div>
         </div>
       )}
@@ -597,51 +560,38 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             Tamamladım
             <ArrowRight size={20} />
           </button>
-        ) : joinSuccess ? (
-          <div style={{ textAlign: 'center', padding: '8px 0' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: c.gold }}>
-              Göreve katıldın
-            </div>
-          </div>
-        ) : effectiveMember ? (
-          <button
-            onClick={handleTakeMission}
-            disabled={loading}
-            style={{
-              width: '100%',
-              background: loading ? '#8A6A2C' : c.gold,
-              color: '#24201B', border: 'none', borderRadius: 16,
-              padding: '16px 20px', fontSize: 16, fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-              transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
-              boxShadow: '0 4px 16px rgba(0,0,0,.12)',
-            }}
-          >
-            {loading ? 'Göreve Alınıyor...' : 'Bu göreve katıl'}
-            {!loading && <ArrowRight size={20} />}
-          </button>
-        ) : (
-          <button
-            onClick={handleJoinAndTakeMission}
-            disabled={!kvkkChecked || loading}
-            style={{
-              width: '100%',
-              background: kvkkChecked && !loading ? c.gold : c.ink600,
-              color: kvkkChecked ? '#24201B' : c.ink300,
-              border: 'none', borderRadius: 16,
-              padding: '16px 20px', fontSize: 16, fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              cursor: kvkkChecked && !loading ? 'pointer' : 'not-allowed',
-              boxShadow: kvkkChecked ? '0 4px 16px rgba(0,0,0,.12)' : 'none',
-              transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
-            }}
-          >
-            {loading ? 'Kaydediliyor...' : 'Gönüllü ol ve katıl'}
-            {!loading && <ArrowRight size={20} />}
-          </button>
-        )}
+        ) : (() => {
+          // ADR-012 Yol D: Public için hafif KVKK gerekir, members_only için page.tsx
+          // zaten requires_membership state'e yönlendiriyor — bu client render olmuyor.
+          // Yani burada takılan tek senaryo public mission + üye olmayan.
+          const needsKvkk = needsPublicKvkk && !publicKvkkChecked
+          const enabled = !loading && !needsKvkk
+          return (
+            <button
+              onClick={handleTakeMission}
+              disabled={!enabled}
+              style={{
+                width: '100%',
+                background: enabled ? c.gold : c.ink600,
+                color: enabled ? '#24201B' : c.ink300,
+                border: 'none', borderRadius: 16,
+                padding: '16px 20px', fontSize: 16, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                cursor: enabled ? 'pointer' : 'not-allowed',
+                opacity: loading ? 0.7 : 1,
+                transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+                boxShadow: enabled ? '0 4px 16px rgba(0,0,0,.12)' : 'none',
+              }}
+            >
+              {loading
+                ? 'Göreve Alınıyor...'
+                : needsKvkk
+                  ? 'Önce onayı ver'
+                  : 'Bu göreve katıl'}
+              {!loading && !needsKvkk && <ArrowRight size={20} />}
+            </button>
+          )
+        })()}
       </div>
     </div>
   )

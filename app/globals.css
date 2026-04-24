@@ -154,3 +154,17 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ── Dashboard v2 hero glow breathing (İyiBiri imza) ── */
+/* UX Audit 2026-04-24 Kritik 2 (I6) — gold glow breathing animate. */
+/* mobile-app-polish-standards Bölüm 11 İmza pattern. */
+@keyframes heroGlowBreathing {
+  0%, 100% { box-shadow: 0 8px 32px rgba(232,194,104,0.35); }
+  50%      { box-shadow: 0 10px 40px rgba(232,194,104,0.48); }
+}
+.hero-glow-breathing {
+  animation: heroGlowBreathing 3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow-breathing { animation: none; }
+}

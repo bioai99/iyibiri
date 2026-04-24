@@ -2,20 +2,52 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
+import { createClient } from '@/lib/supabase/client'
 
 const cities = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Eskişehir', 'Konya', 'Adana', 'Gaziantep', 'Trabzon', 'Samsun', 'Diyarbakır']
 const ageRanges = ['18-24', '25-34', '35-44', '45-54', '55+']
 
 export default function OnboardingCity() {
   const { colors: c } = useTheme()
+  const router = useRouter()
   const [selected, setSelected] = useState<string | null>(null)
   const [selectedAge, setSelectedAge] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
   const displayFont = 'var(--font-display), Fraunces, serif'
+
+  async function handleContinue() {
+    setSaving(true)
+    // Pre-auth fallback: localStorage
+    try {
+      if (selected) localStorage.setItem('iyibiri_onboarding_city', selected)
+      if (selectedAge) localStorage.setItem('iyibiri_onboarding_age', selectedAge)
+    } catch { /* ignore */ }
+
+    // Eğer auth'luysa doğrudan profile'a yaz (WS onboarding sync improvement)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const updates: { city?: string; age_range?: string } = {}
+        if (selected) updates.city = selected
+        if (selectedAge) updates.age_range = selectedAge
+        if (Object.keys(updates).length > 0) {
+          await supabase.from('profiles').update(updates).eq('id', user.id)
+        }
+      }
+    } catch (err) {
+      console.warn('City/age direct save skipped:', err)
+    }
+
+    setSaving(false)
+    router.push('/auth/login')
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', background: c.ink900, height: '100%' }}>
@@ -129,27 +161,21 @@ export default function OnboardingCity() {
 
       {/* Bottom CTA */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
-        <Link
-          href="/auth/login"
-          onClick={() => {
-            if (selected) localStorage.setItem('iyibiri_onboarding_city', selected)
-            if (selectedAge) localStorage.setItem('iyibiri_onboarding_age', selectedAge)
+        <motion.button
+          onClick={handleContinue}
+          disabled={saving}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            width: '100%', height: 52, background: c.gold, color: c.ink,
+            border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700,
+            fontFamily: uiFont, cursor: saving ? 'wait' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            boxShadow: '0 2px 8px rgba(0,0,0,.08)',
+            opacity: saving ? 0.7 : 1,
           }}
-          style={{ textDecoration: 'none' }}
         >
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            style={{
-              width: '100%', height: 52, background: c.gold, color: c.ink,
-              border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700,
-              fontFamily: uiFont, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: '0 2px 8px rgba(0,0,0,.08)',
-            }}
-          >
-            Hesabımı oluştur <ArrowRight size={16} strokeWidth={2.5} />
-          </motion.button>
-        </Link>
+          {saving ? 'Kaydediliyor...' : (<>Hesabımı oluştur <ArrowRight size={16} strokeWidth={2.5} /></>)}
+        </motion.button>
       </div>
     </div>
   )

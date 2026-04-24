@@ -8,13 +8,15 @@ import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/t
 import { MissionCard } from '@/components/ui/mission-card'
 import { EmptyState } from '@/components/ui/empty-state'
 import {
-  HeroCard,
   ImpactSummary,
   ChipDS,
   IconButtonDS,
   ThemeToggle,
 } from '@/components/ui/ds'
+import { HeroCardV2 } from '@/components/dashboard/hero-card-v2'
+import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
 import { useTheme } from '@/lib/theme'
+import { karmaProgress } from '@/lib/karma-level'
 
 // ── Date helpers ───────────────────────────────────────────────
 
@@ -44,6 +46,7 @@ interface Props {
   recommendedMissions: MissionWithNGO[]
   userActiveMissions: UserMission[]
   activeMissionsWithNGO: MissionWithNGO[]
+  weeklyKarmaGain?: number
 }
 
 // ── Tab key ────────────────────────────────────────────────────
@@ -52,7 +55,7 @@ type TabKey = 'recommended' | 'active'
 
 // ── Component ─────────────────────────────────────────────────
 
-export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [], recommendedMissions, activeMissionsWithNGO }: Props) {
+export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [], recommendedMissions, activeMissionsWithNGO, weeklyKarmaGain = 0 }: Props) {
   const { colors: c } = useTheme()
 
   // Save pending onboarding data from localStorage (app flow: onboarding → auth → dashboard)
@@ -166,19 +169,38 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         </div>
       </motion.div>
 
-      {/* ── 2. HeroCard ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
-        style={{ padding: '20px 16px 0' }}>
-        <HeroCard profile={{
-          karma,
-          completed: completedIds.size,
-          taken: userMissions.filter(m => m.status === 'taken').length,
-          streak: profile.current_streak ?? profile.streak ?? 0,
-        }} />
-      </motion.div>
+      {/* ── 2. HeroCardV2 ── UX Audit Kritik 2 (I6) imza: gold glow breathing + count-up */}
+      <div style={{ padding: '20px 0 0' }}>
+        <HeroCardV2
+          karma={karma}
+          level={karmaProgress(karma).tierName}
+          nextLevel={karmaProgress(karma).nextTierName ?? undefined}
+          nextLevelAt={karmaProgress(karma).nextTierAt ?? undefined}
+          weeklyKarmaGain={weeklyKarmaGain}
+          streakDays={profile.current_streak ?? profile.streak ?? 0}
+          isEmpty={karma === 0}
+          userName={firstName}
+        />
+      </div>
+
+      {/* ── 2.5 DailyMissionCard ── Things 3 "featured focal point" pattern */}
+      {/* UX audit H6: "Günün görevi net fokal nokta" — recommended[0] featured render */}
+      {recommendedMissions.length > 0 && (
+        <div style={{ padding: '16px 0 0' }}>
+          <DailyMissionCard
+            mission={{
+              id: recommendedMissions[0].id,
+              title: recommendedMissions[0].title,
+              ngo: recommendedMissions[0].ngos?.short_name ?? recommendedMissions[0].ngos?.name ?? 'İyiBiri',
+              ngoLogo: recommendedMissions[0].ngos?.logo_url ?? undefined,
+              photoUrl: recommendedMissions[0].photo_url ?? undefined,
+              karma: recommendedMissions[0].karma,
+              duration: recommendedMissions[0].duration ?? undefined,
+              impactStatement: recommendedMissions[0].impact_statement ?? undefined,
+            }}
+          />
+        </div>
+      )}
 
       {/* ── 3. Tab chips ── */}
       <div style={{ padding: '24px 0 4px' }}>
