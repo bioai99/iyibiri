@@ -148,7 +148,323 @@ Ne ekran, kim için, hangi yaşantıya hizmet ediyor.
 - [ ] Error
 - [ ] Success (varsa)
 
-## 10. Handoff
+## 10. Visual Hierarchy Discipline
+
+**Kaynaklar:**
+- [Refactoring UI — Adam Wathan + Steve Schoger](https://refactoringui.com/)
+- [Josh Comeau — Typographic Hierarchy](https://www.joshwcomeau.com/)
+- [Pimp my Type — Type Scale](https://pimpmytype.com/hierarchy/)
+
+**Temel ilke:** "Renk son aşama" (constraint-based design). Grayscale mockup'ta hierarchy var mı?
+
+### Grayscale-first approach
+
+1. **Renksiz mockup yap.** Sadece spacing + size + weight ile hierarchy.
+2. **Aşağıdan yukarı oku:** Hangi element ilk okunur? İkinci?
+3. **Whitespace = prominence.** Çok boşluk = az önem, sıkı spacing = yüksek önem.
+
+**Example (İyiBiri dashboard):**
+
+```
+┌─────────────────────────────────┐
+│ Header (sticky)                 │ ← Min spacing, dense
+├─────────────────────────────────┤
+│                                 │
+│  +250 Karma                     │ ← Large gutter (prominent)
+│  (Number dominant)              │
+│                                 │
+├─────────────────────────────────┤
+│ Mission card                    │ ← Medium spacing
+│ Card title + desc               │
+├─────────────────────────────────┤
+│ Footer                          │ ← Minimal
+└─────────────────────────────────┘
+```
+
+Grayscale: +250 sayısı baskın (size + weight) ve white space → karşısındaki öğeler secondary.
+
+### Size scale disiplini
+
+**İyiBiri typography:**
+
+| Use | Size (px) | Line height | Weight | Note |
+|---|---|---|---|---|
+| Hero number | 48 (5xl) | 1.2 | 900 (black) | Karma counter |
+| Hero title | 24 (2xl) | 1.3 | 700 (bold) | "Bu hafta..." |
+| Card title | 16 (base) | 1.5 | 600 (semibold) | Mission başlık |
+| Card body | 14 (sm) | 1.6 | 400 (normal) | Description |
+| Label/chip | 12 (xs) | 1.4 | 500 (medium) | Category tag |
+| Caption | 12 (xs) | 1.4 | 400 (normal) | Timestamp |
+
+**Discipline:** 4px grid. 12 → 14 → 16 → 20 → 24 → 32 → 48. Keyfi değer yasak (e.g., 17px).
+
+### Font weight hierarchy
+
+**Atlas palette:**
+- **Regular (400):** Body text + descriptions
+- **Medium (500):** Labels + chips + secondary CTA
+- **Semibold (600):** Card titles + section headers
+- **Bold (700):** Page title + hero text + primary CTA
+- **Black (900):** Hero number (Karma counter only)
+
+**Rule:** Max 3 weight per screen. Tip: Regular + Semibold + Bold = enough. Black sadece imza element'te.
+
+### Color = tertiary (not primary)
+
+**Mistake:** "Renk = hierarchy creator" (red, green, gold). Yanlış.
+
+**Right:** Size + weight → hierarchy. Renk = semantik (success/warning/info/action).
+
+**Example:**
+
+```
+GRAYSCALE DONE FIRST:
+┌──────────┐
+│ HERO     │ ← Size 48 + weight 900
+│ body txt │ ← Size 14 + weight 400
+│ [Button] │ ← Size 16, weight 600, ← EMPHASIS already
+└──────────┘
+
+THEN ADD COLOR:
+┌──────────────┐
+│ +250         │ ← gold (semantik: success accent)
+│ You earned   │ ← ink-800 (neutral, body)
+│ [Claim >]    │ ← gold bg (CTA color = primary action)
+└──────────────┘
+```
+
+Renk, hierarchy destekler, yaratmaz.
+
+### Depth via shadow + layer
+
+**Shadow = visual depth (tier):**
+
+| Tier | Shadow | Use | Example |
+|---|---|---|---|
+| **Tier 1 (floating)** | `shadow-lg` + blur 16px | Elevated card, modal overlay | Mission card on hover |
+| **Tier 2 (surface)** | `shadow-md` + blur 8px | Card default, dropdown | Mission card default |
+| **Tier 3 (flat)** | `shadow-sm` / none | Background, input field | Form field, background |
+
+**İyiBiri hero card:** `shadow-[0_8px_32px_rgba(232,194,104,0.35)]` (gold glow) = **imza detail** → tier 1 prominence.
+
+### Spacing scale disiplini
+
+**8px base grid:**
+
+| Value | Use |
+|---|---|
+| 4px (0.5) | Micro-spacing (icon gap) |
+| 8px (1) | Button padding horizontal |
+| 12px (1.5) | Card padding top/bottom |
+| 16px (2) | Section gap, card gap |
+| 24px (3) | Major section gap |
+| 32px (4) | Hero section gap |
+
+**Consistency check:** Spec'te `16px` yaz, Tailwind: `gap-4`. Pixel ≠ Tailwind token — token kullan.
+
+### Kontrol listesi — Visual Hierarchy
+
+- [ ] Grayscale mockup var mı? (Renk olmadan hierarchy görülüyor mu?)
+- [ ] Size scale tutarlı mı? (12 → 14 → 16 → 20 → 24 arasında mı?)
+- [ ] Weight ladder tutarlı mı? (Max 3 weight, her biri neden?)
+- [ ] Color = accent, not hierarchy (primary info size + weight ile mi gösterildi?)
+- [ ] Shadow tiers (tier 1/2/3) tutarlı mı?
+- [ ] Spacing grid 8px base mi? (Token'lar gap-1 / gap-2 / gap-3 / gap-4 mi?)
+- [ ] Whitespace prominent element'i destekliyor mu?
+
+---
+
+## 11. Motion Choreography Patterns
+
+**Kaynaklar:**
+- [Rauno Freiberg — Invisible Details of Interaction Design](https://every.to/p/invisible-details-of-interaction-design)
+- [Emil Kowalski — Sonner/Vaul motion patterns](https://sonner.emilkowal.ski/)
+- [Framer Motion Docs](https://www.framer.com/motion/)
+- [UX Tools — Walt Disney Motion Principles](https://www.uxtools.co/blog/your-ui-needs-more-walt-disney)
+
+**Temel ilke:** Motion = feedback, not decoration. Robustness = network delay + user interruption altında test et.
+
+### Staggered delays anatomy
+
+**Problem:** Simultaneous animation = mechanical, insan gözü takip edemez.
+
+**Solution:** Staggered delay (sequential start times).
+
+```
+List entrance (3 items):
+
+Item 1: ──[Animate]──────
+Item 2: ─────[Animate]───
+Item 3: ────────[Animate]
+        0ms   50ms   100ms (delay increment)
+```
+
+**Pattern:**
+
+```typescript
+// Framer Motion
+{items.map((item, i) => (
+  <motion.div
+    key={i}
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: i * 0.05 }} // 50ms stagger
+  >
+    {item}
+  </motion.div>
+))}
+```
+
+**Constraint:** Max 8 item. 9+ → loop kapalı, tekil pulse animation.
+
+### Spring defaults — İyiBiri tuning
+
+**İyiBiri default (tier-1 app pattern):**
+
+```typescript
+spring: { stiffness: 400, damping: 30 }
+// Mass ~1 (implicit), damping ratio ~0.75 (crisp + lively)
+```
+
+**Alternative:**
+
+| Stiffness | Damping | Feel | Use |
+|---|---|---|---|
+| 400 | 30 | Crisp + snappy | Default (button tap, card lift) |
+| 200 | 20 | Soft + floaty | Delightful (hero counter animation) |
+| 170 | 26 | Molasses-y | Slow emphasis (loading state) |
+
+### Reduce motion respect (WCAG critical)
+
+**Mandatory:** Her animation'ın `useReducedMotion` check'i.
+
+```typescript
+import { useReducedMotion } from 'framer-motion';
+
+export function AnimatedCard({ children }) {
+  const prefersReducedMotion = useReducedMotion();
+  
+  return (
+    <motion.div
+      animate={{ y: prefersReducedMotion ? 0 : -4 }}
+      transition={prefersReducedMotion ? { duration: 0 } : undefined}
+    >
+      {children}
+    </motion.div>
+  );
+}
+```
+
+**Fallback:** Reduction = instant (duration: 0) OR opacity-only (remove y/x transform).
+
+### Exit animation pattern (AnimatePresence)
+
+**Context:** Modal kapalı, component unmount. Animation tamamlanmadan DOM silinme = hecking abrupt.
+
+**Pattern:**
+
+```typescript
+<AnimatePresence>
+  {isOpen && (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+    >
+      Content
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+### Hover vs. Tap — Web + Mobile fark
+
+**Desktop (web):** `whileHover` mevcut (mouse over).  
+**Mobile:** Hover = touch + hold (awkward). Tap'a odaklan.
+
+```typescript
+// Desktop: hover feedback
+<motion.button whileHover={{ scale: 1.02 }} />
+
+// Mobile: tap feedback (haptic + scale)
+<motion.button whileTap={{ scale: 0.97 }} />
+
+// Best: both
+<motion.button
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.97 }}
+/>
+```
+
+**İyiBiri constraint:** Mobile-first, desktop hover secondary.
+
+### Micro-interaction checklist
+
+- [ ] Button tap: `whileTap={{ scale: 0.93 }}`? (Feedback loop)
+- [ ] Card hover: `whileHover={{ y: -4 }}` + shadow lift? (Elevation)
+- [ ] Form error: Shake animation? (`rotate: [-2, 2, -2, 0]` + stagger)
+- [ ] Loading state: Spinner OR skeleton + shimmer?
+- [ ] Modal entry: `initial={{ scale: 0.9, opacity: 0 }}`?
+- [ ] Modal exit: `exit={{ scale: 0.9, opacity: 0 }}` (AnimatePresence)?
+- [ ] List entrance: Stagger (max 8 item)?
+- [ ] Reduced motion fallback: Her animation'da `useReducedMotion` check?
+
+### Example: İyiBiri mission-card stagger + tap
+
+```typescript
+// Spec:
+// - List entrance: 50ms stagger per item, max 8 cards
+// - Tap feedback: scale 0.97 + haptic (if native)
+// - Reduced motion: Entrance off, tap instant
+
+// Handoff to frontend:
+export const MissionCardStagger = {
+  container: {
+    variants: {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.05,
+          delayChildren: 0.1,
+        },
+      },
+    },
+  },
+  item: {
+    variants: {
+      hidden: { opacity: 0, y: 16 },
+      visible: { opacity: 1, y: 0 },
+    },
+  },
+  tap: {
+    whileTap: { scale: 0.97 },
+  },
+};
+```
+
+### Anti-pattern: Motion abuse
+
+- **Animation > 300ms + no skip:** User interrupt frustration.
+- **Simultaneous 5+ element:** Chaos, muddled.
+- **Bounce spring (damping < 20):** Playful but tier-1 apps don't bounce (iOS, Linear, Arc don't).
+- **Disable reduced motion:** A11y violation.
+
+### Kontrol listesi — Motion Choreography
+
+- [ ] Stagger defined (delay increment + max item)?
+- [ ] Spring defaults (stiffness/damping) İyiBiri pattern ile mi?
+- [ ] useReducedMotion check her animation'da?
+- [ ] Exit animation (AnimatePresence) modal/overlay'de?
+- [ ] Hover vs. tap separated (desktop vs. mobile)?
+- [ ] Micro-interaction checklist (button/card/form/error/loading) done?
+- [ ] Animation duration (max 300ms per segment)?
+- [ ] Spec → handoff (Framer Motion pattern code) var mı?
+
+---
+
+## 12. Handoff
 - **Target agent:** frontend-engineer (implementation) + design-system-keeper (yeni token varsa).
 - **Dosya:** `docs/ui/01-specs/[...].md`
 - **ADR:** [varsa link, yoksa "gerekmedi"]
@@ -164,8 +480,9 @@ Ne ekran, kim için, hangi yaşantıya hizmet ediyor.
 - **"Güzel görünsün" kelimesi.** Ölçülebilir kriter: contrast ratio, spacing consistency.
 - **Atlas dışında bir token kullanma.** Yeni token → ADR → design-system-keeper.
 
-## 4. Kontrol listesi
+## 13. Kontrol listesi — Spec hazırlığı
 
+**Core:**
 - [ ] ASCII wireframe var mı?
 - [ ] Hiyerarşi açık mı (sayılı liste)?
 - [ ] Token tablosu eksiksiz (renk + typo + radius + shadow + spacing)?
@@ -174,6 +491,23 @@ Ne ekran, kim için, hangi yaşantıya hizmet ediyor.
 - [ ] Responsive not var mı?
 - [ ] A11y kontrol listesi işaretli mi?
 - [ ] State coverage 5 başlık kontrol edildi mi?
+
+**Visual Hierarchy (Bölüm 10):**
+- [ ] Grayscale mockup var mı?
+- [ ] Size scale tutarlı mı? (8px/12px/14px/16px/20px/24px grid)
+- [ ] Weight ladder (max 3) tutarlı mı?
+- [ ] Color semantic (success/warning/action), not hierarchy?
+- [ ] Shadow tiers uygulanmış mı?
+
+**Motion Choreography (Bölüm 11):**
+- [ ] Stagger pattern (delay increment + max 8 item) tanımlanmış mı?
+- [ ] Spring defaults (stiffness 400, damping 30) İyiBiri pattern mi?
+- [ ] useReducedMotion fallback var mı?
+- [ ] Exit animation (AnimatePresence) modal'de var mı?
+- [ ] Tap feedback (scale 0.97) mobil context'te mi?
+- [ ] Animation duration (max 300ms) tutarlı mı?
+
+**Handoff:**
 - [ ] Handoff satırı (kime, nereye) yazıldı mı?
 
-Checklist tam değilse spec frontend'e devredilemez.
+Kontrol listesi tam değilse spec frontend'e devredilemez.

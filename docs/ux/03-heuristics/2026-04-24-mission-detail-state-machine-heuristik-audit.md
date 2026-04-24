@@ -415,3 +415,10 @@ transitions: server-action-driven
 ---
 
 **Audit sonucu:** ⚠️ Partial — temel iyi, yapısal refactor + 5 eksik state + tema reconciliation + Karma transaction → lansman blocker. UI spec tamamlandığında frontend-engineer 8-12 saatlik iş.
+
+## Handoff log
+
+Bu audit'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 09:30 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-mission-detail-state-machine-ui-spec.md`. K1-K5 → Bölüm 2-10. Race condition K4 → migration 013 önerisi. *(retroactive)*
+- 2026-04-24 11:00 — **frontend-engineer** ✅ — **FSM implementation canlı**. Audit K2 (tema debt) çözüldü: dark rewrite. *(retroactive)*

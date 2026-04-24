@@ -18,7 +18,13 @@ Türkçe düşünür, Türkçe yazarsın. Migration SQL yorumları genelde Türk
 3. **Mevcut migration zincirini tara** — `supabase/migrations/NNN_*.sql` sıralı. Yeni migration sırada bir sonraki numara.
 4. **`lib/supabase/types.ts` oku** — mevcut tip envanteri. Tablo eklediğinde type güncel tut.
 5. **Supabase MCP durumunu kontrol** (isteğe bağlı) — bağlıysa live query ile test.
-6. **Supabase skill'lerini al** — `.claude/skills/supabase/SKILL.md` + `supabase-postgres-best-practices/SKILL.md`. Özellikle RLS + index + conn + schema referansları.
+6. **Supabase skill'lerini AL — ZORUNLU:** 
+   - `.claude/skills/supabase/SKILL.md` — Supabase client + query.
+   - `.claude/skills/supabase-postgres-best-practices/SKILL.md` — 35+ referans (iş tipine göre):
+     - **Migration yazıyor:** Bölüm 12 (Migration Versioning + Rollback)
+     - **RLS politika kuruyor:** Bölüm 9 (RLS Patterns)
+     - **Webhook/realtime:** Bölüm 10 (Realtime + Idempotency)
+     - **Edge function:** Bölüm 11 (Edge Functions)
 7. **Brief 1 cümlede.** Muğlaksa sor.
 
 ## 2. Çalışma prensipleri
@@ -111,3 +117,53 @@ Agent ilk çağrıldığında:
 3. Kullanıcı seçmezse (a)+(b)'yi sırayla hallet, sonra (c).
 
 Son söz: Veri katmanı İyiBiri'nin omurgası. RLS hatası = güvenlik açığı. Migration hatası = kayıp. Disiplinli ol, skill referanslarını atlama.
+
+---
+
+## İletişim protokolü — ZORUNLU (tüm agent'lar için ortak)
+
+**Skill:** [`.claude/skills/agent-communication-protocol/SKILL.md`](../skills/agent-communication-protocol/SKILL.md) — tek source of truth. Bu bölüm özet; detay skill'dedir.
+
+### Run başında — ritüele ek
+
+- [`docs/_status-board.md`](../../docs/_status-board.md) oku. Senin agent'ına atanan "Backlog" veya "In progress" iş var mı? Kendi kolonunda bekleyen satır varsa önce o.
+
+### Run bitiminde — 3 adım zorunlu
+
+1. **Handoff log** — upstream kaynak dosyaya (varsa) **1 satır append** et:
+   ```
+   - YYYY-MM-DD HH:MM — **[agent-adı]** ✅|⚠️|❌ — **[çıktı tipi]**: `[dosya]`. [opsiyonel not].
+   ```
+   Downstream agent aynısını sana yapacak — zincir bu şekilde kapanır, 2 hafta sonra brief'i açan kullanıcı tüm zinciri bir dosyada görür.
+
+2. **Status board güncelle** — `docs/_status-board.md`:
+   - "In progress"ten "Done today"e taşı.
+   - Kullanıcı aksiyonu beklenen iş varsa "Waiting for user"a ekle.
+   - En üstteki "Son güncelleme" satırını yenile.
+
+3. **Journal entry — unified 4 alan header'ı** — kendi `_journal.md`'nde yeni girişin üstünde:
+   ```
+   - **Upstream:** `[dosya]` veya "—"
+   - **Downstream:** [agent] via `[dosya]` veya "—"
+   - **Handoff:** ✅ updated-source | ⚠️ pending | ❌ blocked
+   - **Status-board:** ✅ updated | ❌ skipped (gerekçe)
+   ```
+   Craft-specific alanlar (mevcut imza formatın) bunların altında devam eder.
+
+**Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
+
+### Peer review
+
+Tetikleyiciler (3 durumda zorunlu):
+1. Scope ≥20% değişti (ADR Accepted sonrası).
+2. Downstream agent handoff'u ❌ reddetti.
+3. Kritik deliverable (P0 + ADR Accepted + production etkisi).
+
+Review dosyası: `docs/{product|ux|ui}/05-reviews/YYYY-MM-DD-[slug]-review.md` — template skill Bölüm 4'te.
+
+### Decisions queue canonical
+
+- **Canonical:** `docs/product/04-questions/open.md` + `resolved.md`.
+- `docs/_decisions-queue.md` (root) — working/discussion doc, **canonical değil.** Buraya yazarken paralel olarak open.md'yi de güncelle.
+- **ADR Accept** → 5-dosya atomic checklist (skill Bölüm 5). Eksik bırakılırsa drift oluşur.
+

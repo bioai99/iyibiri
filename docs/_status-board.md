@@ -1,0 +1,153 @@
+# İyiBiri — Status Board
+
+> **Anlık durum snapshot'ı.** "Şu an kim neyi bekliyor, hangi iş nerede" sorusunun 30 saniyelik cevabı. Her agent run sonunda kendi satır(lar)ını günceller. Geçmiş timeline için: [`docs/agents-dashboard.md`](./agents-dashboard.md).
+>
+> **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
+
+**Son güncelleme:** 2026-04-24 21:15 — auth-capacitor — **Middleware + Admin Login upgrade tamamlandı.** `middleware.ts` per-NGO auth (is_ngo_admin RPC) + `app/admin/login/page.tsx` email/password form + `app/admin/login/actions.ts` Supabase auth. ADMIN_SECRET deprecated. SUPER_ADMIN_EMAILS env. TSC 0 hata. Handoff: frontend-engineer (admin hub router + logout button + devtools seed).
+
+---
+
+## ⏳ Waiting for user
+
+İnsan tarafında bekleyen iş. Agent ilerleyemez.
+
+- **Migration 009–018 apply** — owner: kullanıcı (Supabase SQL editor), blocking: full-stack test (mission FSM + membership + karma idempotent + STK admin hazırlığı), link: [`docs/_deploy-steps.md`](./_deploy-steps.md), sinyal: 2026-04-24
+- **Polish sprint push** — owner: kullanıcı (terminal), blocking: TestFlight demo + v1 pilot hazırlığı, link: [`docs/_deploy-steps.md`](./_deploy-steps.md), içerik: Yol A (5 madde) + communication protocol (bu sprint), sinyal: 2026-04-24
+- **TEMA açılış e-postası gönder** — owner: kullanıcı (kişisel), blocking: pilot STK 1 temas, link: [`docs/strategy/04-value-prop/2026-04-24-tema-intro-email.md`](./strategy/04-value-prop/2026-04-24-tema-intro-email.md), sinyal: 2026-04-24
+- **Hukuki mütalaa görüşmesi (Q10+Q11+Q13+Q37)** — owner: kullanıcı (avukat randevu), blocking: ADR-009 + Marketplace mode karar, link: [`docs/strategy/06-memos/2026-04-24-hukuki-mutalaa-brief.md`](./strategy/06-memos/2026-04-24-hukuki-mutalaa-brief.md), sinyal: 2026-04-24
+- **Türk Patent "İyiBiri" trademark başvurusu (Q38)** — owner: kullanıcı, blocking: marka koruması 6 ay süreç, link: karar kuyruğu Q38, sinyal: 2026-04-24
+
+## 🔄 In progress
+
+Şu an aktif olarak çalışılan iş.
+
+- **P0 #9 — STK admin UI V1 (Min+ 10 sayfa)** — owner: supabase-backend (done) → frontend-engineer, started: 2026-04-24 10:45, link: master plan [`docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md`](./product/01-workstreams/2026-04-24-stk-backoffice-workstream.md), ETA: 1.5-2.5 hafta (paralel fe+be+auth S0-S4).
+  - ✅ [be] Migration 021 (2026-04-24 20:30) — 8 RLS policy + 5 kolon + is_super_admin + types update. Seed script ready (`lib/dev/ngo-admin-fixtures.ts`, 5 STK admin idempotent).
+  - ✅ [ux] UX brief (2026-04-24 10:45) — `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (15 sayfa detaylı).
+  - ✅ [auth-capacitor] Middleware upgrade (2026-04-24 21:15) — per-NGO auth (is_ngo_admin RPC) + Supabase email/password login. ADMIN_SECRET deprecated. SUPER_ADMIN_EMAILS env setup. Admin hub router + logout button awaited (fe task).
+  - 🔄 [ux-researcher] Heuristik audit S0'da başlayabilir (Planning).
+  - 🔄 [ui-designer] UI spec S0'da başlayabilir (Planning).
+  - 🔄 [frontend-engineer] Sprint S1 Batch A (auth layout + dashboard + missions + devtools seed butonu) S0 sonrası başlar. Awaiting: admin hub router, logout button, devtools button (auth-capacitor done).
+
+- **Dashboard v2 tur 2 — FE implementation** — owner: frontend-engineer, started: 2026-04-24 10:45, link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (8 component + token refactor), ETA: 2026-04-25 — 2026-04-26 (3–4 hafta paralel fe × design-system-keeper)
+  - ✅ [be] A1 StreakSnapshot query (2026-04-24 17:10) — `getRecentStreakActivity` + index done
+
+## 📥 Backlog
+
+Bir sonraki turda yapılacak, öncelik sırası belli iş.
+
+### P0 — V1 Lansman (yüksek öncelik)
+
+- **P0 #9 — STK admin UI V0 (Min+ 10 sayfa)** — owner: ux-researcher (next) → ui-designer → frontend-engineer + supabase-backend + auth-capacitor, priority: P0, link: master plan [`docs/product/01-workstreams/2026-04-24-v1-improvement-master-plan.md`](./product/01-workstreams/2026-04-24-v1-improvement-master-plan.md) #9, effort: 2-2.5 hafta (1 FE) / 1.5 hafta (FE+BE paralel). ✅ UX brief done (`docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md`), ux-researcher heuristik audit başlayabilir (S0).
+- **P0 #10 — Design system reconciliation (atlas ↔ README ↔ kod tutarlılığı)** — owner: design-system-keeper, priority: P0, link: master plan #10, effort: M. Önceki turda kısmi çalışıldı (xp-bar shim, mission-card canonical) — xp-bar duplicate + hardcoded renk grep kalıntısı var.
+
+### P1 — V1 Kapsam (orta öncelik)
+
+- **P1 #3 — /dashboard/discover blog + kategori** — owner: frontend-engineer, priority: P1, effort: M.
+- **P1 #4 — /dashboard/missions taxonomy filter** — owner: frontend-engineer, priority: P1, effort: M.
+- **P1 #8 — /dashboard/profile Karma log + yıllık özet** — owner: frontend-engineer + supabase-backend, priority: P1, effort: M. UX brief: [`docs/product/02-briefs/ux/2026-04-24-profile.md`](./product/02-briefs/ux/2026-04-24-profile.md) (agent yazdı).
+- **P1 #10 — /dashboard/leaderboard friends tab placeholder** — owner: frontend-engineer, priority: P1, effort: M. UX brief: [`docs/product/02-briefs/ux/2026-04-24-leaderboard.md`](./product/02-briefs/ux/2026-04-24-leaderboard.md) (agent yazdı).
+- **P1 #9 — /dashboard/rewards/[id] polish** — owner: frontend-engineer, priority: P1, effort: S. UX brief: [`docs/product/02-briefs/ux/2026-04-24-rewards.md`](./product/02-briefs/ux/2026-04-24-rewards.md) (agent yazdı).
+- **P1 #11 — /dashboard/notifications read/unread** — owner: frontend-engineer, priority: P1, effort: S.
+- **P1 #12 — Button ghost variant** — owner: design-system-keeper, priority: P1, effort: S.
+- **P1 #13 — 10-domain icon set** — owner: design-system-keeper, priority: P1, effort: S.
+
+### Agent iletişim — protokol adoption
+
+- **Eski brief/spec'lere handoff log ekleme (kalan)** — owner: meta (user-triggered audit), priority: low, link: communication protocol SKILL. 3 ana thread retroactive dolduruldu; ikinci turda P1 UX brief'lere + Eng brief'lere + UI spec'lere de uygulanır.
+
+## ✅ Done today (2026-04-24)
+
+- 2026-04-24 21:15 — **auth-capacitor** — Middleware + Admin login upgrade (ADMIN_SECRET → Per-NGO Supabase auth) — links: `middleware.ts` + `app/admin/login/page.tsx` + `app/admin/login/actions.ts` + `.env.local`. Per-NGO auth: /admin/login → Supabase email/password, middleware is_ngo_admin(user_id, ngo_id) RPC check, /admin/devtools super-admin only, /admin root super-admin only. ADMIN_SECRET deprecated (cookie pattern kaldırıldı). SUPER_ADMIN_EMAILS env setup. Handoff: fe (admin hub router + logout button + devtools button). TSC 0 hata.
+
+- 2026-04-24 20:30 — **supabase-backend** — Migration 021 + Seed script + Types güncelleme — links: `supabase/migrations/021_ngo_admin_rls_policies.sql` + `lib/dev/ngo-admin-fixtures.ts` + `lib/supabase/types.ts`. Migration 021: 8 RLS policy (missions/user_missions/ngos/posts/ngo_memberships/ngo_admin_users × admin/super-admin), 5 eksik ngos kolon (email/phone/cover_image_url/social_*), is_super_admin(user_id) helper, idempotent + rollback annotated. Seed: 5 STK admin (idempotent listUsers + upsert), dev-only guard, devtools entegrasyon hazır. Types: ngos.Row/Insert/Update +6 kolon. TSC 0 hata. Handoff: fe (Sprint S1 admin layout), auth-capacitor (middleware), ux/ui (Planning S0).
+
+- 2026-04-24 10:45 — **product-analyst** — STK Admin UI V1 (Min+ 10 sayfa) detaylı UX brief — link: `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (P0 #9 workstream, ADR-010 implementation plan). 10 sayfa × JTBD + outcome + must/should/won't + başarı kriteri + benchmark + varsayım. OST + Shape Up appetite + Cagan 4-risk + LNO applied. Admin persona "Ayşe" (5 JTBD), 5 STK test data senaryosu, 4 problem → 10 solution, S1-S6 batch timeline, success metrics (haftasal login + 4w walking skeleton + 12w NPS≥50). Handoff: ux-researcher (audit start → ui-designer wire → supabase-backend migration 021 → auth-capacitor middleware → frontend-engineer S1-S4 implementation).
+
+- 2026-04-24 17:10 — **supabase-backend** — StreakSnapshot query + index — link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` Handoff log. `lib/supabase/queries/streak.ts` (getRecentStreakActivity, StreakActivity interface) + `supabase/migrations/020_streak_query_index.sql` (composite index). TSC 0, RLS verified, idempotent. Handoff: frontend-engineer (Sprint A A1).
+
+- 2026-04-24 16:35 — **design-system-keeper** — K1 token fix (MissionCard domain gradient) — link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` Handoff log. `tailwind.config.ts` backgroundImage (7 domain-* + 2 scrim-*) + `components/ui/mission-card.tsx` refactor (hardcoded gradient → className) + `docs/project-atlas.md` Bölüm 6 güncelleme. TSC 0 hata, grep 0 hardcoded hex. Handoff: frontend-engineer (Sprint A variant dönüş).
+
+- 2026-04-24 10:45 — **ui-designer** — Dashboard v2 tur 2 polish spec — link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md`. K1–K5 sorunları → 3 yeni component (StreakSnapshot, LeaderboardTeaser, DailyMissionCard polish) + MissionCard token refactor spec, motion (Duolingo pattern), WCAG AA checklist. Handoff: fe + design-system-keeper.
+
+- 2026-04-24 23:45 — **ux-researcher** — Dashboard v2 tur 2 audit + journey — links: `docs/ux/03-heuristics/2026-04-24-dashboard-v2-tur2-audit.md` + `docs/ux/02-journeys/2026-04-24-dashboard-ikinci-ziyaret.md`. K1–K5 kritik (MissionCard gradient refactor, streak/leaderboard/algoritma missing, ödül rail Overhead), Q25/Q34/Q43 cevapları. Handoff ui-designer'a.
+
+- — **product-analyst** — Dashboard v2 Tur 2 brief + component inventory — link: `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md`. 12-item inventory (9 mevcut + 3 missing), 5 iyileştirme (Leverage 2 + Neutral 2 + Overhead 1), handoff ux-researcher'a.
+
+- 2026-04-24 20:45 — **Claude (Cowork, 3 paralel subagent)** — **Agent iyileştirme 3-9/9 tamam (5 agent batch)**: 
+  - frontend-engineer (3/9): `react-server-component-patterns` skill yeni (421 satır) + `mobile-app-polish-standards` kritik ref fix + testing/performance maddeleri
+  - supabase-backend (4/9): `supabase-postgres-best-practices` +322 satır (RLS + Realtime idempotency + Edge Functions + Migration rollback, 4 yeni bölüm)
+  - coordinator (5/9): playbook +151 satır (Triage Decision Tree + RACI + LNO, Stop Conditions 7 kategori, Workstream Sequencing + Critical Path)
+  - ui-designer (6/9): `visual-spec-writing` +334 satır (Visual Hierarchy Discipline Refactoring UI + Motion Choreography Rauno pattern)
+  - ux-researcher (7/9): `continuous-discovery-practice` skill yeni (400 satır, Teresa Torres OST + Google HEART + Jeff Patton story mapping)
+  - product-analyst (8/9): `product-discovery-frameworks` skill yeni (352 satır, OST + JTBD + Shape Up + Cagan 4-risk + LNO) + `writing-plans` +95 satır (OKR linkage)
+  - strategy-consultant (9/9): `pyramid-principle-thinking` skill yeni (310 satır, Minto MECE + SCQA + memo template) + `consulting-methodology` +205 satır (7 Powers Helmer + Amazon Working Backwards PR/FAQ)
+  - TSC 0 hata. Toplam 2150 satır yeni skill + ~900 satır skill eklentisi + ~470 satır playbook iyileştirme.
+- 2026-04-24 18:30 — **Claude (Cowork)** — **auth-capacitor iyileştirme** (agent sıra 2/9, **P0 legal + security**): 2 yeni skill yazıldı — `kvkk-compliance` (250 satır, TR 6698 aydınlatma template + çifte onay + consent tracking + silme hakkı + DPA + 8 avukat-e-gider senaryosu) + `capacitor-native-oauth` (417 satır, RFC 8252 7-madde + iOS Universal Links + Android App Links + PKCE + @capgo/social-login + deep link handler + token secure storage + 16 bölüm). Playbook'a skill referansları + Password Reset Flow detay + MFA Roadmap (Email→SMS→TOTP→Passkeys). TL 1M+ KVKK cezası + account takeover riski kapsandı. Legal review + simulator test kaldı.
+- 2026-04-24 17:15 — **Claude (Cowork)** — **design-system-keeper iyileştirme** (agent sıra 1/9): `design-system-audit` skill'e 3 yeni bölüm (Atomic Design Taxonomy/Token Governance/Figma Variables, +208 satır) + playbook'a "Contribution Model + Component Lifecycle" bölümü (+97 satır). Kaynaklar: Brad Frost, Nathan Curtis, Figma Docs.
+- 2026-04-24 16:30 — **Claude (Cowork)** — Coordinator agent (9. agent, auto-triggered) + Protokol Katman G (orchestration layer). `.claude/agents/coordinator.md` + `SKILL.md` Katman G + agents-dashboard güncelleme. Büyük/multi-agent iş geldiğinde parent session otomatik çağıracak.
+- 2026-04-24 15:45 — **Claude (Cowork)** — Agent communication protocol (6 katman: Handoff / Status board / Unified journal / Peer review / Decisions canonical / Playbook entegrasyonu). Tek source of truth: `.claude/skills/agent-communication-protocol/SKILL.md` (338 satır). 8 agent playbook güncellendi, 11 dosyaya retroactive handoff log, status board kuruldu.
+- 2026-04-24 15:00 — **Claude (Cowork)** — Yol A polish sprint tamamlandı (5/5 madde): NGO follow persistence + loading skeleton + animation 3 ekran (agent) + empty state pattern library + 3 analyst brief (agent). TSC 0 hata.
+- 2026-04-24 13:00 — **analyst + strategy** — Karar oturumu kapanışı: 21/34 açık soru çözüldü, 4 yeni ADR Accepted (ADR-010/011/012/013), ADR-009 Proposed (avukat bekliyor). Hukuki mütalaa briefi hazır.
+- 2026-04-24 12:15 — **fe + ds** — P0 #4 State library (`components/ui/state/index.tsx`) — 5 export: LoadingState, EmptyStateV2, ErrorState, OfflineState, AsyncBoundary.
+- 2026-04-24 11:45 — **fe** — P0 #1 Dashboard v2 wire-in (HeroCardV2 + DailyMissionCard canlı).
+- 2026-04-24 11:30 — **strategy** — Launch deliverables: TEMA intro email + Gamma deck prompt (partner + investor variants) + pitch polish.
+- 2026-04-24 11:00 — **fe** — Mission state machine components + page FSM refactor + 2 dead file retired. 83/83 test pass.
+- 2026-04-24 10:30 — **be + fe** — Test data infra (migration 014) + devtools seed/clear + sessiz bug fix.
+- 2026-04-24 10:00 — **ux + ui + be + fe** — P0 #3 Mission state machine audit + journey + UI spec + migration 013 + FSM lib + 55 unit test.
+- 2026-04-24 09:30 — **ui-designer** — Mission state machine UI spec.
+- 2026-04-24 09:15 — **ux-researcher** — Mission state machine audit + journey map.
+- 2026-04-24 08:30 — **fe + be** — Sandbox + celebration + webhook — üyelik akışı end-to-end clickable.
+- 2026-04-24 08:00 — **fe + be** — NGO membership full-stack integration + 28 unit test.
+- 2026-04-24 07:30 — **fe** — NGO membership 5 component scaffold.
+- 2026-04-24 07:10 — **ui-designer** — NGO membership parametric UI spec.
+- 2026-04-24 06:45 — **ui + fe + ds** — Dashboard v2 UI spec + component scaffold + NGO audit + xp-bar shim.
+- 2026-04-24 06:30 — **ux-researcher** — Dashboard v2 audit + journey + SKILL sertleştirmesi.
+- 2026-04-24 06:00 — **fe + ds** — Onboarding DB sync + design system reconciliation tur 1.
+- 2026-04-24 05:30 — **be + fe + auth** — Faz 2 agent'lar ilk tur (analytics + coming-soon + şifre sıfırlama).
+- 2026-04-24 05:00 — **product-analyst** — V1 Improvement Master Plan + 7 brief.
+
+## 📦 Done this week (2026-04-19 → 2026-04-24)
+
+> Not: Proje aktif olarak **2026-04-23 başladı** — bu "hafta"nın içeriği iki günlük sprint (23-24 Nisan). Pazartesi özete dönülür.
+
+- 2026-04-24 — V1 Master Plan + 12 P0 iş tanımı + ADR'ler + master iletişim protokolü (bu sprint)
+- 2026-04-23 → 2026-04-24 — Strateji fazı (12 memo + 35 kaynak + 26 açık soru)
+- 2026-04-23 → 2026-04-24 — Ürün fazı (7 ADR Proposed → 8 Accepted + 3 workstream + 7 brief)
+- 2026-04-23 → 2026-04-24 — Faz 2 agent çıktıları (8/12 → 10/12 P0 tamam)
+
+---
+
+## 📊 Sağlık göstergeleri (haftalık self-check)
+
+Protokol Bölüm 9 ölçütleri:
+
+1. **Handoff log coverage** (son 7 gün briefs/specs): retroactive sprint sonrası 3/3 ana thread ✅.
+2. **Status board güncelleme freshness**: < 24 saat ✅ (az önce güncellendi).
+3. **Journal front-matter 4 alan**: henüz uygulanmadı (retroactive beklemede, yeni girişlerden başlanacak) ⚠️.
+4. **Açık 🔴 soru cevapsız ≥ 7 gün**: 0 ✅ (Q10+Q11+Q13 hukuki bekliyor ama yazılı; Q31 API key karar verildi mimari doğru).
+5. **ADR Accepted drift**: 0 ✅ (son oturum sonrası tüm resolved ADR'ler open.md'de kapatıldı).
+
+---
+
+## Nasıl kullan (agent'lar için)
+
+**Her run başlangıcı:**
+1. Bu dosyayı oku — kendi kolonunda satır varsa context al, yoksa blockage'a bak.
+
+**Her run bitimi:**
+1. "In progress"ten "Done today"e taşı (tarih + agent + link).
+2. Yeni açılan iş "Backlog"a eklenir (owner + priority belirt).
+3. Kullanıcı aksiyonu beklenen iş "Waiting for user"a eklenir (link + sinyal tarihi zorunlu).
+4. En üstteki "Son güncelleme" satırını yenile.
+
+**Gün sonu (gece / Pazartesi sabahı):**
+"Done today" → "Done this week"e taşınır veya özetlenir.
+
+**Haftalık (her Pazartesi):**
+Sağlık göstergeleri gözden geçirilir. 3 veya daha fazla ❌/⚠️ varsa protokol revize tetikleyicisi.
+
+---
+
+**Referans:** [`.claude/skills/agent-communication-protocol/SKILL.md`](../.claude/skills/agent-communication-protocol/SKILL.md)

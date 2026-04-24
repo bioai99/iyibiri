@@ -210,3 +210,10 @@ UI spec'in ele alması gereken özel durumlar:
 - ADR-005, ADR-007, ADR-008 v2
 - Master plan P0 #20
 - Stripe Checkout doc, Revolut card pattern, Monzo confirmation pattern
+
+## Handoff log
+
+Bu audit'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 07:10 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-ngo-uyelik-parametric-ui-spec.md`. Audit'teki 3 kritik bulgu spec'e yansıdı. *(retroactive)*
+- 2026-04-24 08:30 — **frontend-engineer** ✅ — **end-to-end akış canlı**, 28 unit test. *(retroactive)*

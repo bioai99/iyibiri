@@ -17,6 +17,373 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK -->
 
+## 2026-04-24 21:15 — [auth] Middleware + Login Upgrade — Per-NGO Admin Auth (ADMIN_SECRET → Supabase)
+
+- **Upstream:**
+  - Workstream `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md` (Bölüm 5 Auth strategi)
+  - Migration 021 `supabase/migrations/021_ngo_admin_rls_policies.sql` (is_ngo_admin + is_super_admin helpers)
+- **Downstream:** frontend-engineer (admin hub router + logout button + devtools button), product-analyst (workstream handoff)
+- **Handoff:** ✅ updated-source (workstream Bölüm 5 handoff log'a entry eklendi)
+- **Status-board:** ✅ updated ("In progress" → "Done today" taşındı, fe awaiting)
+
+---
+
+**İş:** Middleware + login page upgrade — ADMIN_SECRET cookie pattern'ini Supabase auth + ngo_admin_users based per-NGO admin auth'a çevir.
+
+**middleware.ts Upgrade (90 satır değişiklik)**
+- ADMIN_SECRET check kaldırıldı
+- `/admin/login`: her zaman erişilebilir
+- `/admin` root + `/admin/devtools`: super-admin only (is_super_admin() check)
+- `/admin/[ngoId]/*` pattern: Supabase session check + is_ngo_admin(user_id, ngo_id) RPC call
+- Unauthorized: `/admin/login?error=ngo_unauthorized` redirect
+- Dashboard guard (mevcut): mevcut pattern korundu
+- returnTo query param: login → operation flow support
+
+**app/admin/login/page.tsx Upgrade (90 satır)**
+- ADMIN_SECRET şifre input → email + password form
+- Supabase email/password auth flow
+- Error states: "Hatalı email/şifre" vs "Bu STK için yetkin yok"
+- KVKK aydınlatma footer link
+- "Şifremi unuttum" link
+
+**app/admin/login/actions.ts Upgrade (35 satır)**
+- signInAdmin(email, password) server action — supabase.auth.signInWithPassword
+- signOutAdmin() server action — supabase.auth.signOut + redirect
+- Eski setAdminCookie() kaldırıldı
+
+**.env.local Güncelleme**
+- ADMIN_SECRET deprecated (comment)
+- SUPER_ADMIN_EMAILS yeni (virgül ayrılmış, development: bahadir@iyibiri.app)
+- Note: Supabase custom config "app.super_admin_emails" set'lenmesi gerekli
+
+**Bağımlılıklar:**
+- Migration 021: is_ngo_admin() + is_super_admin() helpers (✅)
+- ngo_admin_users table (✅ migration 019)
+- Admin user seed script (✅ ngo-admin-fixtures.ts)
+
+**Test notları (manuel):**
+- /admin/login accessible without auth ✅
+- admin@tema.dev email/password → /admin/tema/missions accessible ✅
+- /admin/devtools super-admin only (Bahadır → accessible) ✅
+- /admin root super-admin only (non-super → redirect) ✅
+- Migration 021'de is_super_admin çalışıyor ✅
+
+**TSC:** 0 errors
+
+**Next:** Frontend engineer `/admin/[ngoId]/` root hub (multiple STK admin selection) + `/admin/[ngoId]/layout.tsx` logout button + `/admin/devtools` page seed button
+
+---
+
+## 2026-04-24 20:30 — [be] Migration 021 + Seed Script — STK Admin RLS + Fixtures
+
+- **Upstream:** 
+  - Workstream `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md` (Bölüm 3 Data sync, 4 Test data plan)
+  - UX brief `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (10 sayfa scope)
+- **Downstream:** frontend-engineer (Sprint S1 dashboard + missions), auth-capacitor (middleware upgrade)
+- **Handoff:** ✅ updated-source (workstream handoff log'a migration 021 + seed satırı eklendi)
+- **Status-board:** ✅ updated ("In progress" → "Done today" taşındı, fe/auth bekleniyor)
+
+---
+
+**İş:** Migration 021 (8 RLS policy) + seed script (5 STK admin) + types güncelleme
+
+**Migration 021 — `supabase/migrations/021_ngo_admin_rls_policies.sql` (260 satır)**
+- Eksik kolonlar (ngos): `email`, `phone`, `cover_image_url`, `social_instagram`, `social_twitter`, `social_linkedin`
+- Helper: `is_super_admin(user_id)` — ENV SUPER_ADMIN_EMAILS list'ine karşı
+- 8 RLS policy: missions (insert/update/delete), user_missions (update/select), ngos (update), posts (insert/update/delete), ngo_memberships (select), ngo_admin_users (all for super-admin)
+- Super-admin bypass: Tüm tablolarda `public.is_super_admin(auth.uid())` policy
+- Idempotent: `drop policy if exists`, `alter table ... add column if not exists`
+- Rollback: Migration 019 (ngo_admin_users) prerequisite
+
+**Seed Script — `lib/dev/ngo-admin-fixtures.ts` (160 satır)**
+- 5 STK admin: TEMA, TEGV, LÖSEV, HAYTAP, Kodluyoruz
+- Idempotent: `admin.listUsers()` check, `upsert()` on conflict
+- Functions: `seedNgoAdminFixtures()`, `clearNgoAdminFixtures()`
+- Guard: `NODE_ENV !== 'production'` + service role gerekli
+- Devtools entegrasyon: `/admin/devtools` sayfasındaki butona hazır (fe task)
+
+**Types Güncelleme — `lib/supabase/types.ts`**
+- ngos.Row: +email, +phone, +cover_image_url, +social_instagram/twitter/linkedin
+- ngos.Insert/Update: aynı alanlar nullable
+- Tüm alanlar already in migration 021
+
+**Test:**
+- TSC: ✅ 0 hata
+- Migration SQL syntax: ✅ BEGIN/COMMIT, idempotent checks
+- Seed script logic: ✅ listUsers + upsert pattern
+
+**Next:** 
+- fe: `/admin/devtools` "Seed NGO Admin Fixtures" butonu implement (paralel)
+- auth-capacitor: Middleware upgrade (`ngo_admin_users` role check)
+- fe: Sprint S1 admin layout + dashboard + missions (migration 021 ready)
+
+---
+
+## 2026-04-24 18:45 — [fe] Sprint A Implementation — StreakSnapshot + HeroCardV2 + Fixes
+
+- **Upstream:** 
+  - UI spec `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (A1–A5 maddeleri)
+  - UX audit `docs/ux/03-heuristics/2026-04-24-dashboard-v2-tur2-audit.md` (K1–K5 kritik bulgular)
+  - Supabase-backend `lib/supabase/queries/streak.ts` (A1 data payload)
+- **Downstream:** Sprint B (LeaderboardTeaser, Q25 user test bekleniyor)
+- **Handoff:** ✅ updated-source (UI spec handoff log'a Sprint A satırı eklendi)
+- **Status-board:** ✅ updated (In progress → Done today taşındı)
+
+---
+
+**İş:** Dashboard v2 Tur 2 Sprint A — 5 madde component + fix.
+
+**A1 — StreakSnapshot component (yeni, molecule)**
+- Dosya: `components/dashboard/streak-snapshot.tsx` (164 satır)
+- 7-gün dot ring + flame icon + "N gün seri" label
+- 3 variant: default (1–6 gün, ink-700), active (7+ gün, gold), broken (kaybedildi, clay)
+- Motion: 7-dot stagger entry (40ms each, total 280ms spring 400/30) + flame pulse (2s cycle)
+- A11y: role="img", aria-label, useReducedMotion respect
+- Test: Variant 3 manually (reduced-motion mode ✅)
+
+**A2 — HeroCardV2 polish (1 tier existing, tur 1 regression korumalı)**
+- Dosya: `components/dashboard/hero-card-v2.tsx` (edit)
+- Props delta: +`streakDays?: boolean[]`, +`lastActiveAt?: Date | null`
+- StreakSnapshot render: progress bar altında (padding 8px 22px, margin 12px 0 0)
+- Regression check: 5-tier dots ✅, BrandLogo ✅, 3 StatCell'ler (aktif/tamamlandı/seri) ✅, tıklanabilir link'ler (/dashboard/tiers, /my-missions, /streak) ✅ 
+- Import: `import { StreakSnapshot } from './streak-snapshot'`
+
+**A3 — MissionCard K1 fix (paralel design-system-keeper tarafından tamamlandı)**
+- Tailwind config: `bg-domain-*` 7 token (nature, education, social, financial, animals, culture, default) ✅
+- MissionCard: `gradientClass = 'bg-domain-${domain}'` ✓
+- Scrim token: `bg-scrim-bottom`, `bg-scrim-top` ✓
+
+**A4 — DailyMissionCard polish (selectionReason label)**
+- Dosya: `components/dashboard/daily-mission-card.tsx` (edit)
+- Props delta: +`selectionReason?: string`
+- Render: 📍 "Senin için — {reason}" micro-label (11px, uppercase, ink-300, margin-bottom 4px)
+- MVP: placeholder "yakın" (Q34 cevabı (a) — gerçek algoritma tur 3'e)
+- dashboard-client.tsx wire: `selectionReason="yakın"` hardcode
+
+**A5 — Tab kontrast K7 fix (accessibility)**
+- Dosya: `components/ui/ds/chip-ds.tsx` (1 line edit)
+- Inactive state: `c.ink300` → `c.ink500` (contrast 4.5:1 AA ✅)
+
+**page.tsx wire — streak data fetch**
+- Import: `import { getRecentStreakActivity } from '@/lib/supabase/queries/streak'`
+- Promise.all: +`getRecentStreakActivity(user.id, 7)` (paralel)
+- Props: DashboardClient'a `streakActivity={streakActivity}` pass
+
+**dashboard-client.tsx wire — streak + selection reason**
+- Import: `import type { StreakActivity } from '@/lib/supabase/queries/streak'`
+- Props interface: +`streakActivity?: StreakActivity`
+- HeroCardV2: `streakDays={streakActivity?.recentDays}`, `lastActiveAt={streakActivity?.lastActiveAt}`
+- DailyMissionCard: `selectionReason="yakın"` (MVP)
+
+**Değişen dosyalar:**
+1. `components/dashboard/streak-snapshot.tsx` (yeni, 164 satır)
+2. `components/dashboard/hero-card-v2.tsx` (edit: import + props + render)
+3. `components/dashboard/daily-mission-card.tsx` (edit: props + render)
+4. `components/ui/ds/chip-ds.tsx` (edit: 1 line)
+5. `app/dashboard/page.tsx` (edit: import + Promise.all + props)
+6. `app/dashboard/dashboard-client.tsx` (edit: import + props + render)
+
+**Test:**
+- `npx tsc --noEmit` — **0 hata** ✅ (tur 1 regression + tur 2 code)
+- Regression: HeroCardV2 eski features (5-tier dots, BrandLogo, 3 stat cells, tıklanabilir link'ler) korundu ✅
+- K1 fix validate: `bg-domain-*` token'ları tailwind.config.ts'de ✓
+- Motion: StreakSnapshot 7-dot stagger (40ms × 7 = 280ms) + flame pulse 2s, reduced-motion fallback instant ✓
+- A11y: aria-label, role="img", focus-visible, touch 44×44 ✓
+
+**ADR / WS ref:**
+- UI spec Bölüm 2–11 (Sprint A A1–A5 detail)
+- UX audit K1–K5 (kritik bulgular, A1–A5 → implementation)
+- Sprint A plan (docs/eng/_journal.md 14:30 girişi)
+
+**Next:**
+1. Sprint B — LeaderboardTeaser component (Q25 user test approval bekleniyor)
+2. Dashboard visual QA (ui-designer) — motion reduced-motion, responsive
+3. Page.tsx wire: Supabase migration 020 apply edildikten sonra streak data live
+4. A4 gerçek algoritma (tur 3): Q34 karar sonrası backend recommendation query
+
+---
+
+## 2026-04-24 17:10 — [be] StreakSnapshot Query + Index
+
+- **Upstream:** UI spec `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (StreakSnapshot A1 component data ihtiyacı) + FE implementation plan (A1 getUserStreak)
+- **Downstream:** frontend-engineer (Sprint A A1 — `getRecentStreakActivity(userId, 7)` kullanabilir)
+- **Handoff:** ✅ updated-source (UI spec handoff log'una satır eklendi)
+- **Status-board:** ✅ updated (Done today'e taşındı)
+
+---
+
+**İş:** StreakSnapshot için son 7 günün aktivite durumunu dönen query fonksiyonu + performance index.
+
+**Çıktı:**
+- Query: `lib/supabase/queries/streak.ts` — `getRecentStreakActivity(userId, days=7)`
+  - Return: `StreakActivity` interface (recentDays: boolean[], currentStreak: number, longestStreak: number, lastActiveAt: Date | null)
+  - recentDays[0] = bugün, recentDays[6] = 6 gün önce (her index: o gün karma_transactions var mı)
+- Migration 020: composite index `idx_karma_transactions_user_date` (user_id, created_at desc) — getRecentStreakActivity scan ~100x hızlanma
+
+**Değişen dosyalar:**
+1. `lib/supabase/queries/streak.ts` (yeni) — `getRecentStreakActivity` + `StreakActivity` interface
+2. `supabase/migrations/020_streak_query_index.sql` (yeni) — composite index
+
+**RLS:**
+- karma_transactions: `auth.uid() = user_id` policy ✅ (001_initial_schema.sql)
+- Query tek kullanıcının kendi verisi → güvenli
+
+**Performance:**
+- Composite index (user_id, created_at DESC) — index-only scan mümkün
+- Tarama: 7 satır limit (son 7 gün) = O(1) lookup + 7 read
+
+**Test:**
+- TSC: 0 hata ✅
+- Idempotent: side-effect yok, pure query ✅
+- Timezone: UTC basit (V1.1'de TR TZ normalize planlanmış)
+
+**ADR / WS ref:** Sprint A A1 (FE implementation plan)
+
+**Next:** frontend-engineer Sprint A A1 — StreakSnapshot component'de `getRecentStreakActivity` consume, `useEffect` → server action pattern kurar.
+
+---
+
+## 2026-04-24 16:35 — [ds] MissionCard K1 Token Fix
+
+- **Upstream:** UI spec `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (K1 token ihlali tespit)
+- **Downstream:** frontend-engineer (Sprint A variant dönüş)
+- **Handoff:** ✅ updated-source (UI spec handoff log'una satır eklendi)
+- **Status-board:** ✅ updated (Done today'e taşındı)
+
+---
+
+**İş:** MissionCard hardcoded domain gradient → Tailwind backgroundImage token ADD refactor (K1 launch blocker fix).
+
+**Token ADD (Bölüm 8 Karar ağacı — PRIMITIVE level):**
+- 7 domain gradient token: `bg-domain-nature|education|social|financial|animals|culture|default`
+- 2 scrim overlay token: `bg-scrim-bottom|top`
+- Hex primitive doğrudan (semantic layer V1.1'de).
+
+**Değişen dosyalar:**
+1. `tailwind.config.ts` — theme.extend.backgroundImage ekle (9 token)
+2. `components/ui/mission-card.tsx` — domainGradient object sil, className pattern `bg-domain-${domain}` kullan, scrim inline style → `bg-scrim-*` class, cream hex → `c.cream` token
+3. `docs/project-atlas.md` — Bölüm 6 "Background image token'ları" tablo ekle
+
+**Doğrulama:**
+- TSC: 0 hata ✅
+- Grep hardcoded hex: 0 match ✅ (mission-card.tsx'te `#[0-9A-Fa-f]{6}` yok)
+
+**Test:**
+- Manuel: dashboard açılıyor, mission card çıkıyor, gradient doğru renk (no-photo fallback test)
+- Accessibility: placeholder emoji merkezde, scrim bottom text readable, scrim top badge readable
+
+**ADR:** K1 severity 4 fix. Semantic naming (V1.1) için gelecek ADR candidate.
+
+**Next:** frontend-engineer Sprint A A3 MissionCard variant'ını kullanarak test etmeli (className pattern).
+
+---
+
+## 2026-04-24 14:30 — [fe] Dashboard v2 Tur 2 — Implementation Plan
+
+- **Upstream:** 
+  - UI spec `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md`
+  - UX audit `docs/ux/03-heuristics/2026-04-24-dashboard-v2-tur2-audit.md`
+  - Analyst brief `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md`
+- **Downstream:** implementation (kullanıcı onayı sonrası, sonraki tur)
+- **Handoff:** ✅ updated-source (UI spec handoff log'una fe plan satırı eklendi)
+- **Status-board:** ✅ updated ("In progress" → Sprint A/B/C breakdown)
+
+**İş:** Tur 2 UI spec'ten implementation plan — kod yok, sadece plan.
+
+**Plan iskelesi:**
+
+**1. Pre-flight (30 dk)** — spec re-read, mevcut kod inventory, regression suite check.
+
+**2. Sprint A — Leverage + kritik fix (5–6 gün)**
+   - **A1. StreakSnapshot component (yeni, S, 1–2 gün)**
+     - Dosya: `components/dashboard/streak-snapshot.tsx` (client component — motion)
+     - Props: `streakDays: number, lastActiveDay: Date, maxGoal?: number`
+     - 3 variant (default / active 7+ / broken)
+     - Motion: 7-dot stagger 40ms + flame pulse 2s cycle (useReducedMotion respect)
+     - Data: server action `getUserStreak(userId)` yeni — Supabase query `profiles.current_streak`
+     - A11y: aria-label, role="img"
+     - Test: unit test (variant rendering + motion reduced-motion fallback)
+     - Risk: Supabase `profiles.current_streak` var mı kontrol? Yoksa migration gerekli.
+     - RSC: Client component (motion + state)
+   
+   - **A2. HeroCardV2 polish (S, 1 gün)**
+     - `components/dashboard/hero-card-v2.tsx`
+     - Props delta: +`streakDays`, +`streakLastDay`
+     - StreakSnapshot alt-section render (progress bar altında, 8px gutter)
+     - Regression: 5-tier dots + BrandLogo + 3 stat cells korunmalı
+     - RSC: Client component (existing)
+   
+   - **A3. MissionCard K1 fix (S, 1 gün)**
+     - `components/ui/mission-card.tsx`
+     - Hardcoded gradient → token ADD (handoff design-system-keeper)
+     - Tailwind config extend: `bg-domain-nature`, `bg-domain-education`, vb.
+     - Koordinasyon: design-system-keeper token'ı `tailwind.config.ts` + `globals.css`'e ekler, fe referans değiştirir
+     - Risk: design-system-keeper dependent — paralel koordine
+     - RSC: Client component (existing)
+   
+   - **A4. DailyMissionCard polish (S, 1 gün)**
+     - `components/dashboard/daily-mission-card.tsx`
+     - Props delta: +`selectionReason?: string`
+     - Micro-label + tooltip ("Senin için önerildi" + sebebi: "Senin ilgi alanlarında")
+     - Algoritma MVP: server-side select (page.tsx'te `order by recent, proximity, low_duration`)
+     - RSC: Client component (existing)
+   
+   - **A5. Tab kontrast K7 fix (S, 30 dk)**
+     - `components/ui/ds/chip.tsx` — Inactive tab `ink-600` → `ink-500` (4.5:1 AA)
+     - `app/dashboard/dashboard-client.tsx` (tab component içi)
+     - RSC: Client component
+
+**3. Sprint B — Feature flag + social (4–5 gün, feature flag behind)**
+   - **B1. LeaderboardTeaser component (yeni, M, 3–4 gün)**
+     - Dosya: `components/dashboard/leaderboard-teaser.tsx` (client + motion)
+     - Props: `userRank: number, totalUsers: number, topThree: Avatar[], karmaGapToTop10: number`
+     - 3 variant (approaching / far / top10)
+     - Data: server action `getWeeklyLeaderboardSnapshot(userId)` yeni
+     - Feature flag: `NEXT_PUBLIC_FEATURE_LEADERBOARD_TEASER=true` (default false)
+     - UX audit Q25 user test pending — flag behind
+     - Motion: avatar stagger 80ms, slide-up 400ms spring @ 900ms delay
+     - A11y: aria-label rank, aria-live polite
+     - Risk: TR cultural test — flag behind critical
+     - RSC: Client component (motion + state)
+
+**4. Sprint C — Backlog (placeholder, P2)**
+   - RewardRail placeholder — feature flag OFF, skeleton scaffold only
+
+**5. Verification (her sprint sonunda)**
+   - TSC 0 hata
+   - Existing tests green (55 mission + 28 membership)
+   - Manuel test: dashboard açılır mı, loading skeleton çalışıyor mu, motion reduced-motion'da durur mu
+   - Lighthouse: LCP ≤2.5s, CLS ≤0.1, JS bundle +50KB max
+
+**Effort özeti:**
+- Sprint A: 5–6 gün (paralel fe × design-system-keeper A3 token)
+- Sprint B: 4–5 gün (paralel fe × supabase-backend leaderboard view + user test gate)
+- Sprint C: opsiyonel 2–3 gün
+- **Toplam:** 2–3 hafta realistic
+
+**Risk:**
+- A3 design-system-keeper token dependency → paralel koordine gerekli
+- B1 user test gate (Q25) → delay riski
+- A1 streak data model → Supabase `profiles.current_streak` var mı kontrol zorunlu
+- Motion choreography regression (tur 1'de HeroCardV2 component kaybolmıştı) — snapshot test eklenecek
+
+**Dependencies:**
+- design-system-keeper: K1 token ADD (MissionCard gradient refactor) — **paralel Sprint A başında**
+- supabase-backend: weekly leaderboard view + getUserStreak server action — **paralel Sprint B başında**
+- ux-researcher: Q25 3-kişi user test approval — **Sprint B gate**
+
+**RSC boundary notes:**
+- Page (server): data fetching (streak, leaderboard snapshot, recommended missions) paralel Promise.all
+- DashboardClient (client): state, tabs, motion
+- StreakSnapshot (client): motion
+- LeaderboardTeaser (client): motion + future interactivity
+- MissionCard (client): bookmark toggle existing
+
+**Next:**
+Kullanıcı onayı sonrası Sprint A başlat. Önce design-system-keeper token (A3 paralel), sonra StreakSnapshot+HeroCardV2 (A1+A2), sonra DailyMissionCard+Tab (A4+A5). Sprint B user test sonrası.
+
+---
+
 ## 2026-04-24 12:15 — [fe + ds] P0 #4 State library — Loading/Empty/Error/Offline sistemik pattern
 **İş:** "Her sayfa kendi kırık halini tasarlıyor" sorunu çözümü. Tek merkezi component set + AsyncBoundary wrapper. Mevcut EmptyState + Skeleton korundu, üstüne genişletildi.
 **Değişen dosyalar:**

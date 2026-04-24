@@ -385,3 +385,10 @@ Skill `mobile-app-polish-standards` Bölüm 9 UI checklist:
 - UX audit: `docs/ux/03-heuristics/2026-04-24-dashboard-ana-v2-heuristik-audit.md`
 - UX brief: `docs/product/02-briefs/ux/2026-04-24-dashboard-ana-v2.md`
 - Atlas Bölüm 6 (token), Bölüm 7 (component), Bölüm 8 (mobile)
+
+## Handoff log
+
+Bu spec'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 06:45 — **frontend-engineer** ✅ — **component scaffold**: `components/dashboard/hero-card-v2.tsx` + `daily-mission-card.tsx` + `app/globals.css` heroGlowBreathing. *(retroactive)*
+- 2026-04-24 11:45 — **frontend-engineer** ✅ — **wire-in**: `app/dashboard/dashboard-client.tsx` HeroCard→HeroCardV2 + DailyMissionCard section. `lib/karma-level.ts` helper. Weekly karma gain query. TSC 0 hata + 83/83 test. *(retroactive)*

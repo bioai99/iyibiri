@@ -135,3 +135,14 @@ Dashboard ana ekranı (`/dashboard`) şu an production durumunda (atlas Bölüm 
 - **Visual QA:** ui-designer review (2 gün).
 
 **Toplam:** 2-3 hafta paralel iş.
+
+## Handoff log
+
+Bu brief'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 06:30 — **ux-researcher** ✅ — **audit + journey**: `docs/ux/03-heuristics/2026-04-24-dashboard-ana-v2-heuristik-audit.md` + `docs/ux/02-journeys/2026-04-24-dashboard-ilk-acil-journey.md`. Kritik 3 bulgu (H6 günün görevi, I6 hero glow, H8 focal point). *(retroactive)*
+- 2026-04-24 06:45 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-dashboard-ana-v2-ui-spec.md`. Audit K1-K5 → spec Bölüm 2-10. 12-maddelik quality checklist pass. *(retroactive)*
+- 2026-04-24 06:45 — **frontend-engineer** ✅ — **component scaffold**: `components/dashboard/hero-card-v2.tsx` + `daily-mission-card.tsx` + `app/globals.css` heroGlowBreathing. *(retroactive)*
+- 2026-04-24 11:45 — **frontend-engineer** ✅ — **wire-in**: `app/dashboard/dashboard-client.tsx` HeroCard→HeroCardV2 + DailyMissionCard section. `lib/karma-level.ts` helper. Weekly karma gain query. TSC 0 hata + 83/83 test. *(retroactive)*
+- 2026-04-24 15:00 — **frontend-engineer** ⚠️ — **regression + fix**: HeroCardV2 tier sistemi (5 tier dots) + BrandLogo + 3 stat cells kayboldu, restore edildi. User feedback ile tespit. *(retroactive)*
+- 2026-04-24 — **product-analyst** ✅ — **tur2 brief + inventory audit**: `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md`. 9 mevcut component inventory + 3 missing (streak snapshot, leaderboard teaser, reward rail) + 5 improvement (Leverage 2 + Neutral 2 + Overhead 1). Next: UX researcher tur 2 heuristik audit.

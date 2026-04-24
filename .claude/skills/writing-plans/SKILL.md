@@ -280,3 +280,98 @@ Mimari dahil, detaylı. RFC kabul edildikten sonra yazılır. 4–10 sayfa — b
 - [ ] Outcome, solution değil mi?
 
 Checklist tam değilse brief hazır değil.
+
+## 12. OKR Linkage — Quarterly Objective'lerle bağlama
+
+Hedef: Her PRD/brief en az bir quarter OKR'a atanmış olsun.
+
+### Nedir: OKR (Objective & Key Result)
+
+John Doerr "Measure What Matters" — Objective + Key Result.
+
+- **Objective:** Nitel, motivasyonal. "STK gönüllülüğü artıracağız" (neden?).
+- **Key Result:** Ölçülebilir, ambitious. "Gönüllü engagement +40%" (nasıl ölçeriz, hedef ne?).
+
+**Yapı:**
+
+```markdown
+## Q2 2026 OKR — STK Partnership Growth
+
+**Objective:** 
+Türkiye'deki STK'ları doğrudan member katılımı 
+ve bağış kullanıcı olarak embed et.
+
+**Key Results:**
+1. STK member count +50% (500 → 750)
+   - Metric: `member_new_via_stk` * STK ratio
+   - Target: 250 yeni member, min 3 STK
+
+2. STK event creation +30% (rate)
+   - Metric: `event_created_per_stk_per_week` average
+   - Target: 0.5 → 0.65 events/STK/week
+
+3. Donation via STK platform +25% (revenue mix)
+   - Metric: `donation_attributed_stk` / `donation_total`
+   - Target: 15% → 20%
+
+4. STK admin satisfaction 8/10 (NPS proxy)
+   - Metric: Quarterly surveyinde avg score
+   - Target: Baseline 6 → 8
+```
+
+### PRD ↔ OKR bağlama
+
+Her PRD dosyasında başta:
+
+```markdown
+# [Feature] — Lean PRD
+
+**Tarih:** YYYY-MM-DD
+**İlgili OKR:** Q2/Objective-1, Key-Result-2
+**OKR impact:** "STK member adoption +30%"
+```
+
+Gerçek örnek:
+
+```markdown
+# STK Member Export (CSV) — One-Pager PRD
+
+**OKR:** Q2/Objective-1 (STK Partnership), KR-1 (Member count +50%)
+**Impact:** Reduce friction for bulk member sync → +15% adoption rate
+
+**Problem:**
+STK üyelik listeleri Excel/CSV tutulur. İyiBiri'ye manuel giriş → 
+"3 saatlik iş, hata riski." 75% STK bu eksikten şikâyet.
+
+**Çözüm (outcome):**
+STK admin bir-tıkla `.csv` export yapsın, kendi CRM'ine import etsin.
+Üyelik senkronizasyonu (sync interval) otomatik olabilir. 
+Adoption friction down, engagement up.
+
+...
+```
+
+### Quarterly review — OKR-based
+
+Her quarter sonunda (6 hafta once):
+
+1. Tüm PRD'leri OKR'a group et.
+2. "X OKR'a gittik, Y PRD'ler tamamlandı, impact ölçüm [sayı]?"
+3. "Plan'da KR-2 %80 yapıldı (target 100%), neden? Next quarter neler?"
+4. Product backlog'u re-prioritize et: "Şu KR'ye daha çok PRD gerek."
+
+---
+
+## 13. Kontrol listesi — brief finalize öncesi (genişletilmiş)
+
+- [ ] Problem veri ile desteklendi mi?
+- [ ] Must/Should/Won't net mi?
+- [ ] Başarı kriteri tek cümle + ölçülebilir?
+- [ ] En az bir strateji memosuna referans var mı?
+- [ ] **OKR atanmış mı?** (varsa)
+- [ ] Açık sorular `04-questions/open.md`'ye düştü mü?
+- [ ] Tarih + durum + sahip başta mı?
+- [ ] Sayfa disiplini? (one-pager 1, lean PRD ≤6 vs.)
+- [ ] Outcome, solution değil mi?
+
+Checklist tam değilse brief hazır değil.

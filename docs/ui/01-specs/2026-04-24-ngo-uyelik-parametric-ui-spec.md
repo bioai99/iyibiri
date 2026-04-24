@@ -398,3 +398,11 @@ Mobile-first (max-w-lg). Tablet'te iframe genişler (max-w-xl). Desktop V1'de op
 - [x] 3 app benchmark (Stripe + Revolut + Monzo)
 
 ✅ Pass — frontend-engineer implement başlayabilir.
+
+## Handoff log
+
+Bu spec'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 07:30 — **frontend-engineer** ✅ — **5 component scaffold**: `step-progress-bar.tsx` + `tier-card.tsx` + `kvkk-checkbox.tsx` + `payment-embed.tsx` + `success-celebration.tsx`. *(retroactive)*
+- 2026-04-24 08:00 — **frontend-engineer + supabase-backend** ✅ — **full-stack integration + 28 unit test**: `lib/supabase/types.ts` + `lib/membership/fee-config.ts` + `lib/membership/actions.ts` + flow page + migration 012. *(retroactive)*
+- 2026-04-24 08:30 — **frontend-engineer + supabase-backend** ✅ — **sandbox + celebration + webhook**: dev simulator + celebration-client + webhook iskelet. *(retroactive)*

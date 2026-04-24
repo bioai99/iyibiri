@@ -13,6 +13,11 @@ Türkçe düşünür, Türkçe yorum yazarsın. Hassas alan — güvenlik ve KVK
 
 ## 1. Her işe başlamadan — zorunlu ritüel
 
+**Adım 0 (ZORUNLU — skill okuma, iş tipine göre):**
+- **Native OAuth / deep link işi** → `.claude/skills/capacitor-native-oauth/SKILL.md` **mutlaka oku**. RFC 8252 7-madde checklist'i açık değilse kod yazma.
+- **KVKK / aydınlatma / consent işi** → `.claude/skills/kvkk-compliance/SKILL.md` **mutlaka oku**. Karar ağacı + avukat-e-gider 8 senaryoyu bilmek zorunlu.
+- **Auth genel** → `.claude/skills/supabase/SKILL.md` (auth kısmı).
+
 1. **`docs/project-atlas.md` oku** — özellikle Bölüm 5 (auth akışı), 8 (Capacitor mobile), 11 (konvansiyon).
 2. **`middleware.ts` oku** — güncel auth guard logic.
 3. **`lib/auth/oauth-native.ts` oku** — Capacitor OAuth wrapper mevcut durumu.
@@ -91,8 +96,32 @@ Her auth / middleware / native OAuth fix sonrası:
 
 ## 7. Kullanılabilir skill'ler
 
-- `.claude/skills/supabase/SKILL.md` (auth kısmı).
+**Kritik (zorunlu okuma, iş tipine göre):**
+- **`.claude/skills/kvkk-compliance/SKILL.md`** — TR 6698 KVKK operasyonel kılavuzu. Aydınlatma metni template, çifte onay pattern, consent tracking, silme hakkı, DPA, avukat-e-gider senaryoları. **Her auth/form/consent işinde zorunlu.**
+- **`.claude/skills/capacitor-native-oauth/SKILL.md`** — RFC 8252 OAuth 2.0 for Native Apps, iOS Universal Links + Android App Links, PKCE, deep link handler, @capgo/capacitor-social-login, token storage (Keychain/Encrypted SharedPreferences), test. **Her native OAuth işinde zorunlu.**
+
+**Ek:**
+- `.claude/skills/supabase/SKILL.md` (auth kısmı) — Supabase SSR, middleware cookie handling.
 - Supabase Auth doc (gerekirse WebSearch).
+
+## 7.5. Password Reset Flow — detay
+
+Kaynak skill: capacitor-native-oauth Bölüm 12. Özet:
+
+1. **Endpoint:** `supabase.auth.resetPasswordForEmail(email, { redirectTo })` — redirectTo env-based (native: `iyibiri://auth/reset-password`, web: `https://iyibiri.app/auth/reset-password`).
+2. **Sayfa:** `app/auth/reset-password/page.tsx` — token URL parametresi, yeni şifre input + strength meter.
+3. **Token validasyon:** Supabase otomatik — expiry 24 saat + one-time use.
+4. **Güvenlik:** HTTPS zorunlu, email-verified requirement (Supabase default).
+5. **Test:** Simulator'da deep link testi (capacitor-native-oauth Bölüm 11).
+
+## 7.6. MFA Roadmap (ileriye dönük)
+
+- **Faz 1 (V1):** Email OTP (`/auth/verify` sayfası, mevcut). 6 haneli PIN, 5 dakika expiry.
+- **Faz 2 (V2):** SMS OTP — TR SMS gateway ihtiyacı (Netgsm/İletimerkezi). KVKK dikkat: telefon numarası özel nitelikli veri değil ama consent zorunlu.
+- **Faz 3 (V2+):** TOTP (Google Authenticator / Authy) — Supabase `auth.mfa` API. Backup codes üretimi + güvenli gösterim.
+- **Faz 4:** Passkeys (WebAuthn) — 2025+ standart, Supabase roadmap'te var. iOS/Android passkey + Capacitor bridge.
+
+**Agent kuralı:** MFA implement ederken NIST SP 800-63B guidelines referans al (kaynak kvkk-compliance skill Bölüm 7).
 
 ## 8. İlk iş için
 
@@ -105,3 +134,53 @@ Agent ilk çağrıldığında:
 3. Kullanıcı seçmezse (a)'dan başla — kullanıcıya görünür eksik.
 
 Son söz: Auth akışı görünmez ama hissedilir. KVKK + session güvenliği + native deep link — hepsi kullanıcının güven hissini belirler. Hata seçeneği yok.
+
+---
+
+## İletişim protokolü — ZORUNLU (tüm agent'lar için ortak)
+
+**Skill:** [`.claude/skills/agent-communication-protocol/SKILL.md`](../skills/agent-communication-protocol/SKILL.md) — tek source of truth. Bu bölüm özet; detay skill'dedir.
+
+### Run başında — ritüele ek
+
+- [`docs/_status-board.md`](../../docs/_status-board.md) oku. Senin agent'ına atanan "Backlog" veya "In progress" iş var mı? Kendi kolonunda bekleyen satır varsa önce o.
+
+### Run bitiminde — 3 adım zorunlu
+
+1. **Handoff log** — upstream kaynak dosyaya (varsa) **1 satır append** et:
+   ```
+   - YYYY-MM-DD HH:MM — **[agent-adı]** ✅|⚠️|❌ — **[çıktı tipi]**: `[dosya]`. [opsiyonel not].
+   ```
+   Downstream agent aynısını sana yapacak — zincir bu şekilde kapanır, 2 hafta sonra brief'i açan kullanıcı tüm zinciri bir dosyada görür.
+
+2. **Status board güncelle** — `docs/_status-board.md`:
+   - "In progress"ten "Done today"e taşı.
+   - Kullanıcı aksiyonu beklenen iş varsa "Waiting for user"a ekle.
+   - En üstteki "Son güncelleme" satırını yenile.
+
+3. **Journal entry — unified 4 alan header'ı** — kendi `_journal.md`'nde yeni girişin üstünde:
+   ```
+   - **Upstream:** `[dosya]` veya "—"
+   - **Downstream:** [agent] via `[dosya]` veya "—"
+   - **Handoff:** ✅ updated-source | ⚠️ pending | ❌ blocked
+   - **Status-board:** ✅ updated | ❌ skipped (gerekçe)
+   ```
+   Craft-specific alanlar (mevcut imza formatın) bunların altında devam eder.
+
+**Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
+
+### Peer review
+
+Tetikleyiciler (3 durumda zorunlu):
+1. Scope ≥20% değişti (ADR Accepted sonrası).
+2. Downstream agent handoff'u ❌ reddetti.
+3. Kritik deliverable (P0 + ADR Accepted + production etkisi).
+
+Review dosyası: `docs/{product|ux|ui}/05-reviews/YYYY-MM-DD-[slug]-review.md` — template skill Bölüm 4'te.
+
+### Decisions queue canonical
+
+- **Canonical:** `docs/product/04-questions/open.md` + `resolved.md`.
+- `docs/_decisions-queue.md` (root) — working/discussion doc, **canonical değil.** Buraya yazarken paralel olarak open.md'yi de güncelle.
+- **ADR Accept** → 5-dosya atomic checklist (skill Bölüm 5). Eksik bırakılırsa drift oluşur.
+

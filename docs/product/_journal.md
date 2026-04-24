@@ -17,6 +17,100 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-24 10:45 — STK Admin UI V1 (Min+ 10 Sayfa) Detaylı UX Brief
+
+- **Upstream:** `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md` (master workstream), ADR-010 (Accepted), ADR-007 + ADR-008 (ödeme infra)
+- **Downstream:** ux-researcher via `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (heuristik audit başlayacak)
+- **Handoff:** ✅ workstream handoff log'una satır eklendi (Katman A protokol)
+- **Status-board:** ✅ güncellenmesi bekleniyor ("In progress" → "Done today")
+
+**Prompt:** "Master workstream'in 10 sayfa scope'unu detaylı UX brief'e çevir. Her sayfa: JTBD + outcome + must/should/won't + başarı + benchmark + varsayım. Framework: OST + Shape Up + Cagan 4-risk + LNO."
+
+**Input:**
+- Master workstream (10 sayfa scope, test data, walking skeleton, auth strateji)
+- ADR-010 Accepted (scope onaylı, 2-2.5 hafta effort)
+- ADR-007 (parametric fee — tier config gerek)
+- ADR-008 (payment routing — Embedded default)
+- Agent playbook'lar (product-discovery-frameworks, writing-plans)
+
+**Output:**
+- `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (~15 sayfa)
+  - Bölüm 2: Admin persona "Ayşe" (TEMA saha koordinatörü, 5 JTBD detay)
+  - Bölüm 3: Test data senaryosu (5 STK × hafta simülasyonu)
+  - Bölüm 4: 10-sayfa detaylı brief (dashboard, görev CRUD, görev listesi, üye listesi, doğrulama, rapor, blog, profil, üyelik config, ödeme) — her biri JTBD + veri şartı + must/should/won't + başarı + benchmark (Linear, Airtable, Notion, Stripe, Shopify vb.) + varsayım
+  - Bölüm 5: OST (4 problem → 10 solution, expected 4-week benefits)
+  - Bölüm 6: Cagan 4-risk matrix (10 sayfa × Value/Usability/Feasibility/Viability, green/yellow/red durum)
+  - Bölüm 7: Shape Up appetite (Small batch 1-6 + Polish, haftalı breakout)
+  - Bölüm 8: LNO (Leverage/Neutral/Overhead → S1-S6 batch sırası)
+  - Bölüm 9: Must/Should/Won't global (RLS, CRUD, form, report, blog, profile, config, payment = MUST; 5 should; 9 won't)
+  - Bölüm 10: Success criteria (haftasal login rate, 4w walking skeleton gate, 8w %60 backoffice görev, 12w NPS ≥50, latency <5sn)
+  - Bölüm 11: Risk matrix (RLS bypass, XSS, PII leak, jsonb corruption, mobile UX, Markdown, ENV leak) + mitigation each
+  - Bölüm 12: Q44-Q46 açık karar (password reset, blog iframe, QR generator) + proposal + fallback
+  - Bölüm 13: Downstream handoff (ux-researcher → ui-designer → supabase-backend → auth-capacitor → frontend-engineer)
+
+**Kararlar açıldı:** 0 (Q44-Q46 workstream'de önceden, proposal eklenmiş)
+
+**Kararlar kapandı:** 0 (ADR-010 zaten closed, scope finalized)
+
+**Self-audit:** ✅ PASS
+- ✅ MECE kapsam (10 sayfa sharp, out-of-scope açık listed)
+- ✅ JTBD ↔ outcome ↔ metric bağlı (her sayfa min. 1 JTBD + success ölçüm)
+- ✅ Ölçülebilir başarı (haftasal + 4w gate + 8w + 12w NPS + latency SLA)
+- ✅ Bağımlılık (migration 021, RLS policy, Supabase Storage, seed script, auth middleware)
+- ✅ Framework'ler applied (OST, 4-risk, Shape Up appetite, LNO, benchmark tier-1 references)
+- ✅ Strateji referansı (master plan P0 #9, ADR-010/007/008, workstream)
+- ✅ Açık karar işaretlendi (Q44-Q46 formalize, proposal, fallback varsayım)
+- ✅ Handoff setup (downstream'ler dolduraçak satır template var)
+- ✅ Sayfa disiplini (~15 sayfa, writing-plans Lean PRD 6-page target'ı genişledi; gerekçe: 10 sayfa × 8-10 alan = yoğun, justified)
+
+**Next:** ux-researcher — Ayşe persona derinleştir (1-2 interview daha, TEGV + Kodluyoruz perspektifi), 10 sayfa × Nielsen 10 heuristik audit matrix yaz (form complexity, error prevention, dialog clarity, consistency odaklı admin patterns). Audit completion → ui-designer wire başlar (S0 paralel faz).
+
+---
+
+## 2026-04-24 — Dashboard v2 Tur 2 Brief + Component Inventory Audit
+
+- **Upstream:** `docs/product/02-briefs/ux/2026-04-24-dashboard-ana-v2.md` (tur 1, canlı duruma geçti 11:45)
+- **Downstream:** ux-researcher via `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md` (tur 2 heuristik audit + journey)
+- **Handoff:** ✅ tur 1 brief'e tur 2 product-analyst satırı eklendi (Katman A)
+- **Status-board:** ✅ güncellenecek ("In progress" Dashboard v2 — "Done today"e taşınacak)
+
+**Prompt:** "Tur 1 dashboard canlıya çıktı (HeroCardV2 + DailyMissionCard + tab + NGO rail). Tur 2'de component'leri değerlendir — uygun mu, eksik ne, MAKE'e hizmet ediyor mu."
+
+**Input:**
+- Tur 1 brief + handoff log (mevcut 5 satır retroactive)
+- Component inventory (mevcut: HeroCardV2, DailyMissionCard, MissionCard, tabs, NGO rail, bottom nav, empty state)
+- Tur 1 plan + code (`dashboard-client.tsx`, `hero-card-v2.tsx`, `daily-mission-card.tsx`, `mission-card.tsx`)
+
+**Output:**
+- `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md` — tur 2 değerlendirmesi
+  - Bölüm 3: 12-item component inventory (9 mevcut + 3 missing: streak snapshot, leaderboard teaser, reward rail)
+  - Bölüm 4: Boşluk analizi MAKE drive'da (6 sinyal, severity coded)
+  - Bölüm 5: OST — 5 opportunity branch
+  - Bölüm 6: 5 iyileştirme önerisi
+    - Öneri 1: Streak hero'da visible (Leverage) — S effort
+    - Öneri 2: Leaderboard teaser (Leverage) — M effort
+    - Öneri 3: Featured mission selection algoritması (Neutral) — L effort
+    - Öneri 4: Mission card 4-chip (Neutral) — M effort
+    - Öneri 5: Ödül rail (Overhead, P2) — S-M effort
+  - Bölüm 9: Risk analysis (TR cultural leaderboard test, recommendation engine scope)
+  - Bölüm 11: Handoff ux-researcher'a + tur 2 success criteria
+
+**Kararlar açıldı:** 3 açık soru işaretlendi (Q25 leaderboard tone, Q34 algorithm MVP decision, Q43 ödül rail timing). Hepsi tur 2 UX research'e bağlı veya sprint planning kararları.
+
+**Kararlar kapandı:** 0 (tur 2 yeni karar yok; tur 1 plan scope'u doğrulandi).
+
+**Self-audit:** pass.
+- ✅ Mevcut 12 component envanterize edildi
+- ✅ Tur 1 plan vs kod gap'ı bulundu (missing 3 component)
+- ✅ MAKE KPI impact analizi her boşluk için (severity table)
+- ✅ OST + 5 iyileştirme (Leverage/Neutral/Overhead)
+- ✅ Handoff clear; tur 1 brief'e retroactive satır eklendi
+- ⚠️ Streak component (tur 1 plan'da var) — code'da gerçekten missing mi double-check gerek (dashboard-client.tsx body scan)
+
+**Next:** UX researcher tur 2 audit → streak missing doğrulanır, leaderboard tone user test, 3-person derinlik.
+
+---
+
 ## 2026-04-24 05:00 — V1 IMPROVEMENT MASTER + 7 BRIEF — aktarıma hazır ⭐
 - **Prompt:** "Mevcut projeyi improve+change'lerle ilerliyoruz, analist geliştirme başlıklarını detaylı çalışsın, UX + dev agent'larına aktarım + start."
 - **Input:** 8 Accepted ADR + 12 strateji memo + atlas 38 sayfa envanteri + page-audit + 3 WS.

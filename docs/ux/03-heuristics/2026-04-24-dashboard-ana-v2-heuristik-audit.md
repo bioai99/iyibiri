@@ -188,3 +188,10 @@ Bu audit'i bırakmadan önce checklist (skill `mobile-app-polish-standards` Böl
 - Atlas: `docs/project-atlas.md` Bölüm 6 (gerçek tokens), 7 (component), 10 (eksik state)
 - UX Brief: `docs/product/02-briefs/ux/2026-04-24-dashboard-ana-v2.md`
 - Master plan: P0 #12
+
+## Handoff log
+
+Bu audit'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 06:45 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-dashboard-ana-v2-ui-spec.md`. K1-K5 → Bölüm 2-10. *(retroactive)*
+- 2026-04-24 11:45 — **frontend-engineer** ✅ — **implementation complete**, HeroCardV2 + DailyMissionCard canlı. *(retroactive)*

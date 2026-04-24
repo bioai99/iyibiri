@@ -705,3 +705,10 @@ export async function abandonMission(userMissionId: string):
 - [x] Skill cross-reference (3 skill)
 
 **Sonuç:** Skill-driven spec tier-1 app kalitesi için yeterli. Frontend-engineer ~8-12 saatlik P0 iş paketi.
+
+## Handoff log
+
+Bu spec'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 10:00 — **supabase-backend + frontend-engineer** ✅ — **infrastructure ready**: migration 013 + FSM state logic + error codes + server actions. *(retroactive)*
+- 2026-04-24 11:00 — **frontend-engineer** ✅ — **components + page.tsx FSM routing canlı**. 83/83 test. *(retroactive)*

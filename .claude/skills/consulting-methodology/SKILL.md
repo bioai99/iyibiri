@@ -152,3 +152,208 @@ Memo'yu bitirmeden sor:
 - [ ] Açık sorular listelendi mi (eksik veri / sonraki araştırma)?
 
 Checklist tam değilse memo yayına hazır değildir.
+
+## 13. 7 Powers — Persistent Competitive Advantage (Hamilton Helmer)
+
+**Nedir:** Bir iş "neden başarılı oluyor, rakipler neden takip edemiyor" sorusunun cevabı 7 mekanizmadan biridir. Diğer hiçbir şey persistent advantage'ın kaynağı değildir.
+
+**7 Power:**
+
+### 1. Scale Economies
+Daha büyük → birim maliyet düşer → fiyat avantajı veya margin avantajı.
+
+**İyiBiri örneği:**
+- Gönüllü network büyüdükçe, volunteer-finding mühendislik sabit maliyeti dilimiş olur.
+- STK sayısı arttıkça, STK onboarding operasyon maliyeti per-STK düşer.
+- Moat: Türkiye'de bize 1000+ STK network'ü kurmamızı takip etmek rakibe 3x pahalı.
+
+**Test:** Birim ekonomi (CAC, LTV, COGS) şekli (J, L, C). L-shape = scale economies.
+
+### 2. Network Effects
+Ağ büyüdükçe, her yeni üyenin değeri artar. Viral growth.
+
+**İyiBiri örneği:**
+- Gönüllü sayısı arttı → STK'ya daha faydalı → daha fazla STK katılır.
+- STK sayısı arttı → gönüllülere daha fazla görev → gönüllü active'i artar.
+- Two-sided network feedback loop.
+
+**Test:** Growth rate aksiyel mi? Saturation noktası var mı (S-curve)?
+
+### 3. Switching Costs
+Müşteri "seni bırakıp başkasına geçmek pahalı" hisseder.
+
+**İyiBiri örneği:**
+- STK 3 ay üyeler, görevler, sponsor aracılıklar topladı → başka platforma taşımak operasyon yükü.
+- Gönüllü "sevdiği STK'lar favorite'a aldı" → başka uygulamaya geçişte data lock-in.
+- Not legal binding, ama friction = moat.
+
+**Test:** Churn ne sebeple oluyor? Yeni rakip girince churn rate'i arttı mı?
+
+### 4. Branding
+Müşterinin zihni "= iyiBiri" oluşur. Qualitative trust / preference.
+
+**İyiBiri örneği:**
+- "Türkiye'de gönüllüler iyiBiri'de bağlı" (brand position).
+- "STK'lar İyiBiri'den bağış + gönüllü bulur" (market positioning).
+- Zamanla, brand = moat.
+
+**Test:** Blind test — logo olmadan, seçim aynı mı?
+
+### 5. Cornered Resource
+Eşsiz kaynak (insan, veri, network, IP) sahipliği.
+
+**İyiBiri örneği:**
+- Türkiye'de STK + gönüllü + sponsor ağını ilk kurduysak, ağ "cornered."
+- STGM, TÜSEV, İPM ortaklıkları kurumsallaştığında, yeni rakip kopya edemez (13 yıl ilişki).
+- Data (gönüllü davranış, STK tercihler) benzer öğrenilmesi zor.
+
+**Test:** Rakip bu kaynağı kopyalayabilir mi, ne kadar zaman / para gerektir?
+
+### 6. Process Power
+"Biz bu işi daha iyi yapıyoruz" disiplini.
+
+**İyiBiri örneği:**
+- STK onboarding process optimized (6w → 2w).
+- Gönüllü matching algoritması (vs. manual).
+- Sponsor KYC flow (compliance + speed).
+- Rakip bu prosesleri copy etse, iki yıl gerisinde kalır (learning curve).
+
+**Test:** Process benchmark (ör. speed, quality, cost per unit). Biz 2x mi daha iyiyiz?
+
+### 7. Counter-Positioning
+Rakip bir avantajdan vazgeçiyorsa, onu copy edemez.
+
+**İyiBiri örneği:**
+- Biz "İnsan-odaklı, long-tail STK'lara hizmet" modeli.
+- Rakip "Kurumsal, büyük NGO'lar x Kurumsal sponsorlar" modeline giderse, biz abandon edilir mi?
+- İyiBiri için Counter-Positioning = "Ben long-tail, rakip enterprise" = alana bölünme.
+
+**Test:** Rakip bizim modeli takip ederse, kendi core bisinesinde başarısız mı olur?
+
+**Analiz yapısı:**
+
+```markdown
+# [İyiBiri] — 7 Powers Moat Analizi
+
+## Mevcut Powers (hangileri var, ne kadar güçlü)
+- Scale economies: ⭐⭐⭐ (1000+ STK → unit economics)
+- Network effects: ⭐⭐⭐⭐ (two-sided, self-reinforcing)
+- Switching costs: ⭐⭐ (veri lock-in, operasyon friction)
+- Branding: ⭐⭐ (early, kuruluşsal bağlama ihtiyaç)
+- Cornered resource: ⭐⭐⭐ (STK + gönüllü + sponsor network)
+- Process power: ⭐⭐⭐ (onboarding, matching optimized)
+- Counter-positioning: ⭐ (long-tail positioning eşsiz, ama çakışabilir)
+
+## Rakip Karşılaştırması
+[Üç rakip için her power'ı sınıfla]
+
+## Stratejik çıkarım
+- Şu 3 power'i güçlendir: [X, Y, Z] (18 ay)
+- Şu 2 power'i yeni kur: [A, B] (24 ay)
+- Dikkat: [risk]
+```
+
+---
+
+## 14. Amazon Working Backwards — PR/FAQ Framework
+
+**Nedir:** Amazon "yeni iş / feature'ı" müşteri gözüyle başdan yazarak karar verir. Mekanizma:
+1. Press Release (müşteriye duyuru) yazdır.
+2. FAQ (iç + dış sorgular) hazırla.
+3. Reconsider — soruların cevaplarını okuyup "hâlâ yapalım mı?" de.
+
+**Neden faydalı:** Feature spec'ten başlamak (inside-out), müşteri pressinden başlamak (outside-in) daha güçlü. PR/FAQ yazarken, "bunu neden yapıyoruz, müşteri ne kazanıyor" zorla cevapla. Cevap saçmalıysa, iş de saçma demektir.
+
+**Format:**
+
+```markdown
+# [Feature] — Working Backwards PR/FAQ
+
+## Press Release (müşteriye duyuru, 1 sayfa)
+
+### Başlık
+[Kisa, benefit-forward]
+
+Örn: "İyiBiri STK'lara Member Bulk Import Sundu — Hergün 1 Saatini Geri Kazanacaklar"
+
+### Alt başlık
+[1 cümlelik özet]
+
+Örn: "CSV / Excel'den üyeleri toplu aktarmak, sağlaştırma senkronizasyonu artık 5 dakika."
+
+### Bölüm 1 — Problem (müşterinin acı nokta)
+STK müdürü neden istiyor? Ne sorunu çözeceğiz?
+
+Örn: "Manisa STK'sı 800 üyesini Whatsapp + Excel'de tutuyor. Her ay senkronizasyon hatası = aktif olmayan üyelere bildirim. Yedekleme = saatler zaman."
+
+### Bölüm 2 — Çözüm (biz ne yapıyoruz)
+High-level feature.
+
+Örn: "İyiBiri artık CSV import desteği sunuyor. Şablon indir, kendi kaynağından doldur, import et, match et (biz 95% otomatik buluruz), kaydet."
+
+### Bölüm 3 — Avantajlar (müşteri faydasına göre)
+- Avantaj 1: "Zaman tasarrufu — 10 saatlik iş 30 dakikada."
+- Avantaj 2: "Senkronizasyon hataları %95 azalır — algoritma geçersiz e-mail vb. bayraklar."
+- Avantaj 3: "Toplu aktarımdan sonra, otomatik welcome email gider, onboarding hızlanır."
+
+### Bölüm 4 — Başlamak (call-to-action)
+"STK müdürü Settings > Import Member sekmesine girer, template indir, doldur, save."
+
+### Bölüm 5 — Quote (sponsor / STK feedback — varsa)
+"Bu feature bize 10+ saat/ay tasarrufu sağlayacak, onboarding hızlandıracak." — [STK müdürü adı]
+
+## FAQ — Internal (iç kullanım, sorgular)
+
+### Q1. Neden şimdi? (market timing)
+A: [Talep signals: 30+ STK istemişti, TÜSEV workshop'ta öne çıkmıştı, rakip X de sunuyor]
+
+### Q2. Kaç STK / Gönüllü etkilenir?
+A: [Direct: 50+ STK, Indirect: 500+ gönüllü]
+
+### Q3. Revenue impact?
+A: [Doğru: adoption +25%. Yanlış: new revenue stream (onboarding hızlı ama paid değil)]
+
+### Q4. Technical debt / risk?
+A: [Data matching algoritması (false positive risk), CSV parsing (character encoding). Mitigations: test, fallback to manual]
+
+### Q5. Success metric?
+A: [Import adopters 40+ STK (3 ay), average session time import +5 min, retention week-2 +5%]
+
+### Q6. Kill criteria?
+A: [Import fail rate >%5, adoption <20 STK/ay, technical debt >2 sprint]
+
+## FAQ — External (müşteri / market basında sorulabilecek)
+
+### Q1. Rival X'de de var, ne fark?
+A: [Ama theirs manual, ours 95% otomatik matching. Dokunmatik vs. otomatik.]
+
+### Q2. Bizde data secure kalır mı?
+A: [Evet. Şifreleme [standard], audit log [yes], KVKK [compliant]]
+
+### Q3. Sonra neler?
+A: [API support (Q3), Salesforce sync (Q4), real-time sync (Q5)]
+
+---
+
+**Disiplin:**
+- PR okuyunca "ben customer'ım, bunu kullanmak isteyecek miyim?" sorusunu cevapla.
+- FAQ'de "kill criteria" (ne olursa başarısız demektir) yazmak zorunlu.
+- Spec'ten PR/FAQ çıkması değil, PR/FAQ'den spec'i çıkar.
+```
+
+---
+
+## 15. Kontrol Listesi — Stratejik Analiz Hazırlık
+
+- [ ] Ana soru net / test edilebilir hipotez yazılmış mı?
+- [ ] Framework seçimi soruya hizmet ediyor mu?
+- [ ] MECE bölümleme — çakışma / boşluk var mı?
+- [ ] Critical sayılar 2+ bağımsız kaynaktan verified mi?
+- [ ] Yönetim özeti 1 sayfaya sığdı mı (cevap ilk cümle)?
+- [ ] Her öneriye alternatif yazılmış mı?
+- [ ] Risk / belirsizlikler görünür mü?
+- [ ] Açık sorular / sonraki araştırma listelendi mi?
+- [ ] 7 Powers analizi varsa, moat kuvveti ⭐ ile scored mi?
+- [ ] PR/FAQ varsa, kill criteria ve success metric'ler açık mı?
+
+Checklist eksikse analiz incomplete — revize et.

@@ -206,3 +206,13 @@ Aynı UI, iyzico Checkout Form iframe.
 - **Visual QA:** ui-designer + product-analyst self-audit.
 
 **Toplam:** 3-4 hafta paralel iş. V1'in en büyük P0 deliverable.
+
+## Handoff log
+
+Bu brief'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 06:45 — **ux-researcher** ✅ — **heuristik audit**: `docs/ux/03-heuristics/2026-04-24-ngo-membership-parametric-heuristik-audit.md`. 3 mode (TEMA age_tiered, HAYTAP monthly, LÖSEV donation) × 3 app benchmark (Stripe/Revolut/Monzo). Kritik 3 bulgu: progress bar yok, KVKK enforcement, impact statement. *(retroactive)*
+- 2026-04-24 07:10 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-ngo-uyelik-parametric-ui-spec.md`. 15 bölüm, 5 adımlı flow, 3 mode variant, payment embed 3 mode, success celebration. *(retroactive)*
+- 2026-04-24 07:30 — **frontend-engineer** ✅ — **component scaffold**: `components/membership/step-progress-bar.tsx` + `tier-card.tsx` + `kvkk-checkbox.tsx` + `payment-embed.tsx` + `success-celebration.tsx` + `index.ts` barrel. *(retroactive)*
+- 2026-04-24 08:00 — **frontend-engineer + supabase-backend** ✅ — **full-stack integration**: `lib/supabase/types.ts` + `lib/membership/fee-config.ts` + `lib/membership/actions.ts` + `app/dashboard/ngos/[id]/membership/` flow page + migration 012 karma_transactions type. 28/28 unit test pass. *(retroactive)*
+- 2026-04-24 08:30 — **frontend-engineer + supabase-backend** ✅ — **sandbox + celebration + webhook**: `/payments/sandbox/` dev simulator + `/membership/success/` celebration-client + `/api/payments/webhook/[processor]/` iskelet. Akış end-to-end clickable. *(retroactive)*

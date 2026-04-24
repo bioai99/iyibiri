@@ -1,8 +1,12 @@
-# Karar Kuyruğu — Tek Dokümanda Tüm Açık Sorular
+# Karar Kuyruğu — Working/Discussion Doc
 
-> **Bu dosya:** Analist ve consultant'ın çıkardığı tüm açık soruların tek yerde, seninle birlikte yanıtlamak için formatlanmış hali. Her sorunun altında **consultant önerisi** + **senin cevap kutusu** var.
+> ⚠️ **Bu dosya CANONICAL DEĞİLDİR — working doc.** Açık soruların canonical kaynağı: **[`docs/product/04-questions/open.md`](./product/04-questions/open.md)** (+ [`resolved.md`](./product/04-questions/resolved.md)).
 >
-> **Nasıl kullan:** Her soruyu oku → consultant önerisinin dayanağını gör → cevap kutusuna **A/B/C**, kısa not veya "ileri ertele" yaz. Sen bir grup soruya yanıt verdiğinde analist bunları `open.md` + `resolved.md`'ye taşır ve gereken ADR'leri yazar.
+> **Bu dosyanın amacı:** Consultant/analist önerisi + kullanıcı cevap kutusu formatında, **tartışmalı soruları kullanıcı ile konuşmak için** geniş format. Cevap alındıktan sonra canonical `open.md` / `resolved.md`'ye taşınır, ADR açılır.
+>
+> **Agent'lar için kural:** Yeni soru açarken **her zaman paralel** olarak `open.md`'ye de yaz. Drift riski azalır. ADR Accept transition'ı için [agent-communication-protocol SKILL](../.claude/skills/agent-communication-protocol/SKILL.md) Katman E — 5-dosya atomic checklist.
+>
+> **Nasıl kullan (kullanıcı için):** Her soruyu oku → consultant önerisinin dayanağını gör → cevap kutusuna **A/B/C**, kısa not veya "ileri ertele" yaz. Sen cevap verdikten sonra analist bu soruyu canonical open.md'ye işler + resolved.md'ye taşır + gereken ADR'yi yazar (5-dosya checklist).
 >
 > **Tarih:** 2026-04-24
 

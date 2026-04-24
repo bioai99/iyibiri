@@ -136,3 +136,10 @@ Bu journey map'in çıkardığı öneriler **UX brief dashboard-ana-v2** ile sen
 - [x] Skill usage doğrulandı (journey-mapping + polish).
 
 ✅ Pass — UX brief'e devir edilebilir.
+
+## Handoff log
+
+Bu journey'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 06:45 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-dashboard-ana-v2-ui-spec.md`. K1-K5 → Bölüm 2-10. *(retroactive)*
+- 2026-04-24 11:45 — **frontend-engineer** ✅ — **implementation complete**, HeroCardV2 + DailyMissionCard canlı. *(retroactive)*

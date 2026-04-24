@@ -16,15 +16,123 @@
   ```
 - Blocked / needs_input ise satır üstüne ⚠️ koy; sen tarayınca kırmızı bayrağı göreceksin.
 
-**Aktif agent'lar:**
+---
+
+## 2026-04-24 14:30 — frontend-engineer
+**İş:** Dashboard v2 tur 2 — implementation plan (spec'ten kod yazma planı).
+**Durum:** completed
+**Çıktı:** `docs/eng/_journal.md` — 2026-04-24 14:30 entry (plan, kod yok)
+**Açık karar:** 4 (A3 design-system-keeper token parallel, A1 profiles.current_streak exists?, B1 Q25 test gate, leaderboard view schema)
+**Özet:** Sprint A (5–6 gün: StreakSnapshot, HeroCardV2, MissionCard K1 fix, DailyMissionCard, Tab A11y) + Sprint B (4–5 gün: LeaderboardTeaser feature-flag behind, test pending) + Sprint C (RewardRail placeholder, P2). Toplam 2–3 hafta. 4 dependency: design-system-keeper token ADD, supabase-backend leaderboard view, ux-researcher Q25 test, opsiyonel migration (streak schema check). Kod yok, sadece effort/risk/dependency breakdown.
+
+---
+
+## 2026-04-24 10:45 — ui-designer
+**İş:** Dashboard v2 tur 2 polish UI spec yazma (K1–K5 kritik bulgu + UX journey peak/dark moment → implementasyon spec).
+**Durum:** completed
+**Çıktı:** `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md`
+**Açık karar:** 2 (Q25 leaderboard tone user test scheduling, K1 token ADD ADR hangi stage)
+**Özet:** K1–K5 kritik (MissionCard token drift, streak/leaderboard/algoritma missing, featured selection transparency) → 3 yeni component (StreakSnapshot + LeaderboardTeaser + DailyMissionCard label) + token refactor spec. Duolingo motion pattern (1.5s entry choreography, 280ms dot stagger). WCAG AA full. Feature-flag (LeaderboardTeaser + RewardRail P1 pending). Handoff: fe (impl) + design-system-keeper (K1 token ADR).
+
+---
+
+## 2026-04-24 23:45 — ux-researcher
+**İş:** Dashboard v2 tur 2 heuristik audit + 2. ziyaret journey map (3 ay retention).
+**Durum:** completed
+**Çıktı:** `docs/ux/03-heuristics/2026-04-24-dashboard-v2-tur2-audit.md` + `docs/ux/02-journeys/2026-04-24-dashboard-ikinci-ziyaret.md`
+**Açık karar:** 3 (Q25 leaderboard tone + test plan, Q34 featured mission MVP, Q43 reward rail scope)
+**Özet:** Tur 1 component'lerin 9 tanesi + 3 missing (analyst brief) heuristik matrix. 5 kritik bulgu (MissionCard hardcoded gradient N4 drift, streak/leaderboard/algoritma sinyalleri missing N1/N6, ödül rail Overhead). Zehra 3-ay journey'de dark moment farklı (Adım 8 scannability vs Tur 1 Adım 3 overload) — A1+A2+A3 kombinasyonu mitigate. Handoff ui-designer spec'e.
+---
+
+**Aktif agent'lar (9):**
+
+Discovery:
 - `strategy-consultant` → `docs/strategy/` • Pazar, rekabet, gelir, value prop, odak memoları.
 - `product-analyst` → `docs/product/` • Workstream'lere bölme, feature scope, UX + eng brief, karar kuyruğu, self-audit.
+- `ux-researcher` → `docs/ux/` • Heuristic audit, journey map, persona/JTBD, a11y.
+- `ui-designer` → `docs/ui/` • UI spec, token, variant, motion, handoff.
+
+Faz 2 (implementation):
+- `frontend-engineer` → `app/`, `components/`, `lib/` • Next.js + React + TS.
+- `supabase-backend` → `supabase/migrations/`, `lib/supabase/` • Şema, RLS, query, view.
+- `auth-capacitor` → `app/auth/`, `capacitor.config.ts` • Supabase auth, Capacitor, KVKK.
+- `design-system-keeper` → `design-system/`, `components/ui/` • Token ihlali, component canonical, atlas reconciliation.
+
+Orchestration:
+- `coordinator` → `docs/_status-board.md` (enforce), Task tool • **Auto-triggered** — büyük/multi-agent/muğlak iş geldiğinde parent session çağırır. Triage + orchestrate. Craft işi yapmaz. Protokol [Katman G](../.claude/skills/agent-communication-protocol/SKILL.md).
 
 Yeni agent eklendiğinde bu listeye kaydı düş.
 
 ---
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK EKLENİR -->
+
+## 2026-04-24 16:35 — design-system-keeper
+**İş:** MissionCard K1 token ihlali fix — hardcoded domain gradient'leri Tailwind config token'a taşı.
+**Durum:** completed
+**Çıktı:** `tailwind.config.ts` (backgroundImage layer +9 token), `components/ui/mission-card.tsx` (refactor domainGradient object sil), `docs/project-atlas.md` (Bölüm 6 tablo), `docs/ui/01-specs/...` (handoff log satırı)
+**Açık karar:** 0 (semantic naming V1.1'de ADR açılacak)
+**Özet:** K1 severity 4 launch blocker ✅ fix. 7 domain gradient (`bg-domain-nature|education|social|financial|animals|culture|default`) + 2 scrim overlay (`bg-scrim-bottom|top`) + cream text token Tailwind config'e ADD. Mission-card.tsx hardcoded style → className pattern + token kullanımı. TSC 0, grep hardcoded hex 0. Handoff: frontend-engineer (Sprint A test).
+
+---
+
+## 2026-04-24 — product-analyst
+**İş:** Dashboard v2 Tur 2 değerlendirmesi — mevcut component envanterini audit et, boşlukları tespit et, MAKE KPI uyumunu kontrol et, iyileştirme önerileri hazırla.
+**Durum:** completed
+**Çıktı:** `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md` (450+ satır)
+**Açık karar:** 3 (Q25 leaderboard tone, Q34 algorithm timing, Q43 ödül rail sprint)
+**Özet:** Tur 1 component'leri (HeroCardV2, DailyMissionCard, tabs, NGO rail) incelendi; 3 missing component bulundu (streak snapshot, leaderboard teaser, reward rail). 5 iyileştirme önerisi: 2 Leverage (streak + leaderboard) + 2 Neutral (algorithm + chips) + 1 Overhead (ödül rail). Handoff ux-researcher'a heuristik audit için.
+---
+
+## 2026-04-24 20:45 — [agent iyileştirme batch 3-9/9 tamam] ⭐⭐⭐
+**İş:** Agent improvement research raporundaki 5 kalan P1+P2 agent'ı paralel 3 subagent ile koşturuldu: frontend-engineer (3/9), supabase-backend (4/9), coordinator (5/9), ui-designer (6/9), ux-researcher (7/9), product-analyst (8/9), strategy-consultant (9/9).
+**Durum:** completed (9/9 agent iyileştirme tamam)
+**Çıktı — Yeni 5 skill:**
+- `.claude/skills/react-server-component-patterns/SKILL.md` (421 satır) — Dan Abramov RSC mental model + server/client boundary + waterfall prevention + Suspense + streaming. frontend-engineer zorunlu skill.
+- `.claude/skills/continuous-discovery-practice/SKILL.md` (400 satır) — Teresa Torres OST + Google HEART + Jeff Patton story mapping + JTBD interview. ux-researcher zorunlu skill.
+- `.claude/skills/product-discovery-frameworks/SKILL.md` (352 satır) — OST + Shape Up (Ryan Singer) + JTBD (Bob Moesta) + Cagan 4-product-risk + LNO (Shreyas Doshi). product-analyst zorunlu skill.
+- `.claude/skills/pyramid-principle-thinking/SKILL.md` (310 satır) — Barbara Minto governing thought + MECE + SCQA + memo template. strategy-consultant zorunlu skill.
+**Çıktı — 4 mevcut skill genişletildi:**
+- `.claude/skills/supabase-postgres-best-practices/SKILL.md` 64 → 386 (+322 satır) — RLS patterns + Realtime idempotency + Edge Functions + Migration versioning/rollback 4 yeni bölüm.
+- `.claude/skills/visual-spec-writing/SKILL.md` 179 → 513 (+334 satır) — Bölüm 10 Visual Hierarchy Discipline (Refactoring UI) + Bölüm 11 Motion Choreography Patterns (Rauno Freiberg).
+- `.claude/skills/writing-plans/SKILL.md` 282 → 377 (+95 satır) — Bölüm 12 OKR Linkage (Doerr) + kontrol listesi genişleme.
+- `.claude/skills/consulting-methodology/SKILL.md` 154 → 359 (+205 satır) — Bölüm 13 7 Powers (Helmer moat analysis) + Bölüm 14 Amazon Working Backwards PR/FAQ + Bölüm 15 checklist genişleme.
+**Çıktı — 7 playbook güncellendi:**
+- frontend-engineer (+5): mobile-app-polish-standards kritik ref fix + RSC skill + testing/performance prensipleri.
+- supabase-backend (+6): Adım 0 ritüele RLS/Realtime/Edge/Migration skill bölüm referansları.
+- coordinator (+151): Bölüm 4 Triage Decision Tree + RACI + LNO, Bölüm 4.5 Stop Conditions (7 kategori), Bölüm 4.75 Workstream Sequencing + Critical Path.
+- ui-designer (Adım 0 skill ref): visual-spec-writing Bölüm 10+11 zorunlu.
+- ux-researcher (+9): continuous-discovery-practice skill ref + İş tipi F Opportunity Solution Tree.
+- product-analyst (+30): product-discovery-frameworks skill ref + İş tipi G OST + Shape Up Pitch + framework cheat-sheet.
+- strategy-consultant (+13): pyramid-principle-thinking skill ref + 7 Powers/PR-FAQ/Pyramid/SCQA cheat-sheet.
+**Test:** tsc --noEmit 0 hata. Kod değişikliği yok (sadece docs/skills/agents).
+**Açık karar:** 0 yeni.
+**Özet:** 9/9 agent tier-1 discipline seviyesine kavuştu. Top-tier kaynaklar (Barbara Minto, Hamilton Helmer, Teresa Torres, Ryan Singer, Marty Cagan, Shreyas Doshi, Dan Abramov, Brad Frost, Nathan Curtis, Rauno Freiberg, Refactoring UI, RFC 8252, KVKK Kurumu) skill'lere dokulandı. Toplam: 7 skill (2545 satır) yeni/genişletilmiş + 9 playbook güncel. V1 pilot öncesi ekosistem hazır.
+
+---
+
+## 2026-04-24 18:30 — [auth agent iyileştirme 2/9] auth-capacitor — KVKK + Capacitor OAuth skills ⭐⭐⭐ P0
+**İş:** Agent improvement research #7 — 2 kritik boşluk (KVKK uyum ve Capacitor native OAuth skill yok). Legal risk (TL 1M+ ceza) + security risk (account takeover) birinci sıradaydı. Yeni iki skill + playbook entegrasyonu.
+**Durum:** completed
+**Çıktı:**
+- `.claude/skills/kvkk-compliance/SKILL.md` (yeni, 250 satır) — TR 6698 Kanun + aydınlatma metni template 8 bölüm + form UI pattern (çifte onay, default unchecked, cayma banner) + DB consent tracking + silme hakkı 30-gün grace + hard delete + vendor DPA kontrolü (Supabase/iyzico/PayTR/Vercel/fonzip) + pre-production audit checklist (10 madde) + karar ağacı (yeni form → aydınlatma → checkbox → consent tracking) + avukat-e-gider 8 senaryo. Kaynaklar: KVKK Kurumu, CookieYes, TermsFeed, Pandectes.
+- `.claude/skills/capacitor-native-oauth/SKILL.md` (yeni, 417 satır) — RFC 8252 7-madde checklist + flow diagramı + Capacitor config template + iOS setup (Universal Links + URL scheme + apple-app-site-association) + Android setup (App Links intent filter + assetlinks.json SHA256) + deep link handler TypeScript + Google/Apple Sign-In code + token storage matrix (localStorage yasak, secure-storage zorunlu) + simulator/emulator test komutları + password reset native flow + 7 common pitfall + pre-production 10-madde checklist. Kaynaklar: RFC 8252, Capacitor Docs, @capgo/capacitor-social-login, Supabase Mobile Auth.
+- `.claude/agents/auth-capacitor.md` playbook — Adım 0 ritüeline 2 skill zorunlu ekle + Bölüm 7 Kullanılabilir skill'ler genişle + yeni Bölüm 7.5 Password Reset Flow + yeni Bölüm 7.6 MFA Roadmap (Email OTP → SMS → TOTP → Passkeys). Toplam +29 satır (157 → 186).
+**Açık karar:** 1 (aydınlatma metni **legal review gerekli** — avukat mütalaası, pre-production blocker).
+**Özet:** V1 pilot'tan önceki iki kritik legal+security boşluk kapandı. KVKK uyum disiplini artık skill seviyesinde (avukat-e-gider senaryoları net). Native OAuth tier-1 güvenlik standardında (RFC 8252 + PKCE + secure storage). Sıradaki: frontend-engineer (3/9) — mobile-polish ref fix + React Server Component patterns skill.
+
+---
+
+## 2026-04-24 17:15 — [ds agent iyileştirme 1/9] design-system-keeper skill + playbook upgrade ⭐⭐
+**İş:** Agent improvement research raporunun #8 bölümünü uygulamak. 9-agent iyileştirme sırasında 1. agent (en zayıf → en güçlü sıralama). Araştırma bulguları: Atomic Design taxonomy eksik, token governance workflow yok, Figma Variables prep yok, contribution model playbook'ta missing.
+**Durum:** completed
+**Çıktı:**
+- `.claude/skills/design-system-audit/SKILL.md` — 3 yeni bölüm (+208 satır, 157 → 365): Bölüm 7 Atomic Design Taxonomy (Brad Frost), Bölüm 8 Token Governance Decision Tree (Nathan Curtis), Bölüm 9 Figma Variables + Semantic Naming. Kaynaklar linkli.
+- `.claude/agents/design-system-keeper.md` — yeni Bölüm 9 "Contribution Model + Component Lifecycle" (+97 satır, 155 → 252): kim ne yapar matris, approval gate (4/4 evet zorunlu), component testing checklist, documentation requirements, versioning + deprecation, atom/molecule/organism kim yazar ayrımı.
+**Açık karar:** 0 yeni.
+**Özet:** Design system agent'ı tier-1 seviye disipline yaklaştı. Atomic Design taxonomy artık explicit, token governance karar ağacı var (ADD/ALIAS/RENAME/RETIRE), contribution model 4/4 approval gate ile. Sıradaki: auth-capacitor (2/9) — KVKK + Capacitor OAuth skill'leri yazılacak.
+
+---
 
 ## 2026-04-24 13:00 — [analyst + strategy] Karar oturumu kapanışı + 5 ADR + fikri koruma memosu ⭐⭐⭐
 **İş:** 34 açık sorunun 21'i çözüldü (🔴 9 + 🟡 12, 🟢 12 tane 2. dalga'ya ertelendi). Kararlar ADR'leştirildi, ilgili migrations + code + types güncellendi. Fikri koruma (Q43) ek memosu yazıldı.

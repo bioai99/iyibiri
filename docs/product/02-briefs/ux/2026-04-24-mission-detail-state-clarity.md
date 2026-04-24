@@ -147,3 +147,12 @@ Transparency kullanıcının Karma değerine güvenini artırır.
 - **frontend-engineer:** implement (1 hafta).
 
 **Toplam:** 2 hafta paralel.
+
+## Handoff log
+
+Bu brief'i alıp üreten agent'ların zinciri. Protokol: `.claude/skills/agent-communication-protocol/SKILL.md` Katman A.
+
+- 2026-04-24 09:15 — **ux-researcher** ✅ — **audit + journey**: `docs/ux/03-heuristics/2026-04-24-mission-detail-state-machine-heuristik-audit.md` + `docs/ux/02-journeys/2026-04-24-mission-lifecycle-journey.md`. 9 state envanteri + Karma race condition tespiti (K4) + tema debt (K2). Q40-Q42 açık sorular. *(retroactive)*
+- 2026-04-24 09:30 — **ui-designer** ✅ — **spec**: `docs/ui/01-specs/2026-04-24-mission-detail-state-machine-ui-spec.md`. 14 bölüm, 9 state ASCII + FSM transition table + verification panel 4 variant + migration 013 şeması + server action sözleşmesi + 14 TR error copy. *(retroactive)*
+- 2026-04-24 10:00 — **supabase-backend + frontend-engineer** ✅ — **infrastructure**: migration 013 + `lib/missions/state.ts` (9 state FSM) + `lib/missions/error-codes.ts` + `lib/missions/actions.ts` (server actions, race condition fix) + 55/55 unit test. TR locale bug unit test ile ispat → UI spec Bölüm 3.6 revize edildi. *(retroactive)*
+- 2026-04-24 11:00 — **frontend-engineer** ✅ — **components + routing**: `components/mission/` 3 new + `/complete` dark rewrite + `/missions/[id]/page.tsx` 9-state routing + 2 dead file shim. 83/83 test. *(retroactive)*

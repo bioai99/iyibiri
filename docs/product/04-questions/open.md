@@ -1,6 +1,24 @@
-# Açık Kararlar Kuyruğu — Sadeleştirilmiş
+# Açık Kararlar Kuyruğu — CANONICAL
 
+> **Bu dosya canonical.** Tüm açık soruların tek kaynağıdır. Tartışmalı/geniş format için: [`docs/_decisions-queue.md`](../../_decisions-queue.md) (working doc, canonical değil).
+>
 > **Güncel:** 2026-04-24 — 8 ADR Accepted, 13 soru çözüldü → `resolved.md`. Aşağıda sadece hâlâ açık olanlar.
+>
+> **Protokol:** [`.claude/skills/agent-communication-protocol/SKILL.md`](../../../.claude/skills/agent-communication-protocol/SKILL.md) Katman E.
+
+## ADR Accept workflow — 5-dosya atomic checklist
+
+Bir ADR `Proposed` → `Accepted` transition'ında agent **5 adımı atomic yapar**. Eksik = drift.
+
+1. **ADR dosyası** — `docs/product/03-decisions/NNN-slug.md` status `Proposed` → `Accepted` + tarih + onay notu.
+2. **open.md (bu dosya)** — ilgili soruyu bul, satırı sil (veya strikethrough).
+3. **resolved.md** — yeni satır: `✅ QN — [başlık] — ADR-NNN — [cevap özeti 1 satır]`.
+4. **İlgili workstream** — `docs/product/01-workstreams/*.md` — ADR referansı ekle.
+5. **Status board** — `docs/_status-board.md` — karar bekleyen iş uygun kolona taşı.
+
+**Plus:** ADR dosyasının "Handoff log" bölümüne (Katman A) kim onayladı + hangi implementation tetiklediği eklenir.
+
+---
 
 ## Seviyeler
 

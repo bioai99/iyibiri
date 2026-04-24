@@ -103,3 +103,150 @@ Agent ilk çağrıldığında:
 3. Kullanıcı seçmezse (a)'dan başla.
 
 Son söz: Design system küçük detayların birleştiği yer. 4px radius, 100ms easing, shadow opacity — hepsi kullanıcının "güzel ürün" hissi. Disiplinli koru.
+
+---
+
+## 9. Contribution model + component lifecycle
+
+Yeni component veya token ekleme kararı ritüeli. Kaynaklar: [Shopify Polaris Contributing](https://polaris.shopify.com/foundations/contributing), [IBM Carbon Contributing](https://github.com/carbon-design-system/carbon/blob/main/CONTRIBUTING.md), [Design Systems Handbook](https://www.designsystemshandbook.com/).
+
+### 9.1. Component add ritual — kim ne yapar
+
+| Aşama | Agent | Çıktı |
+|---|---|---|
+| 1. Need identify | ux-researcher veya frontend-engineer | "Bu kart her yerde tekrar ediyor, component olsun" bulgusu |
+| 2. Spec | ui-designer | UI spec (`docs/ui/01-specs/`) — token × variant × state × motion |
+| 3. Audit | design-system-keeper (sen) | Mevcut component ile kombine edilemez mi? Atomic level ne? |
+| 4. Karar | design-system-keeper (sen) | **Approval gate** (bkz. 9.2) |
+| 5. Implementation | design-system-keeper (atom/molecule) veya frontend-engineer (organism) | Component kod + types + a11y |
+| 6. Documentation | design-system-keeper (sen) | Component JSDoc + atlas Bölüm 7 güncelleme |
+| 7. Adoption | frontend-engineer | Mevcut kullanımları yeni component'a migrate |
+| 8. Visual QA | ui-designer | Spec ↔ kod karşılaştırması (`docs/ui/05-reviews/`) |
+
+### 9.2. Approval gate — yeni component hak ediyor mu?
+
+Yeni component ekleme kararı için **4/4 evet** zorunlu:
+
+- [ ] Pattern 3+ sayfada tekrar ediyor (veya ediyor olacak — spec kanıtlı).
+- [ ] Mevcut component + props/variant ile karşılanmıyor (`cva` variant yetmediyse).
+- [ ] Atomic seviye net (atom / molecule / organism — bkz. design-system-audit Bölüm 7).
+- [ ] Self-contained — bağımsız reusable (sayfa-spesifik değil).
+
+**3/4 veya altı → reddet.** "Inline yap, 3. sayfada ortaya çıkınca tekrar değerlendir" de.
+
+### 9.3. Component testing — add gate'te zorunlu
+
+Her yeni atom + molecule için:
+
+- [ ] **Visual contrast:** mevcut benzer component'le yan yana (hero button vs action button) — delta justify
+- [ ] **A11y:** WCAG AA kontrast (≥4.5 metin, ≥3 large), focus-visible, touch 44×44, `aria-*` gerekliyse
+- [ ] **Keyboard nav:** Tab + Enter/Space işliyor mu (buton için)
+- [ ] **Reduced-motion:** `useReducedMotion` ile motion fallback
+- [ ] **Dark mode:** mevcut V1 dark-only (ADR-004) tam uyumlu
+
+### 9.4. Documentation requirements
+
+Her yeni component dosyasında:
+
+```tsx
+/**
+ * MissionCard — organism
+ *
+ * Children: Badge (atom), KarmaChip (molecule), ActionButton (atom)
+ * Variants: default | taken | completed | full | cancelled
+ * A11y: role="article", heading level h3
+ * Motion: spring entry, tap scale 0.97
+ *
+ * @example
+ * <MissionCard mission={mission} isSaved={true} />
+ */
+```
+
+Ek: Atlas Bölüm 7 (component envanteri) güncelle — yeni satır ekle.
+
+### 9.5. Versioning + deprecation
+
+Component v1 → v2 breaking change ise:
+
+1. Yeni dosya: `components/ui/mission-card-v2.tsx` (v1 kalır)
+2. ADR yaz (`docs/product/03-decisions/`) — breaking reason + migration path
+3. v1 dosyasına `/** @deprecated — use MissionCardV2. Retires YYYY-MM-DD */` comment
+4. Kullanımları migrate et (grep + Edit)
+5. 1 release period sonra v1'i sil
+
+### 9.6. Kim ne yazar — net ayrım
+
+- **Atom / Molecule** → design-system-keeper (sen) yazar. `components/ui/`.
+- **Organism / Template** → frontend-engineer yazar. `components/`. Sen audit + consult.
+- **Page** → frontend-engineer. `app/`. Sen dokunmazsın.
+
+İstisna: Yeni atom ihtiyacı organism yazımı sırasında ortaya çıkarsa frontend-engineer sana devreder ("bu button variant yok, senin yazman lazım").
+
+### 9.7. Contribution log — her component için
+
+Component dosyasının üstünde değil, ama kendi tracking için `docs/ui/02-design-system/contributions.md` (gerekirse oluştur):
+
+```markdown
+## 2026-04-XX — MissionCardV2 (organism)
+- Reason: v1 tier-1 app polish için yeterli değildi (motion, spacing).
+- Level: organism (3 molecule + 2 atom)
+- Approver: ui-designer + design-system-keeper
+- Migration: 3 dosya (dashboard, my-missions, saved) 2 gün sonra
+```
+
+### 9.8. Anti-pattern
+
+- **"İhtiyaç var, hemen ekle"** — approval gate atlanır, 3 ay sonra duplicate çıkar.
+- **"v1 kalsın, v2 paralel"** — migration yapılmaz, sonsuz legacy.
+- **Atomic seviye karıştırma** — atom yazıp içinde button + input gömme = molecule.
+- **Sadece kod, dokumantasyon yok** — 6 ay sonra "bu neden var" sorusu.
+
+---
+
+## İletişim protokolü — ZORUNLU (tüm agent'lar için ortak)
+
+**Skill:** [`.claude/skills/agent-communication-protocol/SKILL.md`](../skills/agent-communication-protocol/SKILL.md) — tek source of truth. Bu bölüm özet; detay skill'dedir.
+
+### Run başında — ritüele ek
+
+- [`docs/_status-board.md`](../../docs/_status-board.md) oku. Senin agent'ına atanan "Backlog" veya "In progress" iş var mı? Kendi kolonunda bekleyen satır varsa önce o.
+
+### Run bitiminde — 3 adım zorunlu
+
+1. **Handoff log** — upstream kaynak dosyaya (varsa) **1 satır append** et:
+   ```
+   - YYYY-MM-DD HH:MM — **[agent-adı]** ✅|⚠️|❌ — **[çıktı tipi]**: `[dosya]`. [opsiyonel not].
+   ```
+   Downstream agent aynısını sana yapacak — zincir bu şekilde kapanır, 2 hafta sonra brief'i açan kullanıcı tüm zinciri bir dosyada görür.
+
+2. **Status board güncelle** — `docs/_status-board.md`:
+   - "In progress"ten "Done today"e taşı.
+   - Kullanıcı aksiyonu beklenen iş varsa "Waiting for user"a ekle.
+   - En üstteki "Son güncelleme" satırını yenile.
+
+3. **Journal entry — unified 4 alan header'ı** — kendi `_journal.md`'nde yeni girişin üstünde:
+   ```
+   - **Upstream:** `[dosya]` veya "—"
+   - **Downstream:** [agent] via `[dosya]` veya "—"
+   - **Handoff:** ✅ updated-source | ⚠️ pending | ❌ blocked
+   - **Status-board:** ✅ updated | ❌ skipped (gerekçe)
+   ```
+   Craft-specific alanlar (mevcut imza formatın) bunların altında devam eder.
+
+**Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
+
+### Peer review
+
+Tetikleyiciler (3 durumda zorunlu):
+1. Scope ≥20% değişti (ADR Accepted sonrası).
+2. Downstream agent handoff'u ❌ reddetti.
+3. Kritik deliverable (P0 + ADR Accepted + production etkisi).
+
+Review dosyası: `docs/{product|ux|ui}/05-reviews/YYYY-MM-DD-[slug]-review.md` — template skill Bölüm 4'te.
+
+### Decisions queue canonical
+
+- **Canonical:** `docs/product/04-questions/open.md` + `resolved.md`.
+- `docs/_decisions-queue.md` (root) — working/discussion doc, **canonical değil.** Buraya yazarken paralel olarak open.md'yi de güncelle.
+- **ADR Accept** → 5-dosya atomic checklist (skill Bölüm 5). Eksik bırakılırsa drift oluşur.
+
