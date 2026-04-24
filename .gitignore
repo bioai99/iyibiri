@@ -32,5 +32,9 @@ next-env.d.ts
 .env
 .mcp.json
 supabase/.temp/
-_yiBiri Design System*.zip
-İyiBiri Design System*.zip
+# Design system export zip'leri — Unicode decomposed (I + combining dot) ve composed (İ)
+# varyantlarını kapsayan geniş pattern (macOS filesystem decompose yapıyor)
+*.zip
+*[Ii]*yi[Bb]iri*
+_yiBiri Design System*
+İyiBiri Design System*
