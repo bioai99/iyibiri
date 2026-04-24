@@ -198,44 +198,6 @@ export function HeroCardV2({
     )
   }
 
-  /* Empty state — ilk kullanıcı (karma=0) */
-  if (isEmpty) {
-    return (
-      <motion.div
-        initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.05, ease: 'easeOut' }}
-        className="hero-glow-breathing mx-4 overflow-hidden rounded-3xl p-6"
-        style={{
-          background: `linear-gradient(135deg, ${c.ink800} 0%, ${c.ink800} 50%, ${c.ink900} 100%)`,
-          boxShadow: '0 8px 32px rgba(232,194,104,0.35)',
-          border: `1px solid ${c.gold}20`,
-        }}
-      >
-        <p
-          className="mb-2 text-sm font-medium"
-          style={{ color: c.ink300, letterSpacing: '0.04em' }}
-        >
-          Hoş geldin{userName ? `, ${userName}` : ''}
-        </p>
-        <h1
-          className="font-display text-2xl font-medium leading-tight"
-          style={{ color: c.cream, letterSpacing: '-0.02em' }}
-        >
-          İlk adımını at —{' '}
-          <em style={{ fontStyle: 'italic', color: c.gold }}>+100 Karma</em>{' '}
-          hediye
-        </h1>
-        <p
-          className="mt-3 text-sm"
-          style={{ color: c.ink300, lineHeight: 1.55 }}
-        >
-          Görev keşfet, seç, tamamla. İyilik biriktirmeye başla.
-        </p>
-      </motion.div>
-    )
-  }
-
   /* Normal: Karma + BrandLogo/tier + progress + 3 stat cell */
   return (
     <motion.div
@@ -411,6 +373,27 @@ export function HeroCardV2({
           href="/dashboard/streak"
         />
       </div>
+
+      {/* ── Karma=0 CTA — ilk görevi tamamla ── */}
+      {isEmpty && (
+        <Link
+          href="/dashboard/missions"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            padding: '12px 20px',
+            borderTop: `1px solid ${c.ink600}`,
+            textDecoration: 'none',
+            fontSize: 13,
+            fontWeight: 600,
+            color: c.gold,
+          }}
+        >
+          İlk görevini tamamla, Karma kazanmaya başla →
+        </Link>
+      )}
     </motion.div>
   )
 }
