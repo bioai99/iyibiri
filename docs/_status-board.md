@@ -4,7 +4,7 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
-**Son güncelleme:** 2026-04-24 21:15 — auth-capacitor — **Middleware + Admin Login upgrade tamamlandı.** `middleware.ts` per-NGO auth (is_ngo_admin RPC) + `app/admin/login/page.tsx` email/password form + `app/admin/login/actions.ts` Supabase auth. ADMIN_SECRET deprecated. SUPER_ADMIN_EMAILS env. TSC 0 hata. Handoff: frontend-engineer (admin hub router + logout button + devtools seed).
+**Son güncelleme:** 2026-04-24 23:45 — ux-researcher — **STK admin heuristik audit + Ayşe journey tamamlandı.** ✅ 10 sayfa heuristik matrisi (K1-K8 kritik bulgu), 5 tier-1 benchmark pattern, admin-özel 4 heuristik, Ayşe 10-step journey (dark/peak moment), 3 persona spektrumu, HEART metrics. Handoff: ui-designer (10 sayfa UI spec S0) + frontend-engineer (K1-K2 foundation S1-S2).
 
 ---
 
@@ -26,8 +26,8 @@
   - ✅ [be] Migration 021 (2026-04-24 20:30) — 8 RLS policy + 5 kolon + is_super_admin + types update. Seed script ready (`lib/dev/ngo-admin-fixtures.ts`, 5 STK admin idempotent).
   - ✅ [ux] UX brief (2026-04-24 10:45) — `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (15 sayfa detaylı).
   - ✅ [auth-capacitor] Middleware upgrade (2026-04-24 21:15) — per-NGO auth (is_ngo_admin RPC) + Supabase email/password login. ADMIN_SECRET deprecated. SUPER_ADMIN_EMAILS env setup. Admin hub router + logout button awaited (fe task).
-  - 🔄 [ux-researcher] Heuristik audit S0'da başlayabilir (Planning).
-  - 🔄 [ui-designer] UI spec S0'da başlayabilir (Planning).
+  - ✅ [ux-researcher] Heuristik audit (2026-04-24 23:45) — `docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md` (K1-K8) + `docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md` (Ayşe journey). Handoff: ui-designer.
+  - 🔄 [ui-designer] UI spec S0'da başlayabilir (Planning → In progress).
   - 🔄 [frontend-engineer] Sprint S1 Batch A (auth layout + dashboard + missions + devtools seed butonu) S0 sonrası başlar. Awaiting: admin hub router, logout button, devtools button (auth-capacitor done).
 
 - **Dashboard v2 tur 2 — FE implementation** — owner: frontend-engineer, started: 2026-04-24 10:45, link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (8 component + token refactor), ETA: 2026-04-25 — 2026-04-26 (3–4 hafta paralel fe × design-system-keeper)

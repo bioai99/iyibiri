@@ -18,6 +18,15 @@
 
 ---
 
+## 2026-04-24 23:45 — ux-researcher
+**İş:** STK admin backoffice (Min+ 10 sayfa) — heuristik audit + Ayşe persona journey (P0 pilot feature).
+**Durum:** completed
+**Çıktı:** `docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md` (5.4K, K1-K8) + `docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md` (4.2K, 10-step journey)
+**Açık karar:** 0 (audit scope açık sorular cevaplandı; implementation decision K1-K2-K6 priority + mobile responsive spec S3 test)
+**Özet:** 20 heuristik (Nielsen 10 + İyiBiri 6 + Admin-özel 4) × 10 sayfa matrix, K1 sidebar context blocker (sev 4), K2 destructive confirm pattern (sev 3), K6 bulk action confirm (sev 3) foundation S1, K3-K5 form polish S2, K4-K7-K8 P1 S3-S4. Ayşe journey dark moment (form complexity + upload uncertainty Adım 6-7) → peak moment (toast + app sync Adım 9-10) → design implication (progress bar, auto-save, syntax hint). 3 persona spectrum (Engaged Ayşe, Hesitant Gül, Busy Can) — admin mobile optional (desktop-first). Handoff: ui-designer UI spec + frontend-engineer (K1 sidebar S1 dependency blocker).
+
+---
+
 ## 2026-04-24 14:30 — frontend-engineer
 **İş:** Dashboard v2 tur 2 — implementation plan (spec'ten kod yazma planı).
 **Durum:** completed

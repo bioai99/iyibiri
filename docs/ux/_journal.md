@@ -17,6 +17,67 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-24 23:45 — STK Admin Backoffice (Min+ 10 sayfa) heuristik audit + Ayşe journey
+
+- **Upstream:** `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (product-analyst UX brief) + `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md` (workstream master)
+- **Downstream:** ui-designer via `docs/ui/01-specs/...` (Sprint S0) + frontend-engineer (S1-S4 batches)
+- **Handoff:** ✅ upstream'e brief + workstream'e handoff log satırları eklendi
+- **Status-board:** ✅ updated — "Done today"'e moved, "Waiting for user" (design spec awaiting), açık karar flag none
+
+**İş:** STK backoffice UI (10 sayfalık admin panel — Dashboard/Görev/Doğrulama/Üye/Rapor/Blog/Profil/Üyelik/Ödeme/Layout) için full heuristik audit + admin persona (Ayşe, TEMA saha koordinatörü) 10-step journey map. Upstream brief basit UX bahis yok, product-analyst detay vermedi (sayfa-sayfa JTBD vardır ama heuristik kontrol eksik).
+
+**Output:**
+
+1. **`docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md`** (5,400+ kelime, 20 heuristik × 10 sayfa matrisi)
+   - Nielsen 10 + İyiBiri özel 6 + Admin-özel 4 (new) = 20 heuristik comprehensive framework
+   - 10 sayfa × 20 heuristik audit table — Dashboard, Görev CRUD, Görev Listesi, Doğrulama, Üye, Rapor, Blog, Profil, Üyelik Config, Ödeme (mevcut admin kodu + spec'e karşı)
+   - **Tier-1 admin benchmark 5 pattern:** Linear Inbox (unread + quick action), Airtable Grid (datatable + inline), Stripe Dashboard (card metrics + sparkline), Shopify Admin (sidebar + save bar), Notion Database (filter + group)
+   - **K1–K8 kritik bulgu** (severity 2–4):
+     - **K1 (sev 4):** Admin sidebar + breadcrumb missing → context kaybı, launch blocker
+     - **K2 (sev 3):** Destructive action confirm pattern yok (yayınla/cancel/reject) → error prevention risk
+     - **K3 (sev 2):** Form validation + error messaging eksik (inline errors)
+     - **K4 (sev 2):** Datatable mobile responsive spec muğlak (10+ column tablet/phone)
+     - **K5 (sev 2):** Image upload progress indicator yok (30sn unknown wait)
+     - **K6 (sev 3):** Batch action confirm UX eksik (50 item bulk approve one-click)
+     - **K7 (sev 2):** CSV export PII minimization warn yok (KVKK compliance)
+     - **K8 (sev 1):** Markdown editor syntax hint toolbar yok (flexibility)
+   - Admin-özel A11y (keyboard-first datatable, 44px touch, screen reader aria labels)
+   - Ayşe derinleştirme 3 persona spektrumu (Engaged/Hesitant/Busy)
+   - HEART success metrics (Happiness/Engagement/Adoption/Retention/Task success)
+   - LNO prioritization (K1-K2-K6 Leverage P0 S1-S2, K3-K5 Neutral P1 S2-S3, K4-K7-K8 Overhead P2 S3-S4)
+
+2. **`docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md`** (4,200+ kelime, 10-step detailed journey)
+   - Ayşe persona deep-dive (TEMA saha koordinatör, 35, 8 yıl deneyim, dijital orta yetkinlik, Pazartesi 30 dakika check)
+   - **10-step journey:** Login (E:0) → Form (E:-1, dark) → Upload (E:-0.5, friction) → Confirm (E:+2, ritual) → Toast (E:+3, peak) → App sync (E:+3, peak confirmed)
+   - Emotion curve ASCII + skor [-3 to +3]
+   - Dark moment analysis (Adım 6-7: form complexity + upload uncertainty → recovery opps)
+   - Peak moment analysis (Adım 9-10: success toast + instant app sync → magic → adoption signal)
+   - 3 persona spektrumu (Engaged=Ayşe, Hesitant=Gül/TEGV, Busy=Can/HAYTAP) — design implication (sidebar clarity, undo toast, quick-access)
+   - 10 design implication detail (URL finding → skeleton loading → confirmation modal → toast animation)
+   - Success metrics (pilot week 1-4: <2min yayınla, <10% form error, <5sn sync latency)
+
+**Kanıt sınıfı:**
+- **[Kod]** `/app/admin/layout.tsx` (top bar only, sidebar missing), `/app/admin/missions/page.tsx` (list simple, no bulk action), `/app/admin/login/page.tsx` (Türkçe error tone OK)
+- **[Kaynak]** Brief Bölüm 4 (10 sayfa JTBD + must/should/won't), Workstream Bölüm 2 (10 sayfa data mapping), Workstream Bölüm 5 (admin auth risk, migration 021)
+- **[Hipotez]** Ayşe haftada 30min backoffice kullanır (planning + doğrulama + rapor batch). Mobile %30 (doğrulama sahada). Form markdown bilmiyor (copy-paste yapıyor). Görsel upload <5sn tahmin (3-5sn gerçek). Batch approve 50 item = confirmation modal gerek (error prevention)
+- **[Gözlem]** Brief'te "Tier-1 benchmark" şartı vardı ama spec'ten Linear/Airtable/Stripe pattern extract etmek gerekti (brief superficial). Admin UI "generic form panel" risk → Linear/Shopify level gerek. Ayşe "2 dakikada yayınla" istedi ama form 8 alan, markdown + preview gerek. K1 (sidebar context) omission = admin kişi "ben nerede" sorusu (UX showstopper).
+
+**Self-assessment:** 8.5/10
+- ✅ 20 heuristik comprehensive (Nielsen + İyiBiri + admin-özel new dimension)
+- ✅ 8 kritik bulgu actionable (kanıt + severity + mitigation)
+- ✅ 5 tier-1 benchmark specific (Linear Inbox pattern, Airtable grid column, Stripe metric card — generic "good design" değil)
+- ✅ Ayşe journey 10-step detailed + emotional arc (dark moment → peak moment) + 3 persona spectrum
+- ✅ Design implication concrete (K1 sidebar nav spec, K2 modal template, K5 progress bar estimate)
+- ⚠️ A11y audit basic (kontrast + keyboard + touch + screen reader) — derenlenmiş cognitive testing yok (V2)
+- ⚠️ Admin mobile spec still ambiguous (tablet OK? phone scroll?) — tablet breakpoint test tavsiyesi verdim
+- ⚠️ Admin-özel "data density without overwhelm" (A1) heuristik yeni concept, validation empirical olmadı (hypothesis)
+
+**Açık karar:** 0 (audit scope'deki tüm soru answer'lanmış)
+
+**Next:** ui-designer 10 sayfa UI spec (audit K1-K2-K6 foundation + Ayşe journey design implication integrate) → frontend-engineer Sprint S1-S4 (sidebar + form validation + batch confirm + responsive). **Critical path:** K1 sidebar S1'de **must** (admin context blocker), K2 confirm modal S1-S2'de (error prevention core), K3-K5 S2 (form polish). Frontend K1 öncesi başlamayabilir (layout dependency). **Parallel:** supabase-backend migration 021 (admin RLS) + auth-capacitor middleware (ngo_admin_users check) — independent track.
+
+---
+
 ## 2026-04-24 23:45 — Dashboard v2 tur 2 audit + journey
 
 - **Upstream:** `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md` (product-analyst tur 2 brief)

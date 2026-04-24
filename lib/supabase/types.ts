@@ -143,6 +143,12 @@ export interface Database {
           kvkk_document_url: string | null
           membership_contract_url: string | null
           volunteer_consent_url: string | null
+          // Migration 021 — admin profil + sosyal linker
+          email: string | null
+          phone: string | null
+          social_instagram: string | null
+          social_twitter: string | null
+          social_linkedin: string | null
         }
         Insert: {
           id?: string
@@ -175,6 +181,11 @@ export interface Database {
           kvkk_document_url?: string | null
           membership_contract_url?: string | null
           volunteer_consent_url?: string | null
+          email?: string | null
+          phone?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          social_linkedin?: string | null
         }
         Update: {
           id?: string
@@ -207,6 +218,11 @@ export interface Database {
           kvkk_document_url?: string | null
           membership_contract_url?: string | null
           volunteer_consent_url?: string | null
+          email?: string | null
+          phone?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          social_linkedin?: string | null
         }
         Relationships: []
       }

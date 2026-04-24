@@ -1,17 +1,32 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
-export async function setAdminCookie(secret: string): Promise<boolean> {
-  if (secret !== process.env.ADMIN_SECRET) return false
+export async function signInAdmin(
+  email: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
 
-  const cookieStore = await cookies()
-  cookieStore.set('iyibiri_admin', secret, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 86400,
-    path: '/',
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
   })
-  return true
+
+  if (signInError) {
+    return {
+      success: false,
+      error: 'Giriş başarısız. Email veya şifre yanlış.',
+    }
+  }
+
+  // After successful sign-in, user is authenticated via Supabase session
+  return { success: true }
+}
+
+export async function signOutAdmin() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/admin/login')
 }
