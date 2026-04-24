@@ -15,7 +15,39 @@
 ---
 ```
 
-<!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
+## 2026-04-25 18:00 — Ekosistem polish audit (14 akış × seamless + show-stopping)
+
+- **Upstream:** `docs/project-atlas.md` (kimlik, rota, DS), `docs/page-audit.md` (sayfa durum), agent playbook Bölüm 6.5 (yorum yetkisi), ux-heuristics skill (Nielsen 10 + İyiBiri özel), user-journey-mapping skill (emotion curve), mobile-app-polish-standards skill (tier-1 benchmark)
+- **Downstream:** ui-designer (Bölüm 11 spec handoff: 6 frame), frontend-engineer (Bölüm 9 backlog: 7 quick-win + 4 medium-effort), product-analyst (Bölüm 12 karar queue: 3 soru)
+- **Handoff:** ✅ audit raporuna 3 dosya upstream referans, K1-K10 kritik bulgular UI/FE actionable + yorum yetkisi kullanıldı (K3 Nielsen 8 violation challenge, K6 form validation systemic issue), spec handoff backlog ready
+- **Status-board:** ✅ planned update — "Done today"'e movable, "In progress" STK admin + dashboard v2 tur 2 backlog'a quick-win + medium-effort task ekleme
+
+**İş:** İyiBiri ekosisteminin 14 kullanıcı akışını seamless (5 boyut: geçiş, mental load, error recovery, motion feedback, context preserve) + show-stopping (6 boyut: imza motion, celebration, density, mikro-detay, tematik, easter egg) perspektifinden tier-1 app benchmark'a karşı detaylı UX audit. Playbook'ta yorum yetkisi aktif (Bölüm 6.5) — design system ve canlı app kararlarını challenge edebilme.
+
+**Output:**
+
+1. **`docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md`** (8,500+ kelime, 14 akış detay)
+   - Seamless ortalama 3.7/5 (target 4.5), show-stopping ortalama 1.9/6 (target 3.5)
+   - 14 akış × 11 dimensyon skor matris
+   - Akış 6 (mission complete) en iyi: seamless 4.6/5 ✅, show-stopping 3.3/6 ✅; akış 1 (onboarding) zayıf: seamless 2.8/5, show-stopping 1.3/6
+   - **K1–K10 kritik bulgu:** K1 onboarding ceremony eksik (sev 3, retention -10-15%), K3 dashboard cognitive overload Nielsen 8 ihlal (sev 3), K6 membership form validation sparse (sev 3), K9 leaderboard number animation yok (sev 2), K10 profile timeline missing (sev 3), + 5 diğer (K2, K4, K5, K7, K8 sev 2)
+   - **5 show-stopping opportunity:** Onboarding success ritual, leaderboard number animate + tier badge, daily streak milestone haptic, mission complete social OG card, nightly bonus easter egg
+   - **6 quick-win + 4 medium-effort:** Quick-win 6 saat (K1, K2, K4, K5, K7, K8), medium-effort 1 hafta+ (K3, K6, K9, K10)
+   - Nielsen 10 + İyiBiri 6 heuristik + tier-1 benchmark (Duolingo/Linear/Things 3/Arc/Robinhood) sistematik referans
+   - Yorum yetkisi uygulanmış: K3'te Nielsen 8 violation tanılanmış, K6'da form validation systemic design issue tanılanmış, çözüm önerileri architecture-level (tab system, schema update)
+
+2. **Benchmark specificity:** Duolingo ceremony pattern (owl mascot, level-up 7-15s), Linear Inbox (unread + quick action), Things 3 (gesture obsession + pull-to-refresh), Arc (micro-reward delight), Robinhood (Karma count-up + Haptic) explicit karşılaştırma
+
+3. **Confidence high:** Kod 14 akış tamamı Read (45+ file), design-system atlas authority kaynak, skill'ler (ux-heuristics, journey-mapping, mobile-polish-standards) disiplinli uygulanmış. K1-K10 kanıt sınıfı: Kod (6 bulk), Hipotez (3 gözlem-tabanlı), Nielsen+Tier-1 (1 benchmark direct).
+
+**Self-assessment:** 8/10 — audit kapsamlı (14/14 akış), matris sistematik, bulgu actionable. Ama self-kritik: show-stopping boyutu "delight" öznel, Duolingo/Arc referans aşırı "premium app" bias taşıyabilir (İyiBiri warmth × samimi ton unique USP, generic aggressiveness design değil). Recommendation: Quick-win'ler implement edip A/B test, show-stopping'i incrementally roll (K1 onboarding ceremony first, then K9 leaderboard animate, measure cohort retention/NPS).
+
+**Next:** 
+- UI-designer: Bölüm 11 handoff 6 spec frame (onboarding success modal, daily mission card, dashboard secondary nav, membership form validation, leaderboard number animate, empty state per page)
+- Frontend-engineer: Backlog append K1-K10 task, quick-win 6 batch (6 saat), medium-effort 4 batch (planning phase — K3 architecture karar gerek)
+- Product-analyst: Bölüm 12 karar queue 3 soru escalate, quick-win prioritization (K1 onboarding ceremony, K2 cause validation, K4 daily mission real API = activation loop critical)
+
+---
 
 ## 2026-04-24 23:45 — STK Admin Backoffice (Min+ 10 sayfa) heuristik audit + Ayşe journey
 

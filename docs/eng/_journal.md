@@ -17,6 +17,39 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK -->
 
+## 2026-04-25 19:10 — [fe] Pattern 1-3: Show-Stopping Polish (Onboarding, Karma Counter, Mission Card)
+
+- **Upstream:** `docs/ui/01-specs/2026-04-25-ekosistem-show-stopping-spec.md` (UI designer spec) + `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (UX audit K1, K3, K9)
+- **Downstream:** design-system-keeper via `docs/ui/01-specs/...` (token ADR'ler), sonraki FE features (Pattern 4-7: empty state, bottom sheet, streak, cultural events)
+- **Handoff:** ✅ updated-source (`ekosistem-show-stopping-spec.md` Bölüm 12 Handoff log'a satır eklendi)
+- **Status-board:** ✅ updated (Faz A/B/C tamamlandı; backlog Pattern 4-7 aklında)
+
+**İş:** KarmaCounterPro molecule (count-up animate + tier badge glow + delta float), WelcomeCelebration organism (onboarding success modal, 1400ms ceremony), DailyMissionCard featured polish (2px gold border, "Senin için" badge, glow pulse, hover lift).
+
+**Değişen dosyalar:**
+- **Yeni:** `components/ui/karma-counter-pro.tsx` (120 satır, easeOutExpo count-up + 3-ring glow + tier transition)
+- **Yeni:** `components/onboarding/welcome-celebration.tsx` (200 satır, organism + orchestration + KarmaCounterPro integration)
+- **Genişletme:** `components/dashboard/daily-mission-card.tsx` (featured state vurgusu: border, badge, glow, hover)
+- **Genişletme:** `app/onboarding/city/page.tsx` (WelcomeCelebration import + swap, modal dismiss + redirect flow)
+- **Upstream handoff:** `docs/ui/01-specs/2026-04-25-ekosistem-show-stopping-spec.md` Bölüm 12 (Handoff log satırı eklendi)
+
+**ADR / WS ref:** UX Audit K1 (onboarding ceremony) ✅, K3 (dashboard cognitive) partial, K9 (leaderboard animate) via KarmaCounterPro ready. Token ihlali 0 (useTheme token'ları kullanıldı). Motion spec: Bölüm 11 visual-spec-writing (80-800ms timing, easeOutExpo + spring, useReducedMotion fallback).
+
+**Test:**
+- TSC all-phases ✅ 0 hata
+- Regression: HeroCardV2 karma count-up mevcut (KarmaCounterPro ayrı, bağlanmadı henüz — sonraki tur)
+- Regression: onboarding/city city save + modal show + redirect flow OK
+- Regression: dashboard mission list CSS unaffected, featured badge positioned overlay correctly
+
+**Motion details:**
+- Faz A (KarmaCounterPro): count-up 800ms easeOutExpo, delta 0-30→-30 (y-translate, opacity fade), tier glow 1.5s 3-wave, badge scale 0→1.1→1
+- Faz B (WelcomeCelebration): entry spring 300ms (0.22,1,0.36,1), title fade 300ms delay 300ms, karma counter 1200ms delay 600ms, confetti ready (not yet confetti lib integrated), button scale 0.97 tap
+- Faz C (DailyMissionCard featured): border 2px gold, badge overlay top-left translate(8,−8), glow 16px shadow + breathing (3s pulse CSS TBD), hover y-2 lift, tap scale 0.97
+
+**Next:** Pattern 4 (Empty State SVG + context message), Pattern 5 (Bottom Sheet modal), Pattern 6 (Streak Milestone ceremony), Pattern 7 (Cultural Events easter egg). Faz D-G. Timeline: P0 (mission complete + leaderboard KarmaCounterPro wiring).
+
+---
+
 ## 2026-04-25 03:45 — [fe] UX Quick-Wins (6/6): K1-K2-K4-K5-K7-K8 Implementation
 
 - **Upstream:** `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (UX audit 14 akış × K1-K10 kritik bulgular)

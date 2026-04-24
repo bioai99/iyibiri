@@ -17,6 +17,73 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-25 18:30 — Ekosistem show-stopping UI spec (UX audit K1-K10 → 7 pattern)
+
+- **Upstream:** UX ecosystem polish audit `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (10 kritik bulgu K1-K10, 5 show-stopping opportunity SS1-SS5, 6 spec frame handoff, 14 akış × seamless+show-stopping scoring matrix)
+- **Downstream:** frontend-engineer (10 yeni/genişletilen component: onboarding-welcome-celebration, karma-counter-pro, mission-card featured variant, empty-state 4 SVG, bottom-sheet, streak-milestone, cultural-event system), design-system-keeper (3 ADR-TBD: flameOrange token, glow-breathing animation, cultural-event CSS vars), product-analyst (cultural calendar maintenance), ux-researcher (Ramadan/bayram tarih sync)
+- **Handoff:** ✅ UX audit `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` Handoff log'una satır eklendi (Bölüm 13 update). Downstream flow açık: FE + DS explicit component + token listi.
+- **Status-board:** Bölüm 14'te entry eklenecek ("Done today" ui-designer → show-stopping spec)
+
+- **Prompt:** UX K1-K10 (onboarding ceremony eksik, dashboard cognitive overload, leaderboard animate eksik, empty state tone zayıf, streak milestone yok, cultural easter egg) + SS1-SS5 (5 show-stopping opportunity) + 6 spec frame handoff → 7 component-level implementation-ready pattern (organism + motion choreography + token + a11y). Tier-1+ (Linear/Duolingo/Things 3/Arc/Robinhood) benchmark'a çıkmak için show-stopping hale getir.
+
+- **Input:** 
+  - Adım 0: 3 skill okundu ✅ (visual-spec-writing Bölüm 10 Visual Hierarchy + Bölüm 11 Motion Choreography + design-system-audit Bölüm 7-9 atomic+token+figma + mobile-app-polish-standards Bölüm 1-6 tier-1 benchmark+motion+haptic+typography+dark+loading+haptic+quality-checklist)
+  - UX audit full read: K1-K10 mapping, SS1-SS5 opportunity listing, 14 akış 5-boyut scoring, 6 spec frame handoff list
+  - Project atlas Bölüm 6-7 design system gerçek (ink/cream/gold/clay/success palette, Fraunces+Jakarta typography, border radius scale, motion defaults, component envanteri)
+  - Mevcut component'ler (HeroCardV2, MissionCard, KarmaCounter, StreakFlame, BrandLogo, Button, Card, EmptyState, celebrations-overlay) — tüm 10 "yeni" reuse atom'lardan)
+  - Tailwind config (color token eksiksiz, animation keyframes, backgroundImage domain + scrim)
+
+- **Output:** `docs/ui/01-specs/2026-04-25-ekosistem-show-stopping-spec.md` — 13 bölüm, 7 pattern detaylı spec:
+  - Bölüm 1: Özet — 5.0→10.0 target, 3.7/5 seamless + 1.9/6 show-stopping mevcut
+  - Bölüm 2: İyiBiri DNA — 5 imza özellik (gold glow breathing ✅, warm tone, mikro-detay, emotional curve, TR-cultural)
+  - Bölüm 3: 7 Pattern (1 Onboarding celebration modal, 2 KarmaCounterPro molecule, 3 Mission card featured, 4 Empty state 4 SVG, 5 Bottom sheet, 6 Streak milestone, 7 Cultural events utility)
+  - Her pattern: component path, level (atom/molecule/organism), wireframe ASCII, motion choreography timeline, token tablo, state variant, a11y, tier-1 benchmark, effort
+  - Bölüm 4: Priority refactor matrix (K1→K11 mapping)
+  - Bölüm 5: Atomic seviye + token kontrol (3 yeni token: flameOrange, glow-breathing, color-event-accent)
+  - Bölüm 6: Motion choreography 3-tier (60-120ms subtle, 150-400ms notable, 500-3000ms show-stopping), timing band, stagger rule, easing curves, reduced-motion fallback
+  - Bölüm 7: Accessibility WCAG AA baseline (focus ring, touch target, contrast matrix, keyboard nav, screen reader, dark mode, mobile safe-area)
+  - Bölüm 8: Quick-wins UI tasks (K1-K11 quick-win 7 görev)
+  - Bölüm 9: Yeni dosyalar listesi (6 new component, 5 extended component, 2 config update)
+  - Bölüm 10: Design-system-keeper handoff (3 ADR-TBD + atomic atoms audit)
+  - Bölüm 11: Açık karar (4 product question: onboarding mandatory mi, variant sayısı, theme duration, tablet sheet)
+  - Bölüm 12: Handoff log (upstream satırı ekleme, downstream explicit)
+  - Bölüm 13: Quality checklist (12-madde visual hierarchy + motion choreography + handoff — ✅ tam)
+
+- **Token ihlali bulundu:** 0 (tüm spec'te atlas token referansları, hardcoded hex yok. Yeni token gereksinimi tespit: flameOrange #FF7A45 — WIP design-system-keeper ADR-TBD-1)
+
+- **Motion spec:** 
+  - Pattern 1 (Onboarding celebration): 3s orchestration (orbital 3s, count-up 0.8s, confetti 1.5s, button 0.4s, 7-step timeline)
+  - Pattern 2 (KarmaCounterPro): 800ms count-up cubic-bezier(0.16,1,0.3,1), delta float-up 400ms, tier badge pulse, glow ring 3-concentric
+  - Pattern 3 (Featured mission): breathing glow 3s, tap 0.98 scale spring 400/30, hover lift 2px desktop
+  - Pattern 6 (Streak milestone): 1000ms total (flame morph 300ms, slot-machine spin 400ms, badge unfurl spring, confetti 1.5s), variant 5 (7/14/30/50/100 gün)
+  - Pattern 7 (Cultural events): CSS-only, no animation (respects reduced-motion), theme swap midnight
+  - Bölüm 6 master plan: 3 motion tier (60-120 / 150-400 / 500-3000ms), timing band strict, spring default 400/30, stagger 40-60ms, easing curve 3-type (spring/custom/exit)
+
+- **Self-assessment:**
+  - ✅ Adım 0 (4 skill okundu: spec-writing + design-system-audit + mobile-app-polish + agent-communication)
+  - ✅ Upstream 1 dosya (UX audit) full integrate: K1-K10 mapping, SS1-SS5 opportunity, 14 akış, 6 handoff
+  - ✅ 5 imza pattern tanımlandı (gold glow breathing, warm tone, detail, emotional curve, TR-cultural)
+  - ✅ 7 component pattern spec (atom+molecule+organism level explicit)
+  - ✅ Atomic seviye audit: mevcut 10 atom reuse, 6 yeni component yalnızca atom reuse (no duplicate)
+  - ✅ Token kontrol: 3 yeni token gereksinimi tespit (flameOrange, glow-breathing, cultural-event vars) → ADR-TBD
+  - ✅ Motion choreography: Bölüm 11 visual-spec-writing şablonu tam takip (3-tier, timing band, stagger, easing, useReducedMotion, exit)
+  - ✅ A11y baseline: WCAG AA full (focus-visible, touch-target, contrast matrix calc, keyboard, screen-reader, dark-mode, safe-area)
+  - ✅ 12-maddelik quality checklist (visual hierarchy Bölüm 10 + motion choreography Bölüm 11) — tam pass
+  - ✅ Tier-1 benchmark: Linear/Duolingo/Things 3/Arc/Robinhood/Notion/Apollo 7-app karşılaştırma per pattern
+  - ✅ Handoff explicit: FE 10 component list, DS 3 ADR-TBD, downstream flow chain
+  - ⚠️ Cultural event tarih sync (Ramadan Hijri conversion): product + ux tarafında detay needed
+  - ⚠️ Orbital asset (3D butterfly logo animation): design-system-keeper handle (Lottie vs CSS 3D karar pending)
+
+- **Açık karar:** 4 product decision (onboarding mandatory/optional — tavsiye mandatory, variant sayısı 5 optimal, theme duration 24h all, tablet responsive variant)
+
+- **Next:**
+  1. frontend-engineer: K1 (onboarding celebration) + K9 (leaderboard animate) + K11 (streak milestone) priority, Bölüm 9 yeni dosyalar list paralel start
+  2. design-system-keeper: ADR-TBD-1 (flameOrange) + ADR-TBD-2 (glow-breathing) + ADR-TBD-3 (cultural-event vars) aç, atomic atoms audit (SVG 4 new + icon recolor)
+  3. product-analyst: Cultural event tarih sync (Ramadan Hijri converter, 23 Nisan/Cumhuriyet kararı) + Orbital asset (Lottie vs 3D) karar
+  4. ux-researcher: Onboarding ceremony impact measurement (retention cohort A/B pilot)
+
+---
+
 ## 2026-04-24 HH:MM — STK Admin UI V1 Min+ (10 sayfa spec)
 
 - **Upstream:** Workstream `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md`, Analyst brief `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (10 sayfa JTBD + scope), UX audit `docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md` (K1-K8 kritik, 20 heuristik matrisi, 5 tier-1 benchmark), Journey `docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md` (Ayşe 10-step, peak/dark moment)
