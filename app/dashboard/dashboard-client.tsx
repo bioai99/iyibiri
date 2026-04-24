@@ -16,7 +16,6 @@ import {
 import { HeroCardV2 } from '@/components/dashboard/hero-card-v2'
 import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
 import { useTheme } from '@/lib/theme'
-import { karmaProgress } from '@/lib/karma-level'
 
 // ── Date helpers ───────────────────────────────────────────────
 
@@ -169,15 +168,18 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
         </div>
       </motion.div>
 
-      {/* ── 2. HeroCardV2 ── UX Audit Kritik 2 (I6) imza: gold glow breathing + count-up */}
+      {/* ── 2. HeroCardV2 (revize 2026-04-24 gece) ──
+          Eski HeroCard tüm fonksiyonelliği korundu: 5 tier dots + BrandLogo +
+          3 tıklanabilir stat cell (/my-missions, /my-missions, /streak).
+          Yeni eklenenler: gold glow breathing + Karma count-up + weekly gain +
+          seviye progress bar. */}
       <div style={{ padding: '20px 0 0' }}>
         <HeroCardV2
           karma={karma}
-          level={karmaProgress(karma).tierName}
-          nextLevel={karmaProgress(karma).nextTierName ?? undefined}
-          nextLevelAt={karmaProgress(karma).nextTierAt ?? undefined}
+          taken={userMissions.filter((m) => m.status === 'taken').length}
+          completed={completedIds.size}
+          streak={profile.current_streak ?? profile.streak ?? 0}
           weeklyKarmaGain={weeklyKarmaGain}
-          streakDays={profile.current_streak ?? profile.streak ?? 0}
           isEmpty={karma === 0}
           userName={firstName}
         />

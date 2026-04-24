@@ -1,11 +1,18 @@
 'use client'
 
+// app/dashboard/rewards/[id]/reward-detail-client.tsx
+//
+// Ödül detay sayfası — dark tema Premium × Warm rewrite (2026-04-24 gece).
+// Önceki implementation light tema (bg-white, stone, primary/10) kullanıyordu —
+// dashboard dark tema flow'unu kırıyordu.
+
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowLeft, Sparkles, CheckCircle2, Lock } from 'lucide-react'
 import type { Reward } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
+import { useTheme } from '@/lib/theme'
 
 interface Props {
   reward: Reward
@@ -14,7 +21,13 @@ interface Props {
   userId: string
 }
 
-export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRedeemed, userId }: Props) {
+export function RewardDetailClient({
+  reward,
+  currentKarma,
+  isRedeemed: initialRedeemed,
+  userId,
+}: Props) {
+  const { colors: c } = useTheme()
   const [karma, setKarma] = useState(currentKarma)
   const [redeemed, setRedeemed] = useState(initialRedeemed)
   const [loading, setLoading] = useState(false)
@@ -46,7 +59,11 @@ export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRe
 
     const { error: redemptionError } = await supabase
       .from('reward_redemptions')
-      .insert({ user_id: userId, reward_id: reward.id, karma_spent: reward.karma_required })
+      .insert({
+        user_id: userId,
+        reward_id: reward.id,
+        karma_spent: reward.karma_required,
+      })
 
     if (redemptionError) {
       setError('Ödül kaydedilemedi')
@@ -54,65 +71,209 @@ export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRe
       return
     }
 
-    setKarma(prev => prev - reward.karma_required)
+    setKarma((prev) => prev - reward.karma_required)
     setRedeemed(true)
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
-      <div className="bg-white border-b border-stone-100 px-4 pt-12 pb-4">
-        <Link href="/dashboard/rewards" className="inline-flex items-center gap-1.5 text-stone-400 text-sm mb-4">
+    <div
+      style={{
+        minHeight: '100vh',
+        background: c.ink900,
+        color: c.cream,
+        paddingBottom: 140,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          background: c.ink900,
+          borderBottom: `1px solid ${c.ink600}`,
+          padding: 'calc(env(safe-area-inset-top, 20px) + 16px) 20px 16px',
+        }}
+      >
+        <Link
+          href="/dashboard/rewards"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            color: c.ink300,
+            fontSize: 14,
+            textDecoration: 'none',
+          }}
+        >
           <ArrowLeft size={16} />
           Ödüller
         </Link>
       </div>
 
-      <div className="px-4 py-5 space-y-4">
-        <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] p-6 text-center">
-          <div className="flex justify-center mb-4">
+      {/* Main card */}
+      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div
+          style={{
+            background: c.ink800,
+            border: `1px solid ${c.ink600}`,
+            borderRadius: 24,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+            padding: 24,
+            textAlign: 'center',
+          }}
+        >
+          {/* Brand logo */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
             {reward.brand_logo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={reward.brand_logo}
                 alt={reward.brand}
-                className="w-20 h-20 rounded-2xl object-contain border border-stone-100 p-2"
-                onError={e => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex') }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 16,
+                  objectFit: 'contain',
+                  background: '#fff',
+                  padding: 8,
+                  border: `1px solid ${c.ink600}`,
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                  ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty('display', 'flex')
+                }}
               />
             ) : null}
-            <div className="w-20 h-20 rounded-2xl bg-stone-100 items-center justify-center font-black text-3xl text-stone-400" style={{ display: reward.brand_logo ? 'none' : 'flex' }}>
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 16,
+                background: c.ink700,
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: 32,
+                color: c.ink300,
+                display: reward.brand_logo ? 'none' : 'flex',
+              }}
+            >
               {reward.brand[0]}
             </div>
           </div>
-          <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">{reward.brand}</p>
-          <h1 className="font-display font-extrabold text-2xl text-stone-900 mb-3">{reward.title}</h1>
-          <p className="text-sm text-stone-500 leading-relaxed">{reward.description}</p>
+
+          {/* Brand name */}
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: c.gold,
+              textTransform: 'uppercase',
+              letterSpacing: '0.14em',
+              margin: '0 0 6px',
+            }}
+          >
+            {reward.brand}
+          </p>
+
+          {/* Title */}
+          <h1
+            style={{
+              fontFamily: 'var(--font-display), Fraunces, serif',
+              fontSize: 24,
+              fontWeight: 600,
+              color: c.cream,
+              margin: '0 0 12px',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {reward.title}
+          </h1>
+
+          {/* Description */}
+          <p
+            style={{
+              fontSize: 14,
+              color: c.ink200,
+              lineHeight: 1.55,
+              margin: 0,
+            }}
+          >
+            {reward.description}
+          </p>
         </div>
 
-        <div className={`rounded-3xl p-5 flex items-center justify-between ${
-          redeemed ? 'bg-emerald-50' : unlocked ? 'bg-primary/10' : 'bg-stone-50'
-        }`}>
+        {/* Karma requirement card */}
+        <div
+          style={{
+            background: redeemed
+              ? `${c.success}18`
+              : unlocked
+                ? c.goldSoft
+                : c.ink800,
+            border: `1px solid ${redeemed ? c.success + '40' : unlocked ? c.goldLine : c.ink600}`,
+            borderRadius: 24,
+            padding: 20,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
-            <p className="text-sm font-semibold text-stone-600">Gereken karma</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <Sparkles size={16} className={redeemed ? 'text-emerald-500' : unlocked ? 'text-primary' : 'text-stone-400'} />
-              <span className={`font-extrabold text-2xl font-display ${
-                redeemed ? 'text-emerald-600' : unlocked ? 'text-primary' : 'text-stone-400'
-              }`}>
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: c.ink300,
+                margin: '0 0 4px',
+              }}
+            >
+              Gereken karma
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Sparkles
+                size={18}
+                color={
+                  redeemed ? c.success : unlocked ? c.gold : c.ink400
+                }
+              />
+              <span
+                style={{
+                  fontFamily: 'var(--font-display), Fraunces, serif',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: redeemed ? c.success : unlocked ? c.gold : c.ink400,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
                 {reward.karma_required.toLocaleString('tr-TR')}
               </span>
             </div>
           </div>
+
           {redeemed ? (
-            <CheckCircle2 size={28} className="text-emerald-500" />
+            <CheckCircle2 size={28} color={c.success} />
           ) : unlocked ? (
-            <div className="bg-primary/20 rounded-full px-3 py-1">
-              <span className="text-primary font-bold text-sm">Yeterli karma</span>
+            <div
+              style={{
+                background: `${c.gold}30`,
+                borderRadius: 999,
+                padding: '6px 12px',
+              }}
+            >
+              <span
+                style={{ color: c.gold, fontSize: 13, fontWeight: 700 }}
+              >
+                Yeterli karma
+              </span>
             </div>
           ) : (
-            <div className="text-right">
-              <Lock size={20} className="text-stone-300 mx-auto mb-1" />
-              <p className="text-xs text-stone-400">
+            <div style={{ textAlign: 'right' }}>
+              <Lock
+                size={20}
+                color={c.ink400}
+                style={{ marginBottom: 4 }}
+              />
+              <p style={{ fontSize: 11, color: c.ink300, margin: 0 }}>
                 {(reward.karma_required - karma).toLocaleString('tr-TR')} daha
               </p>
             </div>
@@ -123,16 +284,44 @@ export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRe
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-red-500 text-sm text-center"
+            style={{
+              color: c.danger,
+              fontSize: 13,
+              textAlign: 'center',
+              margin: 0,
+            }}
           >
             {error}
           </motion.p>
         )}
       </div>
 
-      <div className="fixed bottom-20 left-0 right-0 px-4">
+      {/* Sticky CTA */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 'calc(80px + env(safe-area-inset-bottom, 20px))',
+          left: 0,
+          right: 0,
+          padding: '0 16px',
+        }}
+      >
         {redeemed ? (
-          <div className="bg-emerald-500 text-white text-center py-4 rounded-2xl font-display font-bold flex items-center justify-center gap-2">
+          <div
+            style={{
+              background: c.success,
+              color: '#fff',
+              textAlign: 'center',
+              padding: 16,
+              borderRadius: 16,
+              fontFamily: 'var(--font-display), Fraunces, serif',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
             <CheckCircle2 size={20} />
             Kullanıldı
           </div>
@@ -140,13 +329,42 @@ export function RewardDetailClient({ reward, currentKarma, isRedeemed: initialRe
           <motion.button
             onClick={handleRedeem}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white py-4 rounded-2xl font-display font-bold text-base shadow-[0_4px_20px_rgba(244,185,66,0.4)] disabled:opacity-60"
             whileTap={{ scale: 0.97 }}
+            style={{
+              width: '100%',
+              background: `linear-gradient(90deg, ${c.goldDim}, ${c.gold})`,
+              color: c.ink,
+              padding: 16,
+              borderRadius: 16,
+              fontFamily: 'var(--font-display), Fraunces, serif',
+              fontWeight: 700,
+              fontSize: 16,
+              boxShadow: '0 4px 20px rgba(232,194,104,0.4)',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+            }}
           >
             {loading ? 'İşleniyor...' : 'Ödülü Kullan'}
           </motion.button>
         ) : (
-          <div className="w-full bg-stone-100 text-stone-400 py-4 rounded-2xl font-display font-bold text-base text-center flex items-center justify-center gap-2">
+          <div
+            style={{
+              width: '100%',
+              background: c.ink700,
+              color: c.ink400,
+              padding: 16,
+              borderRadius: 16,
+              fontFamily: 'var(--font-display), Fraunces, serif',
+              fontWeight: 700,
+              fontSize: 16,
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
             <Lock size={18} />
             Karma Yetersiz
           </div>
