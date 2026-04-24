@@ -1,18 +1,23 @@
+'use client'
+
 // components/ui/state/page-loading.tsx
 //
 // Page-level loading skeleton templates.
 // Next.js 14 loading.tsx için shared building block'lar.
-// Dark tema Premium × Warm (app/globals.css shimmer keyframe'i kullanır).
+// **Tema-aware**: dark'ta dark skeleton, light'ta light skeleton.
+// useTheme() hook ile dinamik renk — INK900/800/700 dark tonları veya LIGHT paleti.
 
-const INK900 = 'hsl(26 16% 13%)'
-const INK800 = 'hsl(24 14% 17%)'
-const INK700 = 'hsl(25 13% 22%)'
+import { useTheme } from '@/lib/theme'
 
-const SHIMMER_STYLE: React.CSSProperties = {
-  background: INK800,
-  animation: 'shimmer 2s ease-in-out infinite',
-  backgroundImage: `linear-gradient(90deg, ${INK800} 0%, ${INK700} 50%, ${INK800} 100%)`,
-  backgroundSize: '200% 100%',
+/** Shimmer style helper — useTheme colors'ı alıp gradient üretir. */
+function useShimmerStyle(): React.CSSProperties {
+  const { colors: c } = useTheme()
+  return {
+    background: c.ink800,
+    animation: 'shimmer 2s ease-in-out infinite',
+    backgroundImage: `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
+    backgroundSize: '200% 100%',
+  }
 }
 
 /** Tek blok shimmer — kart, kutu, bar için. */
@@ -27,10 +32,11 @@ export function SkeletonBlock({
   radius?: number
   style?: React.CSSProperties
 }) {
+  const shimmer = useShimmerStyle()
   return (
     <div
       style={{
-        ...SHIMMER_STYLE,
+        ...shimmer,
         width,
         height,
         borderRadius: radius,
@@ -50,11 +56,12 @@ export function ListPageLoading({
   itemCount?: number
   itemHeight?: number
 }) {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
         minHeight: '100vh',
-        background: INK900,
+        background: c.ink900,
         paddingBottom: 100,
       }}
       aria-busy="true"
@@ -101,11 +108,12 @@ export function DetailPageLoading({
 }: {
   title?: string
 }) {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
         minHeight: '100vh',
-        background: INK900,
+        background: c.ink900,
         paddingBottom: 100,
       }}
       aria-busy="true"
@@ -152,9 +160,10 @@ export function DetailPageLoading({
 
 /** Profil sayfası için template. */
 export function ProfilePageLoading() {
+  const { colors: c } = useTheme()
   return (
     <div
-      style={{ minHeight: '100vh', background: INK900, paddingBottom: 100 }}
+      style={{ minHeight: '100vh', background: c.ink900, paddingBottom: 100 }}
       aria-busy="true"
       aria-label="Profil yükleniyor"
     >
@@ -202,9 +211,10 @@ export function ProfilePageLoading() {
 export function GridPageLoading({
   itemCount = 6,
 }: { itemCount?: number }) {
+  const { colors: c } = useTheme()
   return (
     <div
-      style={{ minHeight: '100vh', background: INK900, paddingBottom: 100 }}
+      style={{ minHeight: '100vh', background: c.ink900, paddingBottom: 100 }}
       aria-busy="true"
     >
       <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 20px) 20px 0' }}>
