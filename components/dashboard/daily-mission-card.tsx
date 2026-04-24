@@ -94,13 +94,19 @@ export function DailyMissionCard({
         style={{ textDecoration: 'none' }}
       >
         <motion.div
-          whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+          className="featured-glow-pulse"
+          whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
+          whileHover={shouldReduceMotion ? {} : { y: -2 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-          className="relative overflow-hidden rounded-2xl"
           style={{
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: 16,
             background: c.ink800,
-            border: `1px solid ${c.ink600}`,
-            borderLeft: `4px solid ${c.gold}`,
+            border: `2px solid ${c.gold}`,
+            boxShadow: !shouldReduceMotion
+              ? `0 0 16px rgba(232,194,104,0.35), 0 4px 12px rgba(0,0,0,0.2)`
+              : `0 1px 4px rgba(0,0,0,0.1)`,
           }}
         >
           {/* Photo hero strip */}
@@ -164,22 +170,43 @@ export function DailyMissionCard({
             </div>
           </div>
 
-          {/* Body — NGO + impact + CTA */}
-          <div className="px-4 py-3.5">
-            <div className="flex items-center justify-between gap-3">
+          {/* Body — "Senin için" badge + NGO + impact + CTA */}
+          <div className="relative px-4 py-3.5">
+            {/* Top-left: "Senin için" badge */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                transform: 'translate(8px, -8px)',
+                padding: '4px 12px',
+                background: c.goldSoft,
+                border: `1px solid ${c.goldLine}`,
+                borderRadius: 6,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: c.gold,
+              }}
+            >
+              Senin için
+            </div>
+
+            <div className="flex items-center justify-between gap-3 pt-6">
               <div className="min-w-0 flex-1">
-                {/* A4 (tur 2): selectionReason micro-label */}
+                {/* Selection reason micro-label (secondary) */}
                 {selectionReason && (
                   <p
-                    className="font-sans text-[11px] font-medium uppercase"
+                    className="font-sans text-[10px] font-medium"
                     style={{
-                      color: c.ink300,
-                      letterSpacing: '0.06em',
+                      color: c.ink400,
+                      letterSpacing: '0.05em',
                       marginBottom: 4,
                     }}
-                    title={`Senin için önerildi — ${selectionReason}`}
+                    title={`${selectionReason}`}
                   >
-                    📍 Senin için — {selectionReason}
+                    {selectionReason}
                   </p>
                 )}
                 <p
@@ -192,11 +219,12 @@ export function DailyMissionCard({
                   <p
                     className="mt-1 font-sans text-xs italic"
                     style={{
-                      color: c.ink200 || c.cream,
+                      color: c.cream,
                       lineHeight: 1.45,
+                      fontStyle: 'italic',
                     }}
                   >
-                    {mission.impactStatement}
+                    "{mission.impactStatement}"
                   </p>
                 )}
               </div>

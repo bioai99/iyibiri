@@ -17,6 +17,44 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK -->
 
+## 2026-04-25 03:45 — [fe] UX Quick-Wins (6/6): K1-K2-K4-K5-K7-K8 Implementation
+
+- **Upstream:** `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (UX audit 14 akış × K1-K10 kritik bulgular)
+- **Downstream:** Product + UX (K3, K6, K9, K10 medium-effort backlog planning)
+- **Handoff:** ✅ updated-source (audit Handoff log'a entry eklendi)
+- **Status-board:** ✅ updated ("In progress" → "Done today" taşındı)
+
+**İş:** 6 UX quick-win implementasyonu (tahmini 6 saat, ~90 dakika):
+1. **K1 — Onboarding success modal**: City selection sonrası "/dashboard"'a redirect etmeden modal göster. Check icon spring animation, "+100 Karma 🌱", 2.4s auto-dismiss.
+2. **K2 — Causes min-1 validation**: Button disabled until selected.length > 0. Gold (selected) / ink-600 (empty) transition 200ms.
+3. **K4 — Daily mission real API wire**: Server-side selectionReason algoritması (yakın > kısa-süreli > default), profile.city + mission.location + duration parsing.
+4. **K5 — Filter chip transition smooth**: ChipDS easing 220ms → 200ms cubic-bezier(0.22, 1, 0.36, 1).
+5. **K7 — Membership pending empathic message**: Confirming phase spinner'ın yanında TR empathic copy "Birkaç saniye içinde...".
+6. **K8 — Empty state contextual copy**: noNotifications + saved presets genişlet (🌱 + 🔖 emoji single max).
+
+**Değişen dosyalar (7):**
+- `app/onboarding/city/page.tsx` (modal 60 satır + AnimatePresence)
+- `app/onboarding/causes/page.tsx` (validation 1 satır button disabled logic)
+- `app/dashboard/page.tsx` (getSelectionReason algoritması 25 satır + param wire)
+- `app/dashboard/dashboard-client.tsx` (Props interface + default param)
+- `components/ui/ds/chip-ds.tsx` (easing 1 satır comment)
+- `app/dashboard/ngos/[id]/membership/success/celebration-client.tsx` (confirming phase copy 10 satır)
+- `components/ui/state/index.tsx` (emptyPresets 2 description satırı)
+
+**Keypoint:**
+- Duration string parsing (isNaN guard) — type mismatch fixed
+- useReducedMotion zaten modal'da spring var; fallback opacity ✅
+- Token: hardcoded renk yok (useTheme() %)
+- Regression: dashboard, onboarding, missions, membership akışları intact
+
+**TSC:** 0 hata
+
+**Test:** Manuel — city → modal 2.4s → dashboard redirect ✓; causes 0/n → disabled ✓; daily mission "İstanbul → yakın" render ✓; filter chip smooth color transition ✓; membership pending message visible ✓; empty state copy TR warm tone ✓.
+
+**Next:** Medium-effort (K3, K6, K9, K10) — separate agent turunda yapılacak.
+
+---
+
 ## 2026-04-24 HH:MM — [fe] Batch B: Verifications + Members + Reports (K2 K6 K7 KVKK)
 
 - **Upstream:** `docs/ui/01-specs/2026-04-24-stk-admin-ui-spec.md`
