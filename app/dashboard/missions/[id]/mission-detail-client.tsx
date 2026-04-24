@@ -28,9 +28,11 @@ interface Props {
   userId: string
   isMember?: boolean
   isSaved?: boolean
+  /** STK takip durumu — server'dan user_ngo_subscriptions üzerinden gelir */
+  isFollowing?: boolean
 }
 
-export function MissionDetailClient({ mission, userMission, userId, isMember = false, isSaved: initialSaved = false }: Props) {
+export function MissionDetailClient({ mission, userMission, userId, isMember = false, isSaved: initialSaved = false, isFollowing: initialFollowing = false }: Props) {
   const { colors: c } = useTheme()
   // ADR-012 Yol D: Public mission için kullanıcı üye olmadan da alabilir,
   // hafif KVKK onayı yeterli. Members_only görev için state zaten
@@ -38,7 +40,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
   const [publicKvkkChecked, setPublicKvkkChecked] = useState(false)
   const [takeError, setTakeError] = useState<string | null>(null)
   const [saved, setSaved] = useState(initialSaved)
-  const [following, setFollowing] = useState(false)
+  const [following, setFollowing] = useState(initialFollowing)
   const [pending, startTransition] = useTransition()
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
@@ -70,6 +72,29 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       setSaved(prev)
     }
   }, [saved, userId, mission.id, supabase])
+
+  // STK takip et/vazgeç — user_ngo_subscriptions table'a persist.
+  // Optimistic update: önce UI değişir, sonra DB. Hata olursa geri alır.
+  const toggleFollow = useCallback(async () => {
+    if (!mission.ngo_id) return
+    const prev = following
+    setFollowing(!prev)
+    try {
+      if (prev) {
+        await supabase
+          .from('user_ngo_subscriptions')
+          .delete()
+          .eq('user_id', userId)
+          .eq('ngo_id', mission.ngo_id)
+      } else {
+        await supabase
+          .from('user_ngo_subscriptions')
+          .insert({ user_id: userId, ngo_id: mission.ngo_id })
+      }
+    } catch {
+      setFollowing(prev)
+    }
+  }, [following, userId, mission.ngo_id, supabase])
 
   function handleTakeMission() {
     setTakeError(null)
@@ -244,7 +269,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
 
           {/* Follow button */}
           <button
-            onClick={() => setFollowing(f => !f)}
+            onClick={toggleFollow}
             style={{
               background: 'transparent',
               border: `1px solid ${c.ink500}`,

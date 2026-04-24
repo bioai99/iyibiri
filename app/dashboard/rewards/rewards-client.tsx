@@ -2,9 +2,12 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { Lock } from 'lucide-react'
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
 import { KarmaDotToken, BadgeDS, ChipDS } from '@/components/ui/ds'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import { useTheme } from '@/lib/theme'
 
 interface Props {
@@ -22,6 +25,7 @@ const FALLBACK_IMAGE =
 
 export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
   const { colors: c } = useTheme()
+  const prefersReducedMotion = useReducedMotion()
   const [activeTab, setActiveTab] = useState<FilterTab>('Hepsi')
 
   const redeemedIds = useMemo(
@@ -57,7 +61,12 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       }}
     >
       {/* ── 1. Header ── */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
+        style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}
+      >
         <p
           style={{
             fontSize: 10,
@@ -93,10 +102,15 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
           </em>{' '}
           döner
         </h1>
-      </div>
+      </motion.div>
 
       {/* ── 2. Balance card ── */}
-      <div style={{ padding: '22px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
+        style={{ padding: '22px 16px 0' }}
+      >
         <div
           style={{
             background: `linear-gradient(135deg, ${c.ink800}, ${c.ink700})`,
@@ -185,10 +199,13 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             GEÇMİŞ
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── 3. Filter tabs ── */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.15 }}
         style={{
           padding: '22px 0 4px',
           display: 'flex',
@@ -208,13 +225,19 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             {tab}
           </ChipDS>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── 4. Featured editorial tile ── */}
       {featuredReward && (
-        <div style={{ padding: '20px 16px 0' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
+          style={{ padding: '20px 16px 0' }}
+        >
           <Link href={`/dashboard/rewards/${featuredReward.id}`}>
-            <div
+            <motion.div
+              whileTap={{ scale: 0.98 }}
               style={{
                 position: 'relative',
                 aspectRatio: '16/9',
@@ -294,14 +317,19 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </Link>
-        </div>
+        </motion.div>
       )}
 
       {/* ── 5. Reward grid ── */}
       {/* Section header */}
-      <div style={{ padding: '24px 20px 8px', display: 'flex', alignItems: 'baseline', gap: 10 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.25 }}
+        style={{ padding: '24px 20px 8px', display: 'flex', alignItems: 'baseline', gap: 10 }}
+      >
         <h2
           style={{
             fontFamily: "'Fraunces', serif",
@@ -324,23 +352,17 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
         >
           {filteredRewards.length} ÖDÜL
         </span>
-      </div>
+      </motion.div>
 
       {filteredRewards.length === 0 && (
-        <div
-          style={{
-            padding: '48px 20px',
-            textAlign: 'center',
-            color: c.ink300,
-            fontSize: 14,
-          }}
-        >
-          Bu kategoride ödül bulunmuyor.
-        </div>
+        <EmptyStateV2 {...emptyPresets.noRewards} />
       )}
 
       {/* Grid */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
         style={{
           padding: '8px 16px 0',
           display: 'grid',
@@ -348,13 +370,17 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
           gap: 12,
         }}
       >
-        {filteredRewards.map(reward => {
+        {filteredRewards.map((reward, idx) => {
           const canAfford = currentKarma >= reward.karma_required
           const locked = !canAfford
 
           return (
             <Link key={reward.id} href={`/dashboard/rewards/${reward.id}`}>
-              <div
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 + (idx * 0.05) }}
+                whileTap={{ scale: 0.97 }}
                 style={{
                   background: c.ink800,
                   border: `1px solid ${c.ink600}`,
@@ -528,11 +554,11 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </Link>
           )
         })}
-      </div>
+      </motion.div>
     </div>
   )
 }

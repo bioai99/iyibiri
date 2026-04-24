@@ -6,7 +6,7 @@ import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { MissionCard } from '@/components/ui/mission-card'
-import { EmptyState } from '@/components/ui/empty-state'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 
 interface Props {
@@ -97,11 +97,7 @@ export default function MyMissionsClient({
       <div style={{ padding: '16px 16px 0' }}>
         {tab === 'active' ? (
           activeMissions.length === 0 ? (
-            <EmptyState
-              title="Henüz aktif görev yok"
-              description="Gönüllü olmak için bir görev seç ve etki yaratmaya başla!"
-              action={{ label: 'Görevleri Keşfet', href: '/dashboard/missions' }}
-            />
+            <EmptyStateV2 {...emptyPresets.noActiveMissions} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {activeMissions.map(mission => (
@@ -117,10 +113,7 @@ export default function MyMissionsClient({
           )
         ) : (
           completedMissions.length === 0 ? (
-            <EmptyState
-              title="Henüz tamamlanan görev yok"
-              description="Aktif görevlerini tamamlayarak buraya taşı."
-            />
+            <EmptyStateV2 {...emptyPresets.noCompletedMissions} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {completedMissions.map(mission => (

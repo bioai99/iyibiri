@@ -1,5 +1,7 @@
 'use client'
 
+import { motion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
 import type { SemanticColors } from '@/lib/theme'
@@ -209,6 +211,8 @@ export default function LeaderboardClient({
   // Check if current user is already in the top 20
   const currentUserInList = topUsers.some((u) => u.id === currentUserId)
 
+  const prefersReducedMotion = useReducedMotion()
+
   return (
     <div
       style={{
@@ -219,7 +223,11 @@ export default function LeaderboardClient({
       }}
     >
       {/* Header */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
+        style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
         <p
           style={{
             margin: '0 0 4px',
@@ -246,11 +254,14 @@ export default function LeaderboardClient({
           Topluluğun en{' '}
           <em style={{ fontStyle: 'italic', color: c.gold }}>iyileri</em>
         </h1>
-      </div>
+      </motion.div>
 
       {/* Podium */}
       {podiumOrder.length >= 2 && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
           style={{
             padding: '40px 20px 0',
             display: 'flex',
@@ -270,11 +281,14 @@ export default function LeaderboardClient({
               avatarColor={getAvatarColor(rank - 1)}
             />
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Ranked list */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
         style={{
           padding: '28px 16px 0',
           display: 'flex',
@@ -287,8 +301,12 @@ export default function LeaderboardClient({
           const isMe = u.id === currentUserId
           const displayName = u.name || 'Anonim'
           return (
-            <div
+            <motion.div
               key={u.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 + (idx * 0.05) }}
+              whileTap={{ scale: 0.98 }}
               style={{
                 background: isMe ? 'rgba(232,194,104,.08)' : c.ink800,
                 border: `1px solid ${isMe ? c.gold : c.ink600}`,
@@ -360,7 +378,7 @@ export default function LeaderboardClient({
                   {u.karma_total.toLocaleString('tr-TR')}
                 </span>
               </div>
-            </div>
+            </motion.div>
           )
         })}
 
@@ -368,10 +386,18 @@ export default function LeaderboardClient({
         {!currentUserInList && currentUserProfile && (
           <>
             {/* Separator dots */}
-            <div style={{ textAlign: 'center', padding: '8px 0', color: c.ink400 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.25 }}
+              style={{ textAlign: 'center', padding: '8px 0', color: c.ink400 }}
+            >
               ...
-            </div>
-            <div
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
               style={{
                 background: 'rgba(232,194,104,.08)',
                 border: `1px solid ${c.gold}`,
@@ -436,10 +462,10 @@ export default function LeaderboardClient({
                   {currentUserProfile.karma_total.toLocaleString('tr-TR')}
                 </span>
               </div>
-            </div>
+            </motion.div>
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }

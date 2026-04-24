@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { Settings, Share2, MapPin, LogOut, ChevronRight, Footprints, Flower2, Heart, Zap, Diamond, Crown } from 'lucide-react'
 import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
@@ -55,6 +57,7 @@ const achievements = [
 
 export function ProfileClient({ profile, completedCount, karma, memberships = [] }: ProfileClientProps) {
   const { colors: c } = useTheme()
+  const prefersReducedMotion = useReducedMotion()
   const tier = getTierFromKarma(karma)
   const tierName = tierNames[tier] ?? tierNames[1]
   const nextTier = tier < 5 ? tierNames[tier + 1] : null
@@ -77,7 +80,11 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
       }}
     >
       {/* Cover + avatar section */}
-      <div style={{ position: 'relative', height: 180, flexShrink: 0 }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
+        style={{ position: 'relative', height: 180, flexShrink: 0 }}>
         {/* Cover gradient background */}
         <div
           style={{
@@ -119,10 +126,14 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             }}
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Avatar row */}
-      <div style={{ marginTop: -42, position: 'relative', padding: '0 20px' }}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
+        style={{ marginTop: -42, position: 'relative', padding: '0 20px' }}>
         <div
           style={{
             width: 84,
@@ -148,10 +159,14 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             {initial}
           </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* Name + tier row */}
-      <div style={{ marginTop: 12, padding: '0 20px' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.15 }}
+        style={{ marginTop: 12, padding: '0 20px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
           <div style={{ minWidth: 0 }}>
             <h1
@@ -187,10 +202,14 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
           </div>
           <TierBadgeDS tier={tierName} />
         </div>
-      </div>
+      </motion.div>
 
       {/* Karma card */}
-      <div style={{ padding: '20px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
+        style={{ padding: '20px 16px 0' }}>
         <div
           style={{
             background: c.ink800,
@@ -283,10 +302,13 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Stats strip */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.25 }}
         style={{
           padding: '14px 16px 0',
           display: 'grid',
@@ -343,12 +365,18 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             <div key={label}>{card}</div>
           )
         })}
-      </div>
+      </motion.div>
 
       {/* Saved missions link */}
-      <div style={{ padding: '8px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
+        style={{ padding: '8px 16px 0' }}
+      >
         <Link href="/dashboard/saved" style={{ textDecoration: 'none' }}>
-          <div
+          <motion.div
+            whileTap={{ scale: 0.97 }}
             style={{
               background: c.ink800,
               border: `1px solid ${c.ink600}`,
@@ -363,13 +391,18 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               Kaydedilenler
             </span>
             <ChevronRight size={16} color={c.ink300} />
-          </div>
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
 
       {/* Üyeliklerim */}
       {memberships.length === 0 ? (
-        <div style={{ padding: '24px 20px 0' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.35 }}
+          style={{ padding: '24px 20px 0' }}
+        >
           <h2
             style={{
               fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
@@ -391,9 +424,14 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               <ChevronRight size={16} color={c.gold} />
             </div>
           </Link>
-        </div>
+        </motion.div>
       ) : (
-        <div style={{ padding: '24px 20px 0' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.35 }}
+          style={{ padding: '24px 20px 0' }}
+        >
           <h2
             style={{
               fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
@@ -433,13 +471,19 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               </Link>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Leaderboard link */}
-      <div style={{ padding: '8px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.4 }}
+        style={{ padding: '8px 16px 0' }}
+      >
         <Link href="/dashboard/leaderboard" style={{ textDecoration: 'none' }}>
-          <div
+          <motion.div
+            whileTap={{ scale: 0.97 }}
             style={{
               background: c.ink800,
               border: `1px solid ${c.ink600}`,
@@ -454,12 +498,16 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               Skor tablosu
             </span>
             <ChevronRight size={16} color={c.ink300} />
-          </div>
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
 
       {/* Achievements */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.45 }}
+      >
         <div style={{ padding: '30px 20px 12px' }}>
           <h2
             style={{
@@ -481,9 +529,12 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             gap: 10,
           }}
         >
-          {achievements.map(({ icon, name, locked, sub }) => (
-            <div
+          {achievements.map(({ icon, name, locked, sub }, idx) => (
+            <motion.div
               key={name}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.45 + (idx * 0.05) }}
               style={{
                 background: c.ink800,
                 border: `1px solid ${c.ink600}`,
@@ -525,15 +576,21 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
                 {name}
               </div>
               <div style={{ fontSize: 10, color: c.ink300, marginTop: 3 }}>{sub}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Rozetlerim link */}
-      <div style={{ padding: '16px 16px 0' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.65 }}
+        style={{ padding: '16px 16px 0' }}
+      >
         <Link href="/dashboard/profile/badges" style={{ textDecoration: 'none' }}>
-          <div
+          <motion.div
+            whileTap={{ scale: 0.97 }}
             style={{
               background: c.ink800,
               border: `1px solid ${c.ink600}`,
@@ -548,12 +605,16 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               Tüm Rozetlerim
             </span>
             <ChevronRight size={16} color={c.ink300} />
-          </div>
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
 
       {/* Activity timeline — empty state (no real data passed yet) */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.7 }}
+      >
         <div style={{ padding: '30px 20px 12px' }}>
           <h2
             style={{
@@ -585,7 +646,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Logout */}
       <div style={{ padding: '32px 20px 0' }}>

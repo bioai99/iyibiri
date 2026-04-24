@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { MissionCard } from '@/components/ui/mission-card'
-import { EmptyState } from '@/components/ui/empty-state'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 
 interface Props {
@@ -37,11 +37,7 @@ export function SavedMissionsClient({ missions, userId }: Props) {
       {/* Content */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {missions.length === 0 ? (
-          <EmptyState
-            title="Henüz bir şey kaydetmedin"
-            description="Görevlerde 🔖 simgesine dokunarak kaydet, sonra buradan kolayca ulaş."
-            action={{ label: 'Görevleri keşfet', href: '/dashboard/missions' }}
-          />
+          <EmptyStateV2 {...emptyPresets.saved} />
         ) : (
           missions.map(mission => (
             <MissionCard key={mission.id} mission={mission} isSaved userId={userId} />

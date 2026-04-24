@@ -2,6 +2,7 @@
 
 import { Sparkles, Users } from 'lucide-react'
 import { KarmaDotToken } from '@/components/ui/ds'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import { useTheme } from '@/lib/theme'
 
 type ActivityKind = 'karma' | 'membership' | 'new_mission'
@@ -186,49 +187,7 @@ export default function NotificationsClient({ activities }: NotificationsClientP
       </div>
 
       {isEmpty ? (
-        /* Empty state */
-        <div
-          style={{
-            padding: '80px 40px',
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: '50%',
-              background: 'rgba(244,238,223,.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px',
-            }}
-          >
-            <Sparkles size={28} color={c.ink400} />
-          </div>
-          <p
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: c.cream,
-              margin: '0 0 8px',
-            }}
-          >
-            Henüz bir aktivite yok
-          </p>
-          <p
-            style={{
-              fontSize: 13,
-              color: c.ink300,
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            Görev tamamladığında, STK&apos;lara katıldığında veya yeni görevler
-            paylaşıldığında burada göreceksin.
-          </p>
-        </div>
+        <EmptyStateV2 {...emptyPresets.noNotifications} />
       ) : (
         /* Activity feed */
         <div>

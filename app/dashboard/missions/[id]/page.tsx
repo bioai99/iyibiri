@@ -30,9 +30,9 @@ export default async function MissionDetailPage({
   const userMission = userMissions.find((m) => m.mission_id === params.id) ?? null
 
   /* ──────────────────────────────────────────────────────────
-   *  Parallel fetch — membership + saved + NGO short_name
+   *  Parallel fetch — membership + saved + NGO info + follow
    * ────────────────────────────────────────────────────────── */
-  const [membershipResult, savedResult, ngoInfoResult] = await Promise.all([
+  const [membershipResult, savedResult, ngoInfoResult, subscriptionResult] = await Promise.all([
     mission.ngo_id
       ? supabase
           .from('ngo_memberships')
@@ -55,11 +55,20 @@ export default async function MissionDetailPage({
           .eq('id', mission.ngo_id)
           .single()
       : Promise.resolve({ data: null }),
+    mission.ngo_id
+      ? supabase
+          .from('user_ngo_subscriptions')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('ngo_id', mission.ngo_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
   ])
 
   const isMember = !!membershipResult.data
   const isSaved = !!savedResult.data
   const ngoInfo = ngoInfoResult.data
+  const isFollowing = !!subscriptionResult.data
 
   /* ──────────────────────────────────────────────────────────
    *  Derive state — lib/missions/state.ts FSM tek source of truth
@@ -107,6 +116,7 @@ export default async function MissionDetailPage({
         userId={user.id}
         isMember={isMember}
         isSaved={isSaved}
+        isFollowing={isFollowing}
       />
     )
   }
@@ -137,6 +147,7 @@ export default async function MissionDetailPage({
       userId={user.id}
       isMember={isMember}
       isSaved={isSaved}
+      isFollowing={isFollowing}
     />
   )
 }

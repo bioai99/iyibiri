@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Search, Users, Target } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import type { NGO } from '@/lib/supabase/types'
 
 interface NGOsListClientProps {
@@ -101,14 +102,18 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
       {/* NGO List */}
       <div style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {filtered.length === 0 && (
-          <div style={{
-            textAlign: 'center',
-            padding: '64px 20px',
-            color: c.ink300,
-            fontSize: 14,
-          }}>
-            {query.trim() ? 'Sonuç bulunamadı.' : 'Henüz kayıtlı kuruluş bulunmuyor.'}
-          </div>
+          query.trim() ? (
+            <EmptyStateV2
+              {...emptyPresets.noSearchResults}
+              primaryAction={{ label: 'Aramayı temizle', onClick: () => setQuery('') }}
+            />
+          ) : (
+            <EmptyStateV2
+              illustration="heart"
+              title="Henüz kayıtlı kuruluş yok"
+              description="Kuruluşlar yakında burada yer alacak — ilk görevler de onlarla gelir."
+            />
+          )
         )}
 
         {filtered.map(ngo => (

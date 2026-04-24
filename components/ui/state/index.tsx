@@ -24,6 +24,10 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
+import {
+  EmptyIllustration,
+  type EmptyIllustrationName,
+} from './illustrations'
 
 /* ═════════════════════════════════════════════════════════════
  *  LoadingState
@@ -95,6 +99,13 @@ export function LoadingState({
 interface EmptyStateV2Props {
   title: string
   description?: string
+  /**
+   * Özgün SVG illustration (öncelikli).
+   * Örn: 'bookmark' | 'compass' | 'bell' | 'medal' | 'podium'
+   * Eğer verilmezse `icon` prop'una (lucide) fallback.
+   */
+  illustration?: EmptyIllustrationName
+  /** Illustration yoksa kullanılan lucide icon — default Inbox */
   icon?: LucideIcon
   variant?: StateVariant
   primaryAction?: { label: string; href?: string; onClick?: () => void }
@@ -104,39 +115,58 @@ interface EmptyStateV2Props {
 export function EmptyStateV2({
   title,
   description,
+  illustration,
   icon: Icon = Inbox,
   variant = 'page',
   primaryAction,
   secondaryAction,
 }: EmptyStateV2Props) {
   const { colors: c } = useTheme()
+  const shouldReduceMotion = useReducedMotion()
 
   const sizeConfig = {
-    page: { iconSize: 28, circle: 72, padding: '64px 24px', titleSize: 20 },
-    inline: { iconSize: 18, circle: 44, padding: '24px 16px', titleSize: 15 },
-    card: { iconSize: 22, circle: 56, padding: '40px 20px', titleSize: 16 },
+    page: { iconSize: 28, circle: 72, svg: 96, padding: '64px 24px', titleSize: 20 },
+    inline: { iconSize: 18, circle: 44, svg: 56, padding: '24px 16px', titleSize: 15 },
+    card: { iconSize: 22, circle: 56, svg: 72, padding: '40px 20px', titleSize: 16 },
   }[variant]
+
+  // Motion: gentle entry — stagger title/desc/actions
+  const entry = {
+    initial: shouldReduceMotion ? undefined : { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
+  }
 
   return (
     <div
       className="flex flex-col items-center justify-center text-center"
       style={{ padding: sizeConfig.padding }}
     >
-      <div
-        className="flex items-center justify-center rounded-full"
-        style={{
-          width: sizeConfig.circle,
-          height: sizeConfig.circle,
-          background: c.goldSoft,
-          border: `1px solid ${c.goldLine}`,
-          marginBottom: variant === 'inline' ? 10 : 18,
-        }}
-        aria-hidden="true"
-      >
-        <Icon size={sizeConfig.iconSize} color={c.gold} />
-      </div>
+      {illustration ? (
+        <div style={{ marginBottom: variant === 'inline' ? 10 : 14 }}>
+          <EmptyIllustration name={illustration} size={sizeConfig.svg} />
+        </div>
+      ) : (
+        <motion.div
+          initial={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: sizeConfig.circle,
+            height: sizeConfig.circle,
+            background: c.goldSoft,
+            border: `1px solid ${c.goldLine}`,
+            marginBottom: variant === 'inline' ? 10 : 18,
+          }}
+          aria-hidden="true"
+        >
+          <Icon size={sizeConfig.iconSize} color={c.gold} />
+        </motion.div>
+      )}
 
-      <h3
+      <motion.h3
+        {...entry}
+        transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
         className="font-display"
         style={{
           fontSize: sizeConfig.titleSize,
@@ -147,10 +177,12 @@ export function EmptyStateV2({
         }}
       >
         {title}
-      </h3>
+      </motion.h3>
 
       {description && (
-        <p
+        <motion.p
+          {...entry}
+          transition={{ duration: 0.4, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
           className="mt-1.5 text-[14px] leading-[1.5]"
           style={{
             color: c.ink300,
@@ -158,11 +190,15 @@ export function EmptyStateV2({
           }}
         >
           {description}
-        </p>
+        </motion.p>
       )}
 
       {(primaryAction || secondaryAction) && (
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+        <motion.div
+          {...entry}
+          transition={{ duration: 0.4, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-5 flex flex-wrap items-center justify-center gap-2"
+        >
           {primaryAction && (
             <ActionButton
               {...primaryAction}
@@ -177,11 +213,102 @@ export function EmptyStateV2({
               c={c}
             />
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   )
 }
+
+/* ═════════════════════════════════════════════════════════════
+ *  Empty state presets — tier-1 app benchmark (Duolingo, Things 3)
+ *
+ *  Her preset:
+ *    - TR empatik başlık (suçlayan değil davet eden)
+ *    - Tek satır "ne olacak" açıklaması (belirsizlik yok)
+ *    - Primary CTA (ne yapmalı net)
+ *    - Secondary CTA (opsiyonel ikinci yol)
+ *    - Özgün illustration (gold foil × dark parchment)
+ *
+ *  Kullanım:
+ *    <EmptyStateV2 {...emptyPresets.saved} />
+ *    <EmptyStateV2 {...emptyPresets.noMissions({ cta: 'Keşfet' })} />
+ * ═════════════════════════════════════════════════════════════ */
+
+type PresetValue = Omit<EmptyStateV2Props, 'variant'>
+
+export const emptyPresets = {
+  /** Kaydedilenler sayfası boş */
+  saved: {
+    illustration: 'bookmark',
+    title: 'Henüz bir şey kaydetmedin',
+    description: 'Görevlerde 🔖 simgesine dokun; sonradan dönmek istediklerin burada seni bekler.',
+    primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** Dashboard — aktif görev yok */
+  noActiveMissions: {
+    illustration: 'compass',
+    title: 'Henüz yola çıkmadın',
+    description: 'Sana uygun bir görev seç; küçük bir adım, bir sonraki seviyeye kapı aralar.',
+    primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** Dashboard — öneri yok */
+  noRecommendations: {
+    illustration: 'compass',
+    title: 'Senin için öneri hazırlanıyor',
+    description: 'Profilinde ilgi alanlarını ve şehrini seç — sana özel görevler önerelim.',
+    primaryAction: { label: 'Profilimi tamamla', href: '/dashboard/profile' },
+    secondaryAction: { label: 'Tümünü gör', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** My missions — tamamlanan görev yok */
+  noCompletedMissions: {
+    illustration: 'checklist',
+    title: 'Henüz tamamlanan görev yok',
+    description: 'Aktif görevlerini bitirdikçe buraya birikir — kendi ritmin önemli.',
+    primaryAction: { label: 'Aktif görevlerim', href: '/dashboard/my-missions' },
+  } satisfies PresetValue,
+
+  /** Notifications — aktivite yok */
+  noNotifications: {
+    illustration: 'bell',
+    title: 'Her şey sakin görünüyor',
+    description: 'Görev tamamladığında, STK\u2019lara katıldığında veya yeni görevler paylaşıldığında burada olacak.',
+    primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** Rewards — henüz ödül yok */
+  noRewards: {
+    illustration: 'medal',
+    title: 'İlk ödülüne çok yakınsın',
+    description: 'Görevleri tamamlayarak karma biriktir, ödüller buradan gelmeye başlar.',
+    primaryAction: { label: 'Görevleri gör', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** Leaderboard — lig boş */
+  emptyLeaderboard: {
+    illustration: 'podium',
+    title: 'Liga daha yeni açıldı',
+    description: 'Bu hafta ilk katkıyı sen yaparsan tabloda görünürsün.',
+    primaryAction: { label: 'Görev yap', href: '/dashboard/missions' },
+  } satisfies PresetValue,
+
+  /** NGO list — takip edilen STK yok */
+  noFollowedNgos: {
+    illustration: 'heart',
+    title: 'Henüz takip ettiğin kuruluş yok',
+    description: 'Bir STK\u2019yı takibe aldığında yeni görevleri ilk sen görürsün.',
+    primaryAction: { label: 'Kuruluşları keşfet', href: '/dashboard/ngos' },
+  } satisfies PresetValue,
+
+  /** Search — sonuç bulunamadı */
+  noSearchResults: {
+    illustration: 'search',
+    title: 'Aradığın bulunamadı',
+    description: 'Farklı bir kelimeyle dene ya da filtreleri temizle.',
+  } satisfies PresetValue,
+} as const
 
 /* ═════════════════════════════════════════════════════════════
  *  ErrorState
