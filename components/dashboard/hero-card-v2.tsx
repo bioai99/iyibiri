@@ -24,6 +24,7 @@ import { Flame, Zap, Trophy } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { BrandLogo } from '@/components/ui/brand-logo'
+import { StreakSnapshot } from './streak-snapshot'
 
 /* ─────────────────────────────────────────────────────────────
  *  Tier sistem (eski HeroCard'tan aynen korundu — 5 tier)
@@ -136,6 +137,9 @@ interface HeroCardV2Props {
   /** Loading skeleton */
   isLoading?: boolean
   userName?: string
+  /** Streak snapshot verileri (A1 tur 2 yeni) */
+  streakDays?: boolean[]
+  lastActiveAt?: Date | null
 }
 
 export function HeroCardV2({
@@ -147,6 +151,8 @@ export function HeroCardV2({
   isEmpty = false,
   isLoading = false,
   userName,
+  streakDays,
+  lastActiveAt,
 }: HeroCardV2Props) {
   const { colors: c } = useTheme()
   const shouldReduceMotion = useReducedMotion()
@@ -339,6 +345,17 @@ export function HeroCardV2({
               </span>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── A1 (tur 2): StreakSnapshot — progress bar altında ── */}
+      {streakDays && streakDays.length > 0 && (
+        <div style={{ padding: '8px 22px 0' }}>
+          <StreakSnapshot
+            recentDays={streakDays}
+            currentStreak={streak}
+            lastActiveAt={lastActiveAt}
+          />
         </div>
       )}
 

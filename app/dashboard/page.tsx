@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/supabase/queries/profiles'
 import { getAllMissions, getUserMissions } from '@/lib/supabase/queries/missions'
+import { getRecentStreakActivity } from '@/lib/supabase/queries/streak'
 import { DashboardClient } from './dashboard-client'
 import type { NGO, MissionWithNGO, UserMission } from '@/lib/supabase/types'
 
@@ -39,6 +40,7 @@ export default async function DashboardPage() {
     savedMissionsResult,
     membershipsResult,
     weeklyKarmaGain,
+    streakActivity,
   ] = await Promise.all([
     getProfile(user.id),
     getAllMissions(),
@@ -54,6 +56,7 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .eq('status', 'active'),
     getWeeklyKarmaGain(user.id),
+    getRecentStreakActivity(user.id, 7),
   ])
 
   if (!profile) redirect('/onboarding')
@@ -117,6 +120,7 @@ export default async function DashboardPage() {
       userActiveMissions={userActiveMissions}
       activeMissionsWithNGO={activeMissionsWithNGO}
       weeklyKarmaGain={weeklyKarmaGain}
+      streakActivity={streakActivity}
     />
   )
 }

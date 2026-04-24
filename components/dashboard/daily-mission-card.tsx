@@ -32,9 +32,14 @@ interface DailyMissionCardProps {
     impactStatement?: string
   } | null
   isLoading?: boolean
+  selectionReason?: string
 }
 
-export function DailyMissionCard({ mission, isLoading = false }: DailyMissionCardProps) {
+export function DailyMissionCard({
+  mission,
+  isLoading = false,
+  selectionReason,
+}: DailyMissionCardProps) {
   const { colors: c } = useTheme()
   const shouldReduceMotion = useReducedMotion()
 
@@ -163,6 +168,20 @@ export function DailyMissionCard({ mission, isLoading = false }: DailyMissionCar
           <div className="px-4 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
+                {/* A4 (tur 2): selectionReason micro-label */}
+                {selectionReason && (
+                  <p
+                    className="font-sans text-[11px] font-medium uppercase"
+                    style={{
+                      color: c.ink300,
+                      letterSpacing: '0.06em',
+                      marginBottom: 4,
+                    }}
+                    title={`Senin için önerildi — ${selectionReason}`}
+                  >
+                    📍 Senin için — {selectionReason}
+                  </p>
+                )}
                 <p
                   className="font-sans text-xs font-medium"
                   style={{ color: c.ink300 }}

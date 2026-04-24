@@ -16,15 +16,8 @@ interface MissionCardProps {
   isMember?: boolean
 }
 
-const domainGradient: Record<string, string> = {
-  nature:    'linear-gradient(135deg, #10B981, #14B8A6)',
-  education: 'linear-gradient(135deg, #3B82F6, #6366F1)',
-  social:    'linear-gradient(135deg, #F43F5E, #EC4899)',
-  financial: 'linear-gradient(135deg, #F59E0B, #F97316)',
-  animals:   'linear-gradient(135deg, #F97316, #F59E0B)',
-  culture:   'linear-gradient(135deg, #A855F7, #D946EF)',
-  default:   'linear-gradient(135deg, #574E42, #3F3830)',
-}
+// Domain gradient tokens moved to tailwind.config.ts → backgroundImage layer
+// Pattern: bg-domain-{domain} utility class (e.g. bg-domain-nature, bg-domain-default fallback)
 
 const domainEmoji: Record<string, string> = {
   nature: '🌿', education: '📖', social: '❤️',
@@ -63,11 +56,11 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
   }, [saved, userId, mission.id])
 
   const domain = mission.domain ?? 'default'
-  const gradient = domainGradient[domain] ?? domainGradient.default
   const emoji = domainEmoji[domain] ?? domainEmoji.default
   const ngo = mission.ngos
   const impactText = mission.impact_statement ?? mission.description
   const spotsLeft = mission.spots_left
+  const gradientClass = `bg-domain-${domain}` // Tailwind class (e.g. bg-domain-nature, bg-domain-default)
 
   return (
     <Link
@@ -101,10 +94,9 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
             />
           ) : (
             <div
+              className={`${gradientClass} flex items-center justify-center`}
               style={{
                 width: '100%', height: '100%',
-                background: gradient,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 48,
               }}
             >
@@ -112,19 +104,11 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
             </div>
           )}
 
-          {/* Soft bottom gradient scrim */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(26,22,18,0) 55%, rgba(26,22,18,.55) 100%)',
-            pointerEvents: 'none',
-          }} />
+          {/* Soft bottom gradient scrim (token: scrim-bottom) */}
+          <div className="bg-scrim-bottom absolute inset-0 pointer-events-none" />
 
-          {/* Top gradient scrim for badge/bookmark readability */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: '50%',
-            background: 'linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 60%, transparent 100%)',
-            pointerEvents: 'none',
-          }} />
+          {/* Top gradient scrim for badge/bookmark readability (token: scrim-top) */}
+          <div className="bg-scrim-top absolute top-0 left-0 right-0 h-1/2 pointer-events-none" />
 
           {/* Top-left: category badge */}
           <div style={{ position: 'absolute', top: 10, left: 10 }}>
@@ -136,7 +120,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               padding: '4px 10px',
               fontSize: 11,
               fontWeight: 600,
-              color: '#F4EEDF',
+              color: c.cream,
               letterSpacing: '0.02em',
             }}>
               {mission.category ?? domain}
@@ -160,7 +144,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
                 size={15}
                 style={{
                   fill: saved ? c.gold : 'none',
-                  color: saved ? c.gold : '#F4EEDF',
+                  color: saved ? c.gold : c.cream,
                   transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
                 }}
               />
@@ -196,7 +180,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               </div>
               <span style={{
                 fontSize: 12, fontWeight: 600,
-                color: '#F4EEDF',
+                color: c.cream,
                 textShadow: '0 1px 3px rgba(0,0,0,0.6)',
               }}>
                 {ngo.short_name ?? ngo.name}

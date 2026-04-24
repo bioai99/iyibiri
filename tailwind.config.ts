@@ -101,6 +101,17 @@ const config: Config = {
         '3xl': '32px',
         pill: '9999px',
       },
+      backgroundImage: {
+        'domain-nature':    'linear-gradient(135deg, #10B981, #14B8A6)',
+        'domain-education': 'linear-gradient(135deg, #3B82F6, #6366F1)',
+        'domain-social':    'linear-gradient(135deg, #F43F5E, #EC4899)',
+        'domain-financial': 'linear-gradient(135deg, #F59E0B, #F97316)',
+        'domain-animals':   'linear-gradient(135deg, #F97316, #F59E0B)',
+        'domain-culture':   'linear-gradient(135deg, #A855F7, #D946EF)',
+        'domain-default':   'linear-gradient(135deg, #574E42, #3F3830)',
+        'scrim-bottom':     'linear-gradient(180deg, rgba(26,22,18,0) 55%, rgba(26,22,18,.55) 100%)',
+        'scrim-top':        'linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 60%, transparent 100%)',
+      },
       animation: {
         'bounce-sm': 'bounce-sm 0.4s ease-in-out',
         'fade-in': 'fade-in 0.15s ease-out',

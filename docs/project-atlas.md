@@ -238,6 +238,24 @@ Varsayılan radius `1rem` (16px). Çerçeve ≥ 16, hero 24–32.
 - Gölge sistemi: hero glow `shadow-[0_8px_32px_rgba(251,146,60,0.35)]` turuncu (gold tonlu) — İyiBiri imza gölge.
 - Normal kart: `shadow-md` (0 4px 24px rgba(0,0,0,0.08)).
 
+### Background image token'ları (2026-04-24 K1 fix)
+
+Domain gradient + scrim patterns, Tailwind backgroundImage layer:
+
+| Class | Değer | Kullanım |
+|---|---|---|
+| `bg-domain-nature` | `linear-gradient(135deg, #10B981, #14B8A6)` | Mission card fallback (nature domain) |
+| `bg-domain-education` | `linear-gradient(135deg, #3B82F6, #6366F1)` | Mission card fallback (education) |
+| `bg-domain-social` | `linear-gradient(135deg, #F43F5E, #EC4899)` | Mission card fallback (social) |
+| `bg-domain-financial` | `linear-gradient(135deg, #F59E0B, #F97316)` | Mission card fallback (financial) |
+| `bg-domain-animals` | `linear-gradient(135deg, #F97316, #F59E0B)` | Mission card fallback (animals) |
+| `bg-domain-culture` | `linear-gradient(135deg, #A855F7, #D946EF)` | Mission card fallback (culture) |
+| `bg-domain-default` | `linear-gradient(135deg, #574E42, #3F3830)` | Mission card fallback (unknown domain) |
+| `bg-scrim-bottom` | `linear-gradient(180deg, rgba(26,22,18,0) 55%, rgba(26,22,18,.55) 100%)` | Mission card bottom text readability overlay |
+| `bg-scrim-top` | `linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 60%, transparent 100%)` | Mission card top badge/button readability overlay |
+
+**Not:** Primitive hex değerleri (domain palette) direkt yazılmıştır çünkü şu an semantic layer yok. V1.1 (semantic naming) kurulduğunda `.bg-action-domain-nature` benzeri intent-based alias'lar eklenecektir (ADR-TBD).
+
 ### Mobile özel utility
 
 - `.pb-safe` / `.pt-safe` / `.safe-area-inset` — `env(safe-area-inset-*)`.

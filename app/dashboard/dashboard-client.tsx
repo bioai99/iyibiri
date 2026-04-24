@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Bell } from 'lucide-react'
 import type { Profile, MissionWithNGO, UserMission, NGO } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
-import { EmptyState } from '@/components/ui/empty-state'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import {
   ImpactSummary,
   ChipDS,
@@ -16,6 +16,7 @@ import {
 import { HeroCardV2 } from '@/components/dashboard/hero-card-v2'
 import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
 import { useTheme } from '@/lib/theme'
+import type { StreakActivity } from '@/lib/supabase/queries/streak'
 
 // ── Date helpers ───────────────────────────────────────────────
 
@@ -46,6 +47,7 @@ interface Props {
   userActiveMissions: UserMission[]
   activeMissionsWithNGO: MissionWithNGO[]
   weeklyKarmaGain?: number
+  streakActivity?: StreakActivity
 }
 
 // ── Tab key ────────────────────────────────────────────────────
@@ -54,7 +56,18 @@ type TabKey = 'recommended' | 'active'
 
 // ── Component ─────────────────────────────────────────────────
 
-export function DashboardClient({ profile, missions, userMissions, ngos, savedMissionIds = [], memberNgoIds = [], recommendedMissions, activeMissionsWithNGO, weeklyKarmaGain = 0 }: Props) {
+export function DashboardClient({
+  profile,
+  missions,
+  userMissions,
+  ngos,
+  savedMissionIds = [],
+  memberNgoIds = [],
+  recommendedMissions,
+  activeMissionsWithNGO,
+  weeklyKarmaGain = 0,
+  streakActivity,
+}: Props) {
   const { colors: c } = useTheme()
 
   // Save pending onboarding data from localStorage (app flow: onboarding → auth → dashboard)
@@ -172,7 +185,8 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
           Eski HeroCard tüm fonksiyonelliği korundu: 5 tier dots + BrandLogo +
           3 tıklanabilir stat cell (/my-missions, /my-missions, /streak).
           Yeni eklenenler: gold glow breathing + Karma count-up + weekly gain +
-          seviye progress bar. */}
+          seviye progress bar.
+          A1 (tur 2): StreakSnapshot alt-section (streakActivity.recentDays) */}
       <div style={{ padding: '20px 0 0' }}>
         <HeroCardV2
           karma={karma}
@@ -182,11 +196,14 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
           weeklyKarmaGain={weeklyKarmaGain}
           isEmpty={karma === 0}
           userName={firstName}
+          streakDays={streakActivity?.recentDays}
+          lastActiveAt={streakActivity?.lastActiveAt}
         />
       </div>
 
       {/* ── 2.5 DailyMissionCard ── Things 3 "featured focal point" pattern */}
       {/* UX audit H6: "Günün görevi net fokal nokta" — recommended[0] featured render */}
+      {/* A4 (tur 2): selectionReason micro-label MVP — placeholder 'yakın' (Q34 cevabı (a)) */}
       {recommendedMissions.length > 0 && (
         <div style={{ padding: '16px 0 0' }}>
           <DailyMissionCard
@@ -200,6 +217,7 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
               duration: recommendedMissions[0].duration ?? undefined,
               impactStatement: recommendedMissions[0].impact_statement ?? undefined,
             }}
+            selectionReason="yakın"
           />
         </div>
       )}
@@ -251,17 +269,9 @@ export function DashboardClient({ profile, missions, userMissions, ngos, savedMi
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {displayMissions.length === 0 ? (
           activeTab === 'recommended' ? (
-            <EmptyState
-              title="Henüz öneri yok"
-              description="İlgi alanlarını ve şehrini profilinden belirle, sana özel görevler önerelim."
-              action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
-            />
+            <EmptyStateV2 {...emptyPresets.noRecommendations} />
           ) : (
-            <EmptyState
-              title="Henüz katıldığın görev yok"
-              description="Görevlere katılarak burada takip edebilirsin."
-              action={{ label: 'Tümünü gör', href: '/dashboard/missions' }}
-            />
+            <EmptyStateV2 {...emptyPresets.noActiveMissions} />
           )
         ) : (
           displayMissions.map(mission => (

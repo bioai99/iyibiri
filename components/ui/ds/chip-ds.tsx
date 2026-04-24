@@ -18,7 +18,7 @@ export function ChipDS({ active, children, icon, onClick, theme = 'dark' }: Chip
       ? {
           bg:     active ? c.goldSoft : 'transparent',
           border: active ? c.gold : c.ink600,
-          color:  active ? c.gold : c.ink300,
+          color:  active ? c.gold : c.ink500,  // K7 fix: ink-600 → ink-500 (4.5:1 AA kontrast)
         }
       : {
           bg:     active ? c.ink900 : 'transparent',
