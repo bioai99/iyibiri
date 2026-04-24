@@ -125,18 +125,24 @@ export function MembershipCelebrationClient({
   if (phase === 'confirming') {
     return (
       <div
-        className="flex min-h-[100dvh] flex-col items-center justify-center gap-3"
+        className="flex min-h-[100dvh] flex-col items-center justify-center gap-4 px-6"
         style={{ background: c.ink900, color: c.cream }}
       >
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         >
-          <Loader2 size={22} color={c.gold} />
+          <Loader2 size={24} color={c.gold} />
         </motion.div>
-        <p className="text-[13px]" style={{ color: c.ink300 }}>
-          Üyelik onaylanıyor…
-        </p>
+        {/* K7: Empathic pending message */}
+        <div className="text-center max-w-[320px]">
+          <p className="text-[15px] font-medium mb-2" style={{ color: c.cream }}>
+            Ödemeniz işleniyor…
+          </p>
+          <p className="text-[13px]" style={{ color: c.ink300, lineHeight: 1.5 }}>
+            Birkaç saniye içinde onaylanacak. STK'nın size göndereceği aydınlatma metni ve üyelik sertifikası için e-posta kutunuza bakın.
+          </p>
+        </div>
       </div>
     )
   }

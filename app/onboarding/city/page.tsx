@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
@@ -18,6 +18,7 @@ export default function OnboardingCity() {
   const [selected, setSelected] = useState<string | null>(null)
   const [selectedAge, setSelectedAge] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
   const displayFont = 'var(--font-display), Fraunces, serif'
 
@@ -45,8 +46,11 @@ export default function OnboardingCity() {
       console.warn('City/age direct save skipped:', err)
     }
 
-    setSaving(false)
-    router.push('/auth/login')
+    // K1: Show success modal, then redirect
+    setShowSuccess(true)
+    setTimeout(() => {
+      router.push('/dashboard')
+    }, 2400)
   }
 
   return (
@@ -177,6 +181,83 @@ export default function OnboardingCity() {
           {saving ? 'Kaydediliyor...' : (<>Hesabımı oluştur <ArrowRight size={16} strokeWidth={2.5} /></>)}
         </motion.button>
       </div>
+
+      {/* K1: Success modal overlay */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              zIndex: 1000,
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              style={{
+                background: c.ink800, borderRadius: 24, padding: 32,
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                gap: 20, maxWidth: 280, boxShadow: '0 8px 32px rgba(0,0,0,.2)',
+              }}
+            >
+              {/* Check icon */}
+              <motion.div
+                initial={{ scale: 0, rotate: -90 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25, delay: 0.1 }}
+                style={{
+                  width: 64, height: 64, borderRadius: '50%',
+                  background: c.gold, display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <Check size={32} color="#FFFFFF" strokeWidth={3} />
+              </motion.div>
+
+              {/* Text */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                style={{ textAlign: 'center' }}
+              >
+                <h2 style={{
+                  fontFamily: displayFont, fontSize: 22, fontWeight: 500,
+                  color: c.cream, margin: '0 0 8px',
+                  letterSpacing: '-0.01em',
+                }}>
+                  Hoş geldin!
+                </h2>
+                <p style={{
+                  fontSize: 14, color: c.ink300, margin: 0, lineHeight: 1.5,
+                }}>
+                  +100 Karma ile başlıyorsun
+                </p>
+              </motion.div>
+
+              {/* Karma count-up (simple) */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                style={{
+                  fontSize: 32, fontWeight: 700, fontFamily: displayFont,
+                  color: c.gold, letterSpacing: '-0.01em',
+                }}
+              >
+                +100 🌱
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

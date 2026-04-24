@@ -88,6 +88,34 @@ export default async function DashboardPage() {
     : []
   const profileCity: string = (profile.city ?? '').toLowerCase()
 
+  // K4: Calculate selection reason for daily mission featured card
+  function getSelectionReason(mission: MissionWithNGO): string {
+    const reasons: string[] = []
+
+    // Check if mission is near user's city
+    if (
+      profileCity &&
+      mission.location &&
+      mission.location.toLowerCase().includes(profileCity)
+    ) {
+      reasons.push('yakın')
+    }
+
+    // Check if mission is short-term (≤120 min = 2 hours)
+    // duration is string like "60", "120", etc.
+    if (mission.duration) {
+      const durationMin = parseInt(mission.duration, 10)
+      if (!isNaN(durationMin) && durationMin <= 120) {
+        reasons.push('kısa-süreli')
+      }
+    }
+
+    // Priority: yakın > kısa-süreli > default
+    if (reasons.includes('yakın')) return 'yakın'
+    if (reasons.includes('kısa-süreli')) return 'kısa-süreli'
+    return 'sana öneriyoruz'
+  }
+
   const recommendedMissions: MissionWithNGO[] = missions
     .filter((m) => !takenOrCompletedIds.has(m.id))
     .filter((m) => m.status !== 'cancelled' && m.status !== 'draft')
@@ -108,6 +136,11 @@ export default async function DashboardPage() {
     .slice(0, 5)
     .map(({ mission }) => mission)
 
+  // K4: Determine featured mission selection reason
+  const featuredMissionSelectionReason = recommendedMissions.length > 0
+    ? getSelectionReason(recommendedMissions[0])
+    : 'sana öneriyoruz'
+
   return (
     <DashboardClient
       profile={profile}
@@ -121,6 +154,7 @@ export default async function DashboardPage() {
       activeMissionsWithNGO={activeMissionsWithNGO}
       weeklyKarmaGain={weeklyKarmaGain}
       streakActivity={streakActivity}
+      featuredMissionSelectionReason={featuredMissionSelectionReason}
     />
   )
 }

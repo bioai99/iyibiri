@@ -195,26 +195,28 @@ export default function OnboardingCauses() {
         })}
       </div>
 
-      {/* Bottom CTA */}
+      {/* Bottom CTA — K2: Min 1 selection validation */}
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         <motion.button
           onClick={handleContinue}
-          disabled={saving}
-          whileTap={{ scale: 0.97 }}
+          disabled={saving || selected.length === 0}
+          whileTap={selected.length > 0 && !saving ? { scale: 0.97 } : undefined}
           style={{
-            width: '100%', height: 52, background: c.gold, color: c.ink,
+            width: '100%', height: 52, background: selected.length > 0 ? c.gold : c.ink600,
+            color: selected.length > 0 ? c.ink : c.ink300,
             border: 'none', borderRadius: 14, padding: '0 20px',
-            fontSize: 15, fontWeight: 700, cursor: saving ? 'wait' : 'pointer',
+            fontSize: 15, fontWeight: 700, cursor: (saving || selected.length === 0) ? 'not-allowed' : 'pointer',
             fontFamily: uiFont,
             boxShadow: '0 2px 8px rgba(0,0,0,.08)',
-            opacity: saving ? 0.7 : 1,
+            opacity: (saving || selected.length === 0) ? 0.6 : 1,
+            transition: 'all 200ms ease',
           }}
         >
           {saving
             ? 'Kaydediliyor...'
             : selected.length > 0
               ? `${selected.length} alan seçtin — Devam`
-              : 'Atla'}
+              : 'En az 1 alan seç'}
         </motion.button>
       </div>
     </div>

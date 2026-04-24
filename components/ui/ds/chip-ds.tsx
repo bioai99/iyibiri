@@ -43,7 +43,8 @@ export function ChipDS({ active, children, icon, onClick, theme = 'dark' }: Chip
         fontWeight: 500,
         letterSpacing: '-0.01em',
         cursor: 'pointer',
-        transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+        // K5: Smooth transition for active/inactive state (200ms cubic-bezier)
+        transition: 'all 200ms cubic-bezier(0.22, 1, 0.36, 1)',
         whiteSpace: 'nowrap',
       }}
     >

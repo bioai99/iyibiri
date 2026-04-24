@@ -237,11 +237,11 @@ export function EmptyStateV2({
 type PresetValue = Omit<EmptyStateV2Props, 'variant'>
 
 export const emptyPresets = {
-  /** Kaydedilenler sayfası boş */
+  /** Kaydedilenler sayfası boş (K8: empathic contextual copy) */
   saved: {
     illustration: 'bookmark',
     title: 'Henüz bir şey kaydetmedin',
-    description: 'Görevlerde 🔖 simgesine dokun; sonradan dönmek istediklerin burada seni bekler.',
+    description: 'Beğendiğin görevleri 🔖 ile kaydet, kayıpolmaz.',
     primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
   } satisfies PresetValue,
 
@@ -270,11 +270,11 @@ export const emptyPresets = {
     primaryAction: { label: 'Aktif görevlerim', href: '/dashboard/my-missions' },
   } satisfies PresetValue,
 
-  /** Notifications — aktivite yok */
+  /** Notifications — aktivite yok (K8: empathic contextual copy) */
   noNotifications: {
     illustration: 'bell',
     title: 'Her şey sakin görünüyor',
-    description: 'Görev tamamladığında, STK\u2019lara katıldığında veya yeni görevler paylaşıldığında burada olacak.',
+    description: 'İlk bildirimini kazanmak için hemen bir görev yap 🌱',
     primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
   } satisfies PresetValue,
 

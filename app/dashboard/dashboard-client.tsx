@@ -48,6 +48,7 @@ interface Props {
   activeMissionsWithNGO: MissionWithNGO[]
   weeklyKarmaGain?: number
   streakActivity?: StreakActivity
+  featuredMissionSelectionReason?: string
 }
 
 // ── Tab key ────────────────────────────────────────────────────
@@ -67,6 +68,7 @@ export function DashboardClient({
   activeMissionsWithNGO,
   weeklyKarmaGain = 0,
   streakActivity,
+  featuredMissionSelectionReason = 'sana öneriyoruz',
 }: Props) {
   const { colors: c } = useTheme()
 
@@ -203,7 +205,7 @@ export function DashboardClient({
 
       {/* ── 2.5 DailyMissionCard ── Things 3 "featured focal point" pattern */}
       {/* UX audit H6: "Günün görevi net fokal nokta" — recommended[0] featured render */}
-      {/* A4 (tur 2): selectionReason micro-label MVP — placeholder 'yakın' (Q34 cevabı (a)) */}
+      {/* K4: selectionReason calculated server-side (yakın > yeni > kısa-süreli > default) */}
       {recommendedMissions.length > 0 && (
         <div style={{ padding: '16px 0 0' }}>
           <DailyMissionCard
@@ -217,7 +219,7 @@ export function DashboardClient({
               duration: recommendedMissions[0].duration ?? undefined,
               impactStatement: recommendedMissions[0].impact_statement ?? undefined,
             }}
-            selectionReason="yakın"
+            selectionReason={featuredMissionSelectionReason}
           />
         </div>
       )}
