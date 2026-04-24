@@ -17,6 +17,29 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-24 HH:MM — STK Admin UI V1 Min+ (10 sayfa spec)
+
+- **Upstream:** Workstream `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md`, Analyst brief `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (10 sayfa JTBD + scope), UX audit `docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md` (K1-K8 kritik, 20 heuristik matrisi, 5 tier-1 benchmark), Journey `docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md` (Ayşe 10-step, peak/dark moment)
+- **Downstream:** frontend-engineer (S1-S4 batch: A=auth+layout+dashboard+görev, B=doğrulama+üyeler+rapor, C=blog+profil+üyelik, D=ödeme+polish), design-system-keeper (focus ring `ring-gold` varsa ok, yoksa ADR-TBD)
+- **Handoff:** ✅ 3 upstream dosyaya (audit, journey, workstream) handoff log satırı eklendi. Spec'te component + token + motion + a11y detaylı.
+- **Status-board:** ✅ güncellendi — "In progress" admin UI FE S1-S4, "Done today" ui-designer spec
+
+- **Prompt:** UX audit K1-K8 + Ayşe journey (dark: form+upload, peak: toast+sync) + analyst 10 sayfa brief → implementation-ready UI spec. 10 sayfa wireframe (Sayfa 1-10 detail), 20 component (10 yeni, 10 mevcut reuse), token (atlas palette, no hardcoded), motion (spring 400/30, stagger 40-80ms, useReducedMotion check), a11y (WCAG AA: focus-visible ring, 44px touch, aria-*, keyboard nav), responsive (desktop/tablet/mobile). Tier-1 benchmark: Linear Inbox (quick action), Airtable Grid (datatable), Stripe Dashboard (metric cards), Shopify Admin (sidebar + save bar), Notion Database (filter+sort).
+
+- **Input:** Adım 0 (4 skill: visual-spec-writing Bölüm 10+11 full, design-system-audit Bölüm 7-9 atomic+token+figma, mobile-app-polish Bölüm 1-6 tier-1 benchmark+motion+haptic, agent-communication Bölüm 1-5 handoff+journal+status-board). Upstream 5 dosya (workstream 4 sayfa scope, brief 10 sayfa JTBD derinleştirme, audit 20 heuristik matrix K1-K8, journey 10-step Ayşe + 3 persona spektrumu). Atlas token (ink-900/800/700 dark, cream text, gold action, clay danger, domain colors). Tailwind config (41 lines, yeterli). Spec format: wireframe (ASCII art) + component atom/molecule/organism + token tablo + variant × state + motion easing/timing + a11y checklist + data schema + effort.
+
+- **Token ihlali:** 0 hardcoded renk. Tüm token adı (bg-ink-800, text-cream, gold, clay, success, domain-*). Focus ring: `ring-gold` tailwind.config'te kontrol et (ADR gerek mi karar).
+
+- **Motion spec:** 6 pattern detail — sidebar item tap (scale 0.97 150ms), modal entry (backdrop fade + scale 0.95→1 400ms spring), toast (slide-up + fade 300ms, 4s visible), datatable sort (rotate 180° 200ms), form error (shake 150ms + border red), metric card count-up (0→N 800ms easeOutQuad). Reduced motion: instant OR opacity-only. Spring default: {stiffness: 400, damping: 30}. Stagger: i * 0.05 (50ms), max 8 items.
+
+- **Self-assessment:** Spec completeness 95%. Missing: exact screenshot (no Figma), exact pixel mock-up (but ASCII wireframe + component library sufficient). Motion spec Bölüm 11 şablonu tamamen takip (spring defaults, stagger pattern, useReducedMotion, exit animation). A11y WCAG AA baseline (focus-visible ring, 44px touch, aria-label, keyboard nav, heading hierarchy). Variant × state: kritik element (button, card, input, badge) tam. Handoff: component list + token list + motion + a11y + responsive + data — Frontend başlayabilir. Visual hierarchy (Bölüm 10): grayscale-first ✓, size scale 8px grid ✓, weight ladder max 3 ✓, color semantic ✓, shadow tier ✓, spacing 8px base ✓. Responsive: 3 breakpoint (≥1024 desktop, 768-1023 tablet, <768 mobile) + safe-area + touch-target ✓.
+
+- **Açık karar:** Q44 (password reset) → super-admin reset spec'te varsay. Q45 (blog iframe) → no HTML V1, markdown link OK. Q46 (QR verification) → photo V1, QR V1.1. Spec'te sonuçlar inline (K bulgularına cevap).
+
+- **Next:** Frontend-engineer S1 Batch A (auth middleware upgrade + admin layout + dashboard + görev yayınla). Design-system-keeper focus ring kontrol.
+
+---
+
 ## 2026-04-24 10:45 — Dashboard v2 tur 2 polish spec (K1–K5 implementation)
 
 - **Upstream:** UX audit `docs/ux/03-heuristics/2026-04-24-dashboard-v2-tur2-audit.md` (K1–K5 kritik, Q25/Q34/Q43 açık karar), Journey `docs/ux/02-journeys/2026-04-24-dashboard-ikinci-ziyaret.md` (Zehra tur 2 peak/dark moment), Analyst brief `docs/product/02-briefs/ux/2026-04-24-dashboard-v2-tur2-brief.md` (A1–A5 önerileri)

@@ -11,9 +11,8 @@ interface VerificationsPageProps {
 async function getVerificationsData(ngoId: string) {
   const supabase = await createClient()
 
-  // Placeholder — Doğrulama bekleyen user_missions
-  // DB migration 022: user_missions.proof_url, proof_type, admin_feedback columns eklenecek
-  const { data: verifications, error } = await supabase
+  // Real query — migration 022 proof columns + missions/profiles joins
+  const { data, error } = await supabase
     .from('user_missions')
     .select(
       `
@@ -21,29 +20,42 @@ async function getVerificationsData(ngoId: string) {
       user_id,
       mission_id,
       admin_review_status,
-      created_at,
-      missions:mission_id(id, title, karma),
-      profiles:user_id(id, name, avatar_url)
+      admin_feedback,
+      proof_type,
+      proof_url,
+      submitted_at,
+      completed_at,
+      verification_data,
+      missions!inner(id, ngo_id, title, karma),
+      profiles(id, name, avatar_url)
     `
     )
+    .eq('missions.ngo_id', ngoId)
     .eq('admin_review_status', 'pending_review')
-    .order('created_at', { ascending: true })
+    .order('submitted_at', { ascending: false })
+    .limit(100)
 
   if (error) {
-    console.error('Verifications fetch error:', error)
+    console.error('Verifications query error:', error)
     return { verifications: [], error: error.message }
   }
 
-  // Mock data for Batch B completion
-  const mockVerifications = (verifications || []).map((v: any) => ({
-    ...v,
-    proof_type: 'photo',
-    proof_url: null,
-    admin_feedback: null,
+  // Map to client interface (backward compat: fallback to verification_data if needed)
+  const verifications = (data ?? []).map((v: any) => ({
+    id: v.id,
+    user_id: v.user_id,
+    mission_id: v.mission_id,
+    admin_review_status: v.admin_review_status,
+    admin_feedback: v.admin_feedback,
+    proof_type: v.proof_type ?? v.verification_data?.proof_type ?? 'auto',
+    proof_url: v.proof_url ?? v.verification_data?.proof_url,
+    created_at: v.submitted_at ?? v.completed_at ?? new Date().toISOString(),
+    missions: v.missions ? { id: v.missions.id, title: v.missions.title, karma: v.missions.karma } : undefined,
+    profiles: v.profiles ? { id: v.profiles.id, name: v.profiles.name, avatar_url: v.profiles.avatar_url } : undefined,
   }))
 
   return {
-    verifications: mockVerifications,
+    verifications,
     error: null,
   }
 }

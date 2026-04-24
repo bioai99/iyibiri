@@ -501,7 +501,7 @@ Yayınlama tıkla → toast ✅ → anında listede görünür + push notifikasy
 
 Bu journey'i alan agent'ların zinciri:
 
-- *(henüz downstream yok)*
+- 2026-04-24 HH:MM — **ui-designer** ✅ — **UI spec**: `docs/ui/01-specs/2026-04-24-stk-admin-ui-spec.md`. Ayşe journey Adım 6-7 (dark moment: form + upload) + Adım 9-10 (peak: toast + sync) spec'te motion choreography (confirm modal, progress bar, toast success) + form validation (inline error + syntax hint) + auto-save detaylı. Handoff: frontend-engineer.
 
 ---
 

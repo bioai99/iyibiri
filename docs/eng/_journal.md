@@ -17,6 +17,25 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK -->
 
+## 2026-04-24 HH:MM — [fe] Batch B: Verifications + Members + Reports (K2 K6 K7 KVKK)
+
+- **Upstream:** `docs/ui/01-specs/2026-04-24-stk-admin-ui-spec.md`
+- **Downstream:** Batch C via spec handoff log
+- **Handoff:** ✅ updated-source
+- **Status-board:** ✅ updated
+
+**İş:** 3 sayfa (doğrulama kuyruğu K2 confirm + K6 bulk, üyeler KVKK K7 email masking + CSV, rapor metrics + table) + sidebar nav 10-item aktif + 4 placeholder sayfa
+
+**Dosyalar:** 13 (8 yeni + 4 placeholder + 1 spec update) — 885 satır kod + 1 handoff satırı
+
+**Keypoint:** K2 reddetme textarea zorunlu + K6 sticky "N seçili" bar + K7 email masking (joh***@ex.com) + KVKK uyum banner + CSV minimal column (ad/email/tier/tarih/durum)
+
+**TSC:** 0 hata
+
+**Next:** Batch C (blog + profil + üyelik config)
+
+---
+
 ## 2026-04-24 21:15 — [auth] Middleware + Login Upgrade — Per-NGO Admin Auth (ADMIN_SECRET → Supabase)
 
 - **Upstream:**

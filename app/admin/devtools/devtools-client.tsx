@@ -3,7 +3,8 @@
 // app/admin/devtools/devtools-client.tsx
 //
 // Dev fixtures UI — current user için 4 state'in örnek datasını tek tıkla oluştur/temizle.
-// lib/dev/user-fixtures.ts server action'ları çağırır.
+// NGO admin fixtures seed butonları.
+// lib/dev/user-fixtures.ts + lib/dev/ngo-admin-fixtures.ts server action'ları çağırır.
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
@@ -12,6 +13,10 @@ import {
   clearUserFixtures,
   type SeedReport,
 } from '@/lib/dev/user-fixtures'
+import {
+  seedNgoAdminFixtures,
+  clearNgoAdminFixtures,
+} from '@/lib/dev/ngo-admin-fixtures'
 
 interface Profile {
   id: string
@@ -35,6 +40,13 @@ interface Props {
   nodeEnv: string
 }
 
+interface NgoAdminSeedReport {
+  created?: number
+  existing?: number
+  deleted?: number
+  errors: string[]
+}
+
 export function DevtoolsClient({
   profile,
   currentState,
@@ -44,6 +56,8 @@ export function DevtoolsClient({
   const [pending, startTransition] = useTransition()
   const [lastReport, setLastReport] = useState<SeedReport | null>(null)
   const [lastError, setLastError] = useState<string | null>(null)
+  const [ngoAdminReport, setNgoAdminReport] = useState<NgoAdminSeedReport | null>(null)
+  const [ngoAdminError, setNgoAdminError] = useState<string | null>(null)
 
   const migrationReady = seedHealth.ngoCount >= 5 && seedHealth.missionCount >= 10
 
@@ -63,6 +77,31 @@ export function DevtoolsClient({
       const res = await clearUserFixtures()
       if (res.ok) setLastReport(res.report)
       else setLastError(res.error)
+    })
+  }
+
+  const runNgoAdminSeed = () => {
+    setNgoAdminError(null)
+    startTransition(async () => {
+      try {
+        const res = await seedNgoAdminFixtures()
+        setNgoAdminReport(res)
+      } catch (e) {
+        setNgoAdminError((e as Error).message)
+      }
+    })
+  }
+
+  const runNgoAdminClear = () => {
+    setNgoAdminError(null)
+    if (!confirm('Tüm NGO admin fixture verilerini silmek istediğinden emin misin?')) return
+    startTransition(async () => {
+      try {
+        const res = await clearNgoAdminFixtures()
+        setNgoAdminReport(res)
+      } catch (e) {
+        setNgoAdminError((e as Error).message)
+      }
     })
   }
 
@@ -166,10 +205,10 @@ export function DevtoolsClient({
         </div>
       </section>
 
-      {/* Actions */}
+      {/* User Fixtures Actions */}
       <section className="rounded-xl border border-stone-200 bg-white p-5">
         <h2 className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-500">
-          Aksiyonlar
+          User Fixtures Aksiyonları
         </h2>
         <p className="mb-4 text-sm text-stone-600">
           "Seed fixtures" çalıştırdığında şunlar oluşturulur:
@@ -201,10 +240,107 @@ export function DevtoolsClient({
         </div>
       </section>
 
+      {/* NGO Admin Fixtures Actions */}
+      <section className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+        <h2 className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-amber-900">
+          NGO Admin Fixtures Aksiyonları
+        </h2>
+        <p className="mb-4 text-sm text-amber-900">
+          5 STK admin user oluştur (TEMA, TEGV, LÖSEV, HAYTAP, Kodluyoruz):
+        </p>
+        <ul className="mb-4 space-y-1 text-[13px] text-amber-900">
+          <li>→ <strong>5 auth user</strong> (email + password, email_confirmed)</li>
+          <li>→ <strong>5 profile</strong> (name, email)</li>
+          <li>→ <strong>5 ngo_admin_users</strong> link (user × ngo, role='admin')</li>
+        </ul>
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={runNgoAdminSeed}
+            disabled={pending}
+            className="h-10 rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {pending ? 'Çalışıyor…' : '🌱 Seed NGO admin'}
+          </button>
+          <button
+            type="button"
+            onClick={runNgoAdminClear}
+            disabled={pending}
+            className="h-10 rounded-lg border border-amber-600 bg-white px-4 text-sm font-semibold text-amber-700 disabled:opacity-50"
+          >
+            🧹 Clear NGO admin
+          </button>
+        </div>
+      </section>
+
+      {/* NGO Admin Report */}
+      {ngoAdminReport && (
+        <section className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-amber-900">
+            NGO Admin Fixtures Raporu
+          </h2>
+          <dl className="mb-4 grid grid-cols-2 gap-2 text-[13px]">
+            {ngoAdminReport.created !== undefined && (
+              <div>
+                <dt className="text-amber-900">Oluşturulanlar</dt>
+                <dd className="font-semibold text-amber-900">
+                  {ngoAdminReport.created}
+                </dd>
+              </div>
+            )}
+            {ngoAdminReport.existing !== undefined && (
+              <div>
+                <dt className="text-amber-900">Mevcut</dt>
+                <dd className="font-semibold text-amber-900">
+                  {ngoAdminReport.existing}
+                </dd>
+              </div>
+            )}
+            {ngoAdminReport.deleted !== undefined && (
+              <div>
+                <dt className="text-amber-900">Silinen</dt>
+                <dd className="font-semibold text-amber-900">
+                  {ngoAdminReport.deleted}
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          {ngoAdminReport.errors.length > 0 && (
+            <>
+              <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.1em] text-rose-600">
+                Uyarılar
+              </div>
+              <ul className="space-y-1 text-[13px] text-rose-700">
+                {ngoAdminReport.errors.map((e, i) => (
+                  <li key={i}>⚠ {e}</li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <div className="mt-4 flex flex-wrap gap-2 text-[12px]">
+            <Link
+              href="/admin"
+              className="rounded-md bg-amber-100 px-3 py-1.5 font-semibold text-amber-900 hover:bg-amber-200"
+            >
+              → Admin hub
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Error + report */}
       {lastError && (
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
           <strong>Hata:</strong> {lastError}
+        </div>
+      )}
+
+      {ngoAdminError && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+          <strong>NGO Admin Hatası:</strong> {ngoAdminError}
         </div>
       )}
 

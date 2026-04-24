@@ -4,7 +4,7 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
-**Son güncelleme:** 2026-04-24 23:45 — ux-researcher — **STK admin heuristik audit + Ayşe journey tamamlandı.** ✅ 10 sayfa heuristik matrisi (K1-K8 kritik bulgu), 5 tier-1 benchmark pattern, admin-özel 4 heuristik, Ayşe 10-step journey (dark/peak moment), 3 persona spektrumu, HEART metrics. Handoff: ui-designer (10 sayfa UI spec S0) + frontend-engineer (K1-K2 foundation S1-S2).
+**Son güncelleme:** 2026-04-25 03:30 — supabase-backend + frontend-engineer — **V1 pilot gap fix tamamlandı.** ✅ Migration 022 user_missions proof columns + Migration 023 ngo-assets Storage bucket RLS + verifications page real data wire + karma idempotent. TSC 0 hata. Handoff: Sprint S1 auth + layout implementation.
 
 ---
 
@@ -22,13 +22,15 @@
 
 Şu an aktif olarak çalışılan iş.
 
-- **P0 #9 — STK admin UI V1 (Min+ 10 sayfa)** — owner: supabase-backend (done) → frontend-engineer, started: 2026-04-24 10:45, link: master plan [`docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md`](./product/01-workstreams/2026-04-24-stk-backoffice-workstream.md), ETA: 1.5-2.5 hafta (paralel fe+be+auth S0-S4).
-  - ✅ [be] Migration 021 (2026-04-24 20:30) — 8 RLS policy + 5 kolon + is_super_admin + types update. Seed script ready (`lib/dev/ngo-admin-fixtures.ts`, 5 STK admin idempotent).
-  - ✅ [ux] UX brief (2026-04-24 10:45) — `docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md` (15 sayfa detaylı).
-  - ✅ [auth-capacitor] Middleware upgrade (2026-04-24 21:15) — per-NGO auth (is_ngo_admin RPC) + Supabase email/password login. ADMIN_SECRET deprecated. SUPER_ADMIN_EMAILS env setup. Admin hub router + logout button awaited (fe task).
-  - ✅ [ux-researcher] Heuristik audit (2026-04-24 23:45) — `docs/ux/03-heuristics/2026-04-24-stk-admin-audit.md` (K1-K8) + `docs/ux/02-journeys/2026-04-24-stk-admin-ayse-journey.md` (Ayşe journey). Handoff: ui-designer.
-  - 🔄 [ui-designer] UI spec S0'da başlayabilir (Planning → In progress).
-  - 🔄 [frontend-engineer] Sprint S1 Batch A (auth layout + dashboard + missions + devtools seed butonu) S0 sonrası başlar. Awaiting: admin hub router, logout button, devtools button (auth-capacitor done).
+- **P0 #9 — STK admin UI V1 (Min+ 10 sayfa)** — owner: frontend-engineer, started: 2026-04-24 10:45, link: master plan [`docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md`](./product/01-workstreams/2026-04-24-stk-backoffice-workstream.md), ETA: Batch B done, Batch C (2-3 gün).
+  - ✅ [be] Migration 021 (2026-04-24 20:30) — 8 RLS policy + 5 kolon + is_super_admin + types update. Seed script ready.
+  - ✅ [ux] UX brief (2026-04-24 10:45) — 15 sayfa detaylı.
+  - ✅ [auth-capacitor] Middleware upgrade (2026-04-24 21:15) — per-NGO auth + Supabase login.
+  - ✅ [ux-researcher] Heuristik audit (2026-04-24 23:45) — K1-K8 detaylı.
+  - ✅ [ui-designer] UI spec (2026-04-24 HH:MM) — 10 sayfa wireframe, 20 component, token, motion, a11y.
+  - ✅ [frontend-engineer] Batch A (2026-04-24 done) — auth layout + dashboard + missions + sidebar nav + devtools.
+  - ✅ [frontend-engineer] Batch B (2026-04-24 done) — verifications (K2 confirm + K6 bulk) + members (KVKK + CSV) + reports (metrics + table) + 4 placeholder. TSC 0.
+  - 🔄 [frontend-engineer] Batch C (2-3 gün) — blog editor + profile form + membership-config parametric form + password reset (Batch A'dan carryover).
 
 - **Dashboard v2 tur 2 — FE implementation** — owner: frontend-engineer, started: 2026-04-24 10:45, link: `docs/ui/01-specs/2026-04-24-dashboard-v2-tur2-polish-spec.md` (8 component + token refactor), ETA: 2026-04-25 — 2026-04-26 (3–4 hafta paralel fe × design-system-keeper)
   - ✅ [be] A1 StreakSnapshot query (2026-04-24 17:10) — `getRecentStreakActivity` + index done
@@ -57,7 +59,9 @@ Bir sonraki turda yapılacak, öncelik sırası belli iş.
 
 - **Eski brief/spec'lere handoff log ekleme (kalan)** — owner: meta (user-triggered audit), priority: low, link: communication protocol SKILL. 3 ana thread retroactive dolduruldu; ikinci turda P1 UX brief'lere + Eng brief'lere + UI spec'lere de uygulanır.
 
-## ✅ Done today (2026-04-24)
+## ✅ Done today (2026-04-24 — 2026-04-25)
+
+- 2026-04-25 03:30 — **supabase-backend + frontend-engineer** — **V1 pilot gap fix**: Migration 022 + 023 + verifications real data + karma idempotent — links: `supabase/migrations/022_user_missions_proof_columns.sql` (proof_type/proof_url/submitted_at kolonları + index), `supabase/migrations/023_storage_ngo_assets.sql` (ngo-assets bucket + 5 RLS policy), `lib/supabase/types.ts` (+3 kolon UserMission Row/Insert/Update), `app/admin/[ngoId]/verifications/page.tsx` (real query migrations.ngo_id join + sort submitted_at), `lib/admin/verifications-actions.ts` (approveVerification + bulkApproveVerifications karma distribution idempotent via mission.karma_points), `lib/missions/__test__.ts` (proof columns mock update). TSC 0 hata. Storage upload UI V1.1'e ertelendi (text URL input yeterli pilot için). Handoff: Sprint S1 Auth + Layout (middleware done, fe ready). V1 pilot **veritabanı altyapısı hazır.**
 
 - 2026-04-24 21:15 — **auth-capacitor** — Middleware + Admin login upgrade (ADMIN_SECRET → Per-NGO Supabase auth) — links: `middleware.ts` + `app/admin/login/page.tsx` + `app/admin/login/actions.ts` + `.env.local`. Per-NGO auth: /admin/login → Supabase email/password, middleware is_ngo_admin(user_id, ngo_id) RPC check, /admin/devtools super-admin only, /admin root super-admin only. ADMIN_SECRET deprecated (cookie pattern kaldırıldı). SUPER_ADMIN_EMAILS env setup. Handoff: fe (admin hub router + logout button + devtools button). TSC 0 hata.
 

@@ -89,6 +89,9 @@ function mockUserMission(
     karma_awarded: null,
     admin_review_status: 'auto_approved',
     admin_feedback: null,
+    proof_type: null,
+    proof_url: null,
+    submitted_at: null,
     ...overrides,
   }
 }

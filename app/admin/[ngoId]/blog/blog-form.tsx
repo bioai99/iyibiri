@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createBlogPost, updateBlogPost } from '@/lib/admin/blog-actions'
+import { AdminImageUpload } from '@/components/admin/admin-image-upload'
 import type { Post } from '@/lib/supabase/types'
 
 interface BlogFormProps {
@@ -127,27 +128,26 @@ export function BlogForm({ ngoId, post }: BlogFormProps) {
       </div>
 
       {/* Cover Image URL */}
-      <div>
-        <label className="block text-sm font-semibold text-cream mb-2">
-          Kapak Resim URL'si (opsiyonel)
-        </label>
+      <AdminImageUpload
+        folder={`${ngoId}/blog`}
+        fileName={post?.id || Math.random().toString(36).substr(2, 9)}
+        currentUrl={formData.cover_image_url}
+        onUploaded={(url) => handleChange('cover_image_url', url)}
+        label="Blog Kapak Resmi"
+        aspectRatio="16:9"
+      />
+      <details style={{ marginTop: 8 }}>
+        <summary style={{ fontSize: 12, color: 'var(--ink-400)', cursor: 'pointer' }}>
+          Alternatif: URL yapıştır
+        </summary>
         <input
           type="url"
           value={formData.cover_image_url}
           onChange={(e) => handleChange('cover_image_url', e.target.value)}
           placeholder="https://example.com/image.jpg"
-          className="w-full px-4 py-2 rounded-xl bg-ink-800 border border-ink-600 text-cream placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-gold"
+          style={{ width: '100%', marginTop: 8, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ink-600)', backgroundColor: 'var(--ink-800)', color: 'var(--cream)', fontSize: '14px' }}
         />
-        {formData.cover_image_url && (
-          <div className="mt-3 rounded-xl overflow-hidden max-w-sm">
-            <img
-              src={formData.cover_image_url}
-              alt="Kapak resim"
-              className="w-full h-32 object-cover"
-            />
-          </div>
-        )}
-      </div>
+      </details>
 
       {/* Content with Preview Toggle */}
       <div>

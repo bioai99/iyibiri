@@ -1,32 +1,67 @@
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const showDevtools =
-    process.env.NODE_ENV !== 'production' ||
-    process.env.DEV_FIXTURES_ENABLED === '1'
+'use server'
+
+import type { ReactNode } from 'react'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { AdminLayoutShell } from '@/components/admin/admin-layout-shell'
+
+interface AdminLayoutProps {
+  children: ReactNode
+  params: Promise<{ ngoId?: string }>
+}
+
+export default async function AdminLayout({ children, params }: AdminLayoutProps) {
+  const supabase = await createClient()
+
+  // Get current user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/admin/login')
+  }
+
+  // Get user profile (name, email)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, name, email')
+    .eq('id', user.id)
+    .single()
+
+  // Get super-admin status
+  const { data: isSuper } = await (supabase as any).rpc('is_super_admin', { u: user.id })
+
+  // Get list of NGO IDs user is admin for
+  const { data: adminUsers } = await supabase
+    .from('ngo_admin_users')
+    .select('ngo_id')
+    .eq('user_id', user.id)
+
+  const ngoIds = adminUsers?.map((au) => au.ngo_id) ?? []
+
+  // Get NGO names for sidebar
+  const ngoList = ngoIds.length > 0 ? await supabase
+    .from('ngos')
+    .select('id, name')
+    .in('id', ngoIds)
+    .then((res) => res.data ?? []) : []
+
+  const awaitedParams = await params
+  const currentNgoId = awaitedParams.ngoId || (ngoList[0]?.id ?? null)
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <nav className="bg-stone-900 text-white px-6 py-4 flex items-center justify-between">
-        <span className="font-display font-bold">İyiBiri Admin</span>
-        <div className="flex items-center gap-5">
-          <a href="/admin/missions" className="text-sm text-stone-300 hover:text-white">
-            Misyonlar
-          </a>
-          <a href="/admin/analytics" className="text-sm text-stone-300 hover:text-white">
-            Analytics
-          </a>
-          {showDevtools && (
-            <a
-              href="/admin/devtools"
-              className="text-sm font-medium text-amber-300 hover:text-amber-200"
-            >
-              🛠 Devtools
-            </a>
-          )}
-        </div>
-      </nav>
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {children}
-      </main>
-    </div>
+    <AdminLayoutShell
+      user={{
+        id: user.id,
+        name: profile?.name ?? 'Admin',
+        email: profile?.email ?? '',
+      }}
+      isSuper={isSuper ?? false}
+      ngoList={ngoList}
+      currentNgoId={currentNgoId}
+    >
+      {children}
+    </AdminLayoutShell>
   )
 }

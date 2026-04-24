@@ -1,3 +1,5 @@
+'use server'
+
 /**
  * NGO Admin Fixtures Seed (dev-only)
  *

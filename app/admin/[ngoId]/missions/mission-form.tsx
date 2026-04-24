@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { createMission } from '@/lib/admin/missions-actions'
+import { AdminImageUpload } from '@/components/admin/admin-image-upload'
 import Link from 'next/link'
 
 interface AdminMissionFormProps {
@@ -158,19 +159,27 @@ export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
         />
       </div>
 
-      {/* Image URL (placeholder — V1: Unsplash, V1.1: Storage) */}
-      <div>
-        <label className="block text-sm font-semibold text-cream mb-2">
-          Görsel URL (Unsplash)
-        </label>
+      {/* Image URL */}
+      <AdminImageUpload
+        folder={`${ngoId}/missions`}
+        fileName={Math.random().toString(36).substr(2, 9)}
+        currentUrl={formData.image_url}
+        onUploaded={(url) => handleChange('image_url', url)}
+        label="Görev Görseli"
+        aspectRatio="16:9"
+      />
+      <details style={{ marginTop: 8 }}>
+        <summary style={{ fontSize: 12, color: 'var(--ink-400)', cursor: 'pointer' }}>
+          Alternatif: URL yapıştır
+        </summary>
         <input
           type="url"
           value={formData.image_url}
           onChange={(e) => handleChange('image_url', e.target.value)}
           placeholder="https://unsplash.com/... veya görsel URL"
-          className="w-full px-4 py-2 rounded-xl bg-ink-800 border border-ink-600 text-cream placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-gold"
+          style={{ width: '100%', marginTop: 8, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ink-600)', backgroundColor: 'var(--ink-800)', color: 'var(--cream)', fontSize: '14px' }}
         />
-      </div>
+      </details>
 
       {/* Status */}
       <div>

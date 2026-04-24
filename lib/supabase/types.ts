@@ -378,6 +378,10 @@ export interface Database {
             | 'approved'
             | 'rejected'
           admin_feedback: string | null
+          // Migration 022 — proof columns
+          proof_type: 'photo' | 'code' | 'qr' | 'auto' | null
+          proof_url: string | null
+          submitted_at: string | null
         }
         Insert: {
           id?: string
@@ -394,6 +398,9 @@ export interface Database {
             | 'approved'
             | 'rejected'
           admin_feedback?: string | null
+          proof_type?: 'photo' | 'code' | 'qr' | 'auto' | null
+          proof_url?: string | null
+          submitted_at?: string | null
         }
         Update: {
           id?: string
@@ -410,6 +417,9 @@ export interface Database {
             | 'approved'
             | 'rejected'
           admin_feedback?: string | null
+          proof_type?: 'photo' | 'code' | 'qr' | 'auto' | null
+          proof_url?: string | null
+          submitted_at?: string | null
         }
         Relationships: []
       }

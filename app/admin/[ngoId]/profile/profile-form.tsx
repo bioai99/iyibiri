@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateNgoProfile } from '@/lib/admin/ngo-profile-actions'
+import { AdminImageUpload } from '@/components/admin/admin-image-upload'
 import type { NGO } from '@/lib/supabase/types'
 
 interface ProfileFormProps {
@@ -60,52 +61,48 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
       <div className="col-span-2">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Logo */}
-          <div>
-            <label className="block text-sm font-semibold text-cream mb-2">
-              Logo URL
-            </label>
+          <AdminImageUpload
+            folder={ngoId}
+            fileName="logo"
+            currentUrl={formData.logo_url}
+            onUploaded={(url) => handleChange('logo_url', url)}
+            label="STK Logo"
+            aspectRatio="1:1"
+          />
+          <details style={{ marginTop: 8 }}>
+            <summary style={{ fontSize: 12, color: 'var(--ink-400)', cursor: 'pointer' }}>
+              Alternatif: URL yapıştır
+            </summary>
             <input
               type="url"
               value={formData.logo_url}
               onChange={(e) => handleChange('logo_url', e.target.value)}
               placeholder="https://example.com/logo.png"
-              className="w-full px-4 py-2 rounded-xl bg-ink-800 border border-ink-600 text-cream placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-gold"
+              style={{ width: '100%', marginTop: 8, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ink-600)', backgroundColor: 'var(--ink-800)', color: 'var(--cream)', fontSize: '14px' }}
             />
-            {formData.logo_url && (
-              <div className="mt-3 w-20 h-20 rounded-lg overflow-hidden bg-ink-700">
-                <img
-                  src={formData.logo_url}
-                  alt="Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-          </div>
+          </details>
 
           {/* Cover Image */}
-          <div>
-            <label className="block text-sm font-semibold text-cream mb-2">
-              Kapak Resmi URL
-            </label>
+          <AdminImageUpload
+            folder={ngoId}
+            fileName="cover"
+            currentUrl={formData.cover_image_url}
+            onUploaded={(url) => handleChange('cover_image_url', url)}
+            label="Kapak Resmi"
+            aspectRatio="16:9"
+          />
+          <details style={{ marginTop: 8 }}>
+            <summary style={{ fontSize: 12, color: 'var(--ink-400)', cursor: 'pointer' }}>
+              Alternatif: URL yapıştır
+            </summary>
             <input
               type="url"
               value={formData.cover_image_url}
-              onChange={(e) =>
-                handleChange('cover_image_url', e.target.value)
-              }
+              onChange={(e) => handleChange('cover_image_url', e.target.value)}
               placeholder="https://example.com/cover.jpg"
-              className="w-full px-4 py-2 rounded-xl bg-ink-800 border border-ink-600 text-cream placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-gold"
+              style={{ width: '100%', marginTop: 8, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ink-600)', backgroundColor: 'var(--ink-800)', color: 'var(--cream)', fontSize: '14px' }}
             />
-            {formData.cover_image_url && (
-              <div className="mt-3 rounded-lg overflow-hidden max-w-sm">
-                <img
-                  src={formData.cover_image_url}
-                  alt="Kapak"
-                  className="w-full h-32 object-cover"
-                />
-              </div>
-            )}
-          </div>
+          </details>
 
           {/* Name (readonly) */}
           <div>
