@@ -43,3 +43,29 @@ export function formatMissionDate(
   if (diffDays >= 8 && diffDays <= 14) return `Önümüzdeki ${dayName}, ${dayMonth}`
   return dayMonth
 }
+
+/**
+ * Türkçe-safe display name parse.
+ * "Test İyiBiri" → "Test"
+ * "İyiBiri" → "İyiBiri"
+ * "" / null → "Hoş geldin"
+ *
+ * NOT: Brand kelimeleri ('İyiBiri', 'iyibiri') strip ETMEZ — kullanıcının adı brand kelime de olabilir.
+ */
+export function getDisplayName(profile: {
+  full_name?: string | null
+  first_name?: string | null
+}): string {
+  if (profile.first_name?.trim()) return profile.first_name.trim()
+  if (profile.full_name?.trim()) {
+    const firstWord = profile.full_name.trim().split(/\s+/)[0]
+    if (firstWord) return firstWord
+  }
+  return 'Hoş geldin'
+}
+
+/** Türkçe locale-aware lowercase. `İstanbul.toLowerCase()` bug'ını önler. */
+export const trLower = (s: string) => s.toLocaleLowerCase('tr-TR')
+
+/** Türkçe locale-aware uppercase. */
+export const trUpper = (s: string) => s.toLocaleUpperCase('tr-TR')

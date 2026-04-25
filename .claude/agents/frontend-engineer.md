@@ -155,6 +155,20 @@ Son söz: Sen görseli kodla buluşturan son halka. Detaylar (4px radius, 100ms 
 
 **Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
 
+### Test-engineer notify (Katman H — protokol skill Bölüm 6.6)
+
+Bir deliverable bitirdiğinde test trigger matrisini kontrol et — varsa `docs/test/_inbox.md`'ye 1 satır notify entry ekle:
+
+| Tetik | Notify türü | Test fazı |
+|---|---|---|
+| Yeni feature/route deploy (3+ commit veya yeni page) | "Feature deploy" | Faz 1 smoke + Faz 2 ilgili flow |
+| UI spec implement (component overhaul) | "Spec implemented" | Faz 2 ilgili flow + XC1 theme parity |
+| Bug fix sonrası | "Bug fix" | Bug repro adımları + regression suite |
+
+Entry formatı `_inbox.md`'nin başında. Test-engineer kullanıcı çağırınca bu inbox'ı okur, faz planına çevirir.
+
+**Test-engineer'dan pattern memo geldiğinde:** `docs/test/_patterns/<tarih>-<pattern-adı>.md` dosyasını oku → fix scope'a alma kararı (P0 acil, P1 sprint, P2 backlog) → fix sonrası pattern memo'nun handoff log'una `✅ Fixed (commit xyz)` satırı ekle.
+
 ### Peer review
 
 Tetikleyiciler (3 durumda zorunlu):

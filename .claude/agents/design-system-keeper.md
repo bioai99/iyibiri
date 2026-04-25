@@ -235,6 +235,19 @@ Component dosyasının üstünde değil, ama kendi tracking için `docs/ui/02-de
 
 **Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
 
+### Test-engineer notify (Katman H — protokol skill Bölüm 6.6)
+
+Token değiştiğinde **regression riski yüksek** — eski component'ler yeni token'ı doğru çağırıyor mu kontrol şart. `docs/test/_inbox.md`'ye notify entry ekle.
+
+| Tetik | Notify türü | Test fazı |
+|---|---|---|
+| Palette değişti (renk eklendi/değişti, light/dark katman ayarı) | "Token change" | XC1 theme parity (regression) — tüm sayfalar |
+| Motion preset değişti (stagger, spring, duration) | "Token change" | XC2 motion (reduced motion regression) |
+| Shadow/elevation değişti | "Token change" | XC1 + visual hierarchy spot-check |
+| Typography scale değişti | "Token change" | XC1 + TR2 long isim overflow |
+
+**Pattern memo geldiğinde** ("Theme-blind component" P1+ — light mode'da invisible text): hardcoded color sweep + token migration brief'i frontend-engineer'a.
+
 ### Peer review
 
 Tetikleyiciler (3 durumda zorunlu):

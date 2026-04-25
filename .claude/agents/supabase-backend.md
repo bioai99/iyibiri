@@ -152,6 +152,19 @@ Son söz: Veri katmanı İyiBiri'nin omurgası. RLS hatası = güvenlik açığ�
 
 **Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
 
+### Test-engineer notify (Katman H — protokol skill Bölüm 6.6)
+
+Migration apply edildiğinde veya schema/RLS değiştiğinde **kritik**: `docs/test/_inbox.md`'ye 1 satır notify entry. Backend değişiklikleri test-engineer için en yüksek öncelikli trigger — RLS leak / data integrity / cross-screen drift bug'ları sadece DB tarafında doğrulanabilir.
+
+| Tetik | Notify türü | Test fazı |
+|---|---|---|
+| Migration apply (RLS, schema, trigger, view) | "Migration applied" | Faz 1 critical path + data integrity audit |
+| RPC fonksiyonu eklendi/değişti | "Migration applied" | Idempotency + access control |
+| Storage bucket policy değişti | "Migration applied" | RLS leak audit |
+| Edge function deploy | "Migration applied" | Auth + data flow |
+
+**Pattern memo geldiğinde** (özellikle "RLS leak" veya "Idempotency" — P0 security blocker): hemen sprint'in başına al, fix sonrası pattern memo handoff log'una `✅ Fixed (migration NNN)` satırı.
+
 ### Peer review
 
 Tetikleyiciler (3 durumda zorunlu):

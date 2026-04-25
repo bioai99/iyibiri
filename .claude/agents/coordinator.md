@@ -163,12 +163,35 @@ Prompt geldi
 │  ├─ Frontend → frontend-engineer
 │  ├─ Backend → supabase-backend
 │  └─ Auth → auth-capacitor
-└─ System (design system, tokens)?
-   └─ design-system-keeper
+├─ System (design system, tokens)?
+│  └─ design-system-keeper
+└─ Test/QA (regression, smoke, deploy doğrulama, bug repro)?
+   └─ test-engineer → faz planı + bug repository + pattern memo
 
 Priority: P0 (blocker / user critical) / P1 (sprint) / P2 (backlog) / P3 (future)
 Parallelizable? → Parallel Thread listing
 ```
+
+### D. Test-engineer chain entegrasyonu (Katman H — protokol skill Bölüm 6.6)
+
+Test-engineer izole değil — zincirin kapanış halkası. Coordinator orkestrasyonunda şu noktalarda devreye gir:
+
+**Chain sonu (delivery sonrası):**
+- frontend-engineer / supabase-backend / ui-designer deliverable bitirip handoff log yazdığında, **trigger matrisini kontrol et** (`docs/test/_inbox.md`'ye notify gerekiyor mu).
+- Eğer "Feature deploy" / "Migration applied" / "Spec implemented" trigger'ı varsa → **inbox'a entry düştüğünü doğrula**, yoksa delivery agent'a "inbox'a notify atla" hatırlat.
+
+**Inbox triage (her oturum başında):**
+- `docs/test/_inbox.md`'yi tara. 3+ entry birikmişse → kullanıcıya "test-engineer çağırıp Faz X koşturmak vakti" öner.
+- Aciliyet "Hot fix (P0 bug doğrulama)" entry'si varsa → kullanıcıya öncelik bildir.
+
+**Pattern memo handoff (test-engineer raporu sonrası):**
+- Test-engineer pattern memo açtığında (`docs/test/_patterns/<tarih>-<ad>.md`) → outbound matrisine göre hangi agent'a routing yapılacak izle.
+- 3+ pattern memo aynı agent'a yığılıyorsa → o agent'a "sprint task'ı: pattern fix paketi" önerisi.
+- Aynı bug 2 faz arka arkaya tekrarlıyorsa → test-engineer'a "regression suite'e ekle" handoff.
+
+**P0 bug deploy bloke:**
+- Test-engineer faz raporunda P0 bug varsa → coordinator olarak **deploy bloke** öner, ilgili agent'a "stop other work, fix this" notify et.
+- Sıradaki sprint'e başlamadan önce P0 bug listesi sıfırlanmış olmalı.
 
 ---
 

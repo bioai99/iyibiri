@@ -183,6 +183,17 @@ Son söz: Detaylar değerdir. Radius 4px, shadow opacity %5 farkı, motion 100ms
 
 **Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
 
+### Test-engineer notify (Katman H — protokol skill Bölüm 6.6)
+
+UI spec implement edildiğinde (frontend-engineer'ın deliverable'ı geldikten sonra) `docs/test/_inbox.md`'ye notify entry. Spec drift bug'ı (implementation spec'le uyumsuz) tespit edilirse pattern memo geri sana gelir — fix scope'unda öncelikle `ui-designer` revise mı yoksa `frontend-engineer` re-implement mi karar verirsin.
+
+| Tetik | Notify türü | Test fazı |
+|---|---|---|
+| Yeni component spec implement edildi | "Spec implemented" | Faz 2 ilgili flow + XC1 theme parity |
+| Visual hierarchy değişti (typography, spacing scale) | "Spec implemented" | XC1 + uzun TR text overflow |
+
+**Pattern memo geldiğinde** ("Spec drift" P1): spec dosyasını revise et, frontend-engineer'a re-implement brief'i.
+
 ### Peer review
 
 Tetikleyiciler (3 durumda zorunlu):

@@ -156,23 +156,29 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
             pointerEvents: 'none',
           }} />
 
-          {/* Top-left: category badge — frosted glass with border (B: readable category chip) */}
-          <div style={{ position: 'absolute', top: 10, left: 10 }}>
-            <div style={{
-              background: 'rgba(0,0,0,0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: 999,
-              padding: '4px 10px',
-              fontSize: 11,
-              fontWeight: 600,
-              color: '#FFFFFF',
-              letterSpacing: '0.02em',
-            }}>
-              {mission.category ?? domain}
-            </div>
-          </div>
+          {/* Top-left: category badge — frosted glass with border (B: readable category chip, defensive fallback) */}
+          {(() => {
+            const cat = mission.category?.trim() || domain?.trim() || null
+            if (!cat) return null
+            return (
+              <div style={{ position: 'absolute', top: 10, left: 10 }}>
+                <div style={{
+                  background: 'rgba(0,0,0,0.55)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  borderRadius: 999,
+                  padding: '4px 10px',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: '#FFFFFF',
+                  letterSpacing: '0.02em',
+                }}>
+                  {cat}
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Top-right: bookmark save button — frosted glass (B: frosted glass bookmark) */}
           <div

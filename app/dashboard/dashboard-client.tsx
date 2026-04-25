@@ -17,6 +17,7 @@ import { HeroCardV2Scroll } from '@/components/dashboard/hero-card-v2-scroll'
 import { MissionCarousel } from '@/components/dashboard/mission-carousel'
 import { useTheme } from '@/lib/theme'
 import { MOTION_PRESETS } from '@/lib/motion.config'
+import { getDisplayName } from '@/lib/utils'
 import type { StreakActivity } from '@/lib/supabase/queries/streak'
 
 // ── Date helpers ───────────────────────────────────────────────
@@ -96,7 +97,9 @@ export function DashboardClient({
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
 
   const karma = profile.karma_total ?? 0
-  const firstName = (profile.name ?? 'Biri').split(' ')[0]
+  const displayName = getDisplayName({
+    full_name: profile.name ?? null,
+  })
 
   const [activeTab, setActiveTab] = useState<TabKey>('recommended')
 
@@ -145,7 +148,7 @@ export function DashboardClient({
             color: c.cream,
           }}>
             Günaydın,{' '}
-            <em style={{ fontStyle: 'italic' }}>{firstName}</em>
+            <em style={{ fontStyle: 'italic' }}>{displayName}</em>
           </p>
         </div>
 
@@ -178,7 +181,7 @@ export function DashboardClient({
                 fontWeight: 600,
                 color: '#FFFFFF',
               }}>
-                {firstName[0].toUpperCase()}
+                {displayName[0].toUpperCase()}
               </span>
             </div>
           </Link>
@@ -199,7 +202,7 @@ export function DashboardClient({
           streak={profile.current_streak ?? profile.streak ?? 0}
           weeklyKarmaGain={weeklyKarmaGain}
           isEmpty={karma === 0}
-          userName={firstName}
+          userName={displayName}
           streakDays={streakActivity?.recentDays}
           lastActiveAt={streakActivity?.lastActiveAt}
         />

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { CommandProvider } from "@/components/ui/command-provider";
+import { ThemeProvider } from "@/lib/theme";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -61,10 +62,12 @@ export default function RootLayout({
       className={cn(jakarta.variable, fraunces.variable)}
     >
       <body className="font-sans">
-        <CommandProvider>
-          {children}
-          <Toaster />
-        </CommandProvider>
+        <ThemeProvider initial="dark">
+          <CommandProvider>
+            {children}
+            <Toaster />
+          </CommandProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

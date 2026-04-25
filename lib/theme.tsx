@@ -58,11 +58,11 @@ const DARK: SemanticColors = {
 
 const LIGHT: SemanticColors = {
   ink: '#241E18',
-  // 3-katman semantic surface ladder (light mode)
-  ink900: '#F5EFE0',        // page background — en sıcak/koyu (warm)
-  ink800: '#FAF5E8',        // surface (kart, sheet) — orta katman
-  ink700: '#FDFAF1',        // surface elevated (featured kart, modal) — en parlak
-  ink600: '#E8DCC4',        // hairline border — warm tan
+  // 3-katman semantic surface ladder (light mode) — delta artırıldı (~%5 lightness)
+  ink900: '#EFE6D2',        // page background — daha sıcak/koyu (warm), 3-katman delta başlangıcı
+  ink800: '#F8F2E2',        // surface (kart, sheet) — orta katman, daha gözle ayırt edilebilir
+  ink700: '#FFFCF4',        // surface elevated (featured kart, modal) — neredeyse beyaz, "yükselmiş" hissi
+  ink600: '#D9C9A4',        // hairline border — daha belirgin warm tan, sınır gözle görünür
   ink500: '#C9A24A',        // saturated accent (progress fill, active states)
   ink400: '#9E9580',        // muted text alt
   ink300: '#7A6F5E',        // muted text
@@ -138,13 +138,13 @@ export { DARK, LIGHT }
 export function getCardShadow(mode: Mode, depth: 'sm' | 'md' | 'lg' = 'md'): string {
   if (mode === 'light') {
     const presets = {
-      sm: '0 1px 3px rgba(80,60,20,0.06), 0 1px 1px rgba(80,60,20,0.04)',
-      md: '0 4px 12px rgba(80,60,20,0.08), 0 1px 3px rgba(80,60,20,0.05)',
-      lg: '0 8px 24px rgba(80,60,20,0.10), 0 2px 6px rgba(80,60,20,0.06)',
+      sm: '0 1px 4px rgba(80,60,20,0.10), 0 1px 2px rgba(80,60,20,0.06)',
+      md: '0 4px 14px rgba(80,60,20,0.12), 0 2px 4px rgba(80,60,20,0.08)',
+      lg: '0 12px 30px rgba(80,60,20,0.16), 0 4px 8px rgba(80,60,20,0.10)',
     }
     return presets[depth]
   }
-  // dark mode
+  // dark mode (unchanged)
   const presets = {
     sm: '0 1px 4px rgba(0,0,0,0.10)',
     md: '0 2px 8px rgba(0,0,0,0.18)',

@@ -283,8 +283,8 @@ export default function LandingPage() {
 
     const names = ['Zeynep K.', 'Mehmet A.', 'Deniz Y.', 'Ayse B.', 'Can S.', 'Elif D.', 'Omer T.', 'Selin M.', 'Berk O.', 'Ece P.', 'Kaan L.', 'Naz R.', 'Burak V.']
     const cities = ['Kadikoy', 'Besiktas', 'Ankara', 'Izmir', 'Bursa', 'Eskisehir', 'Antalya', 'Konya', 'Gaziantep', 'Trabzon', 'Adana']
-    const tasks = ['kitap topladi', 'park temizledi', 'yasliya yardim etti', 'fidan dikti', 'kan bagisladi', 'mama dagitti', 'okuma atolyesi verdi', 'gida dagitimi yapti']
-    const mins = ['2dk once', '4dk once', '7dk once', '12dk once', '15dk once', '18dk once', '24dk once', '32dk once']
+    const tasks = ['kitap topladı', 'park temizledi', 'yaşlıya yardım etti', 'fidan dikti', 'kan bağışladı', 'mama dağıttı', 'okuma atölyesi verdi', 'gıda dağıtımı yaptı']
+    const mins = ['2dk önce', '4dk önce', '7dk önce', '12dk önce', '15dk önce', '18dk önce', '24dk önce', '32dk önce']
     const karmaList = [50, 100, 120, 150, 180, 200, 250]
 
     function item() {
@@ -755,19 +755,19 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <svg width="30" height="30" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#24201B" /><circle cx="32" cy="32" r="28.5" fill="none" stroke="#E8C268" strokeWidth="1.2" strokeOpacity=".7" /><g transform="translate(32,32)"><rect x="-3" y="-4" width="6" height="18" rx="1" fill="#F4EEDF" /><rect x="-7" y="13" width="14" height="2.4" rx="1" fill="#F4EEDF" /><circle cx="0" cy="-11" r="4.2" fill="#E8C268" /></g></svg>
             <span style={{ fontFamily: "var(--font-display),'Fraunces',serif", fontSize: 22, fontWeight: 500, letterSpacing: '-.02em' }}>
-              Iyi<em style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</em>
+              İyi<em style={{ fontStyle: 'italic', color: '#E8C268' }}>Biri</em>
             </span>
           </div>
           <div className="links">
-            <a href="#nasil">Nasil calisir</a>
+            <a href="#nasil">Nasıl çalışır</a>
             <a href="#karma">Karma</a>
             <a href="#stklar">İyilik Öncüleri</a>
             <a href="#manifesto">Manifesto</a>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <Link href="/auth/login" className="btn btn-ghost">Giris</Link>
+            <Link href="/auth/login" className="btn btn-ghost">Giriş</Link>
             <Link href="/auth/signup" className="btn btn-primary">
-              Indir
+              İNDİR
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </Link>
           </div>
@@ -783,29 +783,29 @@ export default function LandingPage() {
             <div>
               <div className="eyebrow-live">
                 <span className="pulse-dot" />
-                <span>Su an <b ref={liveCountRef} style={{ color: '#F4EEDF', fontWeight: 700 }}>1.247</b> kisi gonullu</span>
+                <span>Şu an <b ref={liveCountRef} style={{ color: '#F4EEDF', fontWeight: 700 }}>1.247</b> kişi gönüllü</span>
               </div>
               <h1 className="display">
-                <span className="word"><em>Iyilik</em></span><br />
+                <span className="word"><em>İyilik</em></span><br />
                 <span className="word">biriktirilir.</span>
               </h1>
               <p className="lead">
-                Mahallendeki İyilik Öncülerine gonullu ol, gercek gorevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her iyilik gorunur, her katki degerli.
+                Mahallendeki İyilik Öncülerine gönüllü ol, gerçek görevler tamamla, <b style={{ color: '#E8C268' }}>Karma</b> biriktir. Her iyilik görünür, her katkı değerli.
               </p>
               <div className="cta-row">
                 <Link className="store-btn" href="/auth/login">
                   <svg width="22" height="26" viewBox="0 0 24 28" fill="#F4EEDF"><path d="M17.05 20.28c-.98.95-2.05.86-3.08.4-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" /></svg>
-                  <div><div className="sm">Edin</div><div className="lg">App Store</div></div>
+                  <div><div className="sm">EDİN</div><div className="lg">App Store</div></div>
                 </Link>
                 <Link className="store-btn" href="/auth/login">
                   <svg width="22" height="24" viewBox="0 0 24 26" fill="#F4EEDF"><path d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198 2.807 1.626c.615.354.615 1.235 0 1.59l-2.808 1.626L15.212 12l2.486-2.491zM5.864 2.658 16.802 8.99l-2.302 2.302-8.636-8.635z" /></svg>
-                  <div><div className="sm">Edin</div><div className="lg">Google Play</div></div>
+                  <div><div className="sm">EDİN</div><div className="lg">Google Play</div></div>
                 </Link>
               </div>
               <div className="hero-meta">
-                <div className="m"><b data-cu="18247">0</b><span>Aktif gonullu</span></div>
+                <div className="m"><b data-cu="18247">0</b><span>Aktif gönüllü</span></div>
                 <div className="m"><b data-cu="248">0</b><span>İyilik Öncüsü</span></div>
-                <div className="m"><b data-cu="62103">0</b><span>Tamamlanan gorev</span></div>
+                <div className="m"><b data-cu="62103">0</b><span>Tamamlanan görev</span></div>
               </div>
             </div>
 
@@ -814,9 +814,9 @@ export default function LandingPage() {
               <div className="token-overlay">karma &middot; iyilik biriktir</div>
               <canvas id="three-canvas" ref={threeCanvasRef} />
               <div className="token-stats">
-                <div className="token-stat"><b>18.247</b>gonullu</div>
+                <div className="token-stat"><b>18.247</b>gönüllü</div>
                 <div className="token-stat"><b>2.4M</b>toplam karma</div>
-                <div className="token-stat"><b>62.103</b>tamamlanan gorev</div>
+                <div className="token-stat"><b>62.103</b>tamamlanan görev</div>
               </div>
             </div>
           </div>
@@ -831,8 +831,8 @@ export default function LandingPage() {
       {/* SCROLL STORY -- 4 phone ekrani, pinned */}
       <section className="story" id="nasil">
         <div className="wrap" style={{ paddingBottom: 40 }}>
-          <div className="sec-eyebrow">Nasil calisir</div>
-          <h2 className="sec-title">Iyilik <em>soyut</em> degil. <br />Bir gorev. Bir saat. <em>Bir etki.</em></h2>
+          <div className="sec-eyebrow">Nasıl çalışır</div>
+          <h2 className="sec-title">İyilik <em>soyut</em> değil. <br />Bir görev. Bir saat. <em>Bir etki.</em></h2>
         </div>
 
         <div className="story-pin">
@@ -842,23 +842,23 @@ export default function LandingPage() {
               <div className="story-texts">
                 <div className="story-text" data-step="0">
                   <div className="num">01 &middot; BUL</div>
-                  <h3>Mahallende <em>sana uygun</em> gorev.</h3>
-                  <p>Konum, ilgi alani, sure filtresi. Yakinindaki her öncünün aktif cagrilari tek yerde. Kitap paketleme, yasliya market, park temizligi -- hepsi gercek, hepsi dogrulanmis.</p>
+                  <h3>Mahallende <em>sana uygun</em> görev.</h3>
+                  <p>Konum, ilgi alanı, süre filtresi. Yakınındaki her öncünün aktif çağrıları tek yerde. Kitap paketleme, yaşlıya market, park temizliği -- hepsi gerçek, hepsi doğrulanmış.</p>
                 </div>
                 <div className="story-text" data-step="1">
                   <div className="num">02 &middot; KATIL</div>
-                  <h3>Tek dokunusla <em>basvur.</em></h3>
-                  <p>Koordinatör seni gorur, onaylar. Takvimine eklenir. Hatirlatma gelir. Uygulamadan cikmadan her sey hallolur.</p>
+                  <h3>Tek dokunusla <em>başvur.</em></h3>
+                  <p>Koordinatör seni görür, onaylar. Takvimine eklenir. Hatırlatma gelir. Uygulamadan çıkmadan her şey hallolur.</p>
                 </div>
                 <div className="story-text" data-step="2">
                   <div className="num">03 &middot; YAP</div>
-                  <h3>Gerceklestir. <em>Check-in yap.</em></h3>
-                  <p>Alana vardiginda QR kodu okut, gorev baslar. Biten gorev koordinator tarafindan dogrulanir -- fotografli, imzali, sahitli.</p>
+                  <h3>Gerçekleştir. <em>Check-in yap.</em></h3>
+                  <p>Alana vardığında QR kodu okut, görev başlar. Biten görev koordinator tarafından doğrulanır -- fotoğraflı, imzalı, şahitli.</p>
                 </div>
                 <div className="story-text" data-step="3">
                   <div className="num">04 &middot; KARMA</div>
                   <h3>Karma kazan, <em>fark yarat.</em></h3>
-                  <p>Gorev tamamlaninca Karma hesabina duser. Seviye atla, rozet kazan, odullerini kullan. Itibarin artik gercek ve gorunur.</p>
+                  <p>Görev tamamlandığında Karma hesabına düşer. Seviye atla, rozet kazan, ödüllerini kullan. İtibarın artık gerçek ve görünür.</p>
                 </div>
               </div>
 
@@ -877,9 +877,9 @@ export default function LandingPage() {
                       <div style={{ padding: '56px 18px 14px', background: '#1A1612', borderBottom: '1px solid rgba(232,194,104,.08)' }}>
                         <div style={{ fontSize: 10, letterSpacing: '.16em', color: '#A89E8A', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>Kesfet &middot; 47 gorev yakinda</div>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
-                          <span style={{ fontSize: 11, padding: '5px 12px', background: '#E8C268', color: '#1A1612', borderRadius: 999, fontWeight: 700 }}>Tumu</span>
-                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Cevre</span>
-                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Egitim</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: '#E8C268', color: '#1A1612', borderRadius: 999, fontWeight: 700 }}>Tümü</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Çevre</span>
+                          <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Eğitim</span>
                           <span style={{ fontSize: 11, padding: '5px 12px', background: 'rgba(232,194,104,.1)', color: '#CEC5B2', borderRadius: 999 }}>Hayvan</span>
                         </div>
                       </div>

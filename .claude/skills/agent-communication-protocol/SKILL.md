@@ -330,6 +330,114 @@ Auto-trigger ile parent session "bu iş büyük/karışık mı?" sorusunu **her 
 
 ---
 
+## 6.6. Katman H — Test communication (test-engineer ↔ diğer agent'lar)
+
+### Kural
+
+Test-engineer izole çalışmaz. Önemli değişiklikler sonrası **diğer agent'lar test-engineer'a notify eder**, test-engineer da raporundaki bug pattern'lerini ilgili agent'a **handoff** olarak iletir. İki yönlü kanal protokolün parçasıdır.
+
+---
+
+### Inbound (diğer agent → test-engineer notify)
+
+Bir agent deliverable'ını bitirdiğinde, deliverable türüne göre test-engineer'a notify eder. Notify = `docs/test/_inbox.md`'ye 1 satırlık trigger entry eklemek.
+
+**Trigger matrisi:**
+
+| Tetik koşulu | Notify eden | Notify türü | Önerilen test fazı |
+|---|---|---|---|
+| Yeni feature/route deploy edildi (3+ commit veya yeni page) | frontend-engineer | "Feature deploy" | Faz 1 smoke + Faz 2 ilgili flow'lar |
+| Migration apply edildi (özellikle RLS, schema, trigger) | supabase-backend | "Migration applied" | Faz 1 critical path + data integrity audit |
+| UI spec implement edildi (component overhaul) | frontend-engineer | "Spec implemented" | Faz 2 ilgili flow + XC1 theme parity |
+| Token değişti (palette, motion, shadow) | design-system-keeper | "Token change" | XC1 theme parity + XC2 motion (regression) |
+| Auth flow değişti (Capacitor OAuth, KVKK, session) | auth-capacitor | "Auth change" | Faz 1 A1-A6 (auth suite) |
+| ADR Accept edildi (architectural decision) | coordinator veya delivery agent | "ADR accepted" | İlgili flow + cross-cutting (varsa) |
+| Bug fix sonrası | frontend-engineer veya supabase-backend | "Bug fix" | Sadece o bug'ın repro adımları + regression suite |
+
+**Inbox entry formatı (`docs/test/_inbox.md`):**
+
+```markdown
+## YYYY-MM-DD HH:MM — [Notify türü]
+
+**Notify eden:** frontend-engineer
+**Tetik:** Job 7 dashboard hero kart minimal refactor merge edildi (commit abcd1234)
+**Etkilenen ekran/flow:** /dashboard (D1), karma kart hero
+**Önerilen test fazı:** Faz 2 — D1 + XC1 (theme parity)
+**Aciliyet:** Routine | Smoke (deploy önce) | Hot fix (P0 bug doğrulama)
+**Linkler:** PR/commit/spec dosyaları
+```
+
+Test-engineer her gece (veya kullanıcı çağırınca) `_inbox.md`'yi açar, biriken trigger'ları faz planına çevirir, kullanıcıdan onay alır, koşturur. **Inbox boşsa proaktif test başlatmaz** — talebe bağlıdır.
+
+---
+
+### Outbound (test-engineer → diğer agent'lar handoff)
+
+Test-engineer faz raporunu kapatırken bug pattern'lerini ilgili agent'a yönlendirir. Yönlendirme = pattern memo + handoff log.
+
+**Outbound matrisi:**
+
+| Pattern türü | Routes to | Handoff dosyası | Severity threshold |
+|---|---|---|---|
+| Theme-blind component (hardcoded color, light/dark drift) | frontend-engineer + design-system-keeper | `docs/test/_patterns/<tarih>-theme-blind.md` | P1+ |
+| Optimistic UI eksik | frontend-engineer | `docs/test/_patterns/<tarih>-optimistic-ui.md` | P0 (P1 eğer happy path'te değil) |
+| Idempotency (duplicate insert) | supabase-backend | `docs/test/_patterns/<tarih>-idempotency.md` | P0 |
+| Locale bug (`İstanbul.toLowerCase()`) | frontend-engineer | `docs/test/_patterns/<tarih>-locale.md` | P1 |
+| Safe-area çakışması | frontend-engineer | `docs/test/_patterns/<tarih>-safe-area.md` | P1 |
+| Cross-screen data drift | supabase-backend (RLS view) veya frontend-engineer (state mgmt) | `docs/test/_patterns/<tarih>-data-drift.md` | P0 |
+| Reduced motion ihlali | frontend-engineer | `docs/test/_patterns/<tarih>-motion-a11y.md` | P1 |
+| RLS leak (yetkisiz veri görünümü) | supabase-backend | `docs/test/_patterns/<tarih>-rls-leak.md` | P0 (security blocker) |
+| ADR ihlali tespiti | coordinator + ilgili agent | `docs/test/_patterns/<tarih>-adr-violation.md` | P0 |
+| UX research bulgusu (kullanıcı confused, copy belirsiz) | ux-researcher | `docs/test/_patterns/<tarih>-ux-finding.md` | P1+ |
+| UI spec drift (implementation spec'le uyumsuz) | ui-designer | `docs/test/_patterns/<tarih>-spec-drift.md` | P1 |
+
+**Handoff yöntemi:**
+
+1. Pattern memo yaz (`docs/test/_patterns/<tarih>-<pattern-adı>.md`) — Bölüm 6'daki şablon (kök neden + etkilenen bug'lar + önerilen sistemik fix + handoff target).
+2. **Hedef agent'ın "kaynak" dosyasında değil**, agent'ın **inbox'ında** veya **status board'da** notify et:
+   - `docs/<domain>/_inbox.md` (varsa) — örn. frontend-engineer için `docs/eng/_inbox.md`
+   - Veya status board'a "Pattern memo: <ad> → <agent>" satırı (Done today + handoff'a)
+3. Pattern memo dosyasının kendi handoff log'unda hedef agent satırı:
+   ```
+   ## Handoff Log
+   - YYYY-MM-DD HH:MM — frontend-engineer 📥 — Pattern review pending. Acil: P0.
+   ```
+4. Hedef agent fix'i bitirdiğinde aynı satırı `✅ Fixed (commit xyz)` olarak günceller.
+
+---
+
+### Coordinator role (test trafiği orkestrasyonu)
+
+Coordinator, test-engineer ↔ delivery agent'lar arasındaki trafiği gözlemler ve şu durumlarda devreye girer:
+
+- **3+ pattern memo aynı agent'a yığılırsa** — coordinator agent'a sprint task'ı önerir (toplu fix paketi).
+- **Test-engineer P0 bug raporladıysa** — coordinator deploy bloke önerir, ilgili agent'a "stop other work, fix this" notify eder.
+- **Aynı bug 2 faz arka arkaya tekrarlarsa** — coordinator regression test suite'e eklenmesini ister (test-engineer'a handoff).
+
+---
+
+### Cheat-sheet — Inbound + Outbound
+
+**Delivery agent (FE/BE/UI/DS) deliverable bitirdiğinde:**
+1. Mevcut Katman A handoff log + Katman B status board + Katman C journal yaz (her zamanki gibi).
+2. **Katman H ek:** Eğer trigger matrisinde bulunduğun bir koşul varsa, `docs/test/_inbox.md`'ye 1 satır notify entry ekle.
+
+**Test-engineer faz raporu kapatırken:**
+1. Faz raporu yaz (Bölüm 4-5 mevcut format).
+2. **Katman H ek:** 3+ bug aynı kök nedene bağlıysa pattern memo aç + outbound matrisindeki agent'a handoff bildir.
+3. Status board'a "Pattern memo → <agent>" satırı.
+
+---
+
+### Anti-patterns (Katman H için)
+
+❌ **"Major refactor merge edildi, kimseye haber yok."** — Test-engineer regresyonu kaçırır, bug deploy'a sızar.
+❌ **"Test raporu yazıldı, pattern memo açılmadı."** — Tek tek bug listesi var ama kök neden adreslenmedi, agent fix'leri spot fix kalır.
+❌ **"Inbox dolu ama test agent çağrılmadı."** — Trigger'lar birikiyor; en kötüsü 2 hafta sonra "neden bu kadar bug deploy oldu" sorusu.
+❌ **"Pattern memo yazıldı, hedef agent'a notify yok."** — Memo dosyası klasörde unutulur, kimse okumaz.
+
+---
+
 ## 7. Pratik cheat-sheet
 
 ### Bir deliverable yazarken (her agent)

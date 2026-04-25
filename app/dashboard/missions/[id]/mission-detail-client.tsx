@@ -186,13 +186,17 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         </div>
       </div>
 
-      {/* ── 1.5 Title + category panel (solid background — guaranteed contrast — F: seçenek 2) ── */}
+      {/* ── 1.5 Title + category panel (solid background — guaranteed contrast — F: seçenek 2, defensive fallback) ── */}
       <div style={{ padding: '20px 20px 16px', background: c.ink900, position: 'relative', overflow: 'hidden' }}>
-        {(mission.category || mission.domain) && (
-          <div style={{ marginBottom: 8 }}>
-            <BadgeDS variant="dark">{mission.category || mission.domain}</BadgeDS>
-          </div>
-        )}
+        {(() => {
+          const cat = mission.category?.trim() || mission.domain?.trim() || null
+          if (!cat) return null
+          return (
+            <div style={{ marginBottom: 8 }}>
+              <BadgeDS variant="dark">{cat}</BadgeDS>
+            </div>
+          )
+        })()}
         <h1
           style={{
             fontFamily: 'Fraunces, serif',

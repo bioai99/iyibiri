@@ -169,6 +169,20 @@ Son söz: Auth akışı görünmez ama hissedilir. KVKK + session güvenliği + 
 
 **Handoff veya Status-board ❌ ise deliverable kapatılamaz** — eksikliği gider, tekrar yaz. Dashboard güncellemesi eski kural; yenisi **status board + unified journal + handoff log**.
 
+### Test-engineer notify (Katman H — protokol skill Bölüm 6.6)
+
+Auth flow değişiklikleri **kritik** — Faz 1 critical path'in temeli signup/verify/login. Her değişiklik sonrası `docs/test/_inbox.md`'ye notify entry.
+
+| Tetik | Notify türü | Test fazı |
+|---|---|---|
+| OAuth provider eklendi/değişti (Google, Apple) | "Auth change" | Faz 1 A6 + native sign-in (iOS/Android) |
+| KVKK consent flow değişti | "Auth change" | Faz 1 A2 (signup) + KVKK checkbox edge cases |
+| Capacitor native session bridge değişti | "Auth change" | XC4 (native interaction) + auth restore on relaunch |
+| Forgot/reset password flow değişti | "Auth change" | Faz 2 A4 + A5 |
+| Magic link / OTP delivery değişti | "Auth change" | Faz 1 A3 + rate limit edge case |
+
+**Pattern memo geldiğinde** (özellikle "RLS leak" auth tarafı veya session restore bug'ları — P0): hemen sprint başına.
+
 ### Peer review
 
 Tetikleyiciler (3 durumda zorunlu):

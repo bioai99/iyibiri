@@ -85,7 +85,23 @@ export async function middleware(request: NextRequest) {
   }
 
   // ============================================================
-  // /dashboard route guards (mevcut pattern korunur)
+  // Public routes (no auth required)
+  // ============================================================
+  const publicRoutes = [
+    '/',
+    '/auth/signin',
+    '/auth/signup',
+    '/auth/verify',
+    '/auth/forgot-password',
+    '/auth/reset-password',
+    '/auth/callback',
+  ]
+  const isPublic = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + '/')
+  )
+
+  // ============================================================
+  // /dashboard + /onboarding route guards (auth post-signup)
   // ============================================================
   let supabaseResponse = NextResponse.next({ request })
 
@@ -108,10 +124,44 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user && pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+  // Public routes: already logged-in users redirected to dashboard
+  if (isPublic) {
+    if (user && (pathname === '/auth/signin' || pathname === '/auth/signup')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+    return supabaseResponse
   }
 
+  // Protected routes (dashboard + onboarding): user must exist
+  if (!user) {
+    return NextResponse.redirect(new URL('/auth/signin', request.url))
+  }
+
+  // Email confirmation check
+  if (!user.email_confirmed_at) {
+    if (!pathname.startsWith('/auth/verify')) {
+      return NextResponse.redirect(new URL('/auth/verify', request.url))
+    }
+    return supabaseResponse
+  }
+
+  // Onboarding flow check (only for /dashboard requests)
+  if (pathname.startsWith('/dashboard')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('interests')
+      .eq('id', user.id)
+      .single()
+
+    // No onboarding flag in DB; check if interests array is empty or null
+    const hasCompleted = profile?.interests && Array.isArray(profile.interests) && profile.interests.length > 0
+
+    if (!hasCompleted) {
+      return NextResponse.redirect(new URL('/onboarding/welcome', request.url))
+    }
+  }
+
+  // Auth pages after email verified: skip onboarding check, go straight to dashboard
   if (user && pathname.startsWith('/auth') && !pathname.includes('callback')) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
