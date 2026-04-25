@@ -52,9 +52,12 @@ export interface Database {
         Row: {
           id: string
           name: string | null
+          full_name: string | null
+          first_name: string | null
           avatar_url: string | null
           avatar_type: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total: number
+          karma: number
           level: number
           streak: number
           last_active: string | null

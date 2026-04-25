@@ -97,8 +97,10 @@ export function DashboardClient({
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
 
   const karma = profile.karma_total ?? 0
+  // BUG-005 fix (Vol-8): legacy `name` column null. Read first_name + full_name (Migration 024/026 + Pattern D).
   const displayName = getDisplayName({
-    full_name: profile.name ?? null,
+    first_name: profile.first_name,
+    full_name: profile.full_name ?? profile.name ?? null,
   })
 
   const [activeTab, setActiveTab] = useState<TabKey>('recommended')

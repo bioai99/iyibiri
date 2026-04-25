@@ -127,4 +127,66 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 18:50 — Bug fix (Sprint Vol-5) → 🚨 P0 reopen via Vol-6
+
+**Notify eden:** test-engineer (Vol-5 push doğrulaması)
+**Tetik:** Vol-5 deploy verify — +t5 user yeni signup → onboarding tam → "Hadi başlayalım" → /dashboard değil **/onboarding/welcome'a redirect**.
+**Etkilenen ekran/flow:** A2 (signup), O3 (city completion), D1 (dashboard ulaşımı), middleware
+**Önerilen test fazı:** Vol-7 — Migration 026 apply sonrası +t6 yeni signup → dashboard verify
+**Aciliyet:** **P0 BLOCKER** — TÜM yeni signup'lar bozuk
+
+**Test sonucu:**
+- ⚠️ BUG-017 reopen — onboarding loop hâlâ aktif (Vol-5 fix tek başına yetmedi)
+- 🚨 **Pattern H (NEW)** — `profiles` row yaratılmıyor (trigger silent fail). 
+  - REST query: `select * from profiles where id = <userId>` → `[]` empty
+  - auth.users row var, profile yok → middleware redirect, karma 0, greeting fallback
+  - Tek kök sebep: 3 bug (BUG-005, BUG-011, BUG-017) hepsini açıklıyor
+  - Pattern memo: `_patterns/2026-04-26-profile-row-missing.md`
+- 🛠️ **Migration 026 yazıldı** — `supabase/migrations/026_repair_missing_profiles.sql`
+  - A) Schema safety (idempotent ALTER)
+  - B) Backfill missing profiles + welcome_bonus
+  - C) Re-trigger with `RAISE NOTICE` + step tracking (visible logs)
+  - D) Verification SQL queries (yorum olarak migration sonunda)
+
+**User aksiyonu (KRİTİK):**
+1. Supabase SQL Editor → Migration 026 apply (tek seferlik)
+2. Verify query 1 koştur: `count(missing profiles)` → 0 olmalı
+3. Verify query 2: +t5 user için `karma=100, full_name='Test ...'`
+4. Test-engineer Vol-7 koşusu: +t6 signup → dashboard ulaşma + tüm verify
+
+**Sprint Vol-7 önerisi:**
+- 026 apply → +t6 signup full regression (~30 dk)
+- Eğer trigger hâlâ silent fail → Supabase dashboard log'una bak (RAISE NOTICE artık görünür)
+- Frontend defansif: city page UPDATE → UPSERT (15 dk, ileride güvence)
+
+---
+
+### 2026-04-26 19:40 — Bug fix (Vol-7 + Vol-8) ✅ Major win
+
+**Notify eden:** test-engineer (Vol-7 regression + Vol-8 fix)
+**Tetik:** Migration 026 user tarafından apply edildi → +t5 user için profile satırı backfill oldu, Vol-7 re-onboarding regression koşturuldu.
+**Etkilenen ekran/flow:** A2/A3 signup, O2/O3 onboarding, D1 dashboard, hero karma, theme persist
+**Aciliyet:** P0 doğrulama
+
+**Vol-7 sonuçları:**
+- ✅ **BUG-017 FIXED** — Onboarding completion loop kırıldı. +t5 re-onboarding (Çevre+Eğitim → İstanbul+25-34 → Bitir → "Hadi başlayalım") → /dashboard'a düştü, loop yok.
+- ✅ **BUG-018 FIXED** — City validation: city seçili değilken CTA disabled "Lütfen şehir seç" gri.
+- ✅ **BUG-019 FIXED** — City CTA "Bitir →" gold (eski "Hesabımı oluştur" kaldırıldı).
+- ✅ **BUG-011 FIXED** — Hero karma kart "100 Karma" + "+100 bu hafta" + butterfly + "İyi Biri" 5-dot progress visible.
+- ✅ **BUG-014 FIXED** — Light mode hero kart cream zemin üzerinde tam visible.
+- ✅ **BUG-015 FIXED** — Theme persist çalışıyor: localStorage 'iyibiri-theme' set + reload sonrası light mode korundu.
+- ✅ **BUG-003 FIXED** — Mission card "Çevre" / "Topluluk" kategori chip dolu görünüyor.
+- ⚠️ **BUG-005 sub-issue** — Greeting "Hoş geldin" hala fallback. Diagnostik: `profiles.full_name="Test İyiBiri"`, `first_name="Test"`, `name=null`. Dashboard `profile.name` (legacy) okuyordu.
+
+**Vol-8 fix:**
+- `app/dashboard/dashboard-client.tsx`:101 — `getDisplayName({full_name: profile.name})` → `getDisplayName({first_name: profile.first_name, full_name: profile.full_name ?? profile.name})`
+- `lib/supabase/types.ts` — profiles Row type'ına `full_name`, `first_name`, `karma` eklendi (Migration 024/026 senkron)
+- Typecheck ✅ temiz
+
+**Linkler:** Migration 026 applied (user manual), commits Vol-5 + Vol-8 patch ready.
+
+**Sıradaki: Vol-9 push** (3 dosya: dashboard-client, types, BUG-005 verification) → +t6 fresh signup ile end-to-end smoke (greeting "Test" görünmeli + tüm önceki fixler intact). Sonra Faz 2 (M3, P1, S1, K1-K5) test başlayabilir.
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
