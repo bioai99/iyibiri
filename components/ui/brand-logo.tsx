@@ -211,6 +211,12 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
+          background: mode === 'light'
+            ? 'radial-gradient(circle at center, rgba(232,194,104,0.15) 0%, transparent 65%)'
+            : 'radial-gradient(circle at center, rgba(232,194,104,0.18) 0%, transparent 70%)',
+          borderRadius: '50%',
+          width: effectiveSize * 1.2,
+          height: effectiveSize * 0.95,
         }}
         {...floatAnimProps}
       >

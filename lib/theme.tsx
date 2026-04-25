@@ -58,22 +58,23 @@ const DARK: SemanticColors = {
 
 const LIGHT: SemanticColors = {
   ink: '#241E18',
-  ink900: '#FAF5E9',
-  ink800: '#F5EEDD',
-  ink700: '#EBE3CE',
-  ink600: '#D9CFB4',
-  ink500: '#B8AD92',
-  ink400: '#9E9580',
-  ink300: '#7A6F5E',
-  ink200: '#3E3830',
-  ink100: '#241E18',
-  cream: '#241E18',
-  gold: '#B58F3D',
-  goldDim: '#B58F3D',
-  goldSoft: 'rgba(181,143,61,0.14)',
+  // 3-katman semantic surface ladder (light mode)
+  ink900: '#F5EFE0',        // page background — en sıcak/koyu (warm)
+  ink800: '#FAF5E8',        // surface (kart, sheet) — orta katman
+  ink700: '#FDFAF1',        // surface elevated (featured kart, modal) — en parlak
+  ink600: '#E8DCC4',        // hairline border — warm tan
+  ink500: '#C9A24A',        // saturated accent (progress fill, active states)
+  ink400: '#9E9580',        // muted text alt
+  ink300: '#7A6F5E',        // muted text
+  ink200: '#3E3830',        // body text alt
+  ink100: '#241E18',        // body text
+  cream: '#241E18',         // primary text (light mode'da koyu metin)
+  gold: '#B58F3D',          // brand gold — light mode için doygun bronz
+  goldDim: '#9A7A33',
+  goldSoft: 'rgba(181,143,61,0.10)',
   goldLine: 'rgba(181,143,61,0.42)',
   clay: '#C8553D',
-  claySoft: 'rgba(200,85,61,0.12)',
+  claySoft: 'rgba(200,85,61,0.10)',
   blush: '#E9CFC2',
   sage: '#C4CBAC',
   wheat: '#EADDB8',
@@ -129,3 +130,25 @@ export function useTheme() {
 
 // Export palettes for direct use where needed
 export { DARK, LIGHT }
+
+/**
+ * Mode-aware shadow preset — light: warm + deep, dark: standard
+ * Used for card surfaces to enhance visual hierarchy and depth
+ */
+export function getCardShadow(mode: Mode, depth: 'sm' | 'md' | 'lg' = 'md'): string {
+  if (mode === 'light') {
+    const presets = {
+      sm: '0 1px 3px rgba(80,60,20,0.06), 0 1px 1px rgba(80,60,20,0.04)',
+      md: '0 4px 12px rgba(80,60,20,0.08), 0 1px 3px rgba(80,60,20,0.05)',
+      lg: '0 8px 24px rgba(80,60,20,0.10), 0 2px 6px rgba(80,60,20,0.06)',
+    }
+    return presets[depth]
+  }
+  // dark mode
+  const presets = {
+    sm: '0 1px 4px rgba(0,0,0,0.10)',
+    md: '0 2px 8px rgba(0,0,0,0.18)',
+    lg: '0 8px 24px rgba(0,0,0,0.30)',
+  }
+  return presets[depth]
+}

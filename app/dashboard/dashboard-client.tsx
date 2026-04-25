@@ -14,7 +14,7 @@ import {
   ThemeToggle,
 } from '@/components/ui/ds'
 import { HeroCardV2Scroll } from '@/components/dashboard/hero-card-v2-scroll'
-import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
+import { MissionCarousel } from '@/components/dashboard/mission-carousel'
 import { useTheme } from '@/lib/theme'
 import { MOTION_PRESETS } from '@/lib/motion.config'
 import type { StreakActivity } from '@/lib/supabase/queries/streak'
@@ -49,7 +49,6 @@ interface Props {
   activeMissionsWithNGO: MissionWithNGO[]
   weeklyKarmaGain?: number
   streakActivity?: StreakActivity
-  featuredMissionSelectionReason?: string
 }
 
 // ── Tab key ────────────────────────────────────────────────────
@@ -69,7 +68,6 @@ export function DashboardClient({
   activeMissionsWithNGO,
   weeklyKarmaGain = 0,
   streakActivity,
-  featuredMissionSelectionReason = 'sana öneriyoruz',
 }: Props) {
   const { colors: c } = useTheme()
 
@@ -204,25 +202,15 @@ export function DashboardClient({
         />
       </div>
 
-      {/* ── 2.5 DailyMissionCard ── Things 3 "featured focal point" pattern */}
-      {/* UX audit H6: "Günün görevi net fokal nokta" — recommended[0] featured render */}
-      {/* K4: selectionReason calculated server-side (yakın > yeni > kısa-süreli > default) */}
+      {/* ── 2.5 MissionCarousel ── 3-kart carousel + hero variant */}
+      {/* UX audit çözüm: featured single card → 3-mission carousel */}
       {recommendedMissions.length > 0 && (
-        <div style={{ padding: '16px 0 0' }}>
-          <DailyMissionCard
-            mission={{
-              id: recommendedMissions[0].id,
-              title: recommendedMissions[0].title,
-              ngo: recommendedMissions[0].ngos?.short_name ?? recommendedMissions[0].ngos?.name ?? 'İyiBiri',
-              ngoLogo: recommendedMissions[0].ngos?.logo_url ?? undefined,
-              photoUrl: recommendedMissions[0].photo_url ?? undefined,
-              karma: recommendedMissions[0].karma,
-              duration: recommendedMissions[0].duration ?? undefined,
-              impactStatement: recommendedMissions[0].impact_statement ?? undefined,
-            }}
-            selectionReason={featuredMissionSelectionReason}
-          />
-        </div>
+        <MissionCarousel
+          missions={recommendedMissions.slice(0, 3)}
+          userId={profile.id}
+          isMember={(ngoId) => memberNgoIds.includes(ngoId)}
+          savedIds={new Set(savedMissionIds)}
+        />
       )}
 
       {/* ── 3. Tab chips ── */}

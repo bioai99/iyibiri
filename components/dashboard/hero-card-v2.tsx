@@ -21,7 +21,7 @@ import Link from 'next/link'
 import { motion, useReducedMotion, animate } from 'framer-motion'
 import { Flame, Zap, Trophy } from 'lucide-react'
 
-import { useTheme } from '@/lib/theme'
+import { useTheme, getCardShadow } from '@/lib/theme'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { BrandLogo } from '@/components/ui/brand-logo'
 import { StreakSnapshot } from './streak-snapshot'
@@ -154,7 +154,7 @@ export function HeroCardV2({
   streakDays,
   lastActiveAt,
 }: HeroCardV2Props) {
-  const { colors: c } = useTheme()
+  const { mode, colors: c } = useTheme()
   const shouldReduceMotion = useReducedMotion()
   const [displayKarma, setDisplayKarma] = useState(
     shouldReduceMotion ? karma : 0,
@@ -220,7 +220,7 @@ export function HeroCardV2({
       style={{
         background: c.ink800,
         border: `1px solid ${c.ink600}`,
-        boxShadow: '0 8px 32px rgba(232,194,104,0.35)',
+        boxShadow: getCardShadow(mode, 'md'),
       }}
     >
       {/* ── Üst: Karma solda, BrandLogo+tier sağda (tıklanabilir) ── */}
@@ -250,7 +250,7 @@ export function HeroCardV2({
               style={{
                 fontSize: 44,
                 fontWeight: 700,
-                color: c.cream,
+                color: isEmpty ? c.goldDim : c.gold,
                 letterSpacing: '-0.035em',
                 fontVariantNumeric: 'tabular-nums',
                 lineHeight: 0.95,
@@ -315,7 +315,7 @@ export function HeroCardV2({
         <div style={{ padding: '0 22px 14px' }}>
           <div
             className="h-[6px] w-full overflow-hidden rounded-full"
-            style={{ background: c.ink700 }}
+            style={{ background: c.ink600 }}
           >
             <motion.div
               initial={shouldReduceMotion ? { width: `${progressPct}%` } : { width: 0 }}
@@ -328,6 +328,7 @@ export function HeroCardV2({
               className="h-full rounded-full"
               style={{
                 background: `linear-gradient(90deg, ${c.goldDim} 0%, ${c.gold} 100%)`,
+                boxShadow: 'inset 0 0 4px rgba(181,143,61,0.3)',
               }}
             />
           </div>

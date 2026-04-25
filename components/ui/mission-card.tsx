@@ -6,11 +6,12 @@ import { motion } from 'framer-motion'
 import { Clock, MapPin, Bookmark, Flame } from 'lucide-react'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
-import { useTheme } from '@/lib/theme'
+import { useTheme, getCardShadow } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 
 interface MissionCardProps {
   mission: MissionWithNGO
+  variant?: 'compact' | 'default' | 'hero'
   onClick?: () => void
   isSaved?: boolean
   userId?: string
@@ -25,10 +26,43 @@ const domainEmoji: Record<string, string> = {
   financial: '🪙', animals: '🐾', culture: '🎭', default: '✦',
 }
 
-export function MissionCard({ mission, onClick, isSaved = false, userId, isMember = false }: MissionCardProps) {
-  const { colors: c } = useTheme()
+export function MissionCard({ mission, variant = 'default', onClick, isSaved = false, userId, isMember = false }: MissionCardProps) {
+  const { mode, colors: c } = useTheme()
   const [saved, setSaved] = useState(isSaved)
   const [pressed, setPressed] = useState(false)
+
+  // Variant-based styling
+  const variantStyles = {
+    compact: {
+      imageAspectRatio: '4/3' as const,
+      titleFontSize: 16,
+      titleFontWeight: 500,
+      bodyPadding: '12px 16px 12px',
+      borderWidth: '1px',
+      borderColor: c.ink600,
+      borderRadius: 14,
+    },
+    default: {
+      imageAspectRatio: '4/3' as const,
+      titleFontSize: 18,
+      titleFontWeight: 500,
+      bodyPadding: '16px 18px 16px',
+      borderWidth: '1px',
+      borderColor: c.ink600,
+      borderRadius: 16,
+    },
+    hero: {
+      imageAspectRatio: '16/9' as const,
+      titleFontSize: 22,
+      titleFontWeight: 600,
+      bodyPadding: '18px 20px 18px',
+      borderWidth: '1.5px',
+      borderColor: c.gold,
+      borderRadius: 18,
+    },
+  }
+
+  const style = variantStyles[variant]
 
   const toggleSave = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -75,17 +109,17 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
         onMouseLeave={() => setPressed(false)}
         style={{
           background: c.ink800,
-          borderRadius: 16,
-          border: `1px solid ${c.ink600}`,
+          borderRadius: style.borderRadius,
+          border: `${style.borderWidth} solid ${style.borderColor}`,
           overflow: 'hidden',
           cursor: 'pointer',
           transform: pressed ? 'scale(0.985)' : 'scale(1)',
           transition: 'transform 220ms cubic-bezier(.2,.8,.2,1)',
-          boxShadow: '0 1px 4px rgba(0,0,0,.06)',
+          boxShadow: getCardShadow(mode, 'sm'),
         }}
       >
         {/* ── Photo / Domain gradient header ── */}
-        <motion.div layoutId={`mission-photo-${mission.id}`} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
+        <motion.div layoutId={`mission-photo-${mission.id}`} style={{ position: 'relative', aspectRatio: style.imageAspectRatio, overflow: 'hidden' }}>
           {mission.photo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -191,7 +225,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
         </motion.div>
 
         {/* ── Body ── */}
-        <div style={{ padding: '16px 18px 16px' }}>
+        <div style={{ padding: style.bodyPadding }}>
           {/* Member badge */}
           {isMember && (
             <div style={{
@@ -203,22 +237,22 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               &#10003; {mission.ngos?.short_name ?? ''} üyesi
             </div>
           )}
-          {/* Title — UI-QW2: hierarchy refined (18px, weight 500) */}
+          {/* Title — variant-aware sizing */}
           <h2 style={{
             margin: 0,
-            fontSize: 18, fontWeight: 500, lineHeight: 1.25,
+            fontSize: style.titleFontSize, fontWeight: style.titleFontWeight, lineHeight: 1.25,
             color: c.cream,
             letterSpacing: '-0.02em',
             display: '-webkit-box',
-            WebkitLineClamp: 2,
+            WebkitLineClamp: variant === 'hero' ? 1 : 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}>
             {mission.title}
           </h2>
 
-          {/* Impact text */}
-          {impactText && (
+          {/* Impact text — hidden in hero variant */}
+          {impactText && variant !== 'hero' && (
             <p style={{
               margin: '6px 0 14px',
               fontSize: 13, lineHeight: 1.5,
@@ -232,33 +266,75 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
             </p>
           )}
 
-          {/* Meta row */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 8,
-          }}>
-            {/* Left: duration + location chips */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          {/* Meta row — hero variant shows inline below title; default/compact shows traditional layout */}
+          {variant === 'hero' ? (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              margin: '8px 0 0',
+              flexWrap: 'wrap',
+            }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                padding: '4px 10px',
+                background: c.goldSoft,
+                border: `1px solid ${c.goldLine}`,
+                borderRadius: 999,
+                fontSize: 11,
+                fontWeight: 600,
+                color: c.gold,
+              }}>
+                +{mission.karma.toLocaleString('tr-TR')} Karma
+              </div>
               {mission.duration && (
-                <MetaChip icon={<Clock size={10} />}>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5,
+                  padding: '4px 10px',
+                  background: `rgba(232, 194, 104, 0.1)`,
+                  border: `1px solid ${c.goldLine}`,
+                  borderRadius: 999,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: c.gold,
+                }}>
+                  <Clock size={10} />
                   {mission.duration}
-                </MetaChip>
-              )}
-              {mission.location && (
-                <MetaChip icon={<MapPin size={10} />}>
-                  {mission.location}
-                </MetaChip>
+                </div>
               )}
             </div>
+          ) : (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 8,
+            }}>
+              {/* Left: duration + location chips */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                {mission.duration && (
+                  <MetaChip icon={<Clock size={10} />}>
+                    {mission.duration}
+                  </MetaChip>
+                )}
+                {mission.location && (
+                  <MetaChip icon={<MapPin size={10} />}>
+                    {mission.location}
+                  </MetaChip>
+                )}
+              </div>
 
-            {/* Right: karma pill */}
-            <KarmaPill amount={mission.karma} />
-          </div>
+              {/* Right: karma pill */}
+              <KarmaPill amount={mission.karma} />
+            </div>
+          )}
 
-          {/* Urgency row — only when spotsLeft <= 5 */}
-          {spotsLeft <= 5 && (
+          {/* Urgency row — only when spotsLeft <= 5, hidden in hero variant */}
+          {variant !== 'hero' && spotsLeft <= 5 && (
             <div style={{
               borderTop: `1px solid ${c.ink600}`,
               marginTop: 12,
