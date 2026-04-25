@@ -8,10 +8,15 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div style={{ background: '#1A1612', minHeight: '100vh' }} />}>
+    <Suspense fallback={<VerifyPageFallback />}>
       <VerifyContent />
     </Suspense>
   )
+}
+
+function VerifyPageFallback() {
+  const { colors: c } = useTheme()
+  return <div style={{ background: c.ink900, minHeight: '100vh' }} />
 }
 
 function VerifyContent() {

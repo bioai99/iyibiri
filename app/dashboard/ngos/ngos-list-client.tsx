@@ -137,7 +137,7 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
                 width: 52,
                 height: 52,
                 borderRadius: '50%',
-                background: ngo.logo_url ? '#FFFFFF' : (ngo.color_accent ?? c.gold),
+                background: ngo.logo_url ? c.cream : (ngo.color_accent ?? c.gold),
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -156,7 +156,7 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
                   <span style={{
                     fontSize: 18,
                     fontWeight: 800,
-                    color: '#FFFFFF',
+                    color: c.cream,
                     fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
                   }}>
                     {(ngo.short_name ?? ngo.name)[0]}

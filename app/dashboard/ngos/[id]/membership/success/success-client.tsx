@@ -112,7 +112,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                 width: '100%',
                 height: '100%',
                 borderRadius: '50%',
-                background: '#fff',
+                background: c.cream,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -127,7 +127,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 />
               ) : (
-                <span style={{ fontWeight: 900, color: '#57524A', fontSize: 28 }}>
+                <span style={{ fontWeight: 900, color: c.ink600, fontSize: 28 }}>
                   {(ngo.short_name ?? ngo.name).slice(0, 2).toUpperCase()}
                 </span>
               )}
@@ -149,7 +149,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
               justifyContent: 'center',
             }}
           >
-            <Check size={20} color="#241E18" />
+            <Check size={20} color={c.ink900} />
           </div>
         </div>
 
@@ -223,7 +223,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                 fontStyle: 'italic',
                 fontWeight: 600,
                 fontSize: 22,
-                color: '#3E2F14',
+                color: c.ink700,
               }}
             >
               i

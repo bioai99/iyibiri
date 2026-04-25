@@ -126,8 +126,8 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       title: 'Başvurun alındı',
       sub: 'NGO 24 saat içinde yanıtlayacak.',
       containerStyle: {
-        background: '#2A2820',
-        border: '1px solid #3D3C2E',
+        background: c.ink800,
+        border: `1px solid ${c.ink600}`,
       },
     },
     checkin: {
@@ -135,8 +135,8 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       title: 'Görev günü — Check-in',
       sub: 'Konuma vardığında kod ile katıl.',
       containerStyle: {
-        background: '#2A2820',
-        border: `1px solid rgba(232,194,104,.25)`,
+        background: c.ink800,
+        border: `1px solid ${c.goldLine}`,
       },
     },
     completed: {
@@ -144,8 +144,8 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
       title: 'Tamamlandı',
       sub: `Bu görevden +${karma} Karma kazandın.`,
       containerStyle: {
-        background: 'linear-gradient(135deg, #2C2518 0%, #241E12 100%)',
-        border: `1px solid rgba(232,194,104,.35)`,
+        background: `linear-gradient(135deg, ${c.ink800} 0%, ${c.ink700} 100%)`,
+        border: `1px solid ${c.goldLine}`,
       },
     },
   }
@@ -153,7 +153,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
   const cfg = configs[state]
 
   return (
-    <div style={{ padding: '18px 16px 0' }}>
+    <div style={{ padding: '18px 16px 0', position: 'relative', zIndex: 1 }}>
       <div
         style={{
           ...cfg.containerStyle,
@@ -162,6 +162,7 @@ function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'complet
           display: 'flex',
           alignItems: 'center',
           gap: 16,
+          overflow: 'hidden',
         }}
       >
         {cfg.icon}
@@ -217,17 +218,17 @@ function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: str
             {/* Number circle */}
             <div
               style={{
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 borderRadius: '50%',
                 background: step.active ? c.gold : 'transparent',
-                border: step.active ? 'none' : '1px solid #5C5346',
+                border: step.active ? 'none' : `1.5px solid ${c.ink600}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: 13,
                 fontWeight: 700,
-                color: step.active ? '#24201B' : '#5C5346',
+                color: step.active ? c.ink900 : c.ink300,
                 flexShrink: 0,
               }}
             >
@@ -239,7 +240,7 @@ function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: str
               <div style={{ fontSize: 14, fontWeight: 600, color: c.cream, lineHeight: 1.3 }}>
                 {step.title}
               </div>
-              <div style={{ fontSize: 12, color: '#7A7060', marginTop: 2, lineHeight: 1.4 }}>
+              <div style={{ fontSize: 12, color: c.ink300, marginTop: 2, lineHeight: 1.4 }}>
                 {step.sub}
               </div>
             </div>
@@ -254,13 +255,22 @@ function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: str
           style={{
             width: '100%',
             background: 'transparent',
-            border: '1px solid #5C5346',
-            color: c.cream,
+            border: `1.5px solid ${c.ink600}`,
+            color: c.ink300,
             borderRadius: 999,
-            padding: '14px 20px',
-            fontSize: 15,
-            fontWeight: 500,
+            padding: '12px 24px',
+            fontSize: 13,
+            fontWeight: 600,
             cursor: 'pointer',
+            transition: 'all 220ms ease-out',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = c.danger
+            e.currentTarget.style.color = c.danger
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = c.ink600
+            e.currentTarget.style.color = c.ink300
           }}
         >
           Katılımı iptal et
@@ -280,7 +290,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
       <div style={{ padding: '24px 16px 0' }}>
         <div
           style={{
-            background: '#1E1B16',
+            background: c.ink800,
             border: '1.5px dashed rgba(232,194,104,.45)',
             borderRadius: 16,
             padding: '28px 20px',
@@ -311,7 +321,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
       <div style={{ padding: '16px 16px 0' }}>
         <div
           style={{
-            background: '#1E1B16',
+            background: c.ink800,
             border: `1px solid ${c.ink600}`,
             borderRadius: 14,
             padding: '14px 18px',
@@ -330,7 +340,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
           <button
             onClick={onMap}
             style={{
-              background: '#1E1B16',
+              background: c.ink800,
               border: `1px solid ${c.ink600}`,
               color: c.cream,
               borderRadius: 999,
@@ -357,7 +367,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
           style={{
             width: '100%',
             background: c.gold,
-            color: '#241E18',
+            color: c.ink900,
             border: 'none',
             borderRadius: 16,
             padding: '16px 20px',
@@ -405,7 +415,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
       <div style={{ padding: '20px 16px 0' }}>
         <div
           style={{
-            background: '#1E1B16',
+            background: c.ink800,
             border: `1px solid rgba(232,194,104,.35)`,
             borderRadius: 18,
             padding: 22,
@@ -509,7 +519,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
       <div style={{ padding: '24px 16px 0' }}>
         <div
           style={{
-            background: '#1E1B16',
+            background: c.ink800,
             border: `1px solid ${c.ink600}`,
             borderRadius: 14,
             padding: '16px 18px',
@@ -557,7 +567,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
             flex: 1,
             background: c.gold,
             border: 'none',
-            color: '#241E18',
+            color: c.ink900,
             borderRadius: 16,
             padding: '14px 16px',
             fontSize: 15,

@@ -4,12 +4,17 @@
 // Next.js 14 built-in pattern — otomatik Suspense boundary.
 // Dark tema Premium × Warm + shimmer animation (globals.css).
 
+'use client'
+
+import { useTheme } from '@/lib/theme'
+
 export default function DashboardLoading() {
+  const { colors: c } = useTheme()
   return (
     <div
       style={{
         minHeight: '100vh',
-        background: 'hsl(26 16% 13%)', // c.ink900
+        background: c.ink900,
         paddingBottom: 100,
       }}
     >
@@ -28,10 +33,10 @@ export default function DashboardLoading() {
               height: 12,
               width: '40%',
               borderRadius: 6,
-              background: 'hsl(25 13% 20%)',
+              background: c.ink800,
               animation: 'shimmer 2s ease-in-out infinite',
               backgroundImage:
-                'linear-gradient(90deg, hsl(25 13% 20%) 0%, hsl(25 13% 25%) 50%, hsl(25 13% 20%) 100%)',
+                `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
               backgroundSize: '200% 100%',
               marginBottom: 8,
             }}
@@ -41,10 +46,10 @@ export default function DashboardLoading() {
               height: 22,
               width: '70%',
               borderRadius: 8,
-              background: 'hsl(25 13% 20%)',
+              background: c.ink800,
               animation: 'shimmer 2s ease-in-out infinite',
               backgroundImage:
-                'linear-gradient(90deg, hsl(25 13% 20%) 0%, hsl(25 13% 25%) 50%, hsl(25 13% 20%) 100%)',
+                `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
               backgroundSize: '200% 100%',
             }}
           />
@@ -55,10 +60,10 @@ export default function DashboardLoading() {
               width: 38,
               height: 38,
               borderRadius: 999,
-              background: 'hsl(25 13% 20%)',
+              background: c.ink800,
               animation: 'shimmer 2s ease-in-out infinite',
               backgroundImage:
-                'linear-gradient(90deg, hsl(25 13% 20%) 0%, hsl(25 13% 25%) 50%, hsl(25 13% 20%) 100%)',
+                `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
               backgroundSize: '200% 100%',
             }}
           />
@@ -67,10 +72,10 @@ export default function DashboardLoading() {
               width: 38,
               height: 38,
               borderRadius: 999,
-              background: 'hsl(25 13% 20%)',
+              background: c.ink800,
               animation: 'shimmer 2s ease-in-out infinite',
               backgroundImage:
-                'linear-gradient(90deg, hsl(25 13% 20%) 0%, hsl(25 13% 25%) 50%, hsl(25 13% 20%) 100%)',
+                `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
               backgroundSize: '200% 100%',
             }}
           />
@@ -83,12 +88,12 @@ export default function DashboardLoading() {
           style={{
             height: 220,
             borderRadius: 24,
-            background: 'hsl(24 14% 17%)',
+            background: c.ink800,
             animation: 'shimmer 2s ease-in-out infinite',
             backgroundImage:
-              'linear-gradient(90deg, hsl(24 14% 17%) 0%, hsl(25 13% 22%) 50%, hsl(24 14% 17%) 100%)',
+              `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
             backgroundSize: '200% 100%',
-            border: '1px solid hsl(25 13% 22%)',
+            border: `1px solid ${c.ink700}`,
           }}
           aria-busy="true"
           aria-label="Yükleniyor"
@@ -101,12 +106,12 @@ export default function DashboardLoading() {
           style={{
             height: 280,
             borderRadius: 20,
-            background: 'hsl(24 14% 17%)',
+            background: c.ink800,
             animation: 'shimmer 2s ease-in-out infinite',
             backgroundImage:
-              'linear-gradient(90deg, hsl(24 14% 17%) 0%, hsl(25 13% 22%) 50%, hsl(24 14% 17%) 100%)',
+              `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
             backgroundSize: '200% 100%',
-            border: '1px solid hsl(25 13% 22%)',
+            border: `1px solid ${c.ink700}`,
           }}
         />
       </div>
@@ -118,7 +123,7 @@ export default function DashboardLoading() {
             height: 32,
             width: 100,
             borderRadius: 999,
-            background: 'hsl(25 13% 20%)',
+            background: c.ink800,
             animation: 'shimmer 2s ease-in-out infinite',
           }}
         />
@@ -127,7 +132,7 @@ export default function DashboardLoading() {
             height: 32,
             width: 120,
             borderRadius: 999,
-            background: 'hsl(25 13% 20%)',
+            background: c.ink800,
             animation: 'shimmer 2s ease-in-out infinite',
           }}
         />
@@ -141,12 +146,12 @@ export default function DashboardLoading() {
             style={{
               height: 180,
               borderRadius: 16,
-              background: 'hsl(24 14% 17%)',
+              background: c.ink800,
               animation: 'shimmer 2s ease-in-out infinite',
               backgroundImage:
-                'linear-gradient(90deg, hsl(24 14% 17%) 0%, hsl(25 13% 22%) 50%, hsl(24 14% 17%) 100%)',
+                `linear-gradient(90deg, ${c.ink800} 0%, ${c.ink700} 50%, ${c.ink800} 100%)`,
               backgroundSize: '200% 100%',
-              border: '1px solid hsl(25 13% 22%)',
+              border: `1px solid ${c.ink700}`,
             }}
           />
         ))}

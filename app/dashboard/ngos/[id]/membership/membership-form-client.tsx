@@ -107,7 +107,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         >
           <div style={{
             width: 80, height: 80, borderRadius: 20,
-            background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: c.cream, display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 10, marginBottom: 16, boxShadow: '0 4px 16px rgba(0,0,0,.1)',
           }}>
             {ngo.logo_url ? (
@@ -290,7 +290,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
               }}
             >
               {kvkkChecked && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c.cream} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
               )}
@@ -314,7 +314,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
                 }}
               >
                 {termsChecked && (
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c.cream} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
                 )}

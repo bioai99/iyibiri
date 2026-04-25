@@ -116,7 +116,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         background: c.ink900,
         color: c.cream,
         minHeight: '100%',
-        paddingBottom: 180,
+        paddingBottom: 'calc(120px + env(safe-area-inset-bottom, 20px))',
         position: 'relative',
       }}
     >
@@ -187,10 +187,10 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       </div>
 
       {/* ── 1.5 Title + category panel (solid background — guaranteed contrast — F: seçenek 2) ── */}
-      <div style={{ padding: '20px 20px 16px', background: c.ink900 }}>
-        {mission.category && (
+      <div style={{ padding: '20px 20px 16px', background: c.ink900, position: 'relative', overflow: 'hidden' }}>
+        {(mission.category || mission.domain) && (
           <div style={{ marginBottom: 8 }}>
-            <BadgeDS variant="dark">{mission.category}</BadgeDS>
+            <BadgeDS variant="dark">{mission.category || mission.domain}</BadgeDS>
           </div>
         )}
         <h1
@@ -306,7 +306,11 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       >
         <FactCard
           label="TARİH"
-          value={mission.date_label ?? 'Esnek'}
+          value={
+            mission.date_label === 'Esnek' || mission.date_label === 'esnek'
+              ? 'Sen seç'
+              : mission.date_label ?? 'Tarih belirsiz'
+          }
           icon={<Calendar size={16} color={c.gold} />}
         />
         <FactCard
@@ -321,9 +325,15 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         />
         <FactCard
           label="KONTENJAN"
-          value={`${mission.spots_left ?? 0} yer`}
+          value={
+            (mission.spots_left ?? 0) >= 100
+              ? 'Sınırsız'
+              : (mission.spots_left ?? 0) === 0
+                ? 'Doldu'
+                : `${mission.spots_left ?? 0} yer`
+          }
           icon={<Users size={16} color={c.gold} />}
-          urgent={(mission.spots_left ?? 0) <= 5}
+          urgent={(mission.spots_left ?? 0) > 0 && (mission.spots_left ?? 0) <= 5}
         />
       </div>
 

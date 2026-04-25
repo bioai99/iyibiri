@@ -146,7 +146,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
               <Link href={`/dashboard/ngos/${ngo.id}/membership`}>
                 <button style={{
                   height: 42, padding: '0 20px', borderRadius: 12,
-                  background: c.gold, color: '#241E18', border: 'none',
+                  background: c.gold, color: c.ink900, border: 'none',
                   fontWeight: 700, fontSize: 14, cursor: 'pointer',
                   boxShadow: '0 2px 8px rgba(0,0,0,.1)',
                 }}>
@@ -174,7 +174,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             width: 88,
             height: 88,
             borderRadius: 20,
-            background: '#fff',
+            background: c.cream,
             border: `3px solid ${c.ink900}`,
             display: 'flex',
             alignItems: 'center',
@@ -192,7 +192,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           ) : (
-            <span style={{ fontWeight: 900, color: '#57524A', fontSize: 18 }}>
+            <span style={{ fontWeight: 900, color: c.ink600, fontSize: 18 }}>
               {(ngo.short_name ?? ngo.name).slice(0, 3).toUpperCase()}
             </span>
           )}
@@ -333,7 +333,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                 gap: 6,
                 background: c.gold,
                 border: 'none',
-                color: '#241E18',
+                color: c.ink900,
                 padding: '12px 18px',
                 borderRadius: 12,
                 fontSize: 14,
@@ -342,7 +342,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                 textDecoration: 'none',
               }}
             >
-              Görevleri gör <ChevronRight size={14} color="#241E18" />
+              Görevleri gör <ChevronRight size={14} color={c.ink900} />
             </Link>
           </div>
         ) : (
@@ -396,7 +396,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                 gap: 6,
                 background: c.gold,
                 border: 'none',
-                color: '#241E18',
+                color: c.ink900,
                 padding: '12px 18px',
                 borderRadius: 12,
                 fontSize: 14,
@@ -405,7 +405,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                 textDecoration: 'none',
               }}
             >
-              Planları gör <ChevronRight size={14} color="#241E18" />
+              Planları gör <ChevronRight size={14} color={c.ink900} />
             </Link>
           </div>
         )}
