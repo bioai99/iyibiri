@@ -25,7 +25,10 @@ function VerifyContent() {
   const searchParams = useSearchParams()
   const email = searchParams.get('email') ?? ''
 
-  const [digits, setDigits] = useState(['', '', '', '', '', ''])
+  // Dynamic OTP length: default 6, but allow 6-10 (defensive for backend config changes)
+  const OTP_LENGTH = Number(process.env.NEXT_PUBLIC_OTP_LENGTH ?? 6)
+  const [otpLength, setOtpLength] = useState(OTP_LENGTH)
+  const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''))
   const [countdown, setCountdown] = useState(60)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -45,10 +48,10 @@ function VerifyContent() {
     return () => clearTimeout(timer)
   }, [countdown])
 
-  // Auto-submit when all 6 digits are filled
+  // Auto-submit when all digits are filled (dynamic length)
   useEffect(() => {
-    if (filled === 6) handleVerify()
-  }, [filled])
+    if (filled === otpLength && otpLength > 0) handleVerify()
+  }, [filled, otpLength])
 
   function handleDigitChange(index: number, value: string) {
     const char = value.replace(/\D/g, '').slice(-1)
@@ -56,7 +59,7 @@ function VerifyContent() {
     next[index] = char
     setDigits(next)
     setError(null)
-    if (char && index < 5) {
+    if (char && index < otpLength - 1) {
       inputRefs.current[index + 1]?.focus()
     }
   }
@@ -69,20 +72,28 @@ function VerifyContent() {
 
   function handlePaste(e: React.ClipboardEvent) {
     e.preventDefault()
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '')
     if (!pasted) return
-    const next = [...digits]
-    for (let i = 0; i < 6; i++) {
-      next[i] = pasted[i] || ''
+
+    // Auto-detect length if pasted code is 6-10 digits (defensive for backend config)
+    const detectedLength = Math.max(Math.min(pasted.length, 10), 6)
+    if (detectedLength !== otpLength) {
+      setOtpLength(detectedLength)
+    }
+
+    const sliced = pasted.slice(0, detectedLength)
+    const next = Array(detectedLength).fill('')
+    for (let i = 0; i < detectedLength; i++) {
+      next[i] = sliced[i] || ''
     }
     setDigits(next)
     setError(null)
-    const lastFilled = Math.min(pasted.length, 5)
+    const lastFilled = Math.min(sliced.length, detectedLength - 1)
     inputRefs.current[lastFilled]?.focus()
   }
 
   async function handleVerify() {
-    if (code.length < 6 || loading) return
+    if (code.length < otpLength || loading) return
     setLoading(true)
     setError(null)
 
@@ -95,7 +106,7 @@ function VerifyContent() {
 
     if (error) {
       setError('Bu kod çalışmadı. Yeni bir kod almayı dene.')
-      setDigits(['', '', '', '', '', ''])
+      setDigits(Array(otpLength).fill(''))
       inputRefs.current[0]?.focus()
       setLoading(false)
       return
@@ -173,7 +184,7 @@ function VerifyContent() {
         </p>
       </div>
 
-      {/* OTP inputs */}
+      {/* OTP inputs (dynamic length 6-10, default from env) */}
       <div style={{ padding: '36px 20px 0', display: 'flex', justifyContent: 'center', gap: 8 }}>
         {digits.map((d, i) => {
           const isActive = i === filled && !d
@@ -250,8 +261,8 @@ function VerifyContent() {
       <div style={{ padding: '18px 24px 28px' }}>
         <button
           onClick={handleVerify}
-          disabled={filled < 6 || loading}
-          style={{ width: '100%', height: 52, borderRadius: 14, background: filled === 6 ? c.gold : c.ink700, border: 'none', color: filled === 6 ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === 6 ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === 6 ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
+          disabled={filled < otpLength || loading}
+          style={{ width: '100%', height: 52, borderRadius: 14, background: filled === otpLength ? c.gold : c.ink700, border: 'none', color: filled === otpLength ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === otpLength ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === otpLength ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
         >
           {loading ? 'Doğrulanıyor...' : 'Doğrula'}
         </button>

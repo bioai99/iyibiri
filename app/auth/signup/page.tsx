@@ -168,7 +168,7 @@ export default function SignupPage() {
           En az 8 karakter ve 1 rakam olsun.
         </div>
 
-        {/* KVKK checkbox (native a11y) */}
+        {/* KVKK checkbox (native HTML, modern accent-color for theme) */}
         <label
           htmlFor="kvkk-consent"
           style={{
@@ -186,36 +186,14 @@ export default function SignupPage() {
             onChange={(e) => setKvkk(e.target.checked)}
             aria-describedby="kvkk-desc"
             style={{
-              position: 'absolute',
-              opacity: 0,
-              width: 22,
-              height: 22,
-              pointerEvents: 'auto',
-              margin: 0,
+              width: 18,
+              height: 18,
+              marginTop: 2,
+              flexShrink: 0,
+              cursor: 'pointer',
+              accentColor: c.gold,
             }}
           />
-          <span
-            aria-hidden="true"
-            style={{
-              flexShrink: 0,
-              width: 22,
-              height: 22,
-              borderRadius: 7,
-              marginTop: 1,
-              border: `1.5px solid ${kvkk ? c.gold : c.ink500}`,
-              background: kvkk ? c.gold : 'transparent',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 200ms cubic-bezier(.2,.8,.2,1)',
-            }}
-          >
-            {kvkk && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A1612" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
-            )}
-          </span>
           <span id="kvkk-desc" style={{ fontFamily: uiFont, fontSize: 12, color: c.ink200, lineHeight: 1.5 }}>
             <span style={{ color: c.cream, fontWeight: 600 }}>KVKK Aydınlatma Metni</span>'ni okudum, kabul ediyorum. Ara sıra görev önerileri almak da bana uyar.
           </span>

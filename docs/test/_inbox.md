@@ -92,4 +92,39 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 17:00 — Bug fix (Sprint Vol-2) ⚠️ Partial pass
+
+**Notify eden:** parent session (Sprint Vol-2 + manuel Supabase config)
+**Tetik:** Migration 024 apply + onboarding theme + Confirm email enable
+**Etkilenen ekran/flow:** A2 (signup + KVKK), A3 (OTP verify)
+**Önerilen test fazı:** Faz 1 regression vol-3
+**Aciliyet:** Hot fix (P0 — signup tamamen bloke)
+**Test sonucu:** Manual+guided regression vol-3 koşturuldu. Detay: `docs/test/faz1/2026-04-26-rapor.md` "Regression Vol-3" section.
+- ✅ 3 fix verified (BUG-001, BUG-002, BUG-006)
+- ⚠️ 4 deferred (BUG-003, BUG-005, BUG-010, BUG-011 — dashboard'a varamadık)
+- 🚨 2 yeni P0/P1 bug yakalandı:
+  - **BUG-012 (P1)** — KVKK label click delegation issue: label'a mouse click yapıldığında React state update tetiklenmiyor. Custom visual span click'i absorbe ediyor. Pattern memo: `_patterns/2026-04-26-kvkk-click-delegation.md`
+  - **BUG-013 (P0, BLOCKER)** — OTP length mismatch: Email 8 haneli OTP gönderiyor (`04069695` örnek), frontend 6 box render ediyor. Flow tamamen bloke. Pattern memo: `_patterns/2026-04-26-otp-length-mismatch.md`
+
+**Sprint Vol-3 önerisi:** BUG-012 + BUG-013 acil fix (~45 dk). Sonra regression vol-4.
+
+---
+
+### 2026-04-26 17:45 — Bonus regression (mevcut user login)
+
+**Notify eden:** test-engineer (Sprint Vol-3 fix öncesi, +t1 user login'le bonus tarama)
+**Tetik:** User 1 saatlik break sırasında ek test — yeni signup gerektirmeyen verify'lar
+**Etkilenen ekran/flow:** D1 dashboard, M1 mission detail, XC1 theme parity
+**Aciliyet:** Routine bilgi
+
+**Test sonucu:** Ek 2 P0 bug yakalandı:
+- **BUG-014 (P0, NEW)** — Hero karma kart light mode'da DARK palette kullanıyor (theme-blind). `bg: rgb(46,41,35)` (`c.ink800` DARK), `text: rgb(244,238,223)` (DARK cream). Light mode'da hero alanı koyu kahve blok görünüyor, içerik invisible. `components/dashboard/hero-card-v2.tsx` Job 5 sweep'te kapsanmamış. Pattern: theme-blind component (mission detail meta cards de aynı sorunda olabilir).
+- **BUG-015 (P1, NEW)** — Tema toggle persist çalışmıyor: `localStorage.setItem('iyibiri-theme', 'dark') + reload` sonrası page hala light render. ThemeProvider initial value localStorage okumayı tam yapmıyor olabilir. Sprint Vol-1 unify sonrası regression olabilir.
+- ✅ **BUG-003 fix VERIFY** — Mission detail kategori chip "Çevre" dolu görünüyor (defensive fallback çalışıyor)
+- ⚠️ BUG-005 (+t1 user için) — Greeting "Hoş geldin" yine fallback. Migration 024 trigger sadece YENİ user'lar için, +t1 user backfill yok. Migration 025 önerilir: existing users için one-time backfill UPDATE.
+
+**Sprint Vol-4 önerisi:** BUG-014 (hero kart theme-blind) + BUG-015 (theme persist) + Migration 025 (existing user backfill). ~2 saatlik fix paketi.
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
