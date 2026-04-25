@@ -58,4 +58,38 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 13:15 — Feature deploy (Backoffice scenarios ready)
+
+**Notify eden:** test-engineer (test planning)
+**Tetik:** Job 8-10 admin backoffice sayfaları implement edildi (10 sayfa: login + dashboard + missions + verifications + members + membership-config + blog + profile + payments + reports + QR). Migration 021 (RLS admin policies), 022 (proof columns), 023 (storage bucket). Fixture seed (`ngo-admin-fixtures.ts`) hazır.
+**Etkilenen ekran/flow:** AD1–AD15 (15 admin flow), XC9–XC11 (3 cross-cutting concern)
+**Önerilen test fazı:** Faz 1 (P0: AD1 login + AD14 RLS isolation), Faz 2 (P1: AD2–AD13 functional), Faz 3 (P2: AD15 super-admin + edge cases)
+**Aciliyet:** Routine (deploy öncesi smoke test önerilir)
+**Prerequisite:** NGO admin credentials (5 STK fixture users, `ngo-admin-fixtures.ts`)
+**Linkler:** Migrations 021/022/023, App routes `/admin/*`, RLS policies, dev fixtures
+
+---
+
+### 2026-04-26 15:45 — Bug fix (Sprint Vol-1) ✅ Processed
+
+**Notify eden:** parent session (auth-capacitor + frontend-engineer + design-system-keeper triplet)
+**Tetik:** Sprint Vol-1 fix paketi commit'lendi + Vercel deploy aktif. 8 P0/P1 fix uygulandı (Pattern A middleware + Pattern B TR + KVKK + light delta + defensive category + theme unify).
+**Etkilenen ekran/flow:** D1, M1, A2, A3, O1-O2, XC1, TR1
+**Önerilen test fazı:** Faz 1 regression
+**Aciliyet:** Hot fix (P0 doğrulama)
+**Linkler:** Commits up to ~Sprint Vol-1
+
+**Test sonucu:** Manual+guided regression koşturuldu. Detay: `docs/test/faz1/2026-04-26-rapor.md` "Regression Pass" section.
+- ✅ 3 fix verified (BUG-001 onboarding gate, BUG-004 landing TR, BUG-008 tema state)
+- ⚠️ 4 deferred (yeni signup gerek — BUG-002, BUG-003, BUG-006, BUG-007)
+- 🚨 3 yeni bug yakalandı:
+  - BUG-010 (P0) — Onboarding sayfaları light mode invisible (theme-blind)
+  - BUG-011 (P0) — Welcome bonus 100 karma backend'e yansımıyor
+  - BUG-005 regression (P1) — Profile name signup'ta yazılmıyor (Pattern D ile aynı kök neden)
+- Pattern D (NEW): `docs/test/_patterns/2026-04-26-signup-profile-insert.md` → auth-capacitor + supabase-backend
+
+**Sprint Vol-2 önerisi:** P0 sıfırlanmadan Faz 2'ye geçilmesin. ~3-4 saatlik fix + re-regression.
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
