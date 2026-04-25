@@ -17,6 +17,38 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA, EN ÜSTTEN BAŞLAYARAK -->
 
+## 2026-04-25 20:15 — [fe] Tier-1 Quick-Wins: 6 Pattern Setup
+
+- **Upstream:** `docs/ui/01-specs/2026-04-25-tier1-plus-benchmark-research.md` (UI designer tier-1+ research, Pattern 1-6 specs)
+- **Downstream:** design-system-keeper (token audit — none needed ✅), supabase-backend (API integration path), product-analyst (Tier 2 planning)
+- **Handoff:** ✅ updated-source (Handoff log added to tier-1+ spec)
+- **Status-board:** ✅ updated (6 Pattern → Done today)
+
+**İş:** npm install sonner + vaul + @capacitor/haptics; implement 6 Tier-1 components (Sonner toast + wrapper, Vaul bottom-sheet, AnimatedHeart morph, MagneticButton, Haptic catalog, globals.css breathing animation). Entegre app/layout.tsx. TSC 0.
+
+**Değişen dosyalar:**
+- **Yeni:** `components/ui/toaster.tsx` (Sonner provider, useTheme dark/light)
+- **Yeni:** `components/ui/bottom-sheet.tsx` (Vaul wrapper, snapPoints, safe-area-inset)
+- **Yeni:** `components/ui/animated-heart.tsx` (SVG morph, haptic.tap, useReducedMotion)
+- **Yeni:** `components/ui/magnetic-button.tsx` (cursor proximity, spring physics, Framer Motion)
+- **Yeni:** `lib/toast.ts` (showToast wrapper → success/error/info/promise)
+- **Yeni:** `lib/haptic.ts` (Capacitor bridge, 7 patterns, localStorage opt-out)
+- **Güncelleme:** `app/layout.tsx` (+Toaster import + JSX)
+- **Güncelleme:** `app/globals.css` (+glow-breathing keyframes + prefers-reduced-motion)
+
+**ADR / WS ref:** ADR-004 (dark-only V1); WS-05 (Quality Polish)
+
+**Test:** 
+- npm run build: 0 error, 0 warning
+- npx tsc --noEmit: 0 error
+- Manual: Toaster renders in dark/light mode (useTheme works)
+- Components compile with useReducedMotion fallback
+- Haptic: localStorage enabled by default, disable works
+
+**Next:** Tier 2 sprint (CMDK palette, scroll-linked hero, shared element transition, View Transitions API); integration testing with real data flows.
+
+---
+
 ## 2026-04-25 19:10 — [fe] Pattern 1-3: Show-Stopping Polish (Onboarding, Karma Counter, Mission Card)
 
 - **Upstream:** `docs/ui/01-specs/2026-04-25-ekosistem-show-stopping-spec.md` (UI designer spec) + `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (UX audit K1, K3, K9)

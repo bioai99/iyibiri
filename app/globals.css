@@ -168,3 +168,23 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-glow-breathing { animation: none; }
 }
+
+/* ── Idle breathing animations (Tier-1 pattern) ── */
+@keyframes glowBreathing {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(232, 194, 104, 0);
+  }
+  50% {
+    box-shadow: 0 0 40px 4px rgba(232, 194, 104, 0.35);
+  }
+}
+
+.glow-breathing {
+  animation: glowBreathing 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-breathing {
+    animation: none;
+  }
+}

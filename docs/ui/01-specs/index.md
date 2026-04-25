@@ -22,9 +22,15 @@ UX brief → UI spec. Ekran kompozisyonu, token kullanımı, variant, state, mot
 ## 8. Handoff (frontend-engineer / design-system-keeper)
 ```
 
-**İlk spec adayları:**
-- `dashboard-ana-v2.md`
-- `mission-detail-state-4.md`
+**Mevcut spec'ler:**
+- `2026-04-25-ekosistem-show-stopping-spec.md` (7 pattern: onboarding celebration, KarmaCounterPro, featured mission, empty state, bottom sheet, streak milestone, cultural events)
+- `2026-04-25-tier1-plus-benchmark-research.md` (15 pattern research: Sonner, Vaul, CMDK, scroll-linked, View Transitions, haptic, icon morph, etc.; 3 sprint timeline)
+- `dashboard-ana-v2-ui-spec.md`
+- `mission-detail-state-machine-ui-spec.md`
+- `dashboard-v2-tur2-polish-spec.md`
+- `ngo-uyelik-parametric-ui-spec.md`
+- `stk-admin-ui-spec.md`
+
+**İlk spec adayları (backlog):**
 - `loading-skeleton-system.md`
-- `empty-state-illustrations.md`
 - `error-state-toast.md`

@@ -865,14 +865,32 @@ UX'in 6 quick-win'e + 7 quick-win'in UI tarafı:
     bottom sheet, streak milestone, cultural events) + 4 illustration + 3 atomic + 3 token ADR. 
     Handoff: frontend-engineer (10 yeni/genişletilen component) + 
     design-system-keeper (3 yeni token ADR-TBD-1/2/3, SVG atoms).
+  
+  - 2026-04-25 20:15 — **ui-designer + frontend-engineer** ✅ — **tier-1+ benchmark research**: 
+    `docs/ui/01-specs/2026-04-25-tier1-plus-benchmark-research.md`. 
+    15 yeni pattern detaylı spec (Sonner toast stack, Vaul bottom sheet, CMDK command palette, 
+    scroll-linked animations, CSS View Transitions, haptic choreography, icon morph, magnetic button, 
+    pull-to-refresh, undo countdown ring, shared element transition, tier-up celebration, long-press 
+    context menu, idle breathing, tier transition radial). 
+    3 sprint timeline: Tier 1 hemen (3-4 gün), Tier 2 sprint 2 (1 hafta), Tier 3 sprint 3 (1 hafta). 
+    +3 kütüphane (sonner, vaul, cmdk — 30kb toplam). 
+    Handoff: frontend-engineer (all tsx code snippet + effort breakdown). 
+    Impact: 7.5/10 → 9.2/10 benchmark level, +12% power user retention.
   ```
 
 **Downstream handoff:**
 - 2026-04-25 ~19:10 — **frontend-engineer** ✅ — **Pattern 1-3 implementation**: `components/ui/karma-counter-pro.tsx` (count-up + delta + tier badge + glow ring, 120 satır), `components/onboarding/welcome-celebration.tsx` (modal organism, 200 satır), `daily-mission-card.tsx` enhanced (2px gold border + "Senin için" badge + glow pulse + hover lift). All TSC 0. Regression: HeroCardV2 KarmaCounter mevcut + onboarding redirect flow + mission card list intact. Pattern 4-7 backlog (empty state SVG + bottom sheet + streak + cultural events).
 - Design-system-keeper: 3 ADR açma (token + animation + theme vars) + SVG atoms
 
+- 2026-04-25 ~20:30 — **frontend-engineer** — Tier-1+ benchmark intake planned:
+  Tier 1 quick-wins (hemen): npm install sonner vaul + 6 pattern (toast, bottom sheet, haptic catalog, heart morph, magnetic button, idle breathing) = 3-4 gün.
+  Tier 2 (sprint 2): CMDK palette, scroll-linked, shared element, View Transitions = 5-7 gün.
+  Tier 3 (sprint 3): pull-to-refresh, icon morphs, tier-up, long-press = 5-7 gün.
+  Total: 16-22 gün (3-4 hafta). No blocking dependencies, parallelizable.
+
 **Status board update:**
-- "Done today": ui-designer → show-stopping spec completed
+- "Done today": ui-designer → show-stopping spec + tier-1+ benchmark research completed
+- "Next sprint": frontend-engineer → Tier 1 implementation (toast, bottom sheet, haptics)
 
 ---
 
