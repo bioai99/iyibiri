@@ -30,8 +30,7 @@ set
   first_name = coalesce(
     nullif(split_part(trim(u.raw_user_meta_data->>'full_name'), ' ', 1), ''),
     ''
-  ),
-  updated_at = now()
+  )
 from auth.users u
 where p.id = u.id
   -- Only update if currently empty
