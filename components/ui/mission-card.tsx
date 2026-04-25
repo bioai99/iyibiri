@@ -203,10 +203,10 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               &#10003; {mission.ngos?.short_name ?? ''} üyesi
             </div>
           )}
-          {/* Title */}
+          {/* Title — UI-QW2: hierarchy refined (18px, weight 500) */}
           <h2 style={{
             margin: 0,
-            fontSize: 20, fontWeight: 700, lineHeight: 1.25,
+            fontSize: 18, fontWeight: 500, lineHeight: 1.25,
             color: c.cream,
             letterSpacing: '-0.02em',
             display: '-webkit-box',

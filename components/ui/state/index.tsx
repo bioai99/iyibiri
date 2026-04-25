@@ -270,19 +270,19 @@ export const emptyPresets = {
     primaryAction: { label: 'Aktif görevlerim', href: '/dashboard/my-missions' },
   } satisfies PresetValue,
 
-  /** Notifications — aktivite yok (K8: empathic contextual copy) */
+  /** Notifications — aktivite yok (K8: empathic contextual copy — UI-QW3 refined) */
   noNotifications: {
     illustration: 'bell',
     title: 'Her şey sakin görünüyor',
-    description: 'İlk bildirimini kazanmak için hemen bir görev yap 🌱',
+    description: 'İlk bildirimini kazanmak için bir görev tamamla.',
     primaryAction: { label: 'Görevleri keşfet', href: '/dashboard/missions' },
   } satisfies PresetValue,
 
-  /** Rewards — henüz ödül yok */
+  /** Rewards — henüz ödül yok (UI-QW3: contextual tone) */
   noRewards: {
     illustration: 'medal',
     title: 'İlk ödülüne çok yakınsın',
-    description: 'Görevleri tamamlayarak karma biriktir, ödüller buradan gelmeye başlar.',
+    description: 'Görevleri tamamladıkça karma birikir, ödüller burada açılır.',
     primaryAction: { label: 'Görevleri gör', href: '/dashboard/missions' },
   } satisfies PresetValue,
 
@@ -302,11 +302,11 @@ export const emptyPresets = {
     primaryAction: { label: 'Kuruluşları keşfet', href: '/dashboard/ngos' },
   } satisfies PresetValue,
 
-  /** Search — sonuç bulunamadı */
+  /** Search — sonuç bulunamadı (UI-QW3: empathic tone) */
   noSearchResults: {
     illustration: 'search',
-    title: 'Aradığın bulunamadı',
-    description: 'Farklı bir kelimeyle dene ya da filtreleri temizle.',
+    title: 'Bu aramada bulamadık',
+    description: 'Farklı bir kelime dene, ya da filtreleri temizle.',
   } satisfies PresetValue,
 } as const
 

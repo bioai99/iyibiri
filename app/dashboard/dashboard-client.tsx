@@ -16,6 +16,7 @@ import {
 import { HeroCardV2Scroll } from '@/components/dashboard/hero-card-v2-scroll'
 import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
 import { useTheme } from '@/lib/theme'
+import { MOTION_PRESETS } from '@/lib/motion.config'
 import type { StreakActivity } from '@/lib/supabase/queries/streak'
 
 // ── Date helpers ───────────────────────────────────────────────
@@ -276,14 +277,24 @@ export function DashboardClient({
             <EmptyStateV2 {...emptyPresets.noActiveMissions} />
           )
         ) : (
-          displayMissions.map(mission => (
-            <MissionCard
+          displayMissions.map((mission, idx) => (
+            <motion.div
               key={mission.id}
-              mission={mission}
-              isSaved={savedMissionIds.includes(mission.id)}
-              isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
-              userId={profile.id}
-            />
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                type: 'spring',
+                ...MOTION_PRESETS.spring.snappy,
+                delay: idx * MOTION_PRESETS.stagger.default,
+              }}
+            >
+              <MissionCard
+                mission={mission}
+                isSaved={savedMissionIds.includes(mission.id)}
+                isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
+                userId={profile.id}
+              />
+            </motion.div>
           ))
         )}
       </div>

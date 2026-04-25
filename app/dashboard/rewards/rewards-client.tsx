@@ -9,6 +9,7 @@ import type { Reward, RewardRedemption } from '@/lib/supabase/types'
 import { KarmaDotToken, BadgeDS, ChipDS } from '@/components/ui/ds'
 import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import { useTheme } from '@/lib/theme'
+import { MOTION_PRESETS } from '@/lib/motion.config'
 
 interface Props {
   rewards: Reward[]
@@ -379,7 +380,11 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 + (idx * 0.05) }}
+                transition={{
+                  type: 'spring',
+                  ...MOTION_PRESETS.spring.snappy,
+                  delay: idx * MOTION_PRESETS.stagger.default,
+                }}
                 whileTap={{ scale: 0.97 }}
                 style={{
                   background: c.ink800,

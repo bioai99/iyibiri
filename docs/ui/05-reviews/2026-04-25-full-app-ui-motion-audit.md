@@ -538,6 +538,20 @@ UX audit quick-win'ler + UI/motion alignment + tier-1+ 15 pattern:
 
 ## Upstream Handoff Log
 
+**FE Implementation completion:**
+
+```
+- 2026-04-25 23:42 — **frontend-engineer** ✅ — **UI-QW1-QW4 implemented**:
+  QW1 (motion config standardize): lib/motion.config.ts created; dashboard-client, missions-client, 
+  rewards-client, onboarding/causes updated to use MOTION_PRESETS.stagger.default (40ms). 
+  QW2 (H2 hierarchy): daily-mission-card title 17px weight 600; mission-card title 18px weight 500.
+  QW3 (empty state tone): noNotifications, noRewards, noSearchResults copy refined (empathic, cleaner).
+  QW4 (featured card visual weight): featured-glow-pulse animation added to globals.css (4s breathing); 
+  badge "Senin için seçtik" rounded (pill-style, gold bg, ink-900 text). Reduced motion respected throughout.
+  Files: lib/motion.config.ts (new), app/globals.css (+featured glow), 5 component updates.
+  Typecheck: ✅ clean. Test strategy: manual reduced-motion toggle in DevTools (Settings > Rendering).
+```
+
 **UX audit'ine satır ekleme (`docs/ux/03-heuristics/2026-04-25-full-app-ux-audit.md` Handoff Log bölümüne):**
 
 ```
@@ -550,6 +564,7 @@ UX audit quick-win'ler + UI/motion alignment + tier-1+ 15 pattern:
   3 major (Cmd+K, scroll-linked, shared element), 5 minor gaps identified.
   Handoff: FE (quick-win + show-stopping 1-4 + tier-1+ benchmark impl), 
   design-system (3 ADR + SVG atoms), product (tier-1+ prioritization).
+- 2026-04-25 23:42 — **frontend-engineer** ✅ — **UI-QW1-QW4 implemented**: 4 quick-wins completed.
 ```
 
 ---

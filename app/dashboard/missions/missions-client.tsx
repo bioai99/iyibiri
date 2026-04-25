@@ -7,6 +7,7 @@ import { MissionCard } from '@/components/ui/mission-card'
 import { ChipDS } from '@/components/ui/ds'
 import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import { useTheme } from '@/lib/theme'
+import { MOTION_PRESETS } from '@/lib/motion.config'
 
 interface Props {
   missions: MissionWithNGO[]
@@ -87,7 +88,11 @@ export function MissionsClient({ missions, userMissions, savedMissionIds = [], m
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.04 }}
+              transition={{
+                type: 'spring',
+                ...MOTION_PRESETS.spring.snappy,
+                delay: i * MOTION_PRESETS.stagger.default,
+              }}
             >
               <MissionCard
                 mission={mission}

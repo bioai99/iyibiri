@@ -7,6 +7,7 @@ import { ArrowLeft, Check, Trees, BookOpen, PawPrint, HeartPulse, Flame, Users }
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
+import { MOTION_PRESETS } from '@/lib/motion.config'
 import { createClient } from '@/lib/supabase/client'
 
 const causes = [
@@ -134,7 +135,10 @@ export default function OnboardingCauses() {
               key={cause.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + idx * 0.08, duration: 0.4 }}
+              transition={{
+                delay: 0.3 + idx * MOTION_PRESETS.stagger.default,
+                duration: 0.4,
+              }}
               whileTap={{ scale: 0.95 }}
               onClick={() => toggle(cause.name)}
               style={{

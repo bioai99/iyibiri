@@ -71,7 +71,7 @@ export function DailyMissionCard({
       transition={{ duration: 0.4, delay: 0.5, type: 'spring', stiffness: 400, damping: 30 }}
       className="mx-4"
     >
-      {/* Section head — "GÜNÜN GÖREVİ" */}
+      {/* Section head — "GÜNÜN GÖREVİ" — updated with visual hierarchy */}
       <div className="mb-3 flex items-center gap-2">
         <span
           className="inline-block h-3 w-1 rounded-full"
@@ -94,7 +94,7 @@ export function DailyMissionCard({
         style={{ textDecoration: 'none' }}
       >
         <motion.div
-          className="featured-glow-pulse"
+          className={shouldReduceMotion ? '' : 'featured-glow-pulse'}
           whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
           whileHover={shouldReduceMotion ? {} : { y: -2 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
@@ -104,9 +104,9 @@ export function DailyMissionCard({
             borderRadius: 16,
             background: c.ink800,
             border: `2px solid ${c.gold}`,
-            boxShadow: !shouldReduceMotion
-              ? `0 0 16px rgba(232,194,104,0.35), 0 4px 12px rgba(0,0,0,0.2)`
-              : `0 1px 4px rgba(0,0,0,0.1)`,
+            boxShadow: shouldReduceMotion
+              ? `0 1px 4px rgba(0,0,0,0.1)`
+              : `0 0 16px rgba(232,194,104,0.35), 0 4px 12px rgba(0,0,0,0.2)`,
           }}
         >
           {/* Photo hero strip */}
@@ -154,12 +154,13 @@ export function DailyMissionCard({
                   )}
                 </div>
 
-                {/* Title */}
+                {/* Title — UI-QW2: featured card visual weight (18px, semibold) */}
                 <h3
                   className="font-sans font-semibold"
                   style={{
                     color: '#fff',
-                    fontSize: 15,
+                    fontSize: 17,
+                    fontWeight: 600,
                     lineHeight: 1.25,
                     textShadow: '0 1px 8px rgba(0,0,0,0.4)',
                   }}
@@ -170,9 +171,9 @@ export function DailyMissionCard({
             </div>
           </div>
 
-          {/* Body — "Senin için" badge + NGO + impact + CTA */}
+          {/* Body — "Senin için seçtik" badge + NGO + impact + CTA (UI-QW4) */}
           <div className="relative px-4 py-3.5">
-            {/* Top-left: "Senin için" badge */}
+            {/* Top-left: "Senin için seçtik" badge — refined copy for tier-1+ */}
             <div
               style={{
                 position: 'absolute',
@@ -180,17 +181,17 @@ export function DailyMissionCard({
                 left: 0,
                 transform: 'translate(8px, -8px)',
                 padding: '4px 12px',
-                background: c.goldSoft,
-                border: `1px solid ${c.goldLine}`,
-                borderRadius: 6,
+                background: c.gold,
+                border: `none`,
+                borderRadius: 999,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                color: c.gold,
+                color: c.ink900,
               }}
             >
-              Senin için
+              Senin için seçtik
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-6">
