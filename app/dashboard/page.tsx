@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/supabase/queries/profiles'
 import { getAllMissions, getUserMissions } from '@/lib/supabase/queries/missions'
 import { getRecentStreakActivity } from '@/lib/supabase/queries/streak'
+import { diversifyByDomain } from '@/lib/recommendations'
 import { DashboardClient } from './dashboard-client'
 import type { NGO, MissionWithNGO, UserMission } from '@/lib/supabase/types'
 
@@ -88,7 +89,8 @@ export default async function DashboardPage() {
     : []
   const profileCity: string = (profile.city ?? '').toLowerCase()
 
-  const recommendedMissions: MissionWithNGO[] = missions
+  // Score + sort + take top-N candidates
+  const scoredMissions = missions
     .filter((m) => !takenOrCompletedIds.has(m.id))
     .filter((m) => m.status !== 'cancelled' && m.status !== 'draft')
     .map((m) => {
@@ -105,8 +107,14 @@ export default async function DashboardPage() {
       return { mission: m, score }
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
+    .slice(0, 10) // Top-10 candidates before diversity
     .map(({ mission }) => mission)
+
+  // Apply diversity guard: prevent same domain from appearing consecutively
+  const diversifiedMissions = diversifyByDomain(scoredMissions)
+
+  // Final slice: take top-5 for dashboard display
+  const recommendedMissions: MissionWithNGO[] = diversifiedMissions.slice(0, 5)
 
   return (
     <DashboardClient

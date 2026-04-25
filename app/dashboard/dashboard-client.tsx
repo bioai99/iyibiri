@@ -100,9 +100,12 @@ export function DashboardClient({
 
   const [activeTab, setActiveTab] = useState<TabKey>('recommended')
 
-  const displayMissions = activeTab === 'recommended'
-    ? recommendedMissions
+  // Recommended: exclude carousel items (0-3) from list to avoid duplication
+  const listMissions = activeTab === 'recommended'
+    ? recommendedMissions.slice(3)
     : activeMissionsWithNGO
+
+  const displayMissions = listMissions
 
   const sectionTitle = activeTab === 'recommended' ? 'Senin için seçtik' : 'Görevlerin'
 
@@ -213,9 +216,43 @@ export function DashboardClient({
         />
       )}
 
-      {/* ── 3. Tab chips ── */}
-      <div style={{ padding: '24px 0 4px' }}>
-        <div style={{ display: 'flex', gap: 8, paddingLeft: 20, paddingRight: 20 }}>
+      {/* ── 3. Mission section header + tab chips (scope clarified — 2026-04-25) ── */}
+      <div style={{
+        padding: '24px 20px 8px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        <div style={{ flex: 1 }}>
+          <h2 style={{
+            margin: 0,
+            fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+            fontSize: 24,
+            fontWeight: 500,
+            letterSpacing: '-0.02em',
+            color: c.cream,
+          }}>
+            {sectionTitle}
+          </h2>
+        </div>
+        <Link
+          href="/dashboard/missions"
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: c.gold,
+            letterSpacing: '0.06em',
+            textDecoration: 'none',
+            marginLeft: 8,
+          }}
+        >
+          TÜMÜ →
+        </Link>
+      </div>
+
+      {/* ── 3.5 Tab chips — positioned below h2 for scope clarity ── */}
+      <div style={{ padding: '8px 20px 12px' }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           <ChipDS active={activeTab === 'recommended'} onClick={() => setActiveTab('recommended')}>
             Senin için
           </ChipDS>
@@ -225,38 +262,7 @@ export function DashboardClient({
         </div>
       </div>
 
-      {/* ── 4. Mission section header ── */}
-      <div style={{
-        padding: '24px 20px 12px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'baseline',
-      }}>
-        <h2 style={{
-          margin: 0,
-          fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
-          fontSize: 24,
-          fontWeight: 500,
-          letterSpacing: '-0.02em',
-          color: c.cream,
-        }}>
-          {sectionTitle}
-        </h2>
-        <Link
-          href="/dashboard/missions"
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: c.gold,
-            letterSpacing: '0.06em',
-            textDecoration: 'none',
-          }}
-        >
-          TÜMÜ →
-        </Link>
-      </div>
-
-      {/* ── 5. Mission cards (vertical) ── */}
+      {/* ── 4. Mission cards (vertical) ── */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {displayMissions.length === 0 ? (
           activeTab === 'recommended' ? (

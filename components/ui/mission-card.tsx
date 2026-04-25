@@ -31,25 +31,29 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
   const [saved, setSaved] = useState(isSaved)
   const [pressed, setPressed] = useState(false)
 
-  // Variant-based styling
+  // Variant-based styling (UX Audit 2026-04-25)
+  // C: Image aspect ratio updated to 16/9 for all variants (visual-content balance)
+  // D: Title clamp: default=1, compact=2, hero=1 (kart kısalt)
   const variantStyles = {
     compact: {
-      imageAspectRatio: '4/3' as const,
+      imageAspectRatio: '16/9' as const,
       titleFontSize: 16,
       titleFontWeight: 500,
       bodyPadding: '12px 16px 12px',
       borderWidth: '1px',
       borderColor: c.ink600,
       borderRadius: 14,
+      titleClamp: 2,
     },
     default: {
-      imageAspectRatio: '4/3' as const,
+      imageAspectRatio: '16/9' as const,
       titleFontSize: 18,
       titleFontWeight: 500,
       bodyPadding: '16px 18px 16px',
       borderWidth: '1px',
       borderColor: c.ink600,
       borderRadius: 16,
+      titleClamp: 1,
     },
     hero: {
       imageAspectRatio: '16/9' as const,
@@ -59,6 +63,7 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
       borderWidth: '1.5px',
       borderColor: c.gold,
       borderRadius: 18,
+      titleClamp: 1,
     },
   }
 
@@ -93,7 +98,6 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
   const domain = mission.domain ?? 'default'
   const emoji = domainEmoji[domain] ?? domainEmoji.default
   const ngo = mission.ngos
-  const impactText = mission.impact_statement ?? mission.description
   const spotsLeft = mission.spots_left
   const gradientClass = `bg-domain-${domain}` // Tailwind class (e.g. bg-domain-nature, bg-domain-default)
 
@@ -107,6 +111,7 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
         onMouseDown={() => setPressed(true)}
         onMouseUp={() => setPressed(false)}
         onMouseLeave={() => setPressed(false)}
+        className={variant !== 'hero' ? 'card-ambient-breath' : ''}
         style={{
           background: c.ink800,
           borderRadius: style.borderRadius,
@@ -142,45 +147,54 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
           {/* Soft bottom gradient scrim (token: scrim-bottom) */}
           <div className="bg-scrim-bottom absolute inset-0 pointer-events-none" />
 
-          {/* Top gradient scrim for badge/bookmark readability (token: scrim-top) */}
-          <div className="bg-scrim-top absolute top-0 left-0 right-0 h-1/2 pointer-events-none" />
+          {/* Top gradient scrim — strengthened for badge/bookmark readability (B: top scrim gradient) */}
+          <div style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0,
+            height: '40%',
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)',
+            pointerEvents: 'none',
+          }} />
 
-          {/* Top-left: category badge */}
+          {/* Top-left: category badge — frosted glass with border (B: readable category chip) */}
           <div style={{ position: 'absolute', top: 10, left: 10 }}>
             <div style={{
-              background: 'rgba(0,0,0,.55)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
+              background: 'rgba(0,0,0,0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.10)',
               borderRadius: 999,
               padding: '4px 10px',
               fontSize: 11,
               fontWeight: 600,
-              color: c.cream,
+              color: '#FFFFFF',
               letterSpacing: '0.02em',
             }}>
               {mission.category ?? domain}
             </div>
           </div>
 
-          {/* Top-right: bookmark save button */}
+          {/* Top-right: bookmark save button — frosted glass (B: frosted glass bookmark) */}
           <div
             style={{ position: 'absolute', top: 8, right: 8 }}
             onClick={toggleSave}
           >
             <div style={{
-              width: 34, height: 34, borderRadius: '50%',
-              background: 'rgba(0,0,0,.5)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
+              width: 36, height: 36, borderRadius: '50%',
+              background: 'rgba(0,0,0,0.35)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.18)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer',
             }}>
               <Bookmark
-                size={15}
+                size={16}
                 style={{
                   fill: saved ? c.gold : 'none',
-                  color: saved ? c.gold : c.cream,
+                  color: saved ? c.gold : '#FFFFFF',
                   transition: 'all 220ms cubic-bezier(.2,.8,.2,1)',
+                  strokeWidth: 2.2,
                 }}
               />
             </div>
@@ -226,47 +240,21 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
 
         {/* ── Body ── */}
         <div style={{ padding: style.bodyPadding }}>
-          {/* Member badge */}
-          {isMember && (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              background: c.goldSoft, border: `1px solid ${c.goldLine}`,
-              borderRadius: 999, padding: '3px 8px', marginBottom: 8,
-              fontSize: 10, fontWeight: 600, color: c.gold,
-            }}>
-              &#10003; {mission.ngos?.short_name ?? ''} üyesi
-            </div>
-          )}
-          {/* Title — variant-aware sizing */}
+          {/* Title — variant-aware sizing (C: title clamp update) */}
           <h2 style={{
             margin: 0,
             fontSize: style.titleFontSize, fontWeight: style.titleFontWeight, lineHeight: 1.25,
             color: c.cream,
             letterSpacing: '-0.02em',
             display: '-webkit-box',
-            WebkitLineClamp: variant === 'hero' ? 1 : 2,
+            WebkitLineClamp: style.titleClamp,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}>
             {mission.title}
           </h2>
 
-          {/* Impact text — hidden in hero variant */}
-          {impactText && variant !== 'hero' && (
-            <p style={{
-              margin: '6px 0 14px',
-              fontSize: 13, lineHeight: 1.5,
-              color: c.ink300,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}>
-              {impactText}
-            </p>
-          )}
-
-          {/* Meta row — hero variant shows inline below title; default/compact shows traditional layout */}
+          {/* Meta row — reordered (D: location → karma → duration) */}
           {variant === 'hero' ? (
             <div style={{
               display: 'flex',
@@ -311,47 +299,35 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 8,
+              gap: 6,
+              flexWrap: 'wrap',
             }}>
-              {/* Left: duration + location chips */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                {mission.duration && (
-                  <MetaChip icon={<Clock size={10} />}>
-                    {mission.duration}
-                  </MetaChip>
-                )}
-                {mission.location && (
-                  <MetaChip icon={<MapPin size={10} />}>
-                    {mission.location}
-                  </MetaChip>
-                )}
-              </div>
-
-              {/* Right: karma pill */}
+              {/* Location → Karma → Duration reordering (D) */}
+              {mission.location && (
+                <MetaChip icon={<MapPin size={10} />}>
+                  {mission.location}
+                </MetaChip>
+              )}
               <KarmaPill amount={mission.karma} />
+              {mission.duration && (
+                <MetaChip icon={<Clock size={10} />}>
+                  {mission.duration}
+                </MetaChip>
+              )}
             </div>
           )}
 
-          {/* Urgency row — only when spotsLeft <= 5, hidden in hero variant */}
-          {variant !== 'hero' && spotsLeft <= 5 && (
-            <div style={{
-              borderTop: `1px solid ${c.ink600}`,
-              marginTop: 12,
-              paddingTop: 12,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-            }}>
-              <Flame size={12} style={{ color: c.gold, flexShrink: 0 }} />
-              <span style={{
-                fontSize: 11, fontWeight: 600,
-                color: c.gold,
-                letterSpacing: '0.01em',
-              }}>
-                Son {spotsLeft} kişi{mission.date_label ? ` · ${mission.date_label}` : ''}
-              </span>
-            </div>
+          {/* Capacity label — conditional flame + date (D: "Y yer kaldı" logic) */}
+          {variant !== 'hero' && spotsLeft > 0 && (
+            <p style={{ marginTop: 8, fontSize: 11, color: c.ink400, fontWeight: 500 }}>
+              {spotsLeft <= 5 && <Flame size={10} style={{ display: 'inline', marginRight: 4, color: c.gold }} />}
+              {spotsLeft <= 5 ? `Son ${spotsLeft} yer` : `${spotsLeft} yer kaldı`}{mission.date_label ? ` · ${mission.date_label}` : ''}
+            </p>
+          )}
+          {variant !== 'hero' && spotsLeft === 0 && (
+            <p style={{ marginTop: 8, fontSize: 11, color: c.ink400, fontWeight: 500 }}>
+              Kontenjan doldu
+            </p>
           )}
         </div>
       </article>

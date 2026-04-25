@@ -120,8 +120,8 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         position: 'relative',
       }}
     >
-      {/* ── 1. Full-bleed hero photo ── */}
-      <div style={{ position: 'relative', aspectRatio: '4/3', width: '100%', overflow: 'hidden' }}>
+      {/* ── 1. Full-bleed hero photo (3/2 aspect) ── */}
+      <div style={{ position: 'relative', aspectRatio: '3/2', width: '100%', overflow: 'hidden' }}>
         {/* Photo */}
         {mission.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -140,13 +140,13 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
           <div style={{ position: 'absolute', inset: 0, background: c.ink600 }} />
         )}
 
-        {/* Gradient overlay */}
+        {/* Subtle gradient overlay at bottom for nav buttons readability */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
-            background:
-              `linear-gradient(180deg, ${c.ink900}4D 0%, transparent 30%, transparent 70%, ${c.ink900} 100%)`,
+            bottom: 0, left: 0, right: 0,
+            height: '30%',
+            background: `linear-gradient(to bottom, transparent 0%, ${c.ink900}80 100%)`,
           }}
         />
 
@@ -160,6 +160,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            zIndex: 10,
           }}
         >
           <IconButtonDS
@@ -183,36 +184,28 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             />
           </div>
         </div>
+      </div>
 
-        {/* Bottom: badge + title — v2.1: raw #F4EEDF + textShadow on photo overlay */}
-        <div
+      {/* ── 1.5 Title + category panel (solid background — guaranteed contrast — F: seçenek 2) ── */}
+      <div style={{ padding: '20px 20px 16px', background: c.ink900 }}>
+        {mission.category && (
+          <div style={{ marginBottom: 8 }}>
+            <BadgeDS variant="dark">{mission.category}</BadgeDS>
+          </div>
+        )}
+        <h1
           style={{
-            position: 'absolute',
-            bottom: 24,
-            left: 20,
-            right: 20,
+            fontFamily: 'Fraunces, serif',
+            fontSize: 28,
+            fontWeight: 500,
+            letterSpacing: '-0.02em',
+            lineHeight: 1.2,
+            color: c.cream,
+            margin: 0,
           }}
         >
-          {mission.category && (
-            <div style={{ marginBottom: 10 }}>
-              <BadgeDS variant="onImage">{mission.category}</BadgeDS>
-            </div>
-          )}
-          <h1
-            style={{
-              fontFamily: 'Fraunces, serif',
-              fontSize: 34,
-              fontWeight: 500,
-              letterSpacing: '-0.028em',
-              lineHeight: 1.05,
-              color: '#F4EEDF',
-              margin: 0,
-              textShadow: '0 2px 16px rgba(0,0,0,.5)',
-            }}
-          >
-            {mission.title}
-          </h1>
-        </div>
+          {mission.title}
+        </h1>
       </div>
 
       {/* ── 2. NGO lockup row ── */}
