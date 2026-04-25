@@ -111,6 +111,8 @@ export default function SignupPage() {
               required
               style={inputStyle}
               placeholder="Adın Soyadın"
+              onFocus={(e) => e.target.style.boxShadow = `inset 0 0 0 2px ${c.gold}`}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
           </div>
         </div>
@@ -126,6 +128,8 @@ export default function SignupPage() {
               required
               style={inputStyle}
               placeholder="sen@ornek.com"
+              onFocus={(e) => e.target.style.boxShadow = `inset 0 0 0 2px ${c.gold}`}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
           </div>
         </div>
@@ -141,6 +145,8 @@ export default function SignupPage() {
               required
               style={inputStyle}
               placeholder="Güçlü bir şifre seç"
+              onFocus={(e) => e.target.style.boxShadow = `inset 0 0 0 2px ${c.gold}`}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
             <button
               type="button"

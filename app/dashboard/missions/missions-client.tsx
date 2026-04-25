@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { MissionWithNGO, UserMission } from '@/lib/supabase/types'
 import { MissionCard } from '@/components/ui/mission-card'
 import { ChipDS } from '@/components/ui/ds'
+import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import { useTheme } from '@/lib/theme'
 
 interface Props {
@@ -99,22 +100,7 @@ export function MissionsClient({ missions, userMissions, savedMissionIds = [], m
         </AnimatePresence>
 
         {filtered.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '64px 0', gap: 12 }}
-          >
-            <div style={{
-              background: c.ink800, borderRadius: 20, width: 72, height: 72,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: `1px solid ${c.ink600}`, fontSize: 28,
-            }}>
-              🔍
-            </div>
-            <p style={{ color: c.ink500, fontSize: 13, fontWeight: 500, margin: 0 }}>
-              Bu kategoride görev bulunamadı
-            </p>
-          </motion.div>
+          <EmptyStateV2 {...emptyPresets.noSearchResults} />
         )}
       </div>
     </div>

@@ -104,6 +104,10 @@ export default function SigninPage() {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
     padding: '14px', fontFamily: uiFont, fontSize: 15, color: c.cream, fontWeight: 500,
   }
+  const inputFocusStyle: React.CSSProperties = {
+    ...inputStyle,
+    boxShadow: `inset 0 0 0 2px ${c.gold}`,
+  }
 
   return (
     <div style={{ background: c.ink900, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
@@ -150,6 +154,8 @@ export default function SigninPage() {
               required
               style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }}
               placeholder="sen@ornek.com"
+              onFocus={(e) => e.target.style.boxShadow = `inset 0 0 0 2px ${c.gold}`}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
           </div>
         </div>
@@ -158,7 +164,9 @@ export default function SigninPage() {
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
             <span style={{ fontFamily: uiFont, fontSize: 11, fontWeight: 600, color: c.ink300, letterSpacing: '.06em', textTransform: 'uppercase' }}>ŞİFRE</span>
-            <span style={{ fontFamily: uiFont, fontSize: 11, fontWeight: 600, color: c.gold, cursor: 'pointer' }}>Şifremi unuttum</span>
+            <Link href="/auth/forgot-password" style={{ textDecoration: 'none' }}>
+              <span style={{ fontFamily: uiFont, fontSize: 11, fontWeight: 600, color: c.gold, cursor: 'pointer', display: 'inline-block' }}>Şifremi unuttum</span>
+            </Link>
           </div>
           <div style={inputContainerStyle}>
             <input
@@ -168,6 +176,8 @@ export default function SigninPage() {
               required
               style={inputStyle}
               placeholder="Şifren"
+              onFocus={(e) => e.target.style.boxShadow = `inset 0 0 0 2px ${c.gold}`}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
             <button
               type="button"
