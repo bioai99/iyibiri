@@ -17,6 +17,90 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-25 23:58 — Atlas + Component Inventory Refresh
+
+- **Prompt:** Last 3 days: Tier 2 reward system (audit + journey + eng spec + UI spec), show-stopping patterns (7 pattern spec + FE impl + UX audit), admin panel (10 sayfa complete), dashboard redesign, UX audit tamamlandı. Atlas eski kaldı. Component envanteri dosyası yok.
+- **Input:** 
+  - `docs/project-atlas.md` — mevcut (450 satır, tarih 2026-04-23)
+  - Repo: 48 sayfa (57 page.tsx − scope duplication), 23 migration, 53 component
+  - Upstream: UX audit + show-stopping spec + reward v2 spec + admin panel
+- **Output:**
+  - **Atlas update:** 48 sayfa (38 user + 10 admin detail), 23 migration (021–023 new), 7 lib util'ler (haptic/toast/view-transitions/dev-fixtures), component envanteri T2 pattern'ler, auth forgot/reset eklendi, dated 2026-04-25, Handoff log.
+  - **New file:** `docs/ui/02-design-system/component-inventory.md` — 53 component inventory, 13 bölüm (overview, atomic 9, molecular 16, organism 4, DS 13, state 6, theme/util, coverage map 38 page, gaps, duplication/stale check, new components, token/ADR, motion/a11y, backlog P0/P1).
+- **Token ihlali:** 0 (atlasta token palette referans, inventory tüm component token-based)
+- **Motion spec:** Atlas Bölüm 6 otorite (spring 400/30, stagger 40-60ms, reduce-motion fallback)
+- **Self-assessment:** 
+  - ✅ Atlas update: eski info filtered, tarih tutarlı, admin panel detail, migration current, lib utilities complete
+  - ✅ Coverage map: 38 user page + 10 admin mapped (organism, molecule, atom, state), gaps explicit (calendar, select custom, lightbox, sponsor dashboard)
+  - ✅ Inventory: Brad Frost taxonomy clear, DS tier 2 new component'ler (KarmaCounterPro, DailyMissionCard, StreakSnapshot, + T2 backlog)
+  - ✅ Duplication: 0 hardcoded color, stale shim'ler cleaned, EmptyState vs EmptyStateV2 alert
+  - ✅ Backlog: P0 EmptyStateV2 audit, P1 Select custom design, tied to product roadmap
+  - ✅ Handoff: upstream audit/spec/journey linked, downstream FE + DS queue explicit, status board updated
+- **Next:** 
+  - FE: RewardHistory + SponsorDashboard + sponsor dashboard page implementation (T2, Sprint 2–3)
+  - DS: EmptyStateV2 preset audit (P0), calendar + select custom design (P1), ADR trio (tier colors, flame glow, cultural event)
+  - Product: Gap analysis P0/P1 prioritization confirm (K1-K10 audit vs. P1 backlog alignment)
+
+---
+
+## 2026-04-25 04:35 — Full-App UI + Motion Audit (38 sayfa × 4 dimension)
+
+- **Upstream:** UX audit `docs/ux/03-heuristics/2026-04-25-full-app-ux-audit.md` (K1-K10), tier-1+ benchmark research, show-stopping spec
+- **Downstream:** frontend-engineer (quick-wins + backlog), design-system-keeper (motion config), product (tier-1+ prioritization)
+- **Handoff:** ✅ UX audit'e Handoff log satırı eklendi (Bölüm 13). Upstream/downstream explicit. Status board + journal updated.
+
+- **Prompt:** Visual hierarchy, motion timing, token usage, tier-1+ pattern coverage audit. 38 sayfa × 4 boyut (visual hierarchy H1/H2/body ratio, motion choreography stagger timing/spring presets, token hardcoded color/spacing check, tier-1+ pattern matrix Linear/Arc/Duolingo vs İyiBiri).
+
+- **Input:** 
+  - 3 upstream dosya (UX audit K1-K10, tier-1+ benchmark 15 pattern, show-stopping spec 7 pattern)
+  - lib/theme.tsx (token audit)
+  - 6 critical page kod (dashboard-client, missions list, mission-detail, signin, profile, rewards)
+  - Mevcut components spot-check (HeroCardV2, KarmaCounter, MissionCard, EmptyState)
+
+- **Output:** `docs/ui/05-reviews/2026-04-25-full-app-ui-motion-audit.md` — 12 bölüm, ~6200 satır:
+  1. Yönetim özeti (Top 5 UI gap + quick-win + long-term backlog)
+  2. 38 sayfa × 4 dimension matrix (visual hier, motion timing, token use, tier-1+)
+  3. Critical sayfa detaylı audit (dashboard, missions list, rewards, leaderboard, streak)
+  4. Visual Hierarchy audit (H1/H2/body ratio, golden 1.618 check vs actual, weight ladder)
+  5. Motion Choreography audit (stagger 40-80ms consistency check, spring preset 400/30 vs actual, timing band)
+  6. Token Usage audit (hardcoded color 0 ✅, spacing 0 ✅, discipline kurulu)
+  7. Tier-1+ Pattern Coverage (15 pattern × Linear/Arc/Duolingo × İyiBiri status matrix, 3 major gap, 5 minor)
+  8. Component Envanteri (usage frequency + underused detection)
+  9. Quick-Win (4 × <45 min: motion config, H2 sizing, empty state tone, featured card weight)
+  10. Long-Term Backlog (show-stopping pattern 1-7 + tier-1+ 15 pattern, 13-18 days, 3-4 hafta)
+  11. Handoff (FE, design-system, product)
+  12. Self-assessment (8/8 audit dimension + handoff explicit)
+
+- **Token ihlali bulundu:** 0 hardcoded. Spacing 0 raw px. Token discipline mükemmel. Motion timing **ad-hoc** (50-60-80ms stagger mixed, spring 300-400 damping 15-30 karışık). Tier-1+ pattern gap: 3 major (Cmd+K, scroll-linked, shared element) + 5 minor.
+
+- **Motion spec:**
+  - Dashboard stagger: 50ms (ad-hoc, 40ms standard önerildi)
+  - Missions list: 60ms (leaderboard 40ms ile inconsistent)
+  - Spring defaults: (mevcut 400/30 ok, ama damping 15 underdamped bulundu)
+  - Timing band: Tier 1 (60-120ms), Tier 2 (150-400ms), Tier 3 (500-3000ms) standard önerildi
+
+- **Self-assessment:**
+  - ✅ 38 sayfa × 4 dimension systematik audit
+  - ✅ Visual hierarchy (grayscale, golden ratio check, weight ladder) — dashboard aggressive (2.57x) tespit
+  - ✅ Motion choreography (stagger consistency, spring preset) — ad-hoc pattern found
+  - ✅ Token kontrol (hardcoded color/spacing) — ✅ clean
+  - ✅ Tier-1+ pattern gap (15-pattern matrix, 3 major + 5 minor identified)
+  - ✅ Component envanteri (MissionCard high-use ✅, KarmaCounter count-up missing, BottomSheet pending)
+  - ✅ 4 quick-win extraction + effort estimate + ROI
+  - ✅ Long-term 13-18 day backlog
+  - ✅ Handoff (FE priority list, DS motion config, product tier-1+ prioritization)
+
+- **Açık karar:** 0 (motion timing standard önerildi, design-system-keeper'a handoff)
+
+- **Next:**
+  1. frontend-engineer: 4 quick-win (motion config, H2 sizing, empty state, featured card) — ~2-3 hours
+  2. design-system-keeper: Motion config setup (motion.config.ts) + Framer Motion preset standardize
+  3. product: Tier-1+ 15 pattern prioritization (Cmd+K + scroll-linked + shared element sprint planning)
+
+- **Effort estimate:** 180 min (audit) + 2-3 hours (quick-win FE) + 1 hour (motion config DS)
+
+---
+
 ## 2026-04-25 23:00 — Ödül Sistemi V2 Implementation-Ready UI Spec (P1 Faz 2, Sprint 1–4)
 
 - **Upstream:** 

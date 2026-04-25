@@ -1,19 +1,62 @@
 # ux-researcher Journal
 
-> Her run sonunda bir giriş, en üstte.
+> Her run sonunda bir giriş, en üstte. Unified 4 alan başlığı (Katman C — agent-communication-protocol) zorunlu.
 
 **Format:**
 ```
 ## YYYY-MM-DD HH:MM — [iş başlığı]
-- **Prompt:** ...
-- **Input:** ...
-- **Output:** ...
-- **Kanıt sınıfı:** [Kod / Kaynak / Hipotez / Gözlem]
-- **Açık karar:** N
-- **Self-assessment:** [kendine ne notu verirsin]
-- **Next:** ...
+
+- **Upstream:** `[dosya yolu]` | "—"
+- **Downstream:** [agent] via `[dosya]` | "—"
+- **Handoff:** ✅ updated-source | ⚠️ pending | ❌ blocked
+- **Status-board:** ✅ updated | ❌ skipped (gerekçe)
+
+[craft-specific alanlar devam eder]
+
 ---
 ```
+
+## 2026-04-25 23:50 — FULL-APP UX AUDIT: Tier-1+ Hedef
+
+- **Upstream:** —
+- **Downstream:** ui-designer via `docs/ui/01-specs/` (expected), frontend-engineer via backlog, design-system-keeper (tokens/motion)
+- **Handoff:** ✅ audit dokümanti (handoff readiness flagged)
+- **Status-board:** ✅ updated ("Done today"e moved)
+
+**İş:** İyiBiri tam user-facing aplikasyonu heuristik audit. 38 sayfa (user + 3 admin) × Nielsen 10 + İyiBiri 6 özel + WCAG AA + tier-1 benchmark (Linear/Arc/Duolingo).
+
+**Output:** `docs/ux/03-heuristics/2026-04-25-full-app-ux-audit.md` (9,200+ kelime)
+- 36 user-facing sayfa systematik audit
+- Severity 1–4 scalar (38 sayfa × 16 heuristik matris)
+- K1–K10 kritik bulgular (5 high severity)
+- 5 quick-win (<30 min each) + 4 medium-effort (backlog)
+- Tier-1+ gap analysis (haptic/motion/CLI yok ama polish path clear)
+- Handoff: ui-designer (visual spec), fe (loading/optimistic/a11y), ds-keeper (tokens/motion)
+
+**Kanıt sınıfları:**
+- [Kod] 40+ tsx file okuma + pattern analysis
+- [Gözlem] Nielsen 10 + mobile-app-polish-standards benchmark'te comparison
+- [Hipotez] "Duolingo pattern eksik → test önerisi" (discovery cycle)
+
+**Açık karar:** 0 (audit tamamlanmış, handoff clear)
+
+**Self-assessment:**
+- [x] Nielsen 10 heuristics pass
+- [x] İyiBiri 6 özel heuristics pass
+- [x] Mobile-app-polish-standards benchmark checked
+- [x] WCAG AA accessibility reviewed
+- [x] Severity 1–4 consistent scoring
+- [x] Kanıt sınıfı classification
+- [x] 5 quick-win extraction (implementation ready)
+- [x] Tier-1+ gap analysis (feature backlog vs. polish)
+- [x] Handoff format (downstream agent'lar clear)
+- [x] Self-audit ✅ pass — scope MECE, severity consistent, evidence classified, suggestions implementation-ready (not prescriptive design)
+
+**Status:** ✅ Completed. Timing: ~120 min (code audit + heuristic pass + output).
+
+**Next:** UI designer spec → Frontend backlog triage → Polish sprint S0 (tonight 5 quick-win).
+
+---
 
 ## 2026-04-25 20:30 — Ödül Sistemi V2: Heuristik audit + 2 persona journey
 

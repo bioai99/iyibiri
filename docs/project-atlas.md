@@ -4,7 +4,7 @@
 >
 > **Canlı dosya.** Üründe bir şey değiştiğinde güncel tutulur — güncelleme sorumluluğu değişikliği yapan agent'tadır. Güncellik denetimi ileride `qa-auditor`'da.
 
-**Son güncelleme:** 2026-04-23
+**Son güncelleme:** 2026-04-25
 
 ---
 
@@ -46,15 +46,17 @@ Tam bağımlılıklar `package.json`'da. Kritik kısım:
 
 ## 3. Ana rotalar ve sayfa haritası
 
-38 sayfa. Durum etiketleri `docs/page-audit.md`'den (otorite kaynak; atlasta özet).
+**48 sayfa** (2026-04-25: 38 user-facing + 10 admin). Durum etiketleri `docs/page-audit.md`'den (otorite kaynak; atlasta özet).
 
 ### Public & Auth
 - `/` Landing (🟢 prod, Three.js + GSAP, 71 KB `page.tsx`)
 - `/app-start` Splash + auth redirect (🟢 prod)
 - `/auth/login` Google + Apple OAuth (🟢 prod)
-- `/auth/signin` Email/password signin (🟡 beta — "Şifremi unuttum" ölü link)
+- `/auth/signin` Email/password signin (🟡 beta)
 - `/auth/signup` Email signup + KVKK + password strength (🟢 prod)
 - `/auth/verify` OTP verify (🟢 prod)
+- `/auth/forgot-password` Şifre sıfırla (🟡 2026-04-25 yeni)
+- `/auth/reset-password` Token-based reset (🟡 2026-04-25 yeni)
 - `/auth/callback/route.ts` OAuth callback handler
 - `/api/auth/set-session/route.ts` Session set endpoint
 
@@ -105,10 +107,24 @@ Tam bağımlılıklar `package.json`'da. Kritik kısım:
 - `/dashboard/streak` Haftalık dots + milestone (🟢 prod)
 - `/dashboard/tiers` Seviye listesi
 
-### Admin
-- `/admin/login` Cookie-based basit login (🟢 prod)
-- `/admin/missions` Görev listesi (🟢 prod, UI 5/10)
+### Admin (10 sayfa — 2026-04-25 yeni)
+- `/admin/login` Supabase email/password + per-NGO auth (🟢 2026-04-24)
+- `/admin/[ngoId]` Root dashboard (🟡 2026-04-24)
+- `/admin/[ngoId]/missions` Görev listesi (🟢 2026-04-24)
+- `/admin/[ngoId]/missions/new` Görev oluştur (🟡 2026-04-24)
+- `/admin/[ngoId]/verifications` Doğrulama queue (🟢 2026-04-24)
+- `/admin/[ngoId]/members` Üye listesi (🟡 2026-04-24)
+- `/admin/[ngoId]/membership-config` Üyelik formu ayarla (🟡 2026-04-24)
+- `/admin/[ngoId]/blog` Blog listesi (🟡 2026-04-24)
+- `/admin/[ngoId]/blog/new` Post yaz (🟡 2026-04-24)
+- `/admin/[ngoId]/blog/[postId]/edit` Post düzenle (🟡 2026-04-24)
+- `/admin/[ngoId]/profile` NGO profili (🟡 2026-04-24)
+- `/admin/[ngoId]/payments` Ödeme alımı (🟡 2026-04-24)
+- `/admin/[ngoId]/reports` Raporlar (🟡 2026-04-24)
+- `/admin/missions` Global mission QR (🟢 prod)
 - `/admin/missions/[id]/qr` QR generator (🟢 prod)
+- `/admin/analytics` Genel analitik (🟡 2026-04-24)
+- `/admin/devtools` Super-admin devtools (🟡 2026-04-24)
 
 ### Deprecated
 - ~~`/tesekkurler`~~ kaldırıldı.
@@ -117,7 +133,7 @@ Tam bağımlılıklar `package.json`'da. Kritik kısım:
 
 ## 4. Veri modeli (Supabase)
 
-8 migration var. Tablolar ve amaçları:
+23 migration var (2026-04-25: 020 stripe index, 021 NGO admin RLS, 022 proof columns, 023 storage bucket). Tablolar ve amaçları:
 
 | Tablo | Amaç | RLS |
 |---|---|---|
@@ -157,7 +173,7 @@ Tam bağımlılıklar `package.json`'da. Kritik kısım:
 
 **Admin:** Tamamen Supabase'ten bağımsız, cookie-based. Tek sır: `ADMIN_SECRET` env. Upgrade adayı.
 
-**Bilinen boşluk:** "Şifremi unuttum" akışı yok (signin'de ölü link).
+**Bilinen boşluk:** ~~"Şifremi unuttum" akışı yok~~ → 2026-04-25 `/auth/forgot-password` + `/auth/reset-password` eklendi.
 
 ---
 
@@ -274,25 +290,41 @@ Domain gradient + scrim patterns, Tailwind backgroundImage layer:
 
 ## 7. Component envanteri
 
-### `components/ui/` (design system atomları)
+### `components/ui/` (atomic + molecular — 27 component)
 
-`badge`, `brand-logo`, `button`, `card`, `celebration-overlay`, `domain-icon`, `empty-state`, `input`, `karma-counter`, `label`, `mission-card`, `progress`, `qr-scanner`, `separator`, `skeleton`, `streak-flame`, `tier-badge`, `xp-bar`. Ayrıca `ds/` alt klasörü (yeni tema parçaları).
+**Core:** `badge`, `brand-logo`, `button`, `card`, `input`, `label`, `progress`, `separator`, `skeleton`.
 
-### `components/` (özel)
+**Business:** `celebration-overlay`, `domain-icon`, `empty-state`, `karma-counter`, `karma-counter-pro` (2026-04-25 yeni — count-up), `mission-card`, `qr-scanner`, `streak-flame`, `tier-badge`, `xp-bar`.
 
-`auth-feedback`, `bottom-nav`, `logo`, ~~`mission-card`~~ (2026-04-24 retire — deprecated shim re-export eden `components/ui/mission-card`'a; kanonik karar D4), `onboarding-redirect`, `waitlist-form`, ~~`xp-bar`~~ (2026-04-24 retire — deprecated shim; `components/ui/xp-bar` kanonik).
+**Interaction:** `animated-heart`, `bottom-sheet`, `coming-soon-banner`, `command-palette`, `command-provider`, `magnetic-button`, `toaster`, `undo-toast`.
 
-**`components/dashboard/`** (2026-04-24 yeni) — ana dashboard composition component'leri:
-- `hero-card-v2.tsx` — gold glow breathing + KarmaCounter count-up + seviye progress + streak chip + empty state variant. UX audit + UI spec dashboard-ana-v2 implementasyonu.
-- `daily-mission-card.tsx` — featured "günün görevi" (Things 3 focal point + Duolingo daily goal pattern).
+**State (3 dosya):** `state/index.tsx` (LoadingState + EmptyStateV2 presets), `state/page-loading.tsx` (DetailPageLoading + GridPageLoading + ListPageLoading + ProfilePageLoading), `state/illustrations.tsx`.
 
-### `lib/`
+**DS (13 component, 2026-04-25 T2 reward):** `ds/badge-ds`, `ds/chip-ds`, `ds/fact-card`, `ds/hero-card`, `ds/icon-button-ds`, `ds/impact-summary`, `ds/karma-dot-token`, `ds/karma-pill`, `ds/karma-token`, `ds/meta-chip`, `ds/quick-action`, `ds/theme-toggle`, `ds/tier-badge-ds`.
 
-- `auth/oauth-native.ts` — Capacitor OAuth wrapper.
-- `supabase/client.ts`, `server.ts`, `types.ts`, `queries/` — SSR hattı + tipler.
-- `theme.tsx` — ThemeProvider (dark/light state — davranışı UI designer'ın okuması lazım).
-- `mock-data.ts` — içerik tonu örnekleri + karma oranları (demo).
-- `utils.ts` — `cn` helper (tailwind-merge).
+### `components/` (özel) + `components/dashboard/` (composition)
+
+**Root level:** `auth-feedback`, `bottom-nav`, `logo`, `onboarding-redirect`, `waitlist-form`.
+
+**`components/dashboard/`** (4 composition):
+- `hero-card-v2.tsx` — gold glow breathing + KarmaCounterPro count-up + seviye progress + streak chip.
+- `hero-card-v2-scroll.tsx` — parallax scroll variant.
+- `daily-mission-card.tsx` — featured "günün görevi" (2px gold border + "Senin için" badge, 2026-04-25 show-stopping pattern).
+- `streak-snapshot.tsx` — haftalık aktivite (2026-04-25 yeni).
+
+### `lib/` (utility + hooks)
+
+**Auth:** `auth/oauth-native.ts` (Capacitor wrapper).
+
+**Supabase:** `supabase/client.ts`, `server.ts`, `types.ts`, `queries/` (SSR + tipler).
+
+**Theme + Motion:** `theme.tsx` (ThemeProvider, dark/light), `haptic.ts` (2026-04-25 yeni — Capacitor titreşim), `toast.ts` (2026-04-25 yeni — Sonner wrapper), `view-transitions.ts` (2026-04-25 yeni — useTransitionedRouter).
+
+**Data:** `mock-data.ts` (demo content + karma oranları), `karma-level.ts` (level lookup).
+
+**Dev:** `lib/dev/ngo-admin-fixtures.ts` (2026-04-25 yeni — test data), `lib/dev/user-fixtures.ts` (2026-04-25 yeni).
+
+**Util:** `utils.ts` (`cn` helper — tailwind-merge).
 
 **Kanonik karar:** Yeni UI component → `components/ui/` altına. `components/` altı özel composition içindir.
 
