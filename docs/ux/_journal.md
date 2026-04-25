@@ -15,6 +15,57 @@
 ---
 ```
 
+## 2026-04-25 20:30 — Ödül Sistemi V2: Heuristik audit + 2 persona journey
+
+- **Upstream:** `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md` (product-analyst UX brief V2), `docs/strategy/06-memos/2026-04-25-odul-sistemi-derin-arastirma.md` (strateji derin araştırma, 4 boyut: firma/kullanıcı/regülasyon/benchmark)
+- **Downstream:** ui-designer via `docs/ui/01-specs/2026-04-25-reward-v2-ui-spec.md` (expected — K1-K8 UI spec), backend via `docs/product/02-briefs/eng/2026-04-25-reward-v2-backend.md` (TBD — K9-K10 Murat sponsor dashboard + PDF generator)
+- **Handoff:** ✅ brief'e satır ekleme (2 dosya audit + journey mapping)
+- **Status-board:** ✅ update — "Done today"'e audit (reward-v2-audit), journey (reward-ayse-murat), "Waiting for user"'a UI spec handoff (designer tarafı manual approve)
+
+**İş:** Ödül Sistemi V2 (product-analyst Ayşe + Murat brief'ten) → UX araştırma iki çıktı: (1) mevcut V1 rewards sayfası heuristik audit (Nielsen 10 + İyiBiri 6 + sponsor dashboard ayrı) + tier-1 benchmark, (2) iki persona journey (Ayşe 10-step redemption + Murat 8-step admin).
+
+**Output:**
+
+1. **`docs/ux/03-heuristics/2026-04-25-reward-v2-audit.md`** (8,900 kelime)
+   - Mevcut V1 rewards: 3-element (hub + detail + sticky CTA) — temel e-ticaret katalog
+   - Nielsen 10: N1 celebration loop eksik (K1), N6 history yok (K1), N8 cognitive overload (K2), N9 error handling missing (K3), N10 help talimatlar boşluk (K4)
+   - İyiBiri 6: I2 Karma animate eksik (K5), I3 impact statement yok (K6), I6 hero glow styling (K8)
+   - A11y: Kontrast sınırda (gold-dim + cream 4.1:1, AA min), focus ✅, touch target ✅, screen-reader ✅
+   - Sponsor dashboard Murat: Tamamen missing (K9-K10), Nielsen N1/N3/N6/N9 özel, real-time metrics + CSR PDF export gerek
+   - Benchmark: Duolingo (3-tier gem shop), Strava (challenge analytics), Charity Miles (match transparency) — V2 hepsi incorporates
+   - HEART mapping: Ayşe (Happiness/Engagement/Adoption/Retention/Task success), Murat (Happiness/Engagement/Adoption/Retention/Task success)
+
+2. **`docs/ux/02-journeys/2026-04-25-reward-ayse-murat-journey.md`** (7,600 kelime)
+   - **Ayşe (28, gönüllü, 2000 karma):** 10-adımlı redemption journey
+     - Adım 1–4: Rewards hub open → filter → Migros seç → detail oku (+2 emotion)
+     - **Adım 5 (dark -1):** Confirm dialog, "bunu hak ettim mi?" tereddüt, scarcity psychology — çözüm: "Kanaatkar Ol" tooltip + post-redemption reengagement hint
+     - **Adım 6 (peak +3):** Success celebration, confetti + code reveal, dopamine loop — koru: motion choreography stagger
+     - Adım 7–10: Talimatlar + history tab + Instagram paylaş (+2, +1)
+     - HEART: Adoption (confirm → success %), Task success (redemption_completed %), Happiness (post-survey NPS), Engagement (time-in-page)
+   - **Murat (42, Migros CSR yönetici):** 8-adımlı admin journey
+     - Adım 1–4: Dashboard open → KPI cards → cohort breakdown → analysis (+1 per)
+     - **Adım 5–6 (dark 0, -1):** "PDF otomatik generate mi?" uncertainty, loading wait — çözüm: Loading UX + email fallback + notification
+     - **Adım 8 (peak +3):** CSR narrative complete, "Raporlamaya hazır" — outcome validation
+     - HEART: Task success (PDF generation %), Adoption (export completion %), Happiness (report quality NPS), Retention (contract renewal %)
+   - Motion spec: Ayşe (confetti 1s, stagger 200ms per element, prefers-reduced-motion instant), Murat (loading bar linear, email fallback ≤30min)
+   - A11y checklist: Both personas (contrast, keyboard, focus, touch, screen-reader, reduced-motion, image alt, heading hierarchy)
+
+**Kanıt sınıflandırması:**
+- **[Kod]** V1 rewards-client.tsx (564 line list), reward-detail-client.tsx (375 line detail) — mevcut state tam
+- **[Brief]** V2 spec S1–S5 wireframes (5-adım flow) — product-analyst akış net
+- **[Strateji]** Murat persona JTBD (CSR raporlama hedefi) + TR kültür (hediye, sadaka, "emeğin karşılığı") — derin araştırma memo'dan
+- **[Hipotez]** Dark moment'lar (Ayşe tereddüt, Murat uncertainty) — Deci-Ryan SDT + UX best-practice literature [S71–S75, S20–S21]
+- **[Benchmark]** Tier-1 app'ler (Duolingo gem, Strava challenge, Charity Miles match) — direct reference + adaptation strategy
+
+**Self-assessment:** 8/10 — İki persona journey kapsamlı (10+8 adım), dark/peak moment açıkça tanımlı, HEART metrics mapped, motion spec + a11y checklist included. Kritik: Ayşe persona **kanıt-altı** (customer interview yapılmadı — brief'ten derived), Murat persona **hipotetik** (sponsor henüz konuşulmadı). **Recommendation:** V2 MVP (S1–S4 Ayşe flow) implement edip beta test (5+ user), Murat dashboard (K9–K10) sponsor pilot convo'dan sonra spec etme.
+
+**Next:**
+- UI-designer: K1-K8 UI spec (rewards hub redesign S1, detail modal S2, confirm dialog S3, success celebration S4, history page S5, sponsor dashboard mock S6–S8)
+- Backend: K9-K10 spec (sponsor auth + real-time redemption counter + PDF generation pipeline + CSR export)
+- Product-analyst: 3 açık karar log'a: (Q1) V1-to-V2 migration timeline (users redeem old vs new format?), (Q2) Sponsor auth structure (single-sponsor-per-campaign vs multi?), (Q3) Murat dashboard veri-paylaşım KVKK rıza (Q5 memo'dan)
+
+---
+
 ## 2026-04-25 18:00 — Ekosistem polish audit (14 akış × seamless + show-stopping)
 
 - **Upstream:** `docs/project-atlas.md` (kimlik, rota, DS), `docs/page-audit.md` (sayfa durum), agent playbook Bölüm 6.5 (yorum yetkisi), ux-heuristics skill (Nielsen 10 + İyiBiri özel), user-journey-mapping skill (emotion curve), mobile-app-polish-standards skill (tier-1 benchmark)

@@ -17,6 +17,84 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-25 23:00 — Ödül Sistemi V2 Implementation-Ready UI Spec (P1 Faz 2, Sprint 1–4)
+
+- **Upstream:** 
+  - `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md` (product-analyst)
+  - `docs/ux/03-heuristics/2026-04-25-reward-v2-audit.md` (ux-researcher, Nielsen 10 + İyiBiri 6 + K1-K10)
+  - `docs/ux/02-journeys/2026-04-25-reward-ayse-murat-journey.md` (ux-researcher, Ayşe 10-step + Murat 8-step)
+
+- **Downstream:** 
+  - frontend-engineer via `/app/dashboard/rewards/**` + `/admin/sponsor/**` implementation
+  - design-system-keeper via tier-color ADR-TBD validation
+  - supabase-backend via schema (Migration 024) + API spec (K9-K10)
+
+- **Handoff:** ✅ Upstream 3 dosyaya handoff log satırları eklendi. Spec'te 7 yeni/genişletilmiş component hiyerarşisi, token tablo (mevcut atlas palette yeterli, 3 yeni token ADR-TBD), motion choreography (stagger 40ms, spring 400/30, useReducedMotion check), a11y baseline (WCAG AA, kontrast flagged gold-dim).
+
+- **Status-board:** ✅ güncellendi — "Done today" ui-designer (ödül v2 spec), "In progress"ten çıktı.
+
+- **Prompt:** UX audit K1-K10 (history missing, cognitive overload, error state, impact statement missing, karma animation, tier naming) + journey (Ayşe dark moment step 5, peak 6–9; Murat dark 5–6, peak 8) + analyst brief (5-step flow, 3 sponsor, test data) → 6 ekran (rewards hub, detail, confirm, success, history, sponsor dashboard) implementation-ready spec. 7 component (RewardsHub, RewardDetail, RedemptionConfirmDialog, SuccessPage genişletme, RewardHistory new, SponsorDashboard new, atomlar: RewardCard, SponsorLogoBar, ImpactStatement, RedemptionCodeDisplay, SegmentChart). Tier-1 reuse (KarmaCounterPro, SuccessCelebration, Vaul, Sonner, MagneticButton, TierBadge, AnimatedHeart). Motion: K5 (karma countdown animation 0.8s), K3 (confirm dialog dark moment), K6 (success celebration peak), K10 (PDF generation loading). A11y: kontrast gold-dim ⚠️ flag, focus ring ✅, touch 44px ✅, reduced motion ✅.
+
+- **Input:**
+  - Adım 0: 5 skill + 3 upstream dosya full read ✅ (visual-spec-writing 10–11, design-system-audit 7–9, mobile-app-polish 1–6, agent-communication 1–5, brief + audit + journey)
+  - Atlas token envanter (palette eksiksiz, mevcut yeterli)
+  - Tier-1 component'ler: KarmaCounterPro, SuccessCelebration, TierBadge, Vaul, Sonner, MagneticButton
+  - Brief 5-step wireframe (S1-S5) + sponsor dashboard wireframe
+  - Audit K1-K10 kritik bulgular mapping
+  - Journey 2 persona (Ayşe + Murat) motion/emotion/HEART/a11y spec
+
+- **Output:** `docs/ui/01-specs/2026-04-25-reward-v2-ui-spec.md` — 15 bölüm, ~2100 satır:
+  1. Amaç (6 ekran, Tier-1 reuse)
+  2. Layout & Wireframe (A–F detaylı, ASCII)
+  3. Hiyerarşi (5 ekran başlığa göre)
+  4. Token kullanımı (tablo: renk/typo/radius/shadow/spacing, mevcut atlas + 3 ADR-TBD gereksinimi)
+  5. Variant × state (CTA button, reward card, pill, history card, sponsor KPI card — 5 tablo)
+  6. Motion spec (stagger, spring defaults, entry/exit, reduce motion, micro-interaction checklist)
+  7. Responsive (mobile-first max-w-lg, safe-area, breakpoint'ler)
+  8. A11y checklist (kontrast matrix, focus, touch, screen reader, reduced motion, color-alone)
+  9. State coverage (default, loading, empty, error, success)
+  10. Visual hierarchy discipline (grayscale-first, size scale 8px, weight ladder 3, color tertiary, shadow tier, spacing)
+  11. Component handoff (Tier-1 reuse + 20 new/extended organisms/molecules/atoms)
+  12. Token ihlali + ADR (0 hardcoded, 3 yeni gereksinimi ADR-TBD)
+  13. Handoff (FE priority 1–7, DS keeper token, BE schema/API)
+  14. Quality checklist (12-madde: hierarchy, motion, token, responsive, a11y, state)
+  15. Handoff log (upstream/downstream explicit)
+
+- **Token ihlali:** 0 hardcoded. Token referansları tüm spec'te Tailwind adları (bg-gold, shadow-md, vb.). Yeni token gereksinimi: tier colors (bronze #B87333 / silver / gold / diamond) → design-system-keeper ADR-TBD validate.
+
+- **Motion spec:**
+  - Confirm dialog (K3, K5): Vaul entry (scale 0.95→1, 300ms spring) + KarmaCounterPro countdown (2000→1500, 0.8s duration custom easing)
+  - Success celebration (K6): Confetti 1s + code reveal stagger (200ms per element) + copy toast 2s auto-dismiss
+  - History list (K1): Stagger 40ms, max 8 items
+  - PDF generation (K10): Linear progress (2–5s variable) + success notification
+  - Reduced motion: confetti off, instant code reveal, opacity-only fallback
+
+- **Self-assessment:**
+  - ✅ Adım 0: 5 skill full read + 3 upstream integrated
+  - ✅ Upstream handoff: 3 dosyaya satır eklendi (audit, journey, brief reference)
+  - ✅ 6 ekran wireframe (detailed ASCII)
+  - ✅ 7 component architecture (3 reuse gen, 4 new)
+  - ✅ Token kontrol: 0 hardcoded, 3 ADR-TBD explicit
+  - ✅ Motion choreography Bölüm 11 template full takip (stagger, spring, reduce-motion, exit)
+  - ✅ A11y baseline Bölüm 8 checklist (focus, touch, contrast flagged, keyboard, screen-reader, dark-mode, safe-area)
+  - ✅ Visual hierarchy Bölüm 10 discipline (grayscale, size-scale, weight-ladder, color-tertiary, shadow-tier)
+  - ✅ Tier-1 benchmark implied (Duolingo gem shop pattern referans, brief K1-K10 sorunlarından türedi)
+  - ✅ 12-madde quality checklist — tam pass
+  - ⚠️ Sponsor dashboard (K9-K10) scope check: PDF generation backend-dependent, Supabase function gerekli → backend spec'te belirtildi
+  - ⚠️ History page (K1) empty state: spec mevcut "Henüz..." ama icon/illustration detay → component library (emptyPresets.noRewards) check gerekli
+
+- **Açık karar:** 0 (product brief'teki Q47-Q51 product-analyst ile kapalı, UI spec sadece visualize ediyor)
+
+- **Next:**
+  1. frontend-engineer: RewardsHub (P0) → RewardDetail (P0) → RedemptionConfirm (P0) → Success (P0) → RewardHistory (P1) → SponsorDashboard (P0) implementation order
+  2. design-system-keeper: tier-color ADR-TBD + sponsor CSS var integration
+  3. supabase-backend: Migration 024 (sponsors + campaigns + reward_type columns) + `/admin/sponsor/[id]/analytics` endpoint + PDF generation function
+  4. fe + backend (paralel): FE 2 developer, BE 1 developer, auth-capacitor sponsor admin auth setup
+
+- **Effort estimate:** 2–3 hafta (FE 2 dev = 80–120 iş saati paralel; BE 1 dev = 40–60 iş saati)
+
+---
+
 ## 2026-04-25 18:30 — Ekosistem show-stopping UI spec (UX audit K1-K10 → 7 pattern)
 
 - **Upstream:** UX ecosystem polish audit `docs/ux/03-heuristics/2026-04-25-ekosistem-polish-audit.md` (10 kritik bulgu K1-K10, 5 show-stopping opportunity SS1-SS5, 6 spec frame handoff, 14 akış × seamless+show-stopping scoring matrix)
