@@ -67,6 +67,7 @@ export interface Database {
           longest_streak: number
           last_mission_week: string | null
           age_range: string | null
+          onboarding_completed: boolean
         }
         Insert: {
           id: string
@@ -86,6 +87,7 @@ export interface Database {
           longest_streak?: number
           last_mission_week?: string | null
           age_range?: string | null
+          onboarding_completed?: boolean
         }
         Update: {
           id?: string
@@ -105,6 +107,7 @@ export interface Database {
           longest_streak?: number
           last_mission_week?: string | null
           age_range?: string | null
+          onboarding_completed?: boolean
         }
         Relationships: []
       }

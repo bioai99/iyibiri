@@ -24,6 +24,11 @@ export default function OnboardingCity() {
   const displayFont = 'var(--font-display), Fraunces, serif'
 
   async function handleContinue() {
+    // Validation: city required
+    if (!selected) {
+      return
+    }
+
     setSaving(true)
     // Pre-auth fallback: localStorage
     try {
@@ -31,20 +36,39 @@ export default function OnboardingCity() {
       if (selectedAge) localStorage.setItem('iyibiri_onboarding_age', selectedAge)
     } catch { /* ignore */ }
 
-    // Eğer auth'luysa doğrudan profile'a yaz (WS onboarding sync improvement)
+    // Critical: Update profile with onboarding_completed flag
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const updates: { city?: string; age_range?: string } = {}
-        if (selected) updates.city = selected
-        if (selectedAge) updates.age_range = selectedAge
-        if (Object.keys(updates).length > 0) {
-          await supabase.from('profiles').update(updates).eq('id', user.id)
-        }
+      if (!user) {
+        setSaving(false)
+        return
+      }
+
+      const updates: {
+        city?: string
+        age_range?: string
+        onboarding_completed: boolean
+      } = {
+        onboarding_completed: true,
+      }
+      if (selected) updates.city = selected
+      if (selectedAge) updates.age_range = selectedAge
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id)
+
+      if (updateError) {
+        console.error('Profile update failed:', updateError)
+        setSaving(false)
+        return
       }
     } catch (err) {
-      console.warn('City/age direct save skipped:', err)
+      console.error('City completion endpoint failed:', err)
+      setSaving(false)
+      return
     }
 
     // K1: Show success modal, then redirect
@@ -166,18 +190,18 @@ export default function OnboardingCity() {
       <div style={{ padding: '0 16px calc(env(safe-area-inset-bottom, 16px) + 16px)' }}>
         <motion.button
           onClick={handleContinue}
-          disabled={saving}
-          whileTap={{ scale: 0.97 }}
+          disabled={saving || !selected}
+          whileTap={selected && !saving ? { scale: 0.97 } : undefined}
           style={{
-            width: '100%', height: 52, background: c.gold, color: c.ink,
+            width: '100%', height: 52, background: selected && !saving ? c.gold : c.ink600, color: selected && !saving ? c.ink : c.ink300,
             border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700,
-            fontFamily: uiFont, cursor: saving ? 'wait' : 'pointer',
+            fontFamily: uiFont, cursor: (saving || !selected) ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: '0 2px 8px rgba(0,0,0,.08)',
-            opacity: saving ? 0.7 : 1,
+            opacity: (saving || !selected) ? 0.6 : 1,
           }}
         >
-          {saving ? 'Kaydediliyor...' : (<>Hesabımı oluştur <ArrowRight size={16} strokeWidth={2.5} /></>)}
+          {saving ? 'Kaydediliyor...' : selected ? (<>Bitir <ArrowRight size={16} strokeWidth={2.5} /></>) : 'Lütfen şehir seç'}
         </motion.button>
       </div>
 
