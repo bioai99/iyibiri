@@ -580,6 +580,13 @@ ement unlock → badge (dijital)
   - **Avukat 5 soru + 5 açık karar** 
   - **Downstream:** Product-analyst (user stories + DB schema), UX (katalog UI), Frontend (redemption modal)
 
+- **2026-04-25 HH:MM — product-analyst** ✅ **V2 Ödül UX Brief**: `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md`
+  - **15 bölüm:** Governing thought + JTBD × 5 kullanıcı + 5 sponsor, 3 sponsor × 10 reward test data, 5-step redemption flow wireframe, DB schema migration 024+ önerisi
+  - **Discovery:** OST (4 opportunity), Cagan 4-risk (partial value risk, mitigation plan), LNO prioritization (leverage sprint 1–2)
+  - **Shape Up:** 4 sprint × 2 hafta = 8 hafta, XL effort, 2 FE + 1 BE paralel
+  - **5 açık karar:** Q47–Q51 (sponsor seçimi, bağış match budget, expiry, Elçi badge, OG generator timing)
+  - **Handoff:** ux-researcher (audit + journey + mini test) → ui-designer (katalog + dashboard spec) → fe (2 person + be + capacitor)
+
 ---
 
 ---

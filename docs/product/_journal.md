@@ -17,6 +17,63 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-04-25 22:30 — V2 Ödül Sistemi UX Brief (Faz 2, Karma → Gerçek Değer)
+
+- **Upstream:** `docs/strategy/06-memos/2026-04-25-odul-sistemi-derin-arastirma.md` (strateji 4 boyut), `docs/strategy/02-competitors/2026-04-25-faz2-rekabet-analizi.md` (feature matris + 5 pattern), `docs/product/01-workstreams/2026-04-25-faz2-backlog-master.md` (Faz 2 master roadmap)
+- **Downstream:** ux-researcher via `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md` (15 bölüm UX brief) → ui-designer (katalog + sponsor dashboard spec) → 2 FE + 1 BE
+- **Handoff:** ✅ strategy memo Bölüm 13 Handoff log'a satır eklendi (Katman A protokol)
+- **Status-board:** ✅ Faz 2 backlog sektion eklendi, "Done today" entry + Upstream Handoff log + brief link
+
+**Prompt:** "Strateji memo + rekabet + Faz 2 backlog'u V2 ödül workstream UX brief'ine çevir. Analyst-detaylı: 5 adım flow + JTBD + OST + effort + sponsor pilot plan + DB schema + risk matrisi + 5 açık karar."
+
+**Input:**
+- Strateji memo: 4 boyut (firma CSR KPI, kullanıcı TR psikoloji, regülasyon 4 risk, benchmark), V2 tier mimari, sponsor pilot (Migros + Garanti + Turkcell), Bölüm 4.3 avukat 5 soru
+- Rekabet: Fonzip + VolunteerMatch + Benevity + Charity Miles — feature matris, P0/P1/P2 (matching + email + push yetişme baseline), 5 pattern (matching algo, email pipeline, push, leaderboard, sponsor dashboard)
+- Faz 2 master backlog: 26 feature × P0–P2–Y2, 4-6 ay timeline, kritik path (F2.1 matching algo 3w yapıştırma riski)
+- Agent skills: product-discovery-frameworks (OST + JTBD + Shape Up + Cagan 4-risk + LNO), writing-plans (Lean PRD extended)
+
+**Output:**
+- `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md` (15 bölüm, 2200+ satır)
+  - Bölüm 1: Governing thought (sponsor CSR × user retention × STK visibility + 4 legal constraint)
+  - Bölüm 2: User persona Ayşe (gönüllü 28y, 2000 karma) + Murat (Migros CSR 42y); 5 JTBD each
+  - Bölüm 3: JTBD matrisi (10 row: user 5 + sponsor 5) + feature + wireframe screen mapping
+  - Bölüm 4: Test data 3 sponsor × 10 reward + 4 scenario (Bronze/Silver/Gold/Sponsor analytics)
+  - Bölüm 5: 5-adım redemption flow (katalog → detail → confirm → success → history) wireframe detay
+  - Bölüm 6: DB schema migration 024 (sponsors + campaigns + reward_type + RLS policies) — production-ready
+  - Bölüm 7: OST (4 opportunity: karma→value, sponsor metric, brand safety, STK matching) → 4+ solution per opp
+  - Bölüm 8: Cagan 4-risk (value ⚠️ partial JTBD, usability ✅ low, feasibility ✅ low, viability ✅ high) + mitigation (mini UX test, audit, spike, Migros legal)
+  - Bölüm 9: LNO (Leverage sprint 1–2 katalog + email, Neutral sprint 2–3 match + analytics, Overhead sprint 4 + V2.1 raffle/API)
+  - Bölüm 10: Shape Up 4-sprint × 2w (Sprint 1: katalog MVP + email + success UX; S2: sponsor dashboard + badge share; S3: match flow + detailed analytics; S4: gamification + V2.1 prep)
+  - Bölüm 11: Success metrics (4w pilot 300+ redemption 40%+ use, 8w 500+ cumulative, 12w ₺300–500k sponsor revenue + MAKE +20%)
+  - Bölüm 12: Dependencies (Supabase Storage, ADR-015 email provider, Migros API sandbox, avukat 5 soru, KVKK DPA sign)
+  - Bölüm 13: 5 açık karar (Q47 sponsor first/parallel, Q48 match budget sponsor/platform, Q49 expiry 30/override, Q50 Elçi platform/STK/hybrid, Q51 OG image V2/V2.1) + option + recommendation
+  - Bölüm 14: Handoff (ux-researcher audit → ui-designer katalog/dashboard → 2 FE + 1 BE + auth)
+  - Bölüm 15: Avukat paket (5 soru detay — kupon ekonomi, piyango vs hediye, data privacy eşik, platform liability, cross-border)
+
+**Kararlar açıldı:** 5 (Q47–Q51) — open.md'ye yazılacak sonraki iş (ux-researcher onayını bekle)
+
+**Kararlar kapandı:** 0 (hepsi Proposed → Accepted bekleniyor)
+
+**Self-audit:** ✅ PASS — 5/5 checklist
+  - ✅ Problem veri ile desteklendi (strateji memo 4 boyut + benchmark)
+  - ✅ Must/Should/Won't net (shape up 4-sprint explicit)
+  - ✅ Başarı kriteri tek cümle + ölçülebilir (pilot 500+ redemption + 40% use + NPS, 12w sponsor ₺300k+)
+  - ✅ Upstream referans 3 dokuman var
+  - ✅ 5 açık karar `open.md`'ye yazılacak (Q47–Q51)
+  - ✅ Tarih + durum + sahip başta (2026-04-25, Ready for UX research, product-analyst)
+  - ✅ Sayfa disiplini 2200 satır ≈ 15 sayfa (one-pager değil ama Lean PRD extended standart — Faz 2 scope XL olduğundan justified)
+  - ✅ Outcome, solution değil (Karma birikimini kupon+match+badge'ye dönüştür; sponsor'a CSR KPI rapor; düzenlemeye uyun)
+
+**Next:** 
+  1. UX researcher: Bölüm 3 persona audit + Bölüm 5 5-step flow heuristic eval (Nielsen 10 + İyiBiri custom 6)
+  2. UI designer: Bölüm 4 test data scenario + Bölüm 5 flow wireframe → high-fidelity spec (katalog hub, detail modal, sponsor dashboard MVP)
+  3. Product-analyst: Bölüm 13 5 açık karar → open.md entry (Q47–Q51) — user onay gerekli
+  4. Avukat: Bölüm 15 paket (kupon ekonomi, piyango yasallığı, KVKK threshold, liability, cross-border) — Mayıs deadline
+
+**Effort:** 4 saat (research 1h + oku 1h + JTBD × 10 + flow + schema + OST + Shape Up + risk + metrics 2h)
+
+---
+
 ## 2026-04-24 10:45 — STK Admin UI V1 (Min+ 10 Sayfa) Detaylı UX Brief
 
 - **Upstream:** `docs/product/01-workstreams/2026-04-24-stk-backoffice-workstream.md` (master workstream), ADR-010 (Accepted), ADR-007 + ADR-008 (ödeme infra)

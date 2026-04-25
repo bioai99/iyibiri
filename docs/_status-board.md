@@ -4,7 +4,7 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
-**Son güncelleme:** 2026-04-25 20:15 — frontend-engineer — **Tier-1 Quick-Wins 6 pattern ✅**. Sonner toast + Vaul bottom-sheet + AnimatedHeart + MagneticButton + haptic catalog + breathing CSS. npm install 3 lib, TSC 0. app/layout.tsx <Toaster /> entegre. Handoff: upstream UI spec Handoff log updated, Tier 2 backlog ready. Status: Done today.
+**Son güncelleme:** 2026-04-25 23:15 — ui-designer — **Ödül Sistemi V2 implementation-ready spec tamamlandı (P1 Faz 2, Sprint 1–4)**. 6 ekran (Rewards Hub + Detail + Confirm + Success + History + Sponsor Dashboard), 7 component (4 new, 3 extended), Tier-1 reuse (KarmaCounterPro, SuccessCelebration, Vaul, Sonner), token tablo (mevcut palette yeterli, 3 ADR-TBD tier colors), motion choreography (K5 karma countdown, K3 confirm dark moment, K6 success peak, K10 PDF load), a11y baseline (WCAG AA, kontrast gold-dim flagged). Handoff: FE 7-priority list, BE Migration 024 + API spec, DS keeper tier-color ADR. Effort: 2–3 hafta (FE 2 dev paralel 80–120 saat, BE 40–60 saat). Upstream: brief + audit + journey handoff log'ları, downstream: FE ready for implementation.
 
 ---
 
@@ -39,6 +39,14 @@
 
 Bir sonraki turda yapılacak, öncelik sırası belli iş.
 
+### Faz 2 — V2 Ödül Sistemi (Ay 6–9, sprint 1–4)
+
+- **F2.1–F2.7 — P0 V1.1 blocker (6 hafta)** — owner: ux-researcher (audit) → ui-designer → 2 FE + 1 BE + auth-capacitor, priority: P0, link: brief [`docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md`](./product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md) Sprint 1–2, effort: 38–52 iş günü paralel. Gönüllü matching (F2.1, L 15–20 gün), email pipeline (F2.2, M 5–7 gün), push notification (F2.3, M 4–6 gün), makbuz PDF (F2.4, M 6–8 gün), storage polish (F2.5, S 2–3 gün), leaderboard Q25 (F2.6, M 4–5 gün), password reset (F2.7, S 2–3 gün). **Reciters: V1.1 lansman başladıktan 2 hafta sonra başlar (Ay 3–4 timeline).** UX researcher: audit + heuristik başlasın Q25 sonrası.
+
+- **F2.8–F2.18 — P1 Genişleme (8 hafta)** — owner: multiple, priority: P1, link: brief Sprint 2–3 (Ay 4–6), effort: 60–80 iş günü. Fidan/fidye/adak (F2.8, L), takım gönüllülük (F2.9, L), sosyal referral (F2.10, M), discover (F2.11, M), missions filter (F2.12, M), profile karma log (F2.13, M), leaderboard friends (F2.14, M), notifications (F2.15, S), markdown (F2.16, S), PDF/CSV rapor (F2.17, M), admin role UI (F2.18, M).
+
+- **F2.19–F2.26 — P2 V2 Geçiş (10–12 hafta)** — owner: full team, priority: P2, link: brief Sprint 3–4 (Ay 7–9), effort: 80–105 iş günü. Kurumsal sponsor dashboard (F2.19, XL 20–25 gün — yeni gelir kolu), gelişmiş analytics (F2.20, L), bulk messaging (F2.21, M), design system V2 (F2.22, L), share kart (F2.23, M), saved import (F2.24, M), API key management (F2.25, M), görev taxonomy (F2.26, L).
+
 ### P0 — V1 Lansman (yüksek öncelik)
 
 - **P0 #9 — STK admin UI V0 (Min+ 10 sayfa)** — owner: ux-researcher (next) → ui-designer → frontend-engineer + supabase-backend + auth-capacitor, priority: P0, link: master plan [`docs/product/01-workstreams/2026-04-24-v1-improvement-master-plan.md`](./product/01-workstreams/2026-04-24-v1-improvement-master-plan.md) #9, effort: 2-2.5 hafta (1 FE) / 1.5 hafta (FE+BE paralel). ✅ UX brief done (`docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md`), ux-researcher heuristik audit başlayabilir (S0).
@@ -60,6 +68,17 @@ Bir sonraki turda yapılacak, öncelik sırası belli iş.
 - **Eski brief/spec'lere handoff log ekleme (kalan)** — owner: meta (user-triggered audit), priority: low, link: communication protocol SKILL. 3 ana thread retroactive dolduruldu; ikinci turda P1 UX brief'lere + Eng brief'lere + UI spec'lere de uygulanır.
 
 ## ✅ Done today (2026-04-25)
+
+- 2026-04-25 23:00 — **ui-designer** — **Ödül Sistemi V2: Implementation-ready UI spec** (P1 Faz 2):
+  - `docs/ui/01-specs/2026-04-25-reward-v2-ui-spec.md` (2100+ satır, 15 bölüm) — 6 ekran detail (Rewards Hub + Detail bottom sheet + Redemption Confirm + Success Celebration + Reward History + Sponsor Dashboard), 7 component (RewardsHub, RewardDetail, RedemptionConfirmDialog, SuccessPage, RewardHistory new, SponsorDashboard new + 3 atomic: RewardCard, SponsorLogoBar, ImpactStatement, RedemptionCodeDisplay, SegmentChart). Tier-1 reuse (KarmaCounterPro, SuccessCelebration, Vaul, Sonner, MagneticButton, TierBadge). Token: mevcut atlas yeterli (0 hardcoded), 3 tier-color ADR-TBD. Motion: K5 (karma countdown 0.8s), K3 (confirm dark), K6 (success peak), K10 (PDF load). A11y: WCAG AA baseline (focus-visible ✅, touch 44px ✅, kontrast flagged gold-dim ⚠️, reduced-motion ✅). Effort: FE 2 dev 80–120 saat, BE 40–60 saat, 2–3 hafta. Handoff: FE (RewardsHub P0 → RewardHistory P1 priority), BE (Migration 024 + API), DS (tier-color ADR). Upstream: brief + audit + journey Handoff log satırları. TSC 0 hata. Journal updated.
+
+- 2026-04-25 20:45 — **ux-researcher** — **Ödül Sistemi V2: Heuristik audit + 2 persona journey** (P1 Faz 2): 
+  - `docs/ux/03-heuristics/2026-04-25-reward-v2-audit.md` (8,900 satır) — V1 rewards audit (Nielsen 10 + İyiBiri 6 + sponsor dashboard), K1–K10 kritik bulgular (dark/peak moment detay), HEART metrics, tier-1 benchmark (Duolingo gem shop / Strava challenge / Charity Miles match), **Sponsor dashboard for Murat (K9–K10 missing)** explicit flag. 
+  - `docs/ux/02-journeys/2026-04-25-reward-ayse-murat-journey.md` (7,600 satır) — **Ayşe journey** (10-step redemption: hub → filter → detail → confirm **dark** → success **peak** → history → share); **Murat journey** (8-step admin: dashboard → analytics → cohort → PDF **dark/wait** → download → report **peak**). Both emotion curves, HEART metrics per adım, motion choreography (stagger, prefers-reduced-motion), a11y checklist. 
+  - Persona durum: Kanıt-altı (brief'ten derived, customer interview pending — **recommendation: V2 MVP S1–S4 Ayşe beta test 5+ user, Murat sponsor convo sonra spec**).
+  - Handoff: upstream product-analyst brief (Handoff log satır eklendi), downstream ui-designer (K1-K8 spec bekleniyor), backend (K9-K10 sponsor dashboard + PDF). TSC 0 hata. Effort: 5 saat (skill read + audit + journey tabling + persona motion/a11y/HEART mapping).
+
+- 2026-04-25 22:30 — **product-analyst** — **V2 Ödül UX Brief** (P1 Faz 2, Ay 6–9): `docs/product/02-briefs/ux/2026-04-25-odul-sistemi-v2.md`, 15 bölüm, 2200 satır. Governing thought + JTBD × 10 (5 kullanıcı + 5 sponsor), test data 3 sponsor × 10 reward, 5-step redemption flow (wireframe), DB schema migration 024 (sponsors + campaigns + reward_type), OST + Cagan 4-risk + LNO + Shape Up 4-sprint, 5 açık karar (Q47–Q51 sponsor seçimi/budget/expiry/badge/OG). Handoff: ux-researcher (audit + journey + mini test) → ui-designer (katalog + sponsor dashboard spec) → 2 FE + 1 BE + auth. Upstream Handoff log (strategy memo 13. bölüm) + status board updated. TSC 0 hata. Effort: 4 saat (research + strateji memo okuma + JTBD analysis + flow + schema + metrics writup). **Downstream ready: UX research başlar Q25 sonrası.**
 
 - 2026-04-25 ~19:10 — **frontend-engineer** — **Pattern 1-3: Show-Stopping UI Polish** (Onboarding, Karma Counter, Mission Card). Yeni: `components/ui/karma-counter-pro.tsx` (120 satır, easeOutExpo count-up + tier glow ring + delta float), `components/onboarding/welcome-celebration.tsx` (200 satır, modal + KarmaCounterPro integration). Genişletme: `daily-mission-card.tsx` (featured state vurgusu: 2px gold border + "Senin için" badge top-left + glow shadow + hover lift), `app/onboarding/city/page.tsx` (WelcomeCelebration swap). TSC: 0 hata (tüm 3 faz). Regression: HeroCardV2 karma count-up mevcut, onboarding city→modal→dashboard flow OK, mission card list render intact. Motion: K1 (1400ms ceremony timing) + K9 (KarmaCounterPro ready for leaderboard/mission-complete wiring). Handoff: upstream `ekosistem-show-stopping-spec.md` Bölüm 12 log, downstream design-system-keeper (3 ADR-TBD) + fe next (Pattern 4-7 backlog). Files: 3 yeni + 2 genişletme. Effort: 150 dakika (A 35 + B 45 + C 30 + integration 15 + doc 25).
 
