@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { Clock, MapPin, Bookmark, Flame } from 'lucide-react'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
@@ -84,7 +85,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
         }}
       >
         {/* ── Photo / Domain gradient header ── */}
-        <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
+        <motion.div layoutId={`mission-photo-${mission.id}`} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
           {mission.photo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -187,7 +188,7 @@ export function MissionCard({ mission, onClick, isSaved = false, userId, isMembe
               </span>
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* ── Body ── */}
         <div style={{ padding: '16px 18px 16px' }}>

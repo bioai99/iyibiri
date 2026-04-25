@@ -13,7 +13,7 @@ import {
   IconButtonDS,
   ThemeToggle,
 } from '@/components/ui/ds'
-import { HeroCardV2 } from '@/components/dashboard/hero-card-v2'
+import { HeroCardV2Scroll } from '@/components/dashboard/hero-card-v2-scroll'
 import { DailyMissionCard } from '@/components/dashboard/daily-mission-card'
 import { useTheme } from '@/lib/theme'
 import type { StreakActivity } from '@/lib/supabase/queries/streak'
@@ -183,14 +183,14 @@ export function DashboardClient({
         </div>
       </motion.div>
 
-      {/* ── 2. HeroCardV2 (revize 2026-04-24 gece) ──
+      {/* ── 2. HeroCardV2Scroll (revize 2026-04-24 gece, Pattern 8 2026-04-25)
           Eski HeroCard tüm fonksiyonelliği korundu: 5 tier dots + BrandLogo +
           3 tıklanabilir stat cell (/my-missions, /my-missions, /streak).
           Yeni eklenenler: gold glow breathing + Karma count-up + weekly gain +
-          seviye progress bar.
+          seviye progress bar + Pattern 8: scroll-linked shrink animation
           A1 (tur 2): StreakSnapshot alt-section (streakActivity.recentDays) */}
       <div style={{ padding: '20px 0 0' }}>
-        <HeroCardV2
+        <HeroCardV2Scroll
           karma={karma}
           taken={userMissions.filter((m) => m.status === 'taken').length}
           completed={completedIds.size}

@@ -122,7 +122,7 @@ function StatCell({
  *  Props + Component
  * ───────────────────────────────────────────────────────────── */
 
-interface HeroCardV2Props {
+export interface HeroCardV2Props {
   karma: number
   /** Aktif görev sayısı (status='taken') */
   taken: number
