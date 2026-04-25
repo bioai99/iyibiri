@@ -92,13 +92,27 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
+/**
+ * Lazy initialization: reads localStorage on first render only.
+ * Prevents hydration mismatch by having server and client start with same initial value,
+ * then client immediately reads correct value from localStorage.
+ *
+ * Server: returns `initial` (deterministic, no localStorage)
+ * Client: returns stored value from localStorage if exists, else `initial`
+ */
+function getInitialMode(initial: Mode): Mode {
+  if (typeof window === 'undefined') return initial
+  const stored = localStorage.getItem('iyibiri-theme') as Mode | null
+  return (stored === 'light' || stored === 'dark') ? stored : initial
+}
+
 export function ThemeProvider({ children, initial = 'dark' }: { children: React.ReactNode; initial?: Mode }) {
-  const [mode, setModeState] = useState<Mode>(initial)
+  const [mode, setModeState] = useState<Mode>(() => getInitialMode(initial))
 
   useEffect(() => {
-    const saved = localStorage.getItem('iyibiri-theme') as Mode | null
-    if (saved === 'light' || saved === 'dark') setModeState(saved)
-  }, [])
+    // Ensure localStorage is set on every render (for new browser sessions)
+    localStorage.setItem('iyibiri-theme', mode)
+  }, [mode])
 
   const setMode = useCallback((m: Mode) => {
     setModeState(m)

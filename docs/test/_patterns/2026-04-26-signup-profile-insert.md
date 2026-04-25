@@ -185,3 +185,4 @@ Beklenen:
 
 - 2026-04-26 15:45 — test-engineer ✅ — Pattern memo açıldı.
 - 2026-04-26 16:30 — auth-capacitor + supabase-backend ✅ — Pattern D fix done. Migration: supabase/migrations/024_handle_new_user_trigger.sql (NEW). Signup: app/auth/signup/page.tsx zaten `options.data.full_name` var. Schema: profiles.{full_name, first_name, karma, onboarding_completed, email}, karma_transactions.type += 'welcome_bonus'. User manual: SQL Editor → migration 024 apply.
+- 2026-04-26 18:00 — supabase-backend ✅ — Migration 025 (existing user backfill) yazıldı. Idempotent UPDATE: sadece full_name boş olanları auth.users.raw_user_meta_data'dan doldurur. Welcome bonus backfill commented out (iş kararı bekliyor). User SQL Editor'dan apply edecek.
