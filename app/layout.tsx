@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { CommandProvider } from "@/components/ui/command-provider";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -60,8 +61,10 @@ export default function RootLayout({
       className={cn(jakarta.variable, fraunces.variable)}
     >
       <body className="font-sans">
-        {children}
-        <Toaster />
+        <CommandProvider>
+          {children}
+          <Toaster />
+        </CommandProvider>
       </body>
     </html>
   );
