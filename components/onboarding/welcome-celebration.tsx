@@ -61,7 +61,7 @@ export function WelcomeCelebration({
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(26,22,18,0.72)',
+          background: `${c.ink}d9`,
           backdropFilter: 'blur(12px)',
           zIndex: 9000,
           display: 'flex',

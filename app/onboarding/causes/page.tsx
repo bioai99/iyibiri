@@ -157,7 +157,7 @@ export default function OnboardingCauses() {
                 transition: 'background 200ms ease',
                 borderRadius: '14px 14px 0 0',
               }}>
-                <Icon size={22} color={isSelected ? '#F4EEDF' : c.ink300} strokeWidth={1.8} style={{ display: 'block' }} />
+                <Icon size={22} color={isSelected ? c.cream : c.ink300} strokeWidth={1.8} style={{ display: 'block' }} />
               </div>
 
               {/* Text */}
@@ -190,7 +190,7 @@ export default function OnboardingCauses() {
                       boxShadow: '0 2px 6px rgba(0,0,0,.12)',
                     }}
                   >
-                    <Check size={14} color="#FFFFFF" strokeWidth={2.5} />
+                    <Check size={14} color={c.ink} strokeWidth={2.5} />
                   </motion.div>
                 )}
               </AnimatePresence>

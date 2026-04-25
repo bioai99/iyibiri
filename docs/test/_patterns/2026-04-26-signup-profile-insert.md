@@ -184,4 +184,4 @@ Beklenen:
 ## Handoff Log
 
 - 2026-04-26 15:45 — test-engineer ✅ — Pattern memo açıldı.
-- (bekleniyor) — auth-capacitor 📥 — Review + fix scope onayı.
+- 2026-04-26 16:30 — auth-capacitor + supabase-backend ✅ — Pattern D fix done. Migration: supabase/migrations/024_handle_new_user_trigger.sql (NEW). Signup: app/auth/signup/page.tsx zaten `options.data.full_name` var. Schema: profiles.{full_name, first_name, karma, onboarding_completed, email}, karma_transactions.type += 'welcome_bonus'. User manual: SQL Editor → migration 024 apply.
