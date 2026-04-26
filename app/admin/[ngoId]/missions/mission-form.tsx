@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createMission, updateMission } from '@/lib/admin/missions-actions'
 import { AdminImageUpload } from '@/components/admin/admin-image-upload'
@@ -47,9 +47,14 @@ function isoDateOrToday(value: string | null | undefined): string {
   }
 }
 
+// Vol-25 BUG-055 sistemik fix: form onSubmit yerine button onClick.
+// Next 14 compiler async onSubmit handler'ı server action olarak compile
+// edebilir + form action prop'una bağlayabilir → silent fail riski.
+// Vol-23'te bu form çalışıyordu ama defense in depth için pattern align edildi.
 export function AdminMissionForm({ ngoId, mission }: AdminMissionFormProps) {
   const router = useRouter()
-  const [pending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const isEdit = Boolean(mission)
 
@@ -69,42 +74,47 @@ export function AdminMissionForm({ ngoId, mission }: AdminMissionFormProps) {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const doSubmit = async () => {
+    if (isLoading) return
 
     if (!formData.title.trim()) {
-      alert('Başlık gerekli')
+      setErrorMsg('Başlık gerekli')
       return
     }
 
     if (!formData.description.trim()) {
-      alert('Açıklama gerekli')
+      setErrorMsg('Açıklama gerekli')
       return
     }
 
-    startTransition(async () => {
-      try {
-        const result = isEdit && mission
-          ? await updateMission(ngoId, mission.id, formData)
-          : await createMission(ngoId, formData)
+    setIsLoading(true)
+    setErrorMsg(null)
 
-        if (result.success) {
-          router.push(`/admin/${ngoId}/missions`)
-          router.refresh()
-        } else {
-          alert(`Hata: ${result.error}`)
-        }
-      } catch (err) {
-        alert(`Hata: ${(err as Error).message}`)
+    try {
+      const result = isEdit && mission
+        ? await updateMission(ngoId, mission.id, formData)
+        : await createMission(ngoId, formData)
+
+      if (result.success) {
+        router.push(`/admin/${ngoId}/missions`)
+        router.refresh()
+      } else {
+        setErrorMsg(result.error ?? 'Beklenmeyen hata')
       }
-    })
+    } catch (err) {
+      setErrorMsg((err as Error).message)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  const pending = isLoading
 
   // Edit modunda image upload için stable fileName (mission.id) kullan
   const imageFileName = isEdit && mission ? mission.id : Math.random().toString(36).substr(2, 9)
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-2xl">
       {/* Title */}
       <div>
         <label className="block text-sm font-semibold text-cream mb-2">
@@ -243,10 +253,21 @@ export function AdminMissionForm({ ngoId, mission }: AdminMissionFormProps) {
         </div>
       </div>
 
+      {/* Error banner (Vol-25: alert() yerine inline) */}
+      {errorMsg && (
+        <div
+          role="alert"
+          className="rounded-xl px-4 py-3 text-sm font-medium bg-clay/15 border border-clay/40 text-clay"
+        >
+          ⚠ {errorMsg}
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-3 pt-6 border-t border-ink-700">
         <button
-          type="submit"
+          type="button"
+          onClick={doSubmit}
           disabled={pending}
           className="px-6 py-3 bg-gold text-ink-900 rounded-xl font-semibold hover:bg-gold/90 disabled:opacity-50 transition-colors"
         >
@@ -266,6 +287,6 @@ export function AdminMissionForm({ ngoId, mission }: AdminMissionFormProps) {
           İptal
         </Link>
       </div>
-    </form>
+    </div>
   )
 }

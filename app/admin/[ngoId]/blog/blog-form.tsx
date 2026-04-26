@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createBlogPost, updateBlogPost } from '@/lib/admin/blog-actions'
@@ -19,10 +19,12 @@ const CATEGORIES = [
   { value: 'tip', label: 'İpucu' },
 ]
 
+// Vol-25 BUG-055 sistemik fix: form onSubmit yerine button onClick.
 export function BlogForm({ ngoId, post }: BlogFormProps) {
   const router = useRouter()
-  const [pending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     title: post?.title || '',
@@ -37,44 +39,47 @@ export function BlogForm({ ngoId, post }: BlogFormProps) {
     value: any,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errorMsg) setErrorMsg(null)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const doSubmit = async () => {
+    if (isLoading) return
 
     if (!formData.title.trim()) {
-      alert('Başlık zorunlu')
+      setErrorMsg('Başlık zorunlu')
       return
     }
 
     if (!formData.content.trim()) {
-      alert('İçerik zorunlu')
+      setErrorMsg('İçerik zorunlu')
       return
     }
 
-    startTransition(async () => {
-      try {
-        let result
-        if (post) {
-          result = await updateBlogPost(ngoId, post.id, formData)
-        } else {
-          result = await createBlogPost(ngoId, formData)
-        }
+    setIsLoading(true)
+    setErrorMsg(null)
 
-        if (result.success) {
-          router.push(`/admin/${ngoId}/blog`)
-          router.refresh()
-        } else {
-          alert(`Hata: ${result.error}`)
-        }
-      } catch (err) {
-        alert(`Hata: ${(err as Error).message}`)
+    try {
+      const result = post
+        ? await updateBlogPost(ngoId, post.id, formData)
+        : await createBlogPost(ngoId, formData)
+
+      if (result.success) {
+        router.push(`/admin/${ngoId}/blog`)
+        router.refresh()
+      } else {
+        setErrorMsg(result.error ?? 'Beklenmeyen hata')
       }
-    })
+    } catch (err) {
+      setErrorMsg((err as Error).message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
+  const pending = isLoading
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
       {/* Title */}
       <div>
         <label className="block text-sm font-semibold text-cream mb-2">
@@ -189,6 +194,16 @@ export function BlogForm({ ngoId, post }: BlogFormProps) {
         </p>
       </div>
 
+      {/* Error banner (Vol-25: alert() yerine inline) */}
+      {errorMsg && (
+        <div
+          role="alert"
+          className="rounded-xl px-4 py-3 text-sm font-medium bg-clay/15 border border-clay/40 text-clay"
+        >
+          ⚠ {errorMsg}
+        </div>
+      )}
+
       {/* Form Actions */}
       <div className="flex gap-3 justify-end pt-6 border-t border-ink-700">
         <Link
@@ -198,7 +213,8 @@ export function BlogForm({ ngoId, post }: BlogFormProps) {
           İptal
         </Link>
         <button
-          type="submit"
+          type="button"
+          onClick={doSubmit}
           disabled={pending}
           className="px-6 py-3 rounded-xl bg-gold text-ink-900 font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
         >
@@ -209,7 +225,7 @@ export function BlogForm({ ngoId, post }: BlogFormProps) {
               : 'Yayınla'}
         </button>
       </div>
-    </form>
+    </div>
   )
 }
 
