@@ -103,9 +103,21 @@ export default function AdminLoginPage() {
           </a>
         </form>
 
+        {/* BUG-044 fix (Vol-20): yeni STK kaydı için onboarding link */}
+        <p className="text-xs text-text-tertiary text-center mt-6 leading-relaxed">
+          STK&apos;nız platformda yok mu?{' '}
+          <a
+            href="mailto:onboarding@iyibiri.app?subject=STK%20Onboarding%20Talebi"
+            className="text-primary hover:underline font-semibold"
+          >
+            Bizimle iletişime geç
+          </a>
+        </p>
+
         <p className="text-xs text-text-tertiary text-center mt-6 pt-6 border-t border-border">
           Giriş yaparak,{' '}
-          <a href="/legal/kvkk-aydinlatma-genel" className="hover:underline">
+          {/* BUG-046 fix (Vol-20): /legal/kvkk-aydinlatma-genel broken link → /legal/kvkk (Vol-15) */}
+          <a href="/legal/kvkk" className="hover:underline">
             Aydınlatma Metni
           </a>
           ni kabul etmiş olursunuz.

@@ -495,4 +495,37 @@ Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform 
 
 ---
 
+### 2026-04-26 ~07:00 — Vol-20: NGO admin yetki + Backoffice keşif başlangıç
+
+**Notify eden:** test-engineer (Vol-19 sonrası backoffice odak)
+**Tetik:** AD1-AD15 backoffice testleri için NGO admin yetki gerekiyordu
+**Etkilenen ekran/flow:** /admin/login + ngo_admin_users + Vol-21 backoffice tarama prep
+**Aciliyet:** Test fixture + 1 broken link
+
+**Vol-20 yeni 3 fix:**
+- ✅ **BUG-044 (P2 hafif fix)** — /admin/login sayfasında "STK'nız platformda yok mu? Bizimle iletişime geç" yardımcı link eklendi (mailto:onboarding@iyibiri.app). Self-signup form yerine email-based onboard flow.
+- ✅ **BUG-046 (P1, NEW)** — /admin/login sayfasında KVKK link `/legal/kvkk-aydinlatma-genel` (broken) → `/legal/kvkk` (Vol-15'teki gerçek path). Aydınlatma Metni link'i artık çalışıyor.
+- 🛠️ **Migration 030 yazıldı** — `bahadiroylumluu+t5@gmail.com` user'ı TEMA Vakfı admin'i yapar (`ngo_admin_users` table). Apply sonrası /admin sidebar açılacak ve AD1-AD15 backoffice testleri başlayabilecek.
+
+**Vol-20 push:** 2 dosya + 1 migration
+- `app/admin/login/page.tsx` (BUG-044 + BUG-046)
+- `supabase/migrations/030_grant_t5_tema_admin.sql` (NEW)
+- `docs/test/_inbox.md`
+
+**User aksiyon:**
+1. Push deploy
+2. Migration 030 SQL Editor → apply
+3. /admin'e gir → TEMA admin sidebar açılmalı
+4. Vol-21 wide tarama backoffice (AD1-AD15) başlayabilir
+
+**Cumulative bilanço Vol-1 → Vol-20:**
+- Toplam bug: 47
+- Fixed/Resolved: 43
+- Open: 4
+- Pattern memo: 11 (A-K)
+- Migration: 030 yazılmış (24-30 user apply needed for full coverage)
+- Sprint Vol: 20
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
