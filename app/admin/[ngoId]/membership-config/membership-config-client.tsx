@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateMembershipConfig } from '@/lib/admin/membership-config-actions'
 import { FeeConfigEditor } from './fee-config-editor'
@@ -12,12 +12,15 @@ interface MembershipConfigClientProps {
   ngoId: string
 }
 
+// Vol-24 BUG-055 fix (proactive): useTransition + alert() pattern'i kaldırıldı.
+// Inline status banner + manuel isLoading state.
 export function MembershipConfigClient({
   ngo,
   ngoId,
 }: MembershipConfigClientProps) {
   const router = useRouter()
-  const [pending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const [feeConfig, setFeeConfig] = useState<MembershipFeeConfig | null>(
     ngo.membership_fee_config,
@@ -31,26 +34,31 @@ export function MembershipConfigClient({
   )
 
   const handleSave = async () => {
-    startTransition(async () => {
-      try {
-        const result = await updateMembershipConfig(ngoId, {
-          membership_fee_config: feeConfig,
-          kvkk_document_url: kvkkUrl || null,
-          membership_contract_url: contractUrl || null,
-          volunteer_consent_url: volunteerUrl || null,
-        })
+    setIsLoading(true)
+    setStatus(null)
 
-        if (result.success) {
-          router.refresh()
-          alert('Üyelik ayarları başarıyla kaydedildi!')
-        } else {
-          alert(`Hata: ${result.error}`)
-        }
-      } catch (err) {
-        alert(`Hata: ${(err as Error).message}`)
+    try {
+      const result = await updateMembershipConfig(ngoId, {
+        membership_fee_config: feeConfig,
+        kvkk_document_url: kvkkUrl || null,
+        membership_contract_url: contractUrl || null,
+        volunteer_consent_url: volunteerUrl || null,
+      })
+
+      if (result.success) {
+        setStatus({ type: 'success', message: 'Üyelik ayarları başarıyla kaydedildi.' })
+        router.refresh()
+      } else {
+        setStatus({ type: 'error', message: result.error ?? 'Beklenmeyen hata.' })
       }
-    })
+    } catch (err) {
+      setStatus({ type: 'error', message: (err as Error).message })
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  const pending = isLoading
 
   return (
     <div className="space-y-8">
@@ -118,6 +126,20 @@ export function MembershipConfigClient({
           </div>
         </div>
       </div>
+
+      {/* Status banner (Vol-24 BUG-055 fix: alert() yerine inline) */}
+      {status && (
+        <div
+          role="status"
+          className={`rounded-xl px-4 py-3 text-sm font-medium ${
+            status.type === 'success'
+              ? 'bg-success/15 border border-success/40 text-success'
+              : 'bg-clay/15 border border-clay/40 text-clay'
+          }`}
+        >
+          {status.type === 'success' ? '✓ ' : '⚠ '}{status.message}
+        </div>
+      )}
 
       {/* Save Button */}
       <div className="flex justify-end gap-3">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updatePaymentConfig } from '@/lib/admin/payment-config-actions'
 import type { NGO } from '@/lib/supabase/types'
@@ -10,9 +10,12 @@ interface PaymentsFormProps {
   ngoId: string
 }
 
+// Vol-24 BUG-055 fix (proactive): useTransition + alert() pattern'i kaldırıldı.
+// Inline status banner + manuel isLoading state.
 export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
   const router = useRouter()
-  const [pending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const [formData, setFormData] = useState({
     donation_url: ngo.donation_url || '',
@@ -22,25 +25,30 @@ export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    if (status) setStatus(null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    setStatus(null)
 
-    startTransition(async () => {
-      try {
-        const result = await updatePaymentConfig(ngoId, formData)
-        if (result.success) {
-          router.refresh()
-          alert('Ödeme ayarları başarıyla güncellendi!')
-        } else {
-          alert(`Hata: ${result.error}`)
-        }
-      } catch (err) {
-        alert(`Hata: ${(err as Error).message}`)
+    try {
+      const result = await updatePaymentConfig(ngoId, formData)
+      if (result.success) {
+        setStatus({ type: 'success', message: 'Ödeme ayarları başarıyla güncellendi.' })
+        router.refresh()
+      } else {
+        setStatus({ type: 'error', message: result.error ?? 'Beklenmeyen hata.' })
       }
-    })
+    } catch (err) {
+      setStatus({ type: 'error', message: (err as Error).message })
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  const pending = isLoading
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -171,6 +179,20 @@ export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
           Platform tarafı setup için destek@iyibiri.app ile iletişime geçin.
         </p>
       </div>
+
+      {/* Status banner (Vol-24 BUG-055 fix: alert() yerine inline) */}
+      {status && (
+        <div
+          role="status"
+          className={`rounded-xl px-4 py-3 text-sm font-medium ${
+            status.type === 'success'
+              ? 'bg-success/15 border border-success/40 text-success'
+              : 'bg-clay/15 border border-clay/40 text-clay'
+          }`}
+        >
+          {status.type === 'success' ? '✓ ' : '⚠ '}{status.message}
+        </div>
+      )}
 
       {/* Submit */}
       <div className="flex gap-3 justify-end pt-6 border-t border-ink-700">

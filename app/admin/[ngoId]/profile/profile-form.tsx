@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateNgoProfile } from '@/lib/admin/ngo-profile-actions'
 import { AdminImageUpload } from '@/components/admin/admin-image-upload'
@@ -11,10 +11,18 @@ interface ProfileFormProps {
   ngoId: string
 }
 
+// Vol-24 BUG-055 fix:
+// Önceki versiyonda useTransition + alert() + setHasUnsaved kombinasyonu submit'i
+// hidration sırasında bozuyordu (Suspense boundary fail + alert() React render
+// fiber bloğu). Yeni pattern:
+//   - useTransition kaldırıldı, isLoading manuel state
+//   - alert() kaldırıldı, inline status banner
+//   - setHasUnsaved kaldırıldı (button her zaman aktif)
+//   - try/catch tamamen senkron submit handler
 export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
   const router = useRouter()
-  const [pending, startTransition] = useTransition()
-  const [hasUnsaved, setHasUnsaved] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const [formData, setFormData] = useState({
     logo_url: ngo.logo_url || '',
@@ -32,28 +40,30 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    setHasUnsaved(true)
+    if (status) setStatus(null) // Yeni edit → eski status'u temizle
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    setStatus(null)
 
-    startTransition(async () => {
-      try {
-        const result = await updateNgoProfile(ngoId, formData)
-        if (result.success) {
-          setHasUnsaved(false)
-          router.refresh()
-          // Success toast
-          alert('Profil başarıyla güncellendi!')
-        } else {
-          alert(`Hata: ${result.error}`)
-        }
-      } catch (err) {
-        alert(`Hata: ${(err as Error).message}`)
+    try {
+      const result = await updateNgoProfile(ngoId, formData)
+      if (result.success) {
+        setStatus({ type: 'success', message: 'Profil başarıyla güncellendi.' })
+        router.refresh()
+      } else {
+        setStatus({ type: 'error', message: result.error ?? 'Beklenmeyen hata.' })
       }
-    })
+    } catch (err) {
+      setStatus({ type: 'error', message: (err as Error).message })
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  const pending = isLoading
 
   return (
     <div className="grid grid-cols-3 gap-6">
@@ -255,11 +265,25 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
             </div>
           </div>
 
+          {/* Status banner (Vol-24 BUG-055 fix: alert() yerine inline) */}
+          {status && (
+            <div
+              role="status"
+              className={`rounded-xl px-4 py-3 text-sm font-medium ${
+                status.type === 'success'
+                  ? 'bg-success/15 border border-success/40 text-success'
+                  : 'bg-clay/15 border border-clay/40 text-clay'
+              }`}
+            >
+              {status.type === 'success' ? '✓ ' : '⚠ '}{status.message}
+            </div>
+          )}
+
           {/* Submit */}
           <div className="flex gap-3 justify-end pt-6 border-t border-ink-700">
             <button
               type="submit"
-              disabled={pending || !hasUnsaved}
+              disabled={pending}
               className="px-6 py-3 rounded-xl bg-gold text-ink-900 font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
             >
               {pending ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
