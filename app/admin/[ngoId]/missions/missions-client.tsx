@@ -7,10 +7,11 @@ import { Trash2, Edit } from 'lucide-react'
 interface Mission {
   id: string
   title: string
-  domain: string | null
+  // BUG-048 fix (Vol-21): missions tablosunda `domain` yok, `category` var; `created_at` yok, `event_date` var.
+  category: string | null
   karma: number
   status: 'draft' | 'active' | 'cancelled' | 'completed'
-  created_at: string
+  event_date: string | null
 }
 
 interface AdminMissionsClientProps {
@@ -118,7 +119,7 @@ export function AdminMissionsClient({
                     {mission.title}
                   </td>
                   <td className="px-6 py-4 text-sm text-ink-300">
-                    {mission.domain ? DOMAIN_LABELS[mission.domain] ?? mission.domain : '—'}
+                    {mission.category ? DOMAIN_LABELS[mission.category] ?? mission.category : '—'}
                   </td>
                   <td className="px-6 py-4 text-sm font-semibold text-gold">
                     {mission.karma} puan

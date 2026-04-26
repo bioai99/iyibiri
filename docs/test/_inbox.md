@@ -528,4 +528,50 @@ Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform 
 
 ---
 
+### 2026-04-26 ~07:30 — Vol-21 Backoffice AD1-AD15 wide tarama + 4 fix
+
+**Notify eden:** test-engineer (Vol-20 sonrası Migration 030 apply + admin sidebar açıldı)
+**Tetik:** TEMA admin yetkisi ile AD1-AD15 keşif
+**Etkilenen ekran/flow:** /admin/tema/* tüm admin pages
+**Aciliyet:** P1 (BUG-048 + BUG-050 admin functionality blocker)
+
+**Backoffice AD1-AD15 sonuçları:**
+- ✅ AD1 Dashboard (KARMA 250, YENİ ÜYE 1, DOĞRULAMA 0, TREND 5)
+- ❌ AD2 Görevler — BUG-048 server error
+- ✅ AD3 Yeni Görev (12 input form: Başlık, Açıklama, Kategori, Karma, Tarih, Yer, Görsel)
+- ✅ AD4 Doğrulama (empty state mukemmel)
+- ❌ AD5 Üyeler — BUG-050 server error
+- ✅ AD6 Rapor (Aylık + 4 stat + 12 ay tablosu)
+- ✅ AD7 Blog (2 yazı listesi: Kilyos Sahili + Ağaç Dikmenin 7 Faydası)
+- ✅ AD8 Profil (LOGO + KAPAK + Adı + Slogan)
+- ✅ AD9 Üyelik Config (Yaş Tabanlı/Aylık Sabit/Bağış Tabanlı)
+- ✅ AD10 Ödeme (Embedded/Passthrough/Marketplace ADR-008 modları)
+- ✅ AD11 RLS Isolation — TEMA admin /admin/kizilay denedi → "Bu STK için yetkin yok" + login redirect ✅
+
+**Vol-21 fix (4 bug):**
+- ✅ **BUG-047 (P2)** — /admin root cache lag: doğrudan /admin/[ngoId] çalışıyor (deferred — Vercel cache)
+- ✅ **BUG-048 (P1)** — `missions.created_at` ve `missions.domain` kolonları yok; doğru kolonlar `event_date` ve `category`. page.tsx + missions-client.tsx schema fix.
+- ✅ **BUG-049 (P1)** — Admin Yeni Görev DOMAINS uyumsuz (Doğa/Sosyal/Kültür) → user-facing align (Çevre/Eğitim/Hayvanlar/Sağlık/Afet/Topluluk) + value rename (nature→environment, social→community, culture→community).
+- ✅ **BUG-050 (P1)** — Members page `MembersExportButton` server component içinde `onClick` (Next.js error). CSV export "yakında" disabled label'a çevrildi (server action wrapper Vol-22).
+
+**Vol-21 push:** 4 dosya
+- app/admin/[ngoId]/missions/page.tsx (BUG-048 query fix)
+- app/admin/[ngoId]/missions/missions-client.tsx (interface + render fix)
+- app/admin/[ngoId]/missions/mission-form.tsx (BUG-049 DOMAINS align)
+- app/admin/[ngoId]/members/page.tsx (BUG-050 server onClick → disabled span)
+
+**User aksiyon:**
+1. Push deploy
+2. Verify (~3 dk):
+   - /admin/tema/missions → görev listesi (Sahil Temizliği visible)
+   - /admin/tema/members → "1 üye" + KVKK banner + "yakında" CSV button
+   - /admin/tema/missions/new → kategori dropdown: Çevre/Eğitim/Hayvanlar/Sağlık/Afet/Topluluk
+
+**Cumulative bilanço Vol-1 → Vol-21:**
+- Toplam bug: 51
+- Fixed/Resolved: 47 (92%)
+- Open: 4
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

@@ -85,24 +85,22 @@ export default async function MembersPage({ params }: MembersPageProps) {
   )
 }
 
-async function MembersExportButton({
-  ngoId,
+// BUG-050 fix (Vol-21): Server component içinde onClick yasak — link olarak çevirdik.
+// CSV export server action /api route veya client wrapper gerek; şimdilik link disabled label.
+function MembersExportButton({
+  ngoId: _ngoId,
   memberCount,
 }: {
   ngoId: string
   memberCount: number
 }) {
   return (
-    <button
-      onClick={async () => {
-        // Server action call
-        const { exportMembersCSV } = await import('@/lib/admin/members-actions')
-        await exportMembersCSV(ngoId)
-      }}
-      className="px-6 py-3 bg-gold text-ink-900 rounded-xl font-semibold hover:bg-gold/90 transition-colors"
+    <span
+      className="px-6 py-3 bg-ink-700 text-ink-300 rounded-xl font-semibold cursor-not-allowed inline-flex items-center gap-2"
+      title="CSV dışa aktarma yakında"
     >
-      📥 CSV Dışa Aktar ({memberCount})
-    </button>
+      📥 CSV Dışa Aktar ({memberCount}) · yakında
+    </span>
   )
 }
 

@@ -10,13 +10,15 @@ interface AdminMissionFormProps {
   ngoId: string
 }
 
+// BUG-049 fix (Vol-21): user-facing kategoriler (Çevre/Eğitim/Hayvanlar/Sağlık/Afet/Topluluk + emoji)
+// ile admin formunu align et. Admin/dashboard arasında kategori uyumsuzluğu kaldırıldı.
 const DOMAINS = [
-  { value: 'nature', label: 'Doğa' },
-  { value: 'education', label: 'Eğitim' },
-  { value: 'health', label: 'Sağlık' },
-  { value: 'social', label: 'Sosyal' },
   { value: 'environment', label: 'Çevre' },
-  { value: 'culture', label: 'Kültür' },
+  { value: 'education', label: 'Eğitim' },
+  { value: 'animals', label: 'Hayvanlar' },
+  { value: 'health', label: 'Sağlık' },
+  { value: 'disaster', label: 'Afet' },
+  { value: 'community', label: 'Topluluk' },
 ]
 
 export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {

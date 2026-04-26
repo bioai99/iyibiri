@@ -11,11 +11,13 @@ interface AdminMissionsPageProps {
 async function getMissions(ngoId: string) {
   const supabase = await createClient()
 
+  // BUG-048 fix (Vol-21): missions tablosunda `created_at` yok, `event_date` var.
+  // Sıralama event_date desc (yakın etkinlikler üstte).
   const { data, error } = await (supabase as any)
     .from('missions')
-    .select('id, title, domain, karma, status, created_at')
+    .select('id, title, category, karma, status, event_date')
     .eq('ngo_id', ngoId)
-    .order('created_at', { ascending: false })
+    .order('event_date', { ascending: false, nullsFirst: false })
 
   if (error) throw error
   return data ?? []
