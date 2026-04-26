@@ -2,12 +2,27 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { createMission } from '@/lib/admin/missions-actions'
+import { createMission, updateMission } from '@/lib/admin/missions-actions'
 import { AdminImageUpload } from '@/components/admin/admin-image-upload'
 import Link from 'next/link'
 
+interface MissionRecord {
+  id: string
+  title: string | null
+  description: string | null
+  domain: string | null
+  category: string | null
+  karma: number | null
+  event_date: string | null
+  location: string | null
+  image_url: string | null
+  status: string | null
+}
+
 interface AdminMissionFormProps {
   ngoId: string
+  /** Edit mode: mevcut görev kaydı (yoksa create mode) */
+  mission?: MissionRecord
 }
 
 // BUG-049 fix (Vol-21): user-facing kategoriler (Çevre/Eğitim/Hayvanlar/Sağlık/Afet/Topluluk + emoji)
@@ -21,19 +36,33 @@ const DOMAINS = [
   { value: 'community', label: 'Topluluk' },
 ]
 
-export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
+function isoDateOrToday(value: string | null | undefined): string {
+  if (!value) return new Date().toISOString().split('T')[0]
+  try {
+    const d = new Date(value)
+    if (Number.isNaN(d.getTime())) return new Date().toISOString().split('T')[0]
+    return d.toISOString().split('T')[0]
+  } catch {
+    return new Date().toISOString().split('T')[0]
+  }
+}
+
+export function AdminMissionForm({ ngoId, mission }: AdminMissionFormProps) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
 
+  const isEdit = Boolean(mission)
+
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    domain: 'nature',
-    karma_points: 20,
-    event_date: new Date().toISOString().split('T')[0],
-    location: '',
-    image_url: '',
-    status: 'active' as 'draft' | 'active',
+    title: mission?.title ?? '',
+    description: mission?.description ?? '',
+    // domain (legacy) ve category (Vol-21) iki taraftan da gelebilir
+    domain: mission?.domain ?? mission?.category ?? 'environment',
+    karma_points: mission?.karma ?? 20,
+    event_date: isoDateOrToday(mission?.event_date),
+    location: mission?.location ?? '',
+    image_url: mission?.image_url ?? '',
+    status: ((mission?.status === 'draft' ? 'draft' : 'active') as 'draft' | 'active'),
   })
 
   const handleChange = (field: string, value: any) => {
@@ -55,9 +84,13 @@ export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
 
     startTransition(async () => {
       try {
-        const result = await createMission(ngoId, formData)
+        const result = isEdit && mission
+          ? await updateMission(ngoId, mission.id, formData)
+          : await createMission(ngoId, formData)
+
         if (result.success) {
           router.push(`/admin/${ngoId}/missions`)
+          router.refresh()
         } else {
           alert(`Hata: ${result.error}`)
         }
@@ -66,6 +99,9 @@ export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
       }
     })
   }
+
+  // Edit modunda image upload için stable fileName (mission.id) kullan
+  const imageFileName = isEdit && mission ? mission.id : Math.random().toString(36).substr(2, 9)
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
@@ -164,7 +200,7 @@ export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
       {/* Image URL */}
       <AdminImageUpload
         folder={`${ngoId}/missions`}
-        fileName={Math.random().toString(36).substr(2, 9)}
+        fileName={imageFileName}
         currentUrl={formData.image_url}
         onUploaded={(url) => handleChange('image_url', url)}
         label="Görev Görseli"
@@ -214,11 +250,17 @@ export function AdminMissionForm({ ngoId }: AdminMissionFormProps) {
           disabled={pending}
           className="px-6 py-3 bg-gold text-ink-900 rounded-xl font-semibold hover:bg-gold/90 disabled:opacity-50 transition-colors"
         >
-          {pending ? 'Kaydediliyor...' : formData.status === 'draft' ? 'Taslak Kaydet' : '✅ Yayınla'}
+          {pending
+            ? 'Kaydediliyor...'
+            : isEdit
+              ? 'Güncelle'
+              : formData.status === 'draft'
+                ? 'Taslak Kaydet'
+                : '✅ Yayınla'}
         </button>
 
         <Link
-          href={`/admin/missions`}
+          href={`/admin/${ngoId}/missions`}
           className="px-6 py-3 border border-ink-700 text-cream rounded-xl font-semibold hover:bg-ink-800 transition-colors"
         >
           İptal

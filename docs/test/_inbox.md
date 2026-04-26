@@ -574,4 +574,87 @@ Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform 
 
 ---
 
+### 2026-04-26 ~08:00 — Vol-22 Backoffice deeper test + 2 yeni bug
+
+**Notify eden:** test-engineer (Vol-21 verify + super-admin path tarama)
+**Tetik:** Vol-21 push deploy + missions/members/categories verify + AD12-AD15 + bonus
+**Etkilenen ekran/flow:** /admin/devtools, /admin/missions, /admin/analytics, blog edit, mission QR
+**Aciliyet:** P1 (BUG-051 generic error UX, BUG-052 QR access scope)
+
+**Vol-22 verify:**
+- ✅ **BUG-048 PRODUCTION PASS** — /admin/tema/missions: 9 görev / 8 yayında, 5 filter chip, search, edit/sil aksiyonlar (Bozkır 100/Kilyos 70/Arı dostu 80/Fidan 150/Sahil Temizliği 200/Çevre Atölyesi 350)
+- ✅ **AD12 Super-admin path RLS** — /admin/devtools, /admin/missions, /admin/analytics → unauthorized redirect (TEMA admin super-admin değil)
+- ✅ Blog new yazı form (8 input: Başlık + Kategori Makale/Güncelleme/Hikaye/İpucu + Durum Taslak/Yayında + Kapak Resmi + Markdown + Önizleme)
+
+**Vol-22 yeni 2 bug:**
+- 🚨 **BUG-051 (P1)** — Blog edit cross-NGO (Kodluyoruz post Test post'unu TEMA admin) → generic "Bir şeyler ters gitti" error page. Olması gereken: "Bu yazıyı düzenleme yetkin yok" custom unauthorized page.
+- 🚨 **BUG-052 (P1)** — Mission QR page sadece /admin/missions/[id]/qr (super-admin path). NGO admin kendi missionunun QR'unu basamaz. Olması gereken: /admin/[ngoId]/missions/[id]/qr veya QR butonu doğru NGO scope'unda.
+
+**Vol-22 fix uygulanmadı (Vol-23 deferred — derin refactor gerek):**
+- BUG-051 için error.tsx (Next.js error boundary) custom NGO-aware page
+- BUG-052 için /admin/[ngoId]/missions/[id]/qr route ekleme (super-admin path zaten korunuyor)
+
+**Cumulative bilanço Vol-1 → Vol-22:**
+- Toplam bug: 53
+- Fixed/Resolved: 47 (89%)
+- Open: 6 (BUG-040, BUG-043, BUG-047, BUG-051, BUG-052, BUG-031 verify)
+- Pattern memo: 11 (A-K)
+- Migration: 030 yazılmış
+- Sprint Vol: 22
+
+**Backoffice durumu özet:**
+- 11/11 admin sayfası keşfedildi
+- 9/11 PASS (AD1, AD3, AD4, AD6, AD7, AD8, AD9, AD10, AD11)
+- 2/11 FIX edildi (AD2 missions Vol-21, AD5 members Vol-21)
+- AD12+ super-admin RLS verify ✅
+- AD13 mission QR cross-scope (BUG-052)
+- AD14 blog edit cross-NGO error UX (BUG-051)
+
+---
+
+## 2026-04-26 Vol-23 MEGA paket — admin write akışları + avatar + M4 fixture
+
+**Scope (7 madde):**
+1. **BUG-052 fix (P1)** — `/admin/[ngoId]/missions/[id]/qr` NGO-scoped QR page eklendi. Super-admin path (`/admin/missions/[id]/qr`) korundu; aynı `QRGenerator` component reuse. Cross-NGO erişim → "Görev bulunamadı" custom block + listeye dön CTA.
+2. **BUG-051 fix (P1)** — Blog edit `getBlogPost` `single()` → `maybeSingle()` ile null'a düşür; throw kaldırıldı. Cross-NGO erişimde "Yazı bulunamadı + bu STK'ya ait değil" custom unauthorized blok.
+3. **Mission edit (admin write akışı)** — `app/admin/[ngoId]/missions/[id]/edit/page.tsx` + `mission-form.tsx` `mission` prop kabul edecek şekilde refactor (create/edit dual-mode). `updateMission` server action eklendi. Edit modunda image upload stable fileName (mission.id) kullanır.
+4. **Mission delete (admin write akışı)** — `missions-client.tsx` alert kaldırıldı, gerçek `deleteMission` action + confirm modal + feedback toast. **Akıllı delete:** katılımcısı varsa `status = 'cancelled'` (soft), yoksa hard delete. Toast mesajı duruma göre değişir.
+5. **Avatar upload (BUG-043 fix)** — `dashboard/profile/edit` sayfasına avatar widget: foto preview (88×88 daire), JPG/PNG/WebP, maks 5 MB, `ngo-assets` bucket → `users/{userId}/avatar.{ext}`. Profile row `avatar_url` PATCH. Profil sayfası avatar varsa gösterir, yoksa initial fallback.
+6. **M4 fixture (Migration 031)** — Sahil Temizliği + TEGV + ÇYDD + TEMA temizlik missionlarının `event_date`'i geleceğe çekildi (7-21 gün arası). `date_label` ve `spots_left` revize. M4 mission complete tam akışı artık test edilebilir.
+7. **Storage RLS** — Migration 031 ile `users/{userId}/avatar.*` write policies (insert/update/delete) eklendi. Public read zaten var.
+
+**Yazılan dosyalar (10):**
+- `supabase/migrations/031_vol23_avatar_storage_and_m4_fixture.sql` — yeni
+- `lib/admin/missions-actions.ts` — updateMission + deleteMission action eklendi
+- `app/admin/[ngoId]/missions/mission-form.tsx` — edit mode desteği
+- `app/admin/[ngoId]/missions/missions-client.tsx` — gerçek delete + QR link
+- `app/admin/[ngoId]/missions/[id]/edit/page.tsx` — yeni
+- `app/admin/[ngoId]/missions/[id]/qr/page.tsx` — yeni (BUG-052)
+- `app/admin/[ngoId]/blog/[postId]/edit/page.tsx` — maybeSingle + custom unauthorized (BUG-051)
+- `app/dashboard/profile/edit/page.tsx` — avatar_url select + prop pass
+- `app/dashboard/profile/edit/edit-client.tsx` — avatar widget
+- `app/dashboard/profile/profile-client.tsx` — avatar render
+
+**Verify gerek (post-deploy + Migration 031 apply):**
+- ☐ Migration 031 apply + RLS policies aktif kontrolü
+- ☐ Mission edit: TEMA admin "Kilyos sahili temizlik" düzenle, başlık değiştir, save, listeye dönüş + güncellenmiş başlık
+- ☐ Mission delete: katılımcısız bir görevi sil → hard delete + toast "Görev silindi"
+- ☐ Mission delete soft: katılımcılı görev → status cancelled + toast "İptal edildi"
+- ☐ Mission QR (NGO scope): TEMA admin → /admin/tema/missions/m-tema-temizlik-full/qr → QR canvas + verify_code SAHIL2026
+- ☐ Mission QR (cross-NGO): TEMA admin /admin/kizilay/missions/X/qr → "Görev bulunamadı" custom blok
+- ☐ Blog edit cross-NGO: TEMA admin başka STK'nın postunu edit → "Yazı bulunamadı + bu STK'ya ait değil"
+- ☐ Avatar upload: profile/edit → foto seç → upload → profile sayfasında görünür
+- ☐ M4 mission: Sahil Temizliği detay sayfasında event_date gelecek tarih + "Bu göreve katıl" enabled
+
+**Kümülatif bilanço Vol-1 → Vol-23:**
+- Toplam bug: 53
+- Fixed: 49 (92%, +2 BUG-051 + BUG-052)
+- Yeni feature: BUG-043 avatar upload kapatıldı (artık scope gap değil)
+- Open: 4 (BUG-040, BUG-044 STK self-signup, BUG-047 cache, BUG-031 verify)
+- Migration: 031 yazıldı
+- Sprint Vol: 23
+- Admin write akışları: artık görev create/edit/delete + QR (NGO scope) + blog create/edit/delete tam çalışır
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

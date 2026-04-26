@@ -1,12 +1,15 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 import { BlogForm } from '../../blog-form'
 
 interface AdminBlogEditPageProps {
   params: Promise<{ ngoId: string; postId: string }>
 }
 
+// BUG-051 fix (Vol-23): cross-NGO erişim yapılırsa generic 500 error UI
+// fırlatılıyordu. maybeSingle ile null'a düşür + custom unauthorized blok göster.
 async function getBlogPost(postId: string, ngoId: string) {
   const supabase = await createClient()
 
@@ -15,9 +18,12 @@ async function getBlogPost(postId: string, ngoId: string) {
     .select('*')
     .eq('id', postId)
     .eq('ngo_id', ngoId)
-    .single()
+    .maybeSingle()
 
-  if (error) throw error
+  if (error) {
+    console.error('Blog edit fetch error:', error)
+    return null
+  }
   return data
 }
 
@@ -29,8 +35,22 @@ export default async function AdminBlogEditPage({
 
   if (!post) {
     return (
-      <div className="text-center py-12">
-        <p className="text-clay text-lg">Yazı bulunamadı</p>
+      <div className="space-y-4 max-w-2xl">
+        <div className="bg-ink-800 border border-clay/40 rounded-2xl p-6">
+          <h1 className="text-2xl font-display font-bold text-clay mb-2">
+            Yazı bulunamadı
+          </h1>
+          <p className="text-cream mb-4">
+            Bu blog yazısı bu STK'ya ait değil veya silinmiş. Yetkin olmayan
+            bir kayda erişmeye çalışmış olabilirsin.
+          </p>
+          <Link
+            href={`/admin/${ngoId}/blog`}
+            className="inline-block px-4 py-2 bg-gold text-ink-900 rounded-lg font-semibold hover:bg-gold/90 transition-colors"
+          >
+            ← Blog listesine dön
+          </Link>
+        </div>
       </div>
     )
   }

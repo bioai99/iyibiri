@@ -9,7 +9,7 @@ export default async function ProfileEditPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('name, full_name, first_name, city, interests, search_radius')
+    .select('name, full_name, first_name, city, interests, search_radius, avatar_url')
     .eq('id', user.id)
     .single()
 
@@ -28,6 +28,7 @@ export default async function ProfileEditPage() {
       initialCity={profile?.city ?? ''}
       initialInterests={profile?.interests ?? []}
       initialRadius={profile?.search_radius ?? 10}
+      initialAvatarUrl={(profile as { avatar_url?: string | null })?.avatar_url ?? null}
     />
   )
 }

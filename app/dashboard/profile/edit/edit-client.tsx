@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Check, MapPin } from 'lucide-react'
+import { ArrowLeft, Check, MapPin, Camera, Loader2 } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
@@ -24,6 +24,7 @@ interface EditProfileClientProps {
   initialCity: string
   initialInterests: string[]
   initialRadius: number
+  initialAvatarUrl?: string | null
 }
 
 export function EditProfileClient({
@@ -33,6 +34,7 @@ export function EditProfileClient({
   initialCity,
   initialInterests,
   initialRadius,
+  initialAvatarUrl,
 }: EditProfileClientProps) {
   const { colors: c } = useTheme()
   const router = useRouter()
@@ -41,8 +43,58 @@ export function EditProfileClient({
   const [city, setCity] = useState(initialCity)
   const [interests, setInterests] = useState<string[]>(initialInterests)
   const [radius, setRadius] = useState(initialRadius)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl ?? null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  const initial = (name?.trim() || email).slice(0, 1).toUpperCase()
+
+  // Vol-23 BUG-043: Avatar upload — ngo-assets bucket, users/{userId}/avatar.{ext}
+  // Migration 031 ile RLS açıldı: kullanıcı kendi user_id klasörüne yazabilir.
+  async function handleAvatarFile(file: File) {
+    setAvatarError(null)
+    if (!file.type.startsWith('image/')) {
+      setAvatarError('Sadece görsel dosyalar (JPG, PNG, WebP)')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('Maks 5 MB')
+      return
+    }
+    setAvatarUploading(true)
+    try {
+      const supabase = createClient()
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+      const path = `users/${userId}/avatar.${ext}`
+      const { error: upErr } = await supabase.storage
+        .from('ngo-assets')
+        .upload(path, file, { cacheControl: '3600', upsert: true })
+      if (upErr) {
+        setAvatarError(upErr.message)
+        setAvatarUploading(false)
+        return
+      }
+      const { data: pub } = supabase.storage.from('ngo-assets').getPublicUrl(path)
+      const cached = `${pub.publicUrl}?t=${Date.now()}`
+      // Profile row'a yaz (kalıcı)
+      const { error: updErr } = await supabase
+        .from('profiles')
+        .update({ avatar_url: cached })
+        .eq('id', userId)
+      if (updErr) {
+        setAvatarError(updErr.message)
+        setAvatarUploading(false)
+        return
+      }
+      setAvatarUrl(cached)
+    } catch (err) {
+      setAvatarError((err as Error).message)
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
 
   const displayFont = 'var(--font-display), ui-serif, Georgia, serif'
   const uiFont = 'var(--font-sans), system-ui, sans-serif'
@@ -102,6 +154,112 @@ export function EditProfileClient({
       </div>
 
       <div style={{ padding: '28px 20px 120px', display: 'flex', flexDirection: 'column', gap: 22 }}>
+        {/* Vol-23 BUG-043: Avatar upload */}
+        <div>
+          <label style={labelStyle}>PROFİL FOTOĞRAFI</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{
+              position: 'relative',
+              width: 88, height: 88, borderRadius: '50%',
+              background: avatarUrl ? 'transparent' : c.gold,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: `2px solid ${c.ink600}`,
+              overflow: 'hidden',
+              flexShrink: 0,
+            }}>
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={avatarUrl}
+                  alt="Avatar"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{
+                  fontFamily: displayFont, fontSize: 32, fontWeight: 600,
+                  color: '#241E18',
+                }}>
+                  {initial}
+                </span>
+              )}
+              {avatarUploading && (
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'rgba(0,0,0,.55)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Loader2 size={22} color={c.gold} className="animate-spin" />
+                </div>
+              )}
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <label
+                htmlFor="avatar-upload-input"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '10px 14px', borderRadius: 10,
+                  background: c.ink800, border: `1px solid ${c.ink600}`,
+                  color: c.cream, fontSize: 13, fontWeight: 600,
+                  cursor: avatarUploading ? 'wait' : 'pointer',
+                  opacity: avatarUploading ? 0.6 : 1,
+                  width: 'fit-content',
+                }}
+              >
+                <Camera size={14} />
+                {avatarUrl ? 'Değiştir' : 'Foto seç'}
+              </label>
+              <input
+                id="avatar-upload-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                style={{ display: 'none' }}
+                disabled={avatarUploading}
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) handleAvatarFile(f)
+                  e.target.value = ''
+                }}
+              />
+              {avatarUrl && !avatarUploading && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setAvatarUploading(true)
+                    setAvatarError(null)
+                    try {
+                      const supabase = createClient()
+                      await supabase
+                        .from('profiles')
+                        .update({ avatar_url: null })
+                        .eq('id', userId)
+                      setAvatarUrl(null)
+                    } catch (err) {
+                      setAvatarError((err as Error).message)
+                    } finally {
+                      setAvatarUploading(false)
+                    }
+                  }}
+                  style={{
+                    background: 'transparent', border: 'none',
+                    color: c.ink400, fontSize: 12, textAlign: 'left',
+                    cursor: 'pointer', padding: 0,
+                  }}
+                >
+                  Fotoğrafı kaldır
+                </button>
+              )}
+              <p style={{ fontSize: 11, color: c.ink400, margin: 0 }}>
+                JPG/PNG/WebP · maks 5 MB
+              </p>
+              {avatarError && (
+                <p style={{ fontSize: 11, color: c.clay, margin: 0 }}>
+                  {avatarError}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Name */}
         <div>
           <label style={labelStyle}>AD SOYAD</label>

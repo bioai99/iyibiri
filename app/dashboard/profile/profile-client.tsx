@@ -145,25 +145,38 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             width: 84,
             height: 84,
             borderRadius: '50%',
-            background: `linear-gradient(135deg, ${c.gold}, ${c.goldDim})`,
+            background: (profile as { avatar_url?: string | null }).avatar_url
+              ? c.ink800
+              : `linear-gradient(135deg, ${c.gold}, ${c.goldDim})`,
             border: `3px solid ${c.ink900}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: '0 8px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.3)',
+            overflow: 'hidden',
           }}
         >
-          <span
-            style={{
-              fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
-              fontSize: 36,
-              fontWeight: 500,
-              color: '#241E18',
-              lineHeight: 1,
-            }}
-          >
-            {initial}
-          </span>
+          {(profile as { avatar_url?: string | null }).avatar_url ? (
+            // Vol-23 BUG-043: avatar_url varsa göster
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={(profile as { avatar_url?: string | null }).avatar_url ?? ''}
+              alt={displayName ?? 'Profil'}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <span
+              style={{
+                fontFamily: 'var(--font-display), ui-serif, Georgia, serif',
+                fontSize: 36,
+                fontWeight: 500,
+                color: '#241E18',
+                lineHeight: 1,
+              }}
+            >
+              {initial}
+            </span>
+          )}
         </div>
       </motion.div>
 
