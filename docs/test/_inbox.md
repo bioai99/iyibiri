@@ -317,4 +317,45 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~04:30 — Vol-14 verify + Vol-15 chunky 6-bug paket
+
+**Notify eden:** test-engineer (Vol-14 production verify + wide tarama + Vol-15 fix)
+**Tetik:** Migration 027 + 028 + Vol-14 push deploy → verify + 6 yeni bug
+**Etkilenen ekran/flow:** Settings, leaderboard, NGO list, Pattern J Phase 2 sweep, /legal/*, /donations
+**Aciliyet:** Hot-fix paket
+
+**Vol-14 verify sonuçları:**
+- ✅ **BUG-026 PASS** — /dashboard/settings tam render: 5 section (Görünüm + Hesap + Yasal + Hakkında + Oturum)
+- ✅ **BUG-028 PASS** — Leaderboard DOM'da 10 user (Buse/Can/Yunus/Test x4/Ege/Bahadır), get_user_rank "Test İyiBiri (sen)" 5. sırada
+- ✅ **BUG-030 PASS** — NGO list TR locale: TEMA 800.000 / İBB 2.500.000 / Kızılay 1.200.000 / 12.000 gönüllü vb.
+- ⚠️ BUG-031 verify deferred — ÇYDD detay tekrar açıp Migration 028 sonrası "ÇYDD gönüllüsü olarak eğitimde fırsat eşitliğine" görüyor mu
+
+**Vol-15 yeni bug paketi (6 bug):**
+- 🚨 **BUG-032 (P1 sistemik)** — Leaderboard light mode'da görsel kayıp (DOM tam ama opacity 0)
+- 🚨 **BUG-033 (P2 scope gap)** — /dashboard/donations 404
+- 🚨 **BUG-034 (P1 sistemik)** — Saved page empty state invisible (opacity: "0" Framer Motion takılı)
+- 🚨 **BUG-035 (P0 broken)** — /legal/kvkk + /privacy + /terms 404 (Settings link broken)
+- 🚨 **BUG-036 (P1 KÖK SİSTEMİK)** — Framer Motion `initial: { opacity: 0 }` Vol-12 ThemeProvider re-mount sonrası takılı kalıyor (saved h3 color rgb(36,30,24) doğru ama opacity:"0"). Pattern J Phase 2.
+- ✅ Bonus: BUG-029 zaten resolved (rewards page çalışıyor)
+
+**Vol-15 fix uygulandı (10 dosya):**
+- `components/ui/state/index.tsx` — EmptyStateV2 motion `initial={false}` (BUG-034, BUG-036)
+- `app/dashboard/leaderboard/leaderboard-client.tsx` — 7 motion initial opacity 0→1 (BUG-032)
+- `app/legal/layout.tsx` (NEW) — shared legal layout
+- `app/legal/kvkk/page.tsx` (NEW) — KVKK MVP (BUG-035)
+- `app/legal/privacy/page.tsx` (NEW) — Privacy MVP (BUG-035)
+- `app/legal/terms/page.tsx` (NEW) — Terms MVP (BUG-035)
+- `app/dashboard/donations/page.tsx` (NEW) — "Yakında" placeholder + STK CTA (BUG-033)
+- (typecheck ✅ temiz)
+
+**User aksiyon:** Push → Vol-15 verify (leaderboard görünür, saved görünür, /legal/kvkk açılıyor, /donations placeholder göster).
+
+**Sıradaki Vol-16 önerisi:**
+- Vol-15 verify
+- Faz 3 XC1-XC8 cross-cutting full sweep
+- M3 mission complete flow (event tarihi düzeltme gerek)
+- Backoffice AD1-AD15 (NGO admin login fixture)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

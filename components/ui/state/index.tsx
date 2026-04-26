@@ -131,8 +131,11 @@ export function EmptyStateV2({
   }[variant]
 
   // Motion: gentle entry — stagger title/desc/actions
+  // BUG-036 fix (Vol-15): Vol-12 ThemeProvider re-mount sonrası Framer Motion'ın
+  // `initial` state'i takılı kalıyor (opacity: 0). `initial={false}` ile mount'ta direkt
+  // animate state'inden başlatıyoruz — animation loss = ufak transition, content visible kalır.
   const entry = {
-    initial: shouldReduceMotion ? undefined : { opacity: 0, y: 8 },
+    initial: false as const,
     animate: { opacity: 1, y: 0 },
   }
 

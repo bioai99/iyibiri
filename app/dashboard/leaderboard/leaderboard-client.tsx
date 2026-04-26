@@ -224,7 +224,7 @@ export default function LeaderboardClient({
     >
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 1, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
         style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}>
@@ -259,7 +259,7 @@ export default function LeaderboardClient({
       {/* BUG-027 fix (Vol-14): Empty state when leaderboard has no users yet */}
       {topUsers.length === 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
           style={{
@@ -300,7 +300,7 @@ export default function LeaderboardClient({
       {/* Podium */}
       {podiumOrder.length >= 2 && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
           style={{
@@ -327,7 +327,7 @@ export default function LeaderboardClient({
 
       {/* Ranked list */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
         style={{
@@ -344,7 +344,7 @@ export default function LeaderboardClient({
           return (
             <motion.div
               key={u.id}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 1, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 + (idx * 0.05) }}
               whileTap={{ scale: 0.98 }}
@@ -428,7 +428,7 @@ export default function LeaderboardClient({
           <>
             {/* Separator dots */}
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.25 }}
               style={{ textAlign: 'center', padding: '8px 0', color: c.ink400 }}
@@ -436,7 +436,7 @@ export default function LeaderboardClient({
               ...
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 1, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
               style={{
