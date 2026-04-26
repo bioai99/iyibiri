@@ -54,7 +54,7 @@ export function WelcomeCelebration({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: 1 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
@@ -95,7 +95,7 @@ export function WelcomeCelebration({
         >
           {/* Orbital atom icon */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+            initial={{ opacity: 1, scale: 0.5, rotate: -180 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{
               duration: 0.8,

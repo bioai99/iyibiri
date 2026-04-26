@@ -125,7 +125,7 @@ export function DashboardClient({
     >
       {/* ── 1. Header ── */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 1, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
         style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -279,7 +279,7 @@ export function DashboardClient({
           displayMissions.map((mission, idx) => (
             <motion.div
               key={mission.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 1, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 type: 'spring',

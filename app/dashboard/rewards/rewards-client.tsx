@@ -63,7 +63,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
     >
       {/* ── 1. Header ── */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 1, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
         style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0' }}
@@ -107,7 +107,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
 
       {/* ── 2. Balance card ── */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
         style={{ padding: '22px 16px 0' }}
@@ -204,7 +204,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
 
       {/* ── 3. Filter tabs ── */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 1, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.15 }}
         style={{
@@ -231,7 +231,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       {/* ── 4. Featured editorial tile ── */}
       {featuredReward && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
           style={{ padding: '20px 16px 0' }}
@@ -326,7 +326,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
       {/* ── 5. Reward grid ── */}
       {/* Section header */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.25 }}
         style={{ padding: '24px 20px 8px', display: 'flex', alignItems: 'baseline', gap: 10 }}
@@ -361,7 +361,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
 
       {/* Grid */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
         style={{
@@ -378,7 +378,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
           return (
             <Link key={reward.id} href={`/dashboard/rewards/${reward.id}`}>
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 1, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   type: 'spring',

@@ -186,7 +186,7 @@ export function BrandLogo({ size = 120, animate = false, idle = false, showWordm
           borderRadius: '50%',
           background: i % 3 === 0 ? '#F4D98A' : i % 3 === 1 ? '#E8C268' : '#C8553D',
         }}
-        initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
+        initial={{ opacity: 1, x: 0, y: 0, scale: 0 }}
         animate={{
           opacity: [0, 1, 0],
           x: Math.cos(angle) * dist,

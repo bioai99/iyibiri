@@ -417,4 +417,53 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~05:50 — Vol-18 MEGA: Pattern J Phase 3 sweep + 6 verify + 2 yeni bug
+
+**Notify eden:** test-engineer (Vol-17 verify + 40dk wide tarama)
+**Tetik:** Vol-17 admin redirect loop hotfix → push, ardından geniş feature tarama
+**Etkilenen ekran/flow:** Tüm dashboard motion patterns + auth + landing + edit + settings
+**Aciliyet:** Defensive sistemik fix (Pattern J Phase 3)
+
+**Vol-17 verify sonuçları:**
+- ✅ **BUG-039 PASS** — `/admin` → `/admin/login?error=unauthorized` (loop yok), sidebar yok
+- ✅ Settings tema toggle PASS — Aydınlık ↔ Karanlık geçiş çalışıyor
+- ✅ KVKK link href="/legal/kvkk" doğru
+- ✅ Donations dedupe PASS — tek "Bağış akışı yakında" notice + secondary CTA
+- ✅ Çıkış yap button mevcut (test edilmedi session korunsun)
+- ✅ Landing page tier-1 render (1.249 GÖNÜLLÜ live + KARMA orb + +100 chips + 18.247 stats)
+
+**Vol-18 yeni bug:**
+- 🚨 **BUG-042 (false positive)** — Dashboard hero "0 Karma" görünüyor (count-up animation snapshot başlangıcı, gerçek değer animasyon sırasında 100'e count-up yapıyor)
+- 🚨 **BUG-043 (P2 scope gap)** — Profile/edit avatar upload yok (sadece text fields). Avatar UI henüz implementasyon dışı.
+
+**Vol-18 fix paketi (Pattern J Phase 3 sweep — 10 dosya defensive):**
+- `app/dashboard/ngos/[id]/membership/membership-form-client.tsx`
+- `app/dashboard/missions/missions-client.tsx`
+- `app/dashboard/rewards/rewards-client.tsx`
+- `app/dashboard/rewards/[id]/reward-detail-client.tsx`
+- `app/dashboard/profile/profile-client.tsx`
+- `app/dashboard/dashboard-client.tsx`
+- `components/ui/celebration-overlay.tsx`
+- `components/ui/brand-logo.tsx`
+- `components/admin/admin-image-upload.tsx`
+- `components/onboarding/welcome-celebration.tsx`
+
+Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform animasyonu kalır, opacity hep visible. Vol-12 hydration race condition'ı tetiklediği takdirde (yeni route navigation veya tema toggle) artık invisible olamayacak.
+
+**Vol-18 push:** 11 dosya (10 motion sweep + inbox)
+
+**Cumulative bilanço Vol-1 → Vol-18:**
+- Toplam bug: 43
+- Fixed: 40
+- Open: 3 (BUG-040 ÇYDD migration apply pending, BUG-043 avatar upload scope, BUG-031 production verify deferred)
+- Migration: 029 (24-29 user apply, 28+29 user pending)
+- Sprint Vol: 18
+
+**User aksiyon (40dk yokluk için):**
+1. `git push` Vol-18 (10 motion sweep + Vol-17 hotfix önceden push'landıysa atlayın)
+2. Migration 028 + 029 SQL Editor → apply (BUG-031 + BUG-040)
+3. Geri döndüğünde Vol-19 wide tarama (target 8+ bug, mission complete tam flow + NGO admin login + AD1-AD15 backoffice)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

@@ -145,7 +145,7 @@ export function CelebrationOverlay({
       {show && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           style={{

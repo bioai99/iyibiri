@@ -87,7 +87,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
     >
       {/* Cover + avatar section */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 1, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0 }}
         style={{ position: 'relative', height: 180, flexShrink: 0 }}>
@@ -136,7 +136,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Avatar row */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 1, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.1 }}
         style={{ marginTop: -42, position: 'relative', padding: '0 20px' }}>
@@ -169,7 +169,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Name + tier row */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.15 }}
         style={{ marginTop: 12, padding: '0 20px' }}>
@@ -212,7 +212,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Karma card */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.2 }}
         style={{ padding: '20px 16px 0' }}>
@@ -312,7 +312,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Stats strip */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.25 }}
         style={{
@@ -375,7 +375,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Saved missions link */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.3 }}
         style={{ padding: '8px 16px 0' }}
@@ -404,7 +404,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
       {/* Üyeliklerim */}
       {memberships.length === 0 ? (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.35 }}
           style={{ padding: '24px 20px 0' }}
@@ -433,7 +433,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
         </motion.div>
       ) : (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.35 }}
           style={{ padding: '24px 20px 0' }}
@@ -482,7 +482,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Leaderboard link */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.4 }}
         style={{ padding: '8px 16px 0' }}
@@ -510,7 +510,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Achievements */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.45 }}
       >
@@ -538,7 +538,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
           {achievements.map(({ icon, name, locked, sub }, idx) => (
             <motion.div
               key={name}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 1, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.45 + (idx * 0.05) }}
               style={{
@@ -589,7 +589,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Rozetlerim link */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.65 }}
         style={{ padding: '16px 16px 0' }}
@@ -617,7 +617,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
 
       {/* Activity timeline — empty state (no real data passed yet) */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.7 }}
       >

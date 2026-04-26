@@ -282,7 +282,7 @@ export function RewardDetailClient({
 
         {error && (
           <motion.p
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             style={{
               color: c.danger,

@@ -298,7 +298,7 @@ export function AdminImageUpload({
       <AnimatePresence>
         {error && (
           <motion.div
-            initial={{ opacity: 0, y: -4 }}
+            initial={{ opacity: 1, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             role="alert"

@@ -100,7 +100,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 100px', WebkitOverflowScrolling: 'touch' }}>
         {/* NGO Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           style={{ padding: '24px 20px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}
@@ -134,7 +134,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
 
         {/* Üyelik avantajları */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.4 }}
           style={{ padding: '20px 20px 0' }}
@@ -171,7 +171,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
 
         {/* İstatistik çubuğu */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.4 }}
           style={{
@@ -197,7 +197,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         {/* Form alanları (varsa) */}
         {hasForm && (
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 1, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.4 }}
             style={{ padding: '20px 20px 0', display: 'flex', flexDirection: 'column', gap: 14 }}
@@ -248,7 +248,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
 
         {/* Onay bölümü */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: hasForm ? 0.45 : 0.35, duration: 0.4 }}
           style={{ padding: '20px 20px 0' }}
