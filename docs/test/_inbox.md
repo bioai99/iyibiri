@@ -235,4 +235,23 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 03:00 — Vol-12 sistemik tema fix (Pattern J)
+
+**Notify eden:** test-engineer
+**Tetik:** BUG-022/024 root cause bulundu — `useState` lazy init React hydration'da client'da çağrılmıyor.
+**Etkilenen ekran/flow:** TÜM inner page'ler (profile, mission detail not-yet-taken, streak, leaderboard, vb.)
+**Aciliyet:** P1 sistemik
+
+**Diagnoz:** ThemeProvider `useState(() => getInitialMode(initial))` — server'da çalışıyor (typeof window === undefined → 'dark' döner), ama client hydration'da useState SSR state'i kullanıyor, lazy init function tekrar çağrılmıyor. Sonuç: localStorage'daki 'light' tercihi hiç okunmuyor → mode='dark' kalıyor → inline styles dark.
+
+**Vol-12 fix:** `useState(initial)` + `useEffect(() => setModeState(localStorage))` post-hydration pattern.
+
+**Trade-off:** İlk paint dark olur, ~50-100ms sonra useEffect çalışınca light'a flip (FOUC). Vol-13'te cookie-based SSR ile FOUC eliminate.
+
+**Pattern memo:** `_patterns/2026-04-26-theme-ssr-hydration-mismatch.md`
+
+**Push:** lib/theme.tsx (1 dosya değişti)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

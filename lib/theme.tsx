@@ -93,24 +93,31 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
 /**
- * Lazy initialization: reads localStorage on first render only.
- * Prevents hydration mismatch by having server and client start with same initial value,
- * then client immediately reads correct value from localStorage.
+ * BUG-022/024 fix (Vol-12): SSR + client hydration mode mismatch.
  *
- * Server: returns `initial` (deterministic, no localStorage)
- * Client: returns stored value from localStorage if exists, else `initial`
+ * Problem: useState lazy init runs ONLY during SSR (server has typeof window === undefined,
+ * returns `initial`). On client hydration, useState reuses the SSR-baked state
+ * — `getInitialMode` is NEVER called client-side. So inner pages (profile, mission detail)
+ * render with dark colors baked into inline styles even when localStorage says 'light'.
+ *
+ * Fix: Always start with `initial` on both server + first client render (hydration-safe),
+ * then in useEffect read localStorage and force update if stored value differs.
+ * Causes a single re-render after hydration with the correct theme.
  */
-function getInitialMode(initial: Mode): Mode {
-  if (typeof window === 'undefined') return initial
-  const stored = localStorage.getItem('iyibiri-theme') as Mode | null
-  return (stored === 'light' || stored === 'dark') ? stored : initial
-}
-
 export function ThemeProvider({ children, initial = 'dark' }: { children: React.ReactNode; initial?: Mode }) {
-  const [mode, setModeState] = useState<Mode>(() => getInitialMode(initial))
+  const [mode, setModeState] = useState<Mode>(initial)
+
+  // Hydrate from localStorage after mount (one-time, post-hydration)
+  useEffect(() => {
+    const stored = localStorage.getItem('iyibiri-theme') as Mode | null
+    if ((stored === 'light' || stored === 'dark') && stored !== mode) {
+      setModeState(stored)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
-    // Ensure localStorage is set on every render (for new browser sessions)
+    // Persist on every change
     localStorage.setItem('iyibiri-theme', mode)
   }, [mode])
 
