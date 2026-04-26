@@ -55,8 +55,13 @@ export function EditProfileClient({
   async function handleSave() {
     setSaving(true)
     const supabase = createClient()
+    // BUG-025 fix (Vol-13): write full_name + first_name (Pattern D fields) alongside legacy name
+    const trimmed = name.trim()
+    const firstWord = trimmed.split(/\s+/)[0] ?? ''
     await supabase.from('profiles').update({
-      name: name.trim() || null,
+      name: trimmed || null,             // legacy mirror
+      full_name: trimmed || null,        // Pattern D primary
+      first_name: firstWord || null,     // dashboard greeting source
       city: city.trim() || null,
       interests,
       search_radius: radius,

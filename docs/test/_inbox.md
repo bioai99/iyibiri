@@ -254,4 +254,28 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 03:25 — Vol-12 PASS + Faz 2 S1 Edit + 2 yeni bug + Vol-13 fix
+
+**Notify eden:** test-engineer (Faz 2 S1 koşusu + Vol-12 verify)
+**Tetik:** Vol-12 sistemik tema fix sonrası /dashboard/profile + /dashboard/profile/edit verify
+**Etkilenen ekran/flow:** P1 profil, S1 edit, Vol-12 tema verify
+**Aciliyet:** P1 (BUG-025) + P2 (BUG-026 scope gap)
+
+**Vol-12 verify sonuçları:**
+- ✅ **BUG-022 PASS** — Mission detail applied state cream/light tam visible (Başvurun alındı + roadmap)
+- ✅ **BUG-024 PASS** — Profile sayfası tam profesyonel light mode'da: avatar T + Test İyiBiri + İyi Biri tier + 100 Karma + progress + 3 stat cards + sections
+- ✅ Pattern J fix çalıştı: useState lazy → useEffect post-hydration
+
+**Faz 2 S1 Edit sonuçları:**
+- ✅ /dashboard/profile/edit page render (Profilini düzenle + AD SOYAD + E-POSTA + ŞEHİR + ARAMA MESAFESİ + İLGİ ALANLARI)
+- ✅ Şehir İstanbul, Mesafe 10km, Çevre+Eğitim selected (onboarding'den geldi)
+- 🚨 **BUG-025 (P1, NEW)** — AD SOYAD field empty: profile.name (legacy null) okuyor, full_name="Test İyiBiri" ignore. **Vol-13 fix uygulandı:** page.tsx initialName resolver + edit-client handleSave 3-kolon write (name + full_name + first_name).
+- 🚨 **BUG-026 (P2, scope gap, NEW)** — /dashboard/profile/settings 404. Edit sadece form. Eksik: tema toggle, KVKK metni, bildirimler, dil tercihi, hesap silme, gizlilik. Workstream Vol-14+ "Settings sayfası ekle" gerek.
+
+**Vol-13 push:** 2 dosya (edit/page.tsx, edit-client.tsx)
+
+**Sıradaki:** Vol-13 push + verify "Test İyiBiri" pre-fill, sonra K1-K5 (karma/streak/leaderboard).
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
