@@ -47,14 +47,21 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
     .in('id', ngoIds)
     .then((res) => res.data ?? []) : []
 
-  // BUG-039 fix (Vol-16): yetkisiz kullanıcı admin sidebar görmemeli.
-  // Ne super-admin ne de bir NGO admin'i ise login'e geri yolla.
-  if (!isSuper && ngoList.length === 0) {
-    redirect('/admin/login?error=unauthorized')
-  }
+  // BUG-039 fix (Vol-17): yetkisiz kullanıcı admin sidebar görmemeli.
+  // ROLLBACK Vol-16 — layout-level redirect /admin/login'i de yakalayıp infinite loop yaptı.
+  // Yeni yaklaşım: render time'da sidebar şell'ini koşullu render et.
+  // Sidebar sadece super-admin veya en az 1 NGO admin'i için görünür.
+  // /admin/login zaten kendi auth bypass'ı yapıyor (server action signin).
+  const isAuthorized = isSuper || ngoList.length > 0
 
   const awaitedParams = await params
   const currentNgoId = awaitedParams.ngoId || (ngoList[0]?.id ?? null)
+
+  // Yetkisiz user (NGO admin değil + super-admin değil) için bare wrapper —
+  // login sayfası, "yetkin yok" hata page'i, vs. sidebar leak yapmadan render olur.
+  if (!isAuthorized) {
+    return <>{children}</>
+  }
 
   return (
     <AdminLayoutShell

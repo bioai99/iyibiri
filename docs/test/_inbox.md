@@ -394,4 +394,27 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~05:30 — Vol-16 verify + Vol-17 hotfix admin redirect loop
+
+**Notify eden:** test-engineer (Vol-16 production verify)
+**Tetik:** Migration 029 + Vol-16 push deploy → admin route ERR_TOO_MANY_REDIRECTS regression
+**Etkilenen ekran/flow:** /admin (login + tüm admin pages)
+**Aciliyet:** **HOTFIX P0** (admin login completely blocked)
+
+**Vol-16 verify sonuçları:**
+- ✅ **BUG-038 PASS** — Mission complete /dashboard/missions/X/complete light mode tam render: GÖREV DOĞRULAMA + Sahil Temizliği — Tamamla + KAZANACAĞIN +200 KARMA + QR scanner area
+- 🚨 **BUG-039 fix REGRESSION** — `/admin` ERR_TOO_MANY_REDIRECTS: layout.tsx `redirect('/admin/login?error=unauthorized')` /admin/login için de tetikleniyor → infinite loop
+- (BUG-037, BUG-040 verify deferred — admin sorunu önce)
+
+**Vol-17 hotfix:**
+- `app/admin/layout.tsx` — redirect kaldırıldı, koşullu render eklendi:
+  - `if (!isAuthorized) return <>{children}</>` — yetkisiz user için bare wrapper (sidebar yok)
+  - `if (isAuthorized)` → AdminLayoutShell (sidebar + auth shell)
+- /admin/login + diğer fallback page'ler bare wrapper'da render olur, infinite redirect kapanır
+- Sidebar leak hala önlenmiş (yetkisiz user sidebar görmüyor)
+
+**Vol-17 push:** 1 dosya (admin/layout.tsx + inbox)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
