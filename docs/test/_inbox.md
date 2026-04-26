@@ -278,4 +278,43 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~03:55 — Vol-14 chunky 5-bug paket (RLS + leaderboard + NGO + settings)
+
+**Notify eden:** test-engineer (Vol-13 push pending sonrası geniş tarama + paket fix)
+**Tetik:** Kullanıcı "5-6 bug per pakete" istedi → tarama genişletildi
+**Etkilenen ekran/flow:** K3 leaderboard, NGOs list, NGO copy, /dashboard/settings (NEW), Pattern J devam
+**Aciliyet:** Hot-fix paket (P0 BUG-028 sistemik dahil)
+
+**Vol-14 fix paketi (5 bug + 1 scope gap):**
+- ✅ **BUG-028 (P0 sistemik) FIX** — Migration 027: `leaderboard_top` SECURITY DEFINER view + `get_user_rank` RPC. RLS bypass'lı public-safe columns expose. Leaderboard artık tüm user'ları görebilir.
+- ✅ **BUG-027 (P1) FIX** — leaderboard-client empty state component eklendi (★ icon + "Sıralama henüz başlamadı" + CTA). RLS+data combo için graceful degradation.
+- ✅ **BUG-030 (P2) FIX** — ngos-list-client.tsx member_count + volunteer_count: `(n).toLocaleString('tr-TR')` → "120.000" formatı.
+- ✅ **BUG-031 (P2) FIX** — Migration 028 + scripts/seed-membership-config.js: 6 NGO membership_description TR character integrity restored ("CYDD gonullusu egitimde firsat" → "ÇYDD gönüllüsü eğitimde fırsat").
+- ✅ **BUG-026 (scope gap) FIX** — `/dashboard/settings` MVP yeni sayfa: Tema toggle (dark/light) + Hesap (email + edit profili) + Yasal (KVKK + gizlilik + kullanım) + Hakkında (versiyon) + Çıkış yap. Profile gear icon /settings'e yönlendirildi.
+- ✅ **BUG-029 (P1) RESOLVED** — Yanlış raporlandığı kapatıldı: rewards page Vol-12 sonrası tam çalışıyor (BAKİYEN 100 + 6 ödül kartı).
+
+**Bonus types.ts updates:** profiles Update'a full_name+first_name+karma eklendi, Views'a leaderboard_top, Functions'a get_user_rank — typecheck ✅ temiz.
+
+**Vol-14 push paketi (8 dosya + 2 migration):**
+- supabase/migrations/027_leaderboard_view_and_public_profile.sql (NEW)
+- supabase/migrations/028_fix_ngo_membership_copy_tr.sql (NEW)
+- app/dashboard/leaderboard/page.tsx (BUG-028)
+- app/dashboard/leaderboard/leaderboard-client.tsx (BUG-027)
+- app/dashboard/ngos/ngos-list-client.tsx (BUG-030)
+- app/dashboard/profile/profile-client.tsx (settings link)
+- app/dashboard/settings/page.tsx (NEW BUG-026)
+- app/dashboard/settings/settings-client.tsx (NEW BUG-026)
+- scripts/seed-membership-config.js (BUG-031)
+- lib/supabase/types.ts (Views + Functions + Update cols)
+- docs/test/_patterns/2026-04-26-mission-take-membership-mismatch.md (önceki)
+- docs/test/_inbox.md (Vol-14 entry)
+
+**User aksiyon (kritik):**
+1. Migration 027 SQL Editor → apply
+2. Migration 028 SQL Editor → apply (TR copy fix)
+3. Push deploy
+4. Verify: leaderboard yeni user'ları gösteriyor mu, NGO list "120.000" formatı, settings tıklanabiliyor mu, ÇYDD copy'de TR karakter
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

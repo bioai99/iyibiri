@@ -256,6 +256,47 @@ export default function LeaderboardClient({
         </h1>
       </motion.div>
 
+      {/* BUG-027 fix (Vol-14): Empty state when leaderboard has no users yet */}
+      {topUsers.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '80px 32px',
+            textAlign: 'center',
+            gap: 14,
+          }}
+        >
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              background: c.goldSoft,
+              border: `1px dashed ${c.goldLine}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 30,
+              color: c.gold,
+            }}
+          >
+            ★
+          </div>
+          <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 22, fontWeight: 500, color: c.cream, margin: 0 }}>
+            Sıralama henüz başlamadı
+          </h2>
+          <p style={{ fontSize: 14, color: c.ink300, margin: 0, maxWidth: 320, lineHeight: 1.55 }}>
+            İlk görevini tamamladığında karma sıralamasında yerini alacaksın. Hadi başlayalım!
+          </p>
+        </motion.div>
+      )}
+
       {/* Podium */}
       {podiumOrder.length >= 2 && (
         <motion.div

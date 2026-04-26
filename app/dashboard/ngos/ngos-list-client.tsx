@@ -198,13 +198,14 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Users size={12} color={c.ink400} />
                     <span style={{ fontSize: 11, color: c.ink400, fontWeight: 600 }}>
-                      {ngo.member_count}
+                      {/* BUG-030 fix (Vol-14): TR locale thousand separator */}
+                      {(ngo.member_count ?? 0).toLocaleString('tr-TR')}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Target size={12} color={c.ink400} />
                     <span style={{ fontSize: 11, color: c.ink400, fontWeight: 600 }}>
-                      {ngo.volunteer_count} gönüllü
+                      {(ngo.volunteer_count ?? 0).toLocaleString('tr-TR')} gönüllü
                     </span>
                   </div>
                 </div>

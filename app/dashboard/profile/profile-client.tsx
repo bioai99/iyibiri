@@ -118,7 +118,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             justifyContent: 'space-between',
           }}
         >
-          <Link href="/dashboard/profile/edit" style={{ textDecoration: 'none' }}>
+          <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
             <IconButtonDS icon={<Settings size={16} />} />
           </Link>
           <IconButtonDS

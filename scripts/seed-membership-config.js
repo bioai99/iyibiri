@@ -6,38 +6,39 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+// BUG-031 fix (Vol-14): TR character integrity restored across all NGO membership copy.
 const configs = [
   {
     id: 'haytap',
-    membership_description: 'Haytap gonullusu olarak sokak hayvanlarina yardim edebilirsin.',
+    membership_description: 'Haytap gönüllüsü olarak sokak hayvanlarına yardım edebilirsin.',
     membership_form_fields: [
       { key: 'phone', label: 'Telefon', type: 'tel', required: true },
-      { key: 'motivation', label: 'Neden gonullu olmak istiyorsun?', type: 'textarea', required: false },
+      { key: 'motivation', label: 'Neden gönüllü olmak istiyorsun?', type: 'textarea', required: false },
     ],
   },
   {
     id: 'ibb',
-    membership_description: 'IBB Gonulluleri programina katil, Istanbul icin fark yarat.',
+    membership_description: 'İBB Gönüllüleri programına katıl, İstanbul için fark yarat.',
     membership_form_fields: [
       { key: 'phone', label: 'Telefon', type: 'tel', required: true },
-      { key: 'experience', label: 'Daha once gonulluluk yaptin mi?', type: 'select', options: ['Evet', 'Hayir', 'Kismen'], required: false },
+      { key: 'experience', label: 'Daha önce gönüllülük yaptın mı?', type: 'select', options: ['Evet', 'Hayır', 'Kısmen'], required: false },
     ],
   },
   {
     id: 'tema',
-    membership_description: 'TEMA gonullusu ol, dogayi koru.',
+    membership_description: 'TEMA gönüllüsü ol, doğayı koru.',
   },
   {
     id: 'kizilay',
-    membership_description: 'Kizilay gonullusu olarak insani yardima katkida bulun.',
+    membership_description: 'Kızılay gönüllüsü olarak insani yardıma katkıda bulun.',
   },
   {
     id: 'cydd',
-    membership_description: 'CYDD gonullusu olarak egitimde firsat esitligine destek ver.',
+    membership_description: 'ÇYDD gönüllüsü olarak eğitimde fırsat eşitliğine destek ver.',
   },
   {
     id: 'kodluyoruz',
-    membership_description: 'Kodluyoruz mentoru ol, gelecegi kodla.',
+    membership_description: 'Kodluyoruz mentoru ol, geleceği kodla.',
   },
 ]
 

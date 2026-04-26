@@ -95,10 +95,13 @@ export interface Database {
         Update: {
           id?: string
           name?: string | null
+          full_name?: string | null
+          first_name?: string | null
           email?: string | null
           avatar_url?: string | null
           avatar_type?: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
           karma_total?: number
+          karma?: number
           level?: number
           streak?: number
           last_active?: string | null
@@ -755,9 +758,23 @@ export interface Database {
         }
         Relationships: []
       }
+      // Migration 027 — leaderboard SECURITY DEFINER view (BUG-028 fix)
+      leaderboard_top: {
+        Row: {
+          id: string
+          display_name: string
+          karma_total: number
+          avatar_type: 'cat' | 'dog' | 'fox' | 'robot' | 'party' | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      // Migration 027 — get_user_rank RPC (BUG-028 fix)
+      get_user_rank: {
+        Args: { target_user_id: string }
+        Returns: number | null
+      }
     }
   }
 }
