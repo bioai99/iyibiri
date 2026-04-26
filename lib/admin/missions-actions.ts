@@ -14,6 +14,15 @@ interface MissionData {
   status: 'draft' | 'active'
 }
 
+// BUG-053 fix (Vol-23.5): missions tablosunda iki paralel kolon var:
+//   - active (boolean) — RLS policy + user-facing app filtresi
+//   - status (enum) — backoffice yönetim
+// Bunlar sync edilmezse "cancelled" görev kullanıcıda hâlâ görünür.
+// Tüm write action'larda status set edilirken active boolean'ı türet.
+function statusToActive(status: 'draft' | 'active' | 'cancelled' | 'completed'): boolean {
+  return status === 'active'
+}
+
 /**
  * Create a new mission for an NGO
  */
@@ -24,6 +33,7 @@ export async function createMission(
   const supabase = await createClient()
 
   try {
+    const finalStatus = data.status === 'draft' ? 'draft' : 'active'
     const { data: mission, error } = await supabase
       .from('missions')
       .insert({
@@ -35,7 +45,8 @@ export async function createMission(
         event_date: data.event_date,
         location: data.location,
         image_url: data.image_url,
-        status: data.status === 'draft' ? 'draft' : 'active',
+        status: finalStatus,
+        active: statusToActive(finalStatus), // BUG-053 sync
         verify_method: 'photo', // Default — V1
       })
       .select('id')
@@ -75,7 +86,9 @@ export async function updateMission(
     if (data.location !== undefined) updatePayload.location = data.location
     if (data.image_url !== undefined) updatePayload.image_url = data.image_url
     if (data.status !== undefined) {
-      updatePayload.status = data.status === 'draft' ? 'draft' : 'active'
+      const finalStatus = data.status === 'draft' ? 'draft' : 'active'
+      updatePayload.status = finalStatus
+      updatePayload.active = statusToActive(finalStatus) // BUG-053 sync
     }
 
     const { error } = await (supabase as any)
@@ -109,9 +122,12 @@ export async function updateMissionStatus(
   const supabase = await createClient()
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('missions')
-      .update({ status })
+      .update({
+        status,
+        active: statusToActive(status), // BUG-053 sync
+      })
       .eq('id', missionId)
       .eq('ngo_id', ngoId)
 
@@ -151,10 +167,13 @@ export async function deleteMission(
     }
 
     if ((participantCount ?? 0) > 0) {
-      // Soft delete: status'u cancelled yap
-      const { error: updateError } = await supabase
+      // Soft delete: status'u cancelled yap + active=false sync
+      const { error: updateError } = await (supabase as any)
         .from('missions')
-        .update({ status: 'cancelled' })
+        .update({
+          status: 'cancelled',
+          active: false, // BUG-053 sync — kullanıcı app'ten kaldır
+        })
         .eq('id', missionId)
         .eq('ngo_id', ngoId)
 
