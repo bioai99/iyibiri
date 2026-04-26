@@ -44,7 +44,7 @@ export async function takeMission(
   // 1. Mission fetch + guard check
   const { data: missionData, error: missionErr } = await supabase
     .from('missions')
-    .select('id, ngo_id, status, spots_left, event_date')
+    .select('id, ngo_id, status, spots_left, event_date, access_level')
     .eq('id', missionId)
     .single()
 
@@ -58,7 +58,7 @@ export async function takeMission(
 
   const mission = missionData as Pick<
     Mission,
-    'id' | 'ngo_id' | 'status' | 'spots_left' | 'event_date'
+    'id' | 'ngo_id' | 'status' | 'spots_left' | 'event_date' | 'access_level'
   >
 
   if (mission.status === 'cancelled') {
@@ -88,8 +88,10 @@ export async function takeMission(
     }
   }
 
-  // 2. Üyelik kontrolü — NGO'ya bağlı görevler için zorunlu
-  if (mission.ngo_id) {
+  // 2. Üyelik kontrolü — sadece access_level='members_only' missions için
+  // BUG-021 fix: ADR-008 passthrough mode (public missions) üyelik gerektirmez.
+  // Mission detail UI "Tek seferlik — üye olmana gerek yok" copy ile align.
+  if (mission.ngo_id && mission.access_level === 'members_only') {
     const { data: membership } = await supabase
       .from('ngo_memberships')
       .select('id, status')

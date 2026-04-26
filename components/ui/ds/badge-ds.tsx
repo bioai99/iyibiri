@@ -16,7 +16,8 @@ export function BadgeDS({ children, icon, variant = 'neutral', style = {} }: Bad
   const variantStyles: Record<string, { bg: string; border: string; color: string }> = {
     neutral:      { bg: 'rgba(255,255,255,.04)',   border: c.ink600,                    color: c.ink300 },
     gold:         { bg: c.goldSoft,                border: c.goldLine,                  color: c.gold },
-    dark:         { bg: c.ink,                     border: 'transparent',               color: c.cream },
+    // BUG-020 fix: ink === cream in light mode (both dark text) → invisible. Use ink800 bg + gold for theme-safe contrast.
+    dark:         { bg: c.ink800,                  border: c.ink600,                    color: c.gold },
     onImage:      { bg: 'rgba(26,22,18,.55)',       border: 'rgba(244,238,223,.16)',      color: c.cream },
     onImageLight: { bg: 'rgba(250,245,233,.92)',    border: 'rgba(26,22,18,.06)',         color: c.ink900 },
   }

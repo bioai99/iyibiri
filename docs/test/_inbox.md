@@ -189,4 +189,27 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~22:30 — Faz 2 D2/D3 + M1/M2 — 2 yeni P0/P1 + Vol-10 fix
+
+**Notify eden:** test-engineer (Faz 2 koşusu)
+**Tetik:** Vol-9 yeşil sonrası D1+D2+D3+M1+M2 test koşturuldu.
+**Etkilenen ekran/flow:** D2 (recommendations tabs), D3 (mission card grid), M1 (mission detail), M2 (take action)
+**Aciliyet:** P0 (BUG-021 mission take broken)
+
+**Test sonuçları:**
+- ✅ D2 "Senin için seçtik" tabs (Senin için / Katıldıkların) çalışıyor, empty state copywriting beautiful
+- ✅ D3 mission carousel + mission card image + kategori chip dashboard'da OK (Çevre/Topluluk visible)
+- ✅ M1 mission detail page render: hero + meta cards (TARİH/SÜRE/KONUM/KONTENJAN) + impact section + karma reward + KVKK consent
+- ✅ M1 KVKK consent checkbox + button activation pattern çalışıyor
+- 🚨 **BUG-020 (P1, NEW)** — Mission detail kategori chip theme-blind: `color=bg=rgb(36,30,24)`, light mode'da black blob. Pattern J ailesi (theme-blind).
+- 🚨 **BUG-021 (P0, NEW)** — Mission take silent fail: server action 200 OK ama `user_missions` empty. Root cause: `actions.ts:92` `mission.ngo_id` her zaman membership istiyordu, ADR-008 passthrough mode (access_level=public) bypass'lanmıyordu. Pattern memo: `_patterns/2026-04-26-mission-take-membership-mismatch.md`
+
+**Vol-10 fix:**
+- `lib/missions/actions.ts` — takeMission membership guard'ı `mission.access_level === 'members_only'` koşuluna bağlandı (1-line fix)
+- Typecheck ✅
+
+**User aksiyon:** Vol-10 push → +t5 ile re-test → mission take olmalı, sonra completeMission test, BUG-020 chip Vol-11'de.
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
