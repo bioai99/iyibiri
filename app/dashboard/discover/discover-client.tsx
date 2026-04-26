@@ -166,6 +166,25 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
   const { colors: c } = useTheme()
   const [query, setQuery] = useState('')
 
+  // BUG-045 fix (Vol-19): query string ile post filter et (title + description + NGO name + city + category)
+  const q = query.trim().toLocaleLowerCase('tr-TR')
+  const matchesQuery = (p: PostWithNGO) => {
+    if (!q) return true
+    const ngo = ngos.find((n) => n.id === p.ngo_id)
+    const haystack = [
+      p.title,
+      (p as { excerpt?: string | null }).excerpt,
+      (p as { body?: string | null }).body,
+      p.category,
+      ngo?.name,
+      ngo?.short_name,
+    ]
+      .filter(Boolean)
+      .map((s) => String(s).toLocaleLowerCase('tr-TR'))
+      .join(' ')
+    return haystack.includes(q)
+  }
+
   const trendingMission = missions[missions.length - 1] ?? null
 
   return (
@@ -283,7 +302,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
           >
             {posts.filter(p => {
               const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
-              return ngoCategory !== 'sponsor'
+              return ngoCategory !== 'sponsor' && matchesQuery(p)
             }).map((post) => (
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                 <PostCard
@@ -300,7 +319,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
       {/* Sponsor posts */}
       {posts.filter(p => {
         const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
-        return ngoCategory === 'sponsor'
+        return ngoCategory === 'sponsor' && matchesQuery(p)
       }).length > 0 && (
         <div style={{ padding: '28px 0 0' }}>
           <div style={{ padding: '0 20px 12px' }}>
@@ -324,7 +343,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
           }}>
             {posts.filter(p => {
               const ngoCategory = ngos.find(n => n.id === p.ngo_id)?.category
-              return ngoCategory === 'sponsor'
+              return ngoCategory === 'sponsor' && matchesQuery(p)
             }).map((post) => (
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                 <PostCard

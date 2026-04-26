@@ -466,4 +466,33 @@ Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform 
 
 ---
 
+### 2026-04-26 ~06:30 — Vol-19 wide tarama + 2 yeni bug fix
+
+**Notify eden:** test-engineer (Vol-18 sonrası geri dönüş + tarama)
+**Tetik:** Forgot password, admin login signup, mission detail STK takip, discover search test
+**Etkilenen ekran/flow:** Discover search, admin onboarding
+**Aciliyet:** P1 (search functionality broken kullanıcı flow'u kırar)
+
+**Verify özet:**
+- ✅ Forgot password sayfası mukemmel (Şifreni unuttun mu? + email + sıfırlama linki)
+- ✅ Mission detail food-distribution "Takip et" button DOM'da var
+- ✅ Discover post links doğru slug-based URL'ler (/dashboard/posts/UUID)
+
+**Vol-19 yeni 2 bug:**
+- 🚨 **BUG-044 (P2 scope gap)** — Admin/login sayfasında "Yeni STK kaydı" yok. Self-signup eksik, sadece destek@iyibiri.app email ile manuel onboard.
+- 🚨 **BUG-045 (P1)** — Discover search input "TEMA" yazınca filter etmiyor — query state var ama `posts.filter()` query kullanmıyordu (3 yerde sadece sponsor/non-sponsor ayrımı vardı).
+
+**Vol-19 fix uygulandı (1 dosya, 3 lokasyon):**
+- `app/dashboard/discover/discover-client.tsx` — `matchesQuery(p)` helper eklendi (TR locale lowercase + title/excerpt/body/category/NGO name match), 3 filter site'ında uygulandı (sponsor section + non-sponsor section + 3rd section)
+- BUG-044 deferred Vol-20+ (signup form yazımı + onboard flow gerek)
+
+**Vol-19 push:** 2 dosya (discover-client + inbox)
+
+**Cumulative bilanço Vol-1 → Vol-19:**
+- Toplam bug: 45
+- Fixed/Resolved: 41
+- Open: 4 (BUG-040 ÇYDD migration apply pending, BUG-043 avatar upload, BUG-044 STK signup, BUG-031 production verify deferred)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
