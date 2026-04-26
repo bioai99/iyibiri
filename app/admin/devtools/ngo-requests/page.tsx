@@ -35,21 +35,13 @@ export default async function NgoRequestsPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // Super-admin check (devtools page'in pattern'i)
-  const devOK = process.env.NODE_ENV !== 'production'
-  const prodDevAccess = process.env.DEV_FIXTURES_ENABLED === '1'
-  if (!devOK && !prodDevAccess) {
+  // Vol-27.1: Middleware zaten /admin/devtools/* için super-admin gate'liyor
+  // (Migration 036 ile is_super_admin function hard-coded bootstrap email
+  // listesine fallback eder). Burada defense in depth olarak super-admin
+  // kontrolü tekrar yapıyoruz — middleware bypass edilirse 404 dön.
+  const { data: isSuper } = await (supabase as any).rpc('is_super_admin', { u: user.id })
+  if (!isSuper) {
     notFound()
-  }
-
-  if (!devOK && prodDevAccess) {
-    const allow = (process.env.DEV_FIXTURE_ALLOWLIST ?? '')
-      .split(',')
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-    if (!user.email || !allow.includes(user.email.toLowerCase())) {
-      notFound()
-    }
   }
 
   // Tüm başvuruları listele (RLS super-admin SELECT policy ile)
