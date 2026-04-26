@@ -28,8 +28,11 @@ export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
     if (status) setStatus(null)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Vol-24.6 BUG-055 root-cause fix: form onSubmit yerine button onClick.
+  // Next 14 compiler form'un onSubmit async handler'ını server action olarak
+  // otomatik compile ediyor ve handler kayboluyordu.
+  const doSubmit = async () => {
+    if (isLoading) return
     setIsLoading(true)
     setStatus(null)
 
@@ -51,7 +54,7 @@ export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
   const pending = isLoading
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
       {/* Info Banner */}
       <div className="bg-ink-700/50 border border-ink-600 rounded-2xl p-4">
         <p className="text-sm text-ink-300">
@@ -197,13 +200,14 @@ export function PaymentsForm({ ngo, ngoId }: PaymentsFormProps) {
       {/* Submit */}
       <div className="flex gap-3 justify-end pt-6 border-t border-ink-700">
         <button
-          type="submit"
+          type="button"
+          onClick={doSubmit}
           disabled={pending}
           className="px-6 py-3 rounded-xl bg-gold text-ink-900 font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
         >
           {pending ? 'Kaydediliyor...' : 'Ödeme Ayarlarını Kaydet'}
         </button>
       </div>
-    </form>
+    </div>
   )
 }

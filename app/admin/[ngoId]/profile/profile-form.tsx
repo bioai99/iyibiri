@@ -43,8 +43,17 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
     if (status) setStatus(null) // Yeni edit → eski status'u temizle
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Vol-24.6 BUG-055 root-cause fix:
+  // Next 14 compiler form'un onSubmit async handler'ını server action olarak
+  // OTOMATIK compile ediyor ve form'un native `action` prop'una bağlıyor. Ama
+  // bu function gerçek server action değil → form submit hiçbir handler'a
+  // ulaşmıyordu. (DOM inspection: reactProps_keys: ['action', 'className', 'children'],
+  // onSubmit yok!)
+  //
+  // Çözüm: form onSubmit kaldırıldı, button type="button" + onClick kullan.
+  // Compiler heuristiği bypass edilir, form submit event'ı hiç tetiklenmez.
+  const doSubmit = async () => {
+    if (isLoading) return
     setIsLoading(true)
     setStatus(null)
 
@@ -69,7 +78,7 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
     <div className="grid grid-cols-3 gap-6">
       {/* Form — Left */}
       <div className="col-span-2">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
           {/* Logo */}
           <AdminImageUpload
             folder={ngoId}
@@ -282,14 +291,15 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
           {/* Submit */}
           <div className="flex gap-3 justify-end pt-6 border-t border-ink-700">
             <button
-              type="submit"
+              type="button"
+              onClick={doSubmit}
               disabled={pending}
               className="px-6 py-3 rounded-xl bg-gold text-ink-900 font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
             >
               {pending ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
             </button>
           </div>
-        </form>
+        </div>
       </div>
 
       {/* Preview — Right */}
