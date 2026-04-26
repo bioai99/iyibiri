@@ -68,7 +68,13 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
   const karmaToNext = nextThreshold === Infinity ? 0 : nextThreshold - karma
   const pct = nextThreshold === Infinity ? 100 : Math.min(100, Math.round((karmaInTier / karmaNeeded) * 100))
 
-  const initial = (profile.name ?? 'U').charAt(0).toUpperCase()
+  // BUG-023 (Vol-11): legacy `name` null. Read full_name/first_name from Pattern D backfill.
+  const displayName =
+    profile.first_name?.trim() ||
+    profile.full_name?.trim()?.split(/\s+/)[0] ||
+    profile.name ||
+    null
+  const initial = (displayName ?? 'U').charAt(0).toUpperCase()
 
   return (
     <div
@@ -120,7 +126,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
             onClick={() => {
               try {
                 if (navigator.share) {
-                  navigator.share({ title: profile.name ?? 'İyiBiri Profili', url: window.location.href })
+                  navigator.share({ title: profile.full_name ?? displayName ?? profile.name ?? 'İyiBiri Profili', url: window.location.href })
                 }
               } catch { /* silent */ }
             }}
@@ -180,7 +186,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
                 margin: 0,
               }}
             >
-              {profile.name ?? (
+              {profile.full_name?.trim() || displayName || (
                 <Link href="/dashboard/profile/edit" style={{ color: c.gold, textDecoration: 'none' }}>
                   Adını henüz eklemedin
                 </Link>

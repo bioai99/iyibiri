@@ -212,4 +212,27 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~02:50 — Faz 2 P1 Profil + 3 yeni bug + Vol-11 fix
+
+**Notify eden:** test-engineer (Faz 2 P1 koşusu)
+**Tetik:** Vol-10 yeşil sonrası /dashboard/profile test
+**Etkilenen ekran/flow:** P1 (profil), M1 (mission detail initial render)
+**Aciliyet:** P1 (BUG-022/023/024 tek başına bloker değil ama UX ciddi)
+
+**Test sonuçları:**
+- ✅ Profil DOM içerik tam: avatar, "İstanbul · 2026'den beri üye", "İyi Biri 100 Karma", stats GÖREV/SERİ/ÖNCÜ, Üyeliklerim, Rozetler grid (6 badge), Son görevlerin
+- 🚨 **BUG-023 (P1, NEW)** — Profil heading "**Adını henüz eklemedin**" fallback gösteriyor, ama DB'de `full_name="Test İyiBiri", first_name="Test"`. profile-client.tsx:71/123/183 `profile.name` (legacy null) okuyordu. **Vol-11 fix uygulandı:** displayName helper + heading + share fallback `full_name → first_name → name`.
+- 🚨 **BUG-022 (P1, NEW, sistemik)** — Mission detail (not-yet-taken) initial render dark mode'da, light mode body'nin içinde dark container. localStorage=light, body bg=cream, ama `useTheme()` profil ve mission detail'de DARK colors döndürüyor. Dashboard'da düzgün, inner page'lerde değil.
+- 🚨 **BUG-024 (P1, NEW, sistemik)** — Profile aynı tema sorunu: container `bg: rgb(36,32,27)` (DARK ink900), `color: rgb(244,238,223)` (DARK cream). Hipotez: SSR initial='dark' baked styles, client hydrate sırasında inline-style consumer'lar re-render olmuyor.
+  - Vol-11 deferred — derin diagnoz: ThemeProvider context propagation vs RSC hydration timing. Muhtemel fix: ThemeProvider initial'ı SSR'da localStorage'a benzer cookie'den oku (next-themes pattern).
+- ✅ Bonus: BUG-021 take action production'da PASS doğrulandı (user_missions row + applied state UI: "Başvurun alındı + 3-step roadmap + iptal CTA")
+
+**Vol-11 fix paketi:**
+- `app/dashboard/profile/profile-client.tsx` (BUG-023): displayName resolver (first_name → full_name → name fallback)
+- BUG-022/024 sistemik tema → Vol-12'ye, design-system-keeper + frontend-engineer joint inceleme
+
+**User aksiyon:** Vol-11 push (1 dosya) → /dashboard/profile reload → "Test İyiBiri" heading + avatar "T" verify.
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
