@@ -40,28 +40,30 @@ export async function createNgoSignupRequest(
   }
 
   try {
-    const { data: row, error } = await (supabase as any)
-      .from('ngo_signup_requests')
-      .insert({
-        ngo_name: data.ngo_name.trim(),
-        short_name: data.short_name?.trim() || null,
-        category: data.category?.trim() || null,
-        city: data.city?.trim() || null,
-        website: data.website?.trim() || null,
-        description: data.description?.trim() || null,
-        contact_name: data.contact_name.trim(),
-        contact_email: data.contact_email.trim().toLowerCase(),
-        contact_phone: data.contact_phone?.trim() || null,
-        reason: data.reason.trim(),
-      })
-      .select('id')
-      .single()
+    // Vol-26.7 BUG-056 fix: Direct INSERT yerine SECURITY DEFINER function.
+    // Migration 033/034 RLS policies `with check (true)` olmasına rağmen
+    // supabase server client INSERT'i RLS hatası alıyordu. RPC ile bypass.
+    const { data: requestId, error } = await (supabase as any).rpc(
+      'submit_ngo_signup_request',
+      {
+        p_ngo_name: data.ngo_name.trim(),
+        p_short_name: data.short_name?.trim() || null,
+        p_category: data.category?.trim() || null,
+        p_city: data.city?.trim() || null,
+        p_website: data.website?.trim() || null,
+        p_description: data.description?.trim() || null,
+        p_contact_name: data.contact_name.trim(),
+        p_contact_email: data.contact_email.trim().toLowerCase(),
+        p_contact_phone: data.contact_phone?.trim() || null,
+        p_reason: data.reason.trim(),
+      }
+    )
 
     if (error) {
       return { success: false, error: error.message }
     }
 
-    return { success: true, requestId: row?.id }
+    return { success: true, requestId: requestId as string }
   } catch (e) {
     return { success: false, error: (e as Error).message }
   }
