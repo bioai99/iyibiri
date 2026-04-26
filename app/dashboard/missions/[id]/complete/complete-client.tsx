@@ -121,7 +121,7 @@ export function CompleteMissionClient({
 
         {/* Title */}
         <motion.div
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
           className="px-5 pt-4"
@@ -148,7 +148,7 @@ export function CompleteMissionClient({
 
         {/* Verification panel */}
         <motion.div
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
           className="flex-1 overflow-y-auto px-5 pb-24 pt-6"

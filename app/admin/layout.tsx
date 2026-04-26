@@ -47,6 +47,12 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
     .in('id', ngoIds)
     .then((res) => res.data ?? []) : []
 
+  // BUG-039 fix (Vol-16): yetkisiz kullanıcı admin sidebar görmemeli.
+  // Ne super-admin ne de bir NGO admin'i ise login'e geri yolla.
+  if (!isSuper && ngoList.length === 0) {
+    redirect('/admin/login?error=unauthorized')
+  }
+
   const awaitedParams = await params
   const currentNgoId = awaitedParams.ngoId || (ngoList[0]?.id ?? null)
 

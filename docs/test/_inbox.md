@@ -358,4 +358,40 @@ Bu dosya **inbound notify kanalı**. Delivery agent'lar (frontend-engineer, supa
 
 ---
 
+### 2026-04-26 ~05:00 — Vol-15 verify + Vol-16 chunky 6-bug paket
+
+**Notify eden:** test-engineer (Vol-15 production verify + Vol-16 fix)
+**Tetik:** Vol-15 push deploy → tier-1 leaderboard podium + light mode tüm empty state'ler + /legal/* + /donations
+**Etkilenen ekran/flow:** Mission complete, Donations layout, Admin gate, NGO membership, post detail
+**Aciliyet:** Hot-fix paket (BUG-039 admin yetkisiz erişim P1)
+
+**Vol-15 verify sonuçları:**
+- ✅ **BUG-032 PASS** — Leaderboard tier-1 podium (Buse 2 / Can 1 gold pedestal / Yunus 3) + ranked list 4-7
+- ✅ **BUG-034+036 PASS** — Saved empty state mukemmel (bookmark icon + "Henüz bir şey kaydetmedin" + CTA)
+- ✅ **BUG-035 PASS** — KVKK metni full render (Veri Sorumlusu, İşlenen Veriler, Amaçlar, Paylaşım, Haklar)
+- ✅ **BUG-033 PASS** — /donations 404 değil, ama duplicate notice (bizim placeholder + layout banner)
+- Bonus: tiers (5 butterfly progression card), my-missions (Aktif 1), notifications (sleeping bell empty state), discover (post cards) hepsi mukemmel
+
+**Vol-16 yeni 6 bug:**
+- 🚨 **BUG-037 (P2)** — Donations duplicate "yakında" notice (layout ComingSoonBanner + page placeholder)
+- 🚨 **BUG-038 (P1)** — M3 Mission complete page görsel kayıp (Pattern J Phase 3, complete-client motion initial opacity 0 takılı)
+- 🚨 **BUG-039 (P1 GÜVENLİK)** — Admin sidebar leak: yetkisiz user (+t5 NGO admin değil) /admin'e gidince admin nav (Dashboard/Görevler/Üyeler/...) görüyor + "Yetkin yok" overlay altında
+- 🚨 **BUG-040 (P1)** — ÇYDD üyeliği henüz hazır değil — `membership_enabled = false` (seed script user run etmemiş), Migration 028 sadece description update etmişti
+- 🚨 **BUG-041 (false positive deferred)** — Discover post card click navigation hata yok aslında (direct URL navigation çalışıyor, ref hit miss-click olmuş)
+- ✅ Bonus: M3 mission complete page DOM tam (KAZANACAĞIN +200 / QR tara / Kamera / Manuel kod gir)
+
+**Vol-16 fix uygulandı (5 dosya):**
+- `app/dashboard/donations/page.tsx` — minimize → secondary CTA only (BUG-037)
+- `app/dashboard/missions/[id]/complete/complete-client.tsx` — `initial={shouldReduceMotion ? {} : { opacity: 0 }}` → `initial={false}` (BUG-038)
+- `app/admin/layout.tsx` — `if (!isSuper && ngoList.length === 0) redirect('/admin/login?error=unauthorized')` (BUG-039)
+- `supabase/migrations/029_enable_ngo_memberships.sql` (NEW) — 6 NGO membership_enabled = true + form_fields seed (BUG-040)
+- (typecheck ✅ temiz)
+
+**User aksiyon:**
+1. Migration 029 SQL Editor → apply (membership_enabled flag set)
+2. Push → Vercel deploy
+3. Verify: ÇYDD/Haytap üyelik formu açılıyor mu, mission complete page görünür mü, /admin yetkisiz user redirect, donations clean placeholder
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir
