@@ -103,14 +103,14 @@ export default function AdminLoginPage() {
           </a>
         </form>
 
-        {/* BUG-044 fix (Vol-20): yeni STK kaydı için onboarding link */}
+        {/* BUG-044 fix (Vol-26): mailto yerine self-signup form sayfası */}
         <p className="text-xs text-text-tertiary text-center mt-6 leading-relaxed">
           STK&apos;nız platformda yok mu?{' '}
           <a
-            href="mailto:onboarding@iyibiri.app?subject=STK%20Onboarding%20Talebi"
+            href="/onboarding/stk"
             className="text-primary hover:underline font-semibold"
           >
-            Bizimle iletişime geç
+            Hemen başvurun →
           </a>
         </p>
 
