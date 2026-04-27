@@ -154,10 +154,33 @@ export interface VerificationData {
   qr_scanned?: string
 }
 
+// Vol-29: Tier-up çerçevesi — TIER_DATA sırasıyla aynı (id 1..5)
+const TIER_THRESHOLDS = [0, 500, 2000, 5000, 10000] as const
+function tierIdForKarma(karma: number): number {
+  let id = 1
+  for (let i = TIER_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (karma >= TIER_THRESHOLDS[i]) {
+      id = i + 1
+      break
+    }
+  }
+  return id
+}
+
 export async function completeMission(
   userMissionId: string,
   verification: VerificationData,
-): Promise<ActionResult<{ karmaAwarded: number; missionId: string }>> {
+): Promise<
+  ActionResult<{
+    karmaAwarded: number
+    missionId: string
+    karmaTotalBefore: number
+    karmaTotalAfter: number
+    tierBefore: number
+    tierAfter: number
+    didTierUp: boolean
+  }>
+> {
   const supabase = createClient()
   const {
     data: { user },
@@ -196,12 +219,32 @@ export async function completeMission(
       .eq('reference_id', userMission.mission_id)
       .eq('type', 'mission_complete')
       .maybeSingle()
+    const { data: profileRow } = await supabase
+      .from('profiles')
+      .select('karma_total')
+      .eq('id', user.id)
+      .maybeSingle()
+    const karmaAfter = (profileRow as { karma_total?: number } | null)?.karma_total ?? 0
+    const tier = tierIdForKarma(karmaAfter)
     return {
       ok: true,
       karmaAwarded: karmaRow?.amount ?? 0,
       missionId: userMission.mission_id,
+      karmaTotalBefore: karmaAfter,
+      karmaTotalAfter: karmaAfter,
+      tierBefore: tier,
+      tierAfter: tier,
+      didTierUp: false,
     }
   }
+
+  // Karma ÖNCESİ — tier-up tespiti için
+  const { data: profileBefore } = await supabase
+    .from('profiles')
+    .select('karma_total')
+    .eq('id', user.id)
+    .maybeSingle()
+  const karmaTotalBefore = (profileBefore as { karma_total?: number } | null)?.karma_total ?? 0
 
   if (userMission.status === 'cancelled') {
     return {
@@ -318,10 +361,27 @@ export async function completeMission(
   revalidatePath('/dashboard/my-missions')
   revalidatePath('/dashboard')
 
+  // Vol-29: Tier-up tespiti
+  // karma_transactions trigger profiles.karma_total günceller (Migration 001).
+  // Tekrar fetch edip tier diff hesapla.
+  const { data: profileAfter } = await supabase
+    .from('profiles')
+    .select('karma_total')
+    .eq('id', user.id)
+    .maybeSingle()
+  const karmaTotalAfter = (profileAfter as { karma_total?: number } | null)?.karma_total ?? karmaTotalBefore + mission.karma
+  const tierBefore = tierIdForKarma(karmaTotalBefore)
+  const tierAfter = tierIdForKarma(karmaTotalAfter)
+
   return {
     ok: true,
     karmaAwarded: mission.karma,
     missionId: mission.id,
+    karmaTotalBefore,
+    karmaTotalAfter,
+    tierBefore,
+    tierAfter,
+    didTierUp: tierAfter > tierBefore,
   }
 }
 

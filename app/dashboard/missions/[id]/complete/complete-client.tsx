@@ -22,6 +22,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Mission } from '@/lib/supabase/types'
 import { VerificationPanel } from '@/components/mission'
 import { CelebrationOverlay } from '@/components/ui/celebration-overlay'
+import { TierUpOverlay } from '@/components/tier/tier-up-overlay'
 import { completeMission } from '@/lib/missions/actions'
 import type { VerificationData } from '@/lib/missions/actions'
 
@@ -48,6 +49,9 @@ export function CompleteMissionClient({
   const [serverError, setServerError] = useState<string | null>(null)
   const [celebrate, setCelebrate] = useState(false)
 
+  // Vol-29: tier-up overlay state
+  const [tierUp, setTierUp] = useState<{ from: number; to: number } | null>(null)
+
   /* Photo upload — client-side Supabase storage */
   const handlePhotoUpload = async (file: File) => {
     const supabase = createClient()
@@ -68,7 +72,13 @@ export function CompleteMissionClient({
     startTransition(async () => {
       const res = await completeMission(userMissionId, data)
       if (res.ok) {
-        setCelebrate(true)
+        // Vol-29: Tier-up varsa metamorphosis + tier-up overlay göster.
+        // Yoksa standart konfeti + redirect.
+        if (res.didTierUp) {
+          setTierUp({ from: res.tierBefore, to: res.tierAfter })
+        } else {
+          setCelebrate(true)
+        }
       } else {
         setServerError(res.error)
       }
@@ -81,8 +91,24 @@ export function CompleteMissionClient({
     router.refresh()
   }
 
+  // Vol-29: Tier-up overlay kapanırsa konfeti + redirect zincirini de tetikle
+  const handleTierUpClose = () => {
+    setTierUp(null)
+    setCelebrate(true) // Tier-up sonrası standart kutlama da göster
+  }
+
   return (
     <>
+      {/* Vol-29: Tier-up overlay (öncelikli) */}
+      {tierUp && (
+        <TierUpOverlay
+          show
+          fromTier={tierUp.from}
+          toTier={tierUp.to}
+          onClose={handleTierUpClose}
+        />
+      )}
+
       <CelebrationOverlay
         show={celebrate}
         karmaEarned={mission.karma}
