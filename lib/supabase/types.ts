@@ -344,6 +344,7 @@ export interface Database {
           category: string | null
           active: boolean
           image_url: string | null
+          sponsor_id: string  // Vol-30 Migration 037: NOT NULL
         }
         Insert: {
           id?: string
@@ -355,6 +356,7 @@ export interface Database {
           category?: string | null
           active?: boolean
           image_url?: string | null
+          sponsor_id: string  // Vol-30: zorunlu
         }
         Update: {
           id?: string
@@ -366,6 +368,47 @@ export interface Database {
           category?: string | null
           active?: boolean
           image_url?: string | null
+          sponsor_id?: string
+        }
+        Relationships: []
+      }
+      // Vol-30 Migration 037: sponsor markalar — rewards + posts ortak entity
+      sponsors: {
+        Row: {
+          id: string
+          name: string
+          short_name: string | null
+          brand_color: string | null
+          logo_url: string | null
+          cover_url: string | null
+          description: string | null
+          website: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          short_name?: string | null
+          brand_color?: string | null
+          logo_url?: string | null
+          cover_url?: string | null
+          description?: string | null
+          website?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          short_name?: string | null
+          brand_color?: string | null
+          logo_url?: string | null
+          cover_url?: string | null
+          description?: string | null
+          website?: string | null
+          is_active?: boolean
+          created_at?: string
         }
         Relationships: []
       }
@@ -549,7 +592,7 @@ export interface Database {
       posts: {
         Row: {
           id: string
-          ngo_id: string
+          ngo_id: string | null  // Vol-30: nullable, sponsor postlarında null
           title: string
           summary: string | null
           content: string | null
@@ -558,10 +601,12 @@ export interface Database {
           read_time: number
           published: boolean
           created_at: string
+          author_type: 'ngo' | 'sponsor'  // Vol-30 Migration 037
+          sponsor_id: string | null       // Vol-30 Migration 037
         }
         Insert: {
           id?: string
-          ngo_id: string
+          ngo_id?: string | null
           title: string
           summary?: string | null
           content?: string | null
@@ -570,10 +615,12 @@ export interface Database {
           read_time?: number
           published?: boolean
           created_at?: string
+          author_type?: 'ngo' | 'sponsor'
+          sponsor_id?: string | null
         }
         Update: {
           id?: string
-          ngo_id?: string
+          ngo_id?: string | null
           title?: string
           summary?: string | null
           content?: string | null
@@ -582,6 +629,8 @@ export interface Database {
           read_time?: number
           published?: boolean
           created_at?: string
+          author_type?: 'ngo' | 'sponsor'
+          sponsor_id?: string | null
         }
         Relationships: []
       }
@@ -805,3 +854,20 @@ export type MissionWithNGO = Mission & { ngos: NGOBrief | null }
 export type Post = Database['public']['Tables']['posts']['Row']
 export type PostLike = Database['public']['Tables']['post_likes']['Row']
 export type PostWithNGO = Post & { ngos: NGOBrief | null }
+
+// Vol-30 Migration 037 — sponsor markalar
+export type Sponsor = Database['public']['Tables']['sponsors']['Row']
+
+export type SponsorBrief = {
+  id: string
+  name: string
+  short_name: string | null
+  brand_color: string | null
+  logo_url: string | null
+}
+
+// Posts rail — author_type'a göre NGOBrief ya da SponsorBrief join'lenir
+export type PostWithAuthor = Post & {
+  ngos: NGOBrief | null
+  sponsors: SponsorBrief | null
+}

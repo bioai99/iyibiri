@@ -307,7 +307,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                 <PostCard
                   post={post}
-                  isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+                  isSubscribed={post.ngo_id ? subscribedNgoIds.includes(post.ngo_id) : false}
                   c={c}
                 />
               </Link>
@@ -348,7 +348,7 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                 <PostCard
                   post={post}
-                  isSubscribed={subscribedNgoIds.includes(post.ngo_id)}
+                  isSubscribed={post.ngo_id ? subscribedNgoIds.includes(post.ngo_id) : false}
                   c={c}
                 />
               </Link>
