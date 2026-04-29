@@ -188,7 +188,7 @@ alter table public.karma_transactions
 
 alter table public.karma_transactions
   add constraint karma_transactions_type_check
-    check (type in ('mission_complete', 'reward_redemption', 'ngo_membership', 'donation'));
+    check (type in ('mission_complete', 'reward_redemption', 'ngo_membership', 'donation', 'welcome_bonus'));
 
 create index if not exists karma_transactions_donation_idx
   on public.karma_transactions (user_id, created_at desc)
