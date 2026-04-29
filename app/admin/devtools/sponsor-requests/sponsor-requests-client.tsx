@@ -127,29 +127,11 @@ export function SponsorRequestsClient({ requests }: { requests: SignupRequest[] 
                     onClick={() => {
                       setError(null)
                       startTransition(async () => {
-                        try {
-                          const res = await approveSponsorRequest(r.id, {
-                            adminUserId: adminUserIdMap[r.id]?.trim() || null,
-                          })
-                          // Vol-33 BUG-064 debug: hidrasyon-bağımsız error visibility
-                          if (typeof window !== 'undefined') {
-                            // eslint-disable-next-line no-alert
-                            window.alert(
-                              `[debug] approve result\n` +
-                                `success: ${res.success}\n` +
-                                `sponsorId: ${res.sponsorId ?? '—'}\n` +
-                                `error: ${res.error ?? '—'}`,
-                            )
-                          }
-                          if (!res.success) setError(res.error ?? 'Onay başarısız.')
-                          else router.refresh()
-                        } catch (e) {
-                          if (typeof window !== 'undefined') {
-                            // eslint-disable-next-line no-alert
-                            window.alert(`[debug] approve threw\n${(e as Error).message}`)
-                          }
-                          setError((e as Error).message)
-                        }
+                        const res = await approveSponsorRequest(r.id, {
+                          adminUserId: adminUserIdMap[r.id]?.trim() || null,
+                        })
+                        if (!res.success) setError(res.error ?? 'Onay başarısız.')
+                        else router.refresh()
                       })
                     }}
                     className="px-4 py-2 bg-green-500/20 text-green-300 border border-green-500/40 rounded-lg text-sm font-semibold disabled:opacity-50"
