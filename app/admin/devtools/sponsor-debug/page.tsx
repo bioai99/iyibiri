@@ -1,13 +1,32 @@
-// Vol-33 BUG-064 debug — server-rendered sponsors + sponsor_signup_requests dump.
-// Hidrasyon + client state'inden bağımsız: gerçek DB durumunu görmek için.
+// Vol-33 BUG-064 debug — server-rendered DB dump + test approve action.
+// Hidrasyon + client state'inden bağımsız: gerçek DB durumunu + action dönüş
+// değerini görmek için.
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { approveSponsorRequest } from '@/lib/admin/sponsor-request-actions'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export default async function SponsorDebugPage() {
+async function testApprove(formData: FormData) {
+  'use server'
+  const requestId = String(formData.get('requestId') ?? '')
+  if (!requestId) redirect('/admin/devtools/sponsor-debug?err=no-request-id')
+  const res = await approveSponsorRequest(requestId, { adminUserId: null })
+  const params = new URLSearchParams()
+  params.set('success', String(res.success))
+  if (res.sponsorId) params.set('sponsorId', res.sponsorId)
+  if (res.error) params.set('error', res.error)
+  redirect(`/admin/devtools/sponsor-debug?${params.toString()}`)
+}
+
+interface PageProps {
+  searchParams: Promise<Record<string, string | undefined>>
+}
+
+export default async function SponsorDebugPage({ searchParams }: PageProps) {
+  const params = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/admin/login')
@@ -32,12 +51,57 @@ export default async function SponsorDebugPage() {
       .limit(20),
   ])
 
+  const pending = (requestsRes.data ?? []).filter(
+    (r: any) => r.status === 'pending',
+  )
+
   return (
     <div className="min-h-screen bg-ink-900 text-cream p-8 font-mono text-xs">
       <div className="max-w-5xl mx-auto space-y-6">
         <h1 className="text-2xl font-display font-bold">
           Sponsor Debug — server-side dump
         </h1>
+
+        {/* Vol-33 BUG-064 — server-side test approve */}
+        <section className="rounded-xl border border-gold/40 bg-gold/5 p-4">
+          <h2 className="text-gold font-bold mb-3">Test approve (server-side)</h2>
+          {('success' in params) && (
+            <pre
+              className={`p-3 rounded mb-3 ${
+                params.success === 'true'
+                  ? 'bg-green-500/10 text-green-300'
+                  : 'bg-red-500/10 text-red-300'
+              }`}
+            >
+              {JSON.stringify(
+                {
+                  success: params.success,
+                  sponsorId: params.sponsorId ?? null,
+                  error: params.error ?? null,
+                },
+                null,
+                2,
+              )}
+            </pre>
+          )}
+          {pending.length === 0 ? (
+            <p className="text-ink-300">Pending başvuru yok — debug için /onboarding/sponsor üzerinden bir tane oluştur.</p>
+          ) : (
+            <div className="space-y-2">
+              {pending.map((r: any) => (
+                <form key={r.id} action={testApprove}>
+                  <input type="hidden" name="requestId" value={r.id} />
+                  <button
+                    type="submit"
+                    className="px-3 py-2 bg-green-500/20 text-green-300 border border-green-500/40 rounded text-xs"
+                  >
+                    Test approve → {r.brand_name} ({r.id.slice(0, 8)})
+                  </button>
+                </form>
+              ))}
+            </div>
+          )}
+        </section>
 
         <section>
           <h2 className="text-gold font-bold mb-2">sponsors (last 20)</h2>
