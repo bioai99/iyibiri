@@ -3,13 +3,20 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/supabase/queries/profiles'
 import { getAllMissions, getUserMissions } from '@/lib/supabase/queries/missions'
 import { getRecentStreakActivity } from '@/lib/supabase/queries/streak'
+import { getRecentNgoPosts, getRecentSponsorPosts } from '@/lib/supabase/queries/posts'
 import { diversifyByDomain } from '@/lib/recommendations'
 import { DashboardClient } from './dashboard-client'
-import type { NGO, MissionWithNGO, UserMission } from '@/lib/supabase/types'
+import type {
+  NGO,
+  MissionWithNGO,
+  UserMission,
+  PostWithAuthor,
+} from '@/lib/supabase/types'
 
-async function getNGOs(): Promise<NGO[]> {
+async function getAllActiveNGOs(): Promise<NGO[]> {
+  // Vol-30.5: NGORail için tüm aktif NGO'lar (mission count client'ta hesaplanır)
   const supabase = createClient()
-  const { data } = await supabase.from('ngos').select('*').limit(10)
+  const { data } = await supabase.from('ngos').select('*')
   return data ?? []
 }
 
@@ -40,13 +47,16 @@ export default async function DashboardPage() {
     ngos,
     savedMissionsResult,
     membershipsResult,
+    subscriptionsResult,
     weeklyKarmaGain,
     streakActivity,
+    ngoPosts,
+    sponsorPosts,
   ] = await Promise.all([
     getProfile(user.id),
     getAllMissions(),
     getUserMissions(user.id),
-    getNGOs(),
+    getAllActiveNGOs(),
     supabase
       .from('user_saved_missions')
       .select('mission_id')
@@ -56,8 +66,14 @@ export default async function DashboardPage() {
       .select('ngo_id')
       .eq('user_id', user.id)
       .eq('status', 'active'),
+    supabase
+      .from('user_ngo_subscriptions')
+      .select('ngo_id')
+      .eq('user_id', user.id),
     getWeeklyKarmaGain(user.id),
     getRecentStreakActivity(user.id, 7),
+    getRecentNgoPosts(8),
+    getRecentSponsorPosts(4),
   ])
 
   if (!profile) redirect('/onboarding')
@@ -66,6 +82,9 @@ export default async function DashboardPage() {
     (s) => s.mission_id,
   )
   const memberNgoIds = (membershipsResult.data ?? []).map((m) => m.ngo_id)
+  const subscribedNgoIds = (subscriptionsResult.data ?? []).map(
+    (s) => s.ngo_id,
+  )
 
   const userActiveMissions: UserMission[] = userMissions
     .filter((um) => um.status === 'taken' || um.status === 'completed')
@@ -107,14 +126,10 @@ export default async function DashboardPage() {
       return { mission: m, score }
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10) // Top-10 candidates before diversity
+    .slice(0, 12)
     .map(({ mission }) => mission)
 
-  // Apply diversity guard: prevent same domain from appearing consecutively
-  const diversifiedMissions = diversifyByDomain(scoredMissions)
-
-  // Final slice: take top-5 for dashboard display
-  const recommendedMissions: MissionWithNGO[] = diversifiedMissions.slice(0, 5)
+  const recommendedMissions: MissionWithNGO[] = diversifyByDomain(scoredMissions)
 
   return (
     <DashboardClient
@@ -124,11 +139,14 @@ export default async function DashboardPage() {
       ngos={ngos}
       savedMissionIds={savedMissionIds}
       memberNgoIds={memberNgoIds}
+      subscribedNgoIds={subscribedNgoIds}
       recommendedMissions={recommendedMissions}
       userActiveMissions={userActiveMissions}
       activeMissionsWithNGO={activeMissionsWithNGO}
       weeklyKarmaGain={weeklyKarmaGain}
       streakActivity={streakActivity}
+      ngoPosts={ngoPosts as PostWithAuthor[]}
+      sponsorPosts={sponsorPosts as PostWithAuthor[]}
     />
   )
 }
