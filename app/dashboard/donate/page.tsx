@@ -1,62 +1,47 @@
-// Vol-31.1 placeholder — gerçek Hub Vol-31.2'de yapılacak.
-// Bu dosya bottom nav'ın "Bağış" item'ı 404 döndürmesin diye var.
+// Vol-31.2 Donate Hub — STK keşfi, "Bu ayın kampanyaları" carousel, NGO listesi.
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getFeaturedCampaigns } from '@/lib/supabase/queries/donations'
+import type { NGO } from '@/lib/supabase/types'
+import { DonateHubClient } from './donate-hub-client'
 
-export default async function DonatePagePlaceholder() {
+export default async function DonatePage() {
   const supabase = createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
+  const [ngosResult, featuredResult, supporterCountsResult] = await Promise.all([
+    supabase
+      .from('ngos')
+      .select('*')
+      .neq('category', 'sponsor')
+      .order('name', { ascending: true }),
+    getFeaturedCampaigns(6),
+    // Per-NGO destekçi sayısı (campaigns.supporter_count toplamı)
+    supabase
+      .from('campaigns')
+      .select('ngo_id, supporter_count')
+      .eq('status', 'active'),
+  ])
+
+  const ngos: NGO[] = ngosResult.data ?? []
+  const featured = featuredResult
+
+  // ngo_id → toplam destekçi sayısı
+  const supportersByNgo = new Map<string, number>()
+  for (const row of supporterCountsResult.data ?? []) {
+    const prev = supportersByNgo.get(row.ngo_id) ?? 0
+    supportersByNgo.set(row.ngo_id, prev + (row.supporter_count ?? 0))
+  }
+
   return (
-    <main
-      style={{
-        minHeight: '100dvh',
-        padding: '120px 24px',
-        textAlign: 'center',
-        color: '#F4EEDF',
-        background: '#15110D',
-      }}
-    >
-      <p
-        style={{
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: '#E8C268',
-          marginBottom: 12,
-        }}
-      >
-        BAĞIŞ
-      </p>
-      <h1
-        style={{
-          fontFamily: "'Fraunces', ui-serif, serif",
-          fontSize: 28,
-          fontWeight: 500,
-          margin: 0,
-          color: '#F4EEDF',
-        }}
-      >
-        Bağış sekmesi yakında
-      </h1>
-      <p
-        style={{
-          marginTop: 12,
-          fontSize: 14,
-          color: '#A89E8A',
-          maxWidth: 320,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      >
-        Bu sayfa Vol-31.2&apos;de hayata geçecek — STK keşfi, kampanyalar ve
-        bağış akışı.
-      </p>
-    </main>
+    <DonateHubClient
+      ngos={ngos}
+      featured={featured}
+      supportersByNgo={Object.fromEntries(supportersByNgo)}
+    />
   )
 }
