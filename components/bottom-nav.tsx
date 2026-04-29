@@ -3,17 +3,18 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Home, ListChecks, Sparkles, Gift, User } from 'lucide-react'
+import { Home, ListChecks, Heart, Gift, User } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 
-// Vol-30 IA değişikliği (Bahadır kararı, 2026-04-26):
-//   Bottom nav 5 item: Ana / Görevler / Kelebek / Ödüller / Profil.
-//   "Keşfet" entry'si nav'dan kalkar (sayfa /dashboard/discover'da kalır).
-//   "Kelebek" yeni entry'dir → /dashboard/tiers (Vol-28 tier journey).
+// Vol-31 IA değişikliği (Bahadır kararı, 2026-04-29):
+//   Bottom nav 5 item: Ana / Görevler / Bağış / Ödüller / Profil.
+//   Vol-30'da Kelebek → /dashboard/tiers idi. Vol-31'de Kelebek nav'dan kalkar
+//   (Profil > Tier Yolculuğu altına taşınır), yerine Bağış gelir.
+//   /dashboard/donate Vol-31 yeni entry'sidir (mock payment, Vol-32+ real).
 const navItems = [
   { href: '/dashboard',          label: 'Ana',      icon: Home },
   { href: '/dashboard/missions', label: 'Görevler', icon: ListChecks },
-  { href: '/dashboard/tiers',    label: 'Kelebek',  icon: Sparkles },
+  { href: '/dashboard/donate',   label: 'Bağış',    icon: Heart },
   { href: '/dashboard/rewards',  label: 'Ödüller',  icon: Gift },
   { href: '/dashboard/profile',  label: 'Profil',   icon: User },
 ]

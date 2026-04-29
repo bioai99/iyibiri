@@ -45,6 +45,14 @@ export interface MembershipFeeConfig {
 }
 
 
+// Vol-31 Migration 040 — donation scenario enum (Database interface'ten önce tanımlı, forward reference sorununu önler)
+export type DonationScenarioType =
+  | 'general'
+  | 'specific_campaign'
+  | 'in_memory'
+  | 'gift'
+  | 'regular_supporter'
+
 export interface Database {
   public: {
     Tables: {
@@ -759,6 +767,166 @@ export interface Database {
         }
         Relationships: []
       }
+      // Vol-31 Migration 040 — bağış altyapısı
+      campaigns: {
+        Row: {
+          id: string
+          ngo_id: string
+          title: string
+          summary: string | null
+          description: string | null
+          cause: string | null
+          image_url: string | null
+          scenario_type: DonationScenarioType
+          end_date: string | null
+          supporter_count: number
+          status: 'draft' | 'active' | 'closed' | 'archived'
+          is_featured: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          ngo_id: string
+          title: string
+          summary?: string | null
+          description?: string | null
+          cause?: string | null
+          image_url?: string | null
+          scenario_type?: DonationScenarioType
+          end_date?: string | null
+          supporter_count?: number
+          status?: 'draft' | 'active' | 'closed' | 'archived'
+          is_featured?: boolean
+          created_at?: string
+        }
+        Update: {
+          title?: string
+          summary?: string | null
+          description?: string | null
+          cause?: string | null
+          image_url?: string | null
+          end_date?: string | null
+          supporter_count?: number
+          status?: 'draft' | 'active' | 'closed' | 'archived'
+          is_featured?: boolean
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          id: string
+          user_id: string
+          ngo_id: string
+          campaign_id: string | null
+          amount_try: number
+          scenario_type: DonationScenarioType
+          intent_label: string | null
+          is_recurring: boolean
+          subscription_id: string | null
+          status: 'pending' | 'completed' | 'failed' | 'refunded'
+          tax_eligible: boolean
+          receipt_email: string | null
+          payment_method: string | null
+          external_transaction_id: string | null
+          metadata: Json
+          created_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          ngo_id: string
+          campaign_id?: string | null
+          amount_try: number
+          scenario_type: DonationScenarioType
+          intent_label?: string | null
+          is_recurring?: boolean
+          subscription_id?: string | null
+          status?: 'pending' | 'completed' | 'failed' | 'refunded'
+          tax_eligible?: boolean
+          receipt_email?: string | null
+          payment_method?: string | null
+          external_transaction_id?: string | null
+          metadata?: Json
+          created_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          status?: 'pending' | 'completed' | 'failed' | 'refunded'
+          completed_at?: string | null
+          external_transaction_id?: string | null
+          metadata?: Json
+        }
+        Relationships: []
+      }
+      donation_subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          ngo_id: string
+          amount_try: number
+          scenario_type: DonationScenarioType
+          status: 'intent' | 'active' | 'paused' | 'cancelled' | 'failed'
+          next_charge_at: string | null
+          payment_method: string | null
+          external_subscription_id: string | null
+          started_at: string
+          cancelled_at: string | null
+          metadata: Json
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          ngo_id: string
+          amount_try: number
+          scenario_type?: DonationScenarioType
+          status?: 'intent' | 'active' | 'paused' | 'cancelled' | 'failed'
+          next_charge_at?: string | null
+          payment_method?: string | null
+          external_subscription_id?: string | null
+          started_at?: string
+          cancelled_at?: string | null
+          metadata?: Json
+        }
+        Update: {
+          status?: 'intent' | 'active' | 'paused' | 'cancelled' | 'failed'
+          cancelled_at?: string | null
+          metadata?: Json
+        }
+        Relationships: []
+      }
+      tax_receipts: {
+        Row: {
+          id: string
+          user_id: string
+          year: number
+          total_amount: number
+          eligible_amount: number
+          donation_count: number
+          pdf_url: string | null
+          generated_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          year: number
+          total_amount?: number
+          eligible_amount?: number
+          donation_count?: number
+          pdf_url?: string | null
+          generated_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          total_amount?: number
+          eligible_amount?: number
+          donation_count?: number
+          pdf_url?: string | null
+          generated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       // Migration 011_make_analytics_views.sql
@@ -870,4 +1038,16 @@ export type SponsorBrief = {
 export type PostWithAuthor = Post & {
   ngos: NGOBrief | null
   sponsors: SponsorBrief | null
+}
+
+// Vol-31 Migration 040 — bağış altyapısı export'ları
+export type Campaign = Database['public']['Tables']['campaigns']['Row']
+export type Donation = Database['public']['Tables']['donations']['Row']
+export type DonationSubscription = Database['public']['Tables']['donation_subscriptions']['Row']
+export type TaxReceipt = Database['public']['Tables']['tax_receipts']['Row']
+
+export type CampaignWithNGO = Campaign & { ngos: NGOBrief | null }
+export type DonationWithNGO = Donation & {
+  ngos: NGOBrief | null
+  campaigns: Pick<Campaign, 'id' | 'title' | 'image_url'> | null
 }
