@@ -42,6 +42,7 @@ const NAV_ITEMS = [
   { label: 'Görevler', icon: ListTodo, href: '/missions' },
   { label: 'Yeni Görev', icon: Plus, href: '/missions/new' },
   { label: 'Doğrulama', icon: CheckSquare, href: '/verifications' },
+  { label: 'Kampanyalar', icon: ListTodo, href: '/campaigns' },
   { label: 'Üyeler', icon: Users, href: '/members' },
   { label: 'Rapor', icon: BarChart3, href: '/reports' },
   { label: 'Blog', icon: BookOpen, href: '/blog' },
