@@ -600,32 +600,38 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
         </div>
       </motion.div>
 
-      {/* Rozetlerim link */}
+      {/* Profil alt linkler — Rozetlerim / Tier yolculuğu / Bağış geçmişi */}
       <motion.div
         initial={{ opacity: 1, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.65 }}
-        style={{ padding: '16px 16px 0' }}
+        style={{ padding: '16px 16px 0', display: 'flex', flexDirection: 'column', gap: 8 }}
       >
-        <Link href="/dashboard/profile/badges" style={{ textDecoration: 'none' }}>
-          <motion.div
-            whileTap={{ scale: 0.97 }}
-            style={{
-              background: c.ink800,
-              border: `1px solid ${c.ink600}`,
-              borderRadius: 14,
-              padding: '14px 18px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
-              Tüm Rozetlerim
-            </span>
-            <ChevronRight size={16} color={c.ink300} />
-          </motion.div>
-        </Link>
+        {[
+          { href: '/dashboard/profile/badges', label: 'Tüm Rozetlerim' },
+          { href: '/dashboard/tiers', label: 'Tier Yolculuğun' },
+          { href: '/dashboard/profile/donations', label: 'Bağış Geçmişin' },
+        ].map((item) => (
+          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              style={{
+                background: c.ink800,
+                border: `1px solid ${c.ink600}`,
+                borderRadius: 14,
+                padding: '14px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span style={{ fontSize: 14, fontWeight: 600, color: c.cream }}>
+                {item.label}
+              </span>
+              <ChevronRight size={16} color={c.ink300} />
+            </motion.div>
+          </Link>
+        ))}
       </motion.div>
 
       {/* Activity timeline — empty state (no real data passed yet) */}

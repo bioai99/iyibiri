@@ -488,7 +488,7 @@ export interface Database {
           id: string
           user_id: string
           amount: number
-          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership'
+          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
           reference_id: string | null
           description: string | null
           created_at: string
@@ -497,7 +497,7 @@ export interface Database {
           id?: string
           user_id: string
           amount: number
-          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership'
+          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
           reference_id?: string | null
           description?: string | null
           created_at?: string
@@ -506,7 +506,7 @@ export interface Database {
           id?: string
           user_id?: string
           amount?: number
-          type?: 'mission_complete' | 'reward_redemption'
+          type?: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
           reference_id?: string | null
           description?: string | null
           created_at?: string

@@ -414,7 +414,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
       {/* Donation campaign card — hidden until real campaign data is available */}
       {false && (
         <div style={{ padding: '20px 20px 0' }}>
-          <Link href="/dashboard/donations/demo-campaign" style={{ textDecoration: 'none' }}>
+          <Link href={`/dashboard/donate/${ngo.id}`} style={{ textDecoration: 'none' }}>
             <div
               style={{
                 background: c.ink800,
