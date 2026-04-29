@@ -14,9 +14,14 @@ import type {
 } from '@/lib/supabase/types'
 
 async function getAllActiveNGOs(): Promise<NGO[]> {
-  // Vol-30.5: NGORail için tüm aktif NGO'lar (mission count client'ta hesaplanır)
+  // Vol-30.5: NGORail için NGO'lar (mission count client'ta hesaplanır).
+  // BUG-057 fix: Eski "sponsor-category NGO" hack'i kaldırıldı — sponsor markalar
+  // ayrı public.sponsors entity'sinde. NGORail'de sadece gerçek STK'lar gösterilsin.
   const supabase = createClient()
-  const { data } = await supabase.from('ngos').select('*')
+  const { data } = await supabase
+    .from('ngos')
+    .select('*')
+    .neq('category', 'sponsor')
   return data ?? []
 }
 

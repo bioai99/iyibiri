@@ -88,8 +88,9 @@ export function MissionListCardVol30({ mission, href }: Props) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 24,
-              opacity: 0.5,
+              fontSize: 28,
+              color: ngoColor,
+              opacity: 0.7,
             }}
             aria-hidden
           >

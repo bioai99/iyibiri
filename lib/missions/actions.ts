@@ -357,10 +357,12 @@ export async function completeMission(
     }
   }
 
-  revalidatePath(`/dashboard/missions/${mission.id}`)
-  revalidatePath('/dashboard/my-missions')
-  revalidatePath('/dashboard')
-
+  // BUG-059 (Vol-30): revalidatePath KALDIRILDI.
+  // Race condition: /complete page.tsx 'completed' status görünce redirect ediyordu →
+  // TierUpOverlay client state set edildikten saniye sonra unmount → overlay görünmeden kayboluyordu.
+  // Fix: client tarafında handleCelebrationClose / handleTierUpClose içinde zaten router.refresh()
+  // çağrılıyor — overlay close olduğunda invalidate eder.
+  //
   // Vol-29: Tier-up tespiti
   // karma_transactions trigger profiles.karma_total günceller (Migration 001).
   // Tekrar fetch edip tier diff hesapla.
