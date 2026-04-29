@@ -55,7 +55,7 @@ export function FlowStepPayment({
   }
 
   return (
-    <div style={{ paddingBottom: 160 }}>
+    <div style={{ paddingBottom: 220 }}>
       {/* Summary */}
       <div style={{ padding: '24px 16px 0' }}>
         <div
@@ -405,17 +405,16 @@ export function FlowStepPayment({
         </div>
       )}
 
-      {/* Sticky footer */}
+      {/* Sticky footer — bottom nav'ın üstüne (z-index 110, bottom 88px) */}
       <div
         style={{
           position: 'fixed',
-          bottom: 0,
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 88px)',
           left: 0,
           right: 0,
-          padding:
-            '16px 16px calc(env(safe-area-inset-bottom, 16px) + 16px)',
+          padding: '16px',
           background: `linear-gradient(180deg, transparent, ${c.ink900} 25%)`,
-          zIndex: 30,
+          zIndex: 110,
         }}
       >
         <div

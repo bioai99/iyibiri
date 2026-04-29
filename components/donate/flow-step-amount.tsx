@@ -77,7 +77,7 @@ export function FlowStepAmount({
   }
 
   return (
-    <div style={{ paddingBottom: 140 }}>
+    <div style={{ paddingBottom: 220 }}>
       <div style={{ padding: '24px 20px 0' }}>
         {/* Once / monthly toggle */}
         <div
@@ -425,17 +425,16 @@ export function FlowStepAmount({
         </button>
       </div>
 
-      {/* Sticky footer (CTA) */}
+      {/* Sticky footer (CTA) — bottom nav'ın üstüne taşı (z-index 100, bottom 88px) */}
       <div
         style={{
           position: 'fixed',
-          bottom: 0,
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 88px)',
           left: 0,
           right: 0,
-          padding:
-            '16px 16px calc(env(safe-area-inset-bottom, 16px) + 16px)',
+          padding: '16px',
           background: `linear-gradient(180deg, transparent, ${c.ink900} 25%)`,
-          zIndex: 30,
+          zIndex: 110,
         }}
       >
         <div
