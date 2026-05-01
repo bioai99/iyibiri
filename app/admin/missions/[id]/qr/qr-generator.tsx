@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState, useMemo } from 'react'
-import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/client'
+
+// Faz 4 (2026-04-26 perf-eng): qrcode dynamic import. Sadece admin QR generator sayfasında.
+// Initial bundle -50KB (kullanıcı tarafına sızmaz).
 
 interface Props {
   missionId: string
@@ -19,12 +21,18 @@ export function QRGenerator({ missionId, verifyCode, missionTitle }: Props) {
 
   useEffect(() => {
     if (!canvasRef.current) return
-    QRCode.toCanvas(canvasRef.current, verifyCode, {
-      width: 300,
-      margin: 2,
-      color: { dark: '#1C1917', light: '#FFFFFF' },
-      errorCorrectionLevel: 'H',
-    })
+    let cancelled = false
+    ;(async () => {
+      const { default: QRCode } = await import('qrcode')
+      if (cancelled || !canvasRef.current) return
+      QRCode.toCanvas(canvasRef.current, verifyCode, {
+        width: 300,
+        margin: 2,
+        color: { dark: '#1C1917', light: '#FFFFFF' },
+        errorCorrectionLevel: 'H',
+      })
+    })()
+    return () => { cancelled = true }
   }, [verifyCode])
 
   function handleDownload() {

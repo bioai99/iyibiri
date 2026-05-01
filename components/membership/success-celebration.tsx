@@ -20,8 +20,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, animate } from 'framer-motion'
 import { Download, Heart, Sparkles } from 'lucide-react'
-import confetti from 'canvas-confetti'
+import type { Options as ConfettiOptions } from 'canvas-confetti'
 import { useTheme } from '@/lib/theme'
+
+// Faz 4 (2026-04-26 perf-eng): canvas-confetti dynamic import. Initial bundle -30KB.
 
 interface SuccessCelebrationProps {
   ngoName: string
@@ -70,27 +72,30 @@ export function SuccessCelebration({
     confettiFired.current = true
 
     if (!shouldReduceMotion) {
-      // 3-wave confetti — Duolingo/Things 3 peak moment
-      const fire = (ratio: number, opts: confetti.Options) => {
-        confetti({
-          ...opts,
-          origin: { y: 0.5 },
-          particleCount: Math.floor(180 * ratio),
+      // 3-wave confetti — Duolingo/Things 3 peak moment (lazy load)
+      ;(async () => {
+        const { default: confetti } = await import('canvas-confetti')
+        const fire = (ratio: number, opts: ConfettiOptions) => {
+          confetti({
+            ...opts,
+            origin: { y: 0.5 },
+            particleCount: Math.floor(180 * ratio),
+          })
+        }
+        fire(0.3, {
+          spread: 26,
+          startVelocity: 55,
+          colors: [c.gold, c.cream, accentColor],
         })
-      }
-      fire(0.3, {
-        spread: 26,
-        startVelocity: 55,
-        colors: [c.gold, c.cream, accentColor],
-      })
-      fire(0.25, { spread: 60, colors: [c.gold, c.goldDim] })
-      fire(0.3, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.8,
-        colors: [c.gold, c.cream, accentColor],
-      })
-      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
+        fire(0.25, { spread: 60, colors: [c.gold, c.goldDim] })
+        fire(0.3, {
+          spread: 100,
+          decay: 0.91,
+          scalar: 0.8,
+          colors: [c.gold, c.cream, accentColor],
+        })
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
+      })()
     }
 
     // Haptic success (Capacitor)

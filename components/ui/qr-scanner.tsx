@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Html5Qrcode } from 'html5-qrcode'
+import type { Html5Qrcode as Html5QrcodeType } from 'html5-qrcode'
+
+// Faz 4 (2026-04-26 perf-eng): html5-qrcode dynamic import. Initial bundle -200KB.
+// Sadece kamera scanner aktive edildiğinde yüklenir.
 
 interface QRScannerProps {
   onScan: (result: string) => void
@@ -10,7 +13,7 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, onError }: QRScannerProps) {
   const [started, setStarted] = useState(false)
-  const scannerRef = useRef<Html5Qrcode | null>(null)
+  const scannerRef = useRef<Html5QrcodeType | null>(null)
   const containerId = 'qr-scanner-container'
 
   useEffect(() => {
@@ -24,6 +27,7 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
   async function startScanner() {
     if (started) return
     try {
+      const { Html5Qrcode } = await import('html5-qrcode')
       const scanner = new Html5Qrcode(containerId)
       scannerRef.current = scanner
       await scanner.start(

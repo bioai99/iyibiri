@@ -13,9 +13,12 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion, animate } from 'framer-motion'
-import confetti from 'canvas-confetti'
+import type { Options as ConfettiOptions } from 'canvas-confetti'
 import { Sparkles, Share2, ArrowRight } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
+
+// Faz 4 (2026-04-26 perf-eng): canvas-confetti dynamic import. Initial bundle -30KB.
+// Confetti sadece tetiklendiğinde lazy yüklenir.
 
 interface CelebrationOverlayProps {
   show: boolean
@@ -69,31 +72,34 @@ export function CelebrationOverlay({
       }
     }
 
-    // Confetti — 3-wave, TR palette
+    // Confetti — 3-wave, TR palette (lazy load: paket sadece show=true olduğunda yüklenir)
     if (!shouldReduceMotion) {
       const GOLD = '#E8C268'
       const CREAM = '#F4EEDF'
       const SUCCESS = '#6B8E4E'
 
-      const fire = (particleRatio: number, opts: confetti.Options) => {
-        confetti({
-          ...opts,
-          origin: { y: 0.55 },
-          particleCount: Math.floor(220 * particleRatio),
+      ;(async () => {
+        const { default: confetti } = await import('canvas-confetti')
+        const fire = (particleRatio: number, opts: ConfettiOptions) => {
+          confetti({
+            ...opts,
+            origin: { y: 0.55 },
+            particleCount: Math.floor(220 * particleRatio),
+          })
+        }
+        // Wave 1 — fast gold burst
+        fire(0.3, { spread: 26, startVelocity: 55, colors: [GOLD, CREAM] })
+        // Wave 2 — medium spread
+        fire(0.25, { spread: 60, colors: [GOLD, CREAM, SUCCESS] })
+        // Wave 3 — slow trailing
+        fire(0.3, {
+          spread: 100,
+          decay: 0.91,
+          scalar: 0.85,
+          colors: [GOLD, CREAM, SUCCESS],
         })
-      }
-      // Wave 1 — fast gold burst
-      fire(0.3, { spread: 26, startVelocity: 55, colors: [GOLD, CREAM] })
-      // Wave 2 — medium spread
-      fire(0.25, { spread: 60, colors: [GOLD, CREAM, SUCCESS] })
-      // Wave 3 — slow trailing
-      fire(0.3, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.85,
-        colors: [GOLD, CREAM, SUCCESS],
-      })
-      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
+      })()
     }
 
     // Karma count-up
