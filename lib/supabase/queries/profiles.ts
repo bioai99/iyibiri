@@ -24,9 +24,15 @@ export async function updateProfile(
   if (error) throw error
 }
 
-export function getKarmaLevel(karma: number): { level: number; title: string; nextThreshold: number } {
-  if (karma < 500) return { level: 1, title: 'İyi Biri', nextThreshold: 500 }
-  if (karma < 1500) return { level: 2, title: 'Çok İyi Biri', nextThreshold: 1500 }
-  if (karma < 3000) return { level: 3, title: 'Gerçekten İyi Biri', nextThreshold: 3000 }
-  return { level: 4, title: 'İyiliğin Öncüsü', nextThreshold: Infinity }
+// ADR-014 Accepted (2026-04-26): tier sistemi `lib/tiers.ts` canonical.
+// Eski 4-tier farklı eşik (500/1500/3000) drift'ti — şimdi 5-tier (500/2000/5000/10000).
+import { getTierByKarma, type Tier } from '@/lib/tiers'
+
+export function getKarmaLevel(karma: number): { level: Tier['id']; title: string; nextThreshold: number } {
+  const tier = getTierByKarma(karma)
+  return {
+    level: tier.id,
+    title: tier.name,
+    nextThreshold: tier.maxKarma ?? Infinity,
+  }
 }

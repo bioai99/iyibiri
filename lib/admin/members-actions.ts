@@ -1,6 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { requireNgoAdmin, AuthError, authErrorToResult } from '@/lib/auth/guards'
+
+// ADR-015 Accepted (2026-04-26): Defense-in-depth + RLS double-check.
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('tr-TR')
@@ -12,7 +15,14 @@ function formatDate(dateString: string): string {
  */
 export async function exportMembersCSV(
   ngoId: string
-): Promise<{ success: boolean; error?: string; csv?: string }> {
+): Promise<{ success: boolean; error?: string; csv?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {

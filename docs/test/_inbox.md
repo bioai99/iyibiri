@@ -657,4 +657,60 @@ Hepsinde `initial={{ opacity: 0` → `initial={{ opacity: 1` sweep. Y transform 
 
 ---
 
+## 2026-04-26 Vol-23 verify + M4 + Backoffice write koşusu sonuçları
+
+**Vol-23 + Vol-23.5 verify (PASS, 9/9):**
+- A1 Mission edit ✅ (Kilyos 70→75, listede güncel)
+- A2 Delete confirm modal ✅ (akıllı delete açıklaması + İptal/Sil)
+- A4 BUG-053 sync ✅ (Bozkır cancelled user app'te yok, 31 mission temiz)
+- A5 Mission QR NGO scope ✅ (SAHIL2026 canvas)
+- A6 Cross-NGO QR engelli ✅ (çift katman: ngo_unauthorized + banner)
+- B Blog edit cross-NGO ✅ (BUG-051 custom unauthorized blok)
+- C Avatar widget UI ✅ (Foto seç + 5MB + initial fallback)
+- M4 Sahil event_date + 75 karma sync ✅ (10 May Cumartesi)
+- Sync backoffice ↔ app ✅ (edit anında user'a yansıdı)
+
+**M4 mission complete tam akış (PASS, 10/10):**
+- KVKK consent → "Bu göreve katıl" → applied state ✅
+- "Başvurun alındı" + 3-step roadmap (NGO onayı/SMS/QR) ✅
+- /complete sayfası + Doğrulama Kodu input ✅
+- SAHIL2026 verify code → konfeti animasyonu ✅
+- Karma transaction insert ✅ (100 → 175)
+- Mission count 0 → 1 tamamlandı ✅
+- Tier "İyi Biri" + progress bar 175/500 ("325 kaldı") ✅
+- Tier-up modal trigger olmadı (beklendi — 500 threshold)
+
+**Backoffice write akışları (PARTIAL):**
+- STK Profil UI ✅ — Submit 🚨 BUG-055 (handleSubmit hidration fail)
+- Üyelik Ayarları UI ✅ — Submit ⏸ Vol-24'e ertelendi
+- Ödeme Ayarları UI ✅ — Submit ⏸ Vol-24'e ertelendi
+
+**Yeni bug'lar:**
+- 🚨 **BUG-055 (P1)** — `/admin/[ngoId]/profile` submit DB'ye yazmıyor:
+  - Button bulundu, in_form: true, disabled: false, programmatic .click() çalıştı
+  - Hiçbir POST/PATCH network request yok, sadece GET'ler
+  - Hiçbir alert yok (ne success "Profil başarıyla güncellendi!" ne error)
+  - Form Instagram alanı dolu kaldı ama DB'ye yazılmadı
+  - Console: React minified errors #418/#422/#423/#425 (hydration mismatch + Suspense boundary)
+  - **Root cause hipotezi:** ProfileForm `useTransition` + async server action + Suspense conflict
+  - Mission edit ve M4 submit çalıştığına göre **bu sayfaya özgü**
+  - **Vol-24 fix önerisi:** useTransition kaldır + native async/await + try/catch
+- ⚠️ **BUG-054 (P3, scope gap)** — `/dashboard/karma` ve `/dashboard/profile/karma` 404, detaylı transaction history sayfası yok
+- ⚠️ **503 RSC prefetch errors** — admin sidebar hover'da `/admin/tema/*?_rsc=...` 503 dönüyor (Vercel timeout?). UI'ya etki yok ama log'lar kirli.
+
+**Vol-24 paketine alınacak:**
+1. **BUG-055 fix** (kritik) — STK Profil submit + verify Üyelik/Ödeme submit benzer pattern mı
+2. **BUG-054** — Karma history sayfası ya add (P2 olarak yeni feature) ya da remove "karma" referansları (P3 silently dismiss)
+3. **503 RSC prefetch** araştır — admin layout'un sidebar prefetch'i optimize et
+
+**Kümülatif bilanço Vol-1 → Vol-23.5 + verify:**
+- Toplam bug: 55 (+1 BUG-054, +1 BUG-055)
+- Fix: 49 (89%)
+- Open: 6 (BUG-040, BUG-044, BUG-047, BUG-031, BUG-054, **BUG-055 yeni P1**)
+- Migration: 032
+- Sprint Vol: 23.5 + verify
+- M4 mission complete tam çalışıyor (production'da end-to-end yeşil)
+
+---
+
 > ⬇️ Yeni entry'ler buraya eklenir

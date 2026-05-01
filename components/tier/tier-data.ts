@@ -1,6 +1,10 @@
 // Vol-28: Tier Journey premium tasarımdan port edildi.
-// 5 tier — kelebek metamorfoz progression. Mevcut iyibiri tier sistemi
-// (lib/supabase/queries/profiles.ts getKarmaLevel) ile karma threshold'lar uyumlu.
+// 5 tier — kelebek metamorfoz progression.
+//
+// ADR-014 Accepted (2026-04-26): name alanları artık `lib/tiers.ts` canonical (Set A).
+// Eski Set C ("İyi Yürekli/İyilik Elçisi/İyilik Savaşçısı/İyiliğin Işığı") drift'ti.
+// Animation metadata (palette/wingComplexity/foldPattern/glow) lokal kalır — bunlar
+// görsel kelebek-metamorfoz attribute'leri, tier-bazlı karma threshold'larla bağlı.
 
 export type WingComplexity = 'simple' | 'scallop' | 'detailed' | 'ornate' | 'fractal'
 export type AmbientEffectKind = 'none' | 'pollen' | 'rings' | 'sparks' | 'aurora'
@@ -47,7 +51,7 @@ export const TIER_DATA: TierData[] = [
   },
   {
     id: 2,
-    name: 'İyi Yürekli',
+    name: 'Çok İyi Biri',
     karma: 500,
     desc: 'İyilik sende bir alışkanlık olmaya başladı.',
     palette: {
@@ -65,7 +69,7 @@ export const TIER_DATA: TierData[] = [
   },
   {
     id: 3,
-    name: 'İyilik Elçisi',
+    name: 'Çoook İyi Biri',
     karma: 2000,
     desc: 'Çevrende değişim yaratıyorsun.',
     palette: {
@@ -83,7 +87,7 @@ export const TIER_DATA: TierData[] = [
   },
   {
     id: 4,
-    name: 'İyilik Savaşçısı',
+    name: 'Gerçekten İyi Biri',
     karma: 5000,
     desc: 'Topluluk seni tanıyor, etkini hissediyor.',
     palette: {
@@ -101,7 +105,7 @@ export const TIER_DATA: TierData[] = [
   },
   {
     id: 5,
-    name: 'İyiliğin Işığı',
+    name: 'İyiliğin Öncüsü',
     karma: 10000,
     desc: 'İyiliğin en üst seviyesine ulaştın.',
     palette: {

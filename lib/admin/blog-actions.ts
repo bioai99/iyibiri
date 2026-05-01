@@ -2,6 +2,9 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireNgoAdmin, AuthError, authErrorToResult } from '@/lib/auth/guards'
+
+// ADR-015 Accepted (2026-04-26): Tüm admin server action'lar `requireNgoAdmin(ngoId)` ile başlar.
 
 interface BlogPostData {
   title: string
@@ -17,7 +20,14 @@ interface BlogPostData {
 export async function createBlogPost(
   ngoId: string,
   data: BlogPostData,
-): Promise<{ success: boolean; postId?: string; error?: string }> {
+): Promise<{ success: boolean; postId?: string; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -55,7 +65,14 @@ export async function updateBlogPost(
   ngoId: string,
   postId: string,
   data: Partial<BlogPostData>,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -102,7 +119,14 @@ export async function updateBlogPost(
 export async function deleteBlogPost(
   ngoId: string,
   postId: string,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {

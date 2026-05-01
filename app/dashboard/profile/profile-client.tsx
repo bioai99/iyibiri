@@ -29,21 +29,9 @@ interface ProfileClientProps {
   memberships?: MembershipWithNGO[]
 }
 
-const tierNames: Record<number, string> = {
-  1: 'İyi Biri',
-  2: 'Çok İyi Biri',
-  3: 'Çoook İyi Biri',
-  4: 'Gerçekten İyi Biri',
-  5: 'İyiliğin Öncüsü',
-}
-
-const tierThresholds: Record<number, number> = {
-  1: 500,
-  2: 2000,
-  3: 5000,
-  4: 10000,
-  5: Infinity,
-}
+// ADR-014 Accepted (2026-04-26): tier sistemi `lib/tiers.ts` canonical.
+// Eski local tierNames + tierThresholds kaldırıldı — getTierByKarma + TIERS kullanılıyor.
+import { TIERS, getTierByKarma, karmaProgress } from '@/lib/tiers'
 
 const achievements = [
   { icon: <Footprints size={20} />, name: 'İlk Adım', locked: false, sub: 'İlk görevin' },
@@ -58,15 +46,17 @@ const achievements = [
 export function ProfileClient({ profile, completedCount, karma, memberships = [] }: ProfileClientProps) {
   const { colors: c } = useTheme()
   const prefersReducedMotion = useReducedMotion()
-  const tier = getTierFromKarma(karma)
-  const tierName = tierNames[tier] ?? tierNames[1]
-  const nextTier = tier < 5 ? tierNames[tier + 1] : null
-  const prevThreshold = tier === 1 ? 0 : tierThresholds[tier - 1]
-  const nextThreshold = tierThresholds[tier]
+  const tierObj = getTierByKarma(karma)
+  const tier = tierObj.id
+  const tierName = tierObj.name
+  const progress = karmaProgress(karma)
+  const nextTier = progress.nextTier?.name ?? null
+  const prevThreshold = tierObj.minKarma
+  const nextThreshold = tierObj.maxKarma ?? Infinity
   const karmaInTier = karma - prevThreshold
   const karmaNeeded = nextThreshold === Infinity ? 0 : nextThreshold - prevThreshold
-  const karmaToNext = nextThreshold === Infinity ? 0 : nextThreshold - karma
-  const pct = nextThreshold === Infinity ? 100 : Math.min(100, Math.round((karmaInTier / karmaNeeded) * 100))
+  const karmaToNext = progress.karmaToNext
+  const pct = nextThreshold === Infinity ? 100 : Math.round(progress.progressRatio * 100)
 
   // BUG-023 (Vol-11): legacy `name` null. Read full_name/first_name from Pattern D backfill.
   const displayName =

@@ -1,4 +1,8 @@
 import { cn } from '@/lib/utils'
+import { TIERS, getTierByKarma } from '@/lib/tiers'
+
+// ADR-014 Accepted (2026-04-26): tier label/emoji canonical `lib/tiers.ts`'ten okunur.
+// Hardcoded array yasak — `no-magic-tier-name` lint rule (TD-009).
 
 type Tier = 1 | 2 | 3 | 4 | 5
 
@@ -7,14 +11,6 @@ interface TierBadgeProps {
   showLabel?: boolean
   size?: 'sm' | 'md' | 'lg'
   className?: string
-}
-
-const tierConfig: Record<Tier, { label: string; emoji: string }> = {
-  1: { label: 'İyi Biri',            emoji: '🌱' },
-  2: { label: 'Çok İyi Biri',        emoji: '⭐' },
-  3: { label: 'Çoook İyi Biri',      emoji: '🌟' },
-  4: { label: 'Gerçekten İyi Biri',  emoji: '🏆' },
-  5: { label: 'İyiliğin Öncüsü',     emoji: '👑' },
 }
 
 const sizeClasses = {
@@ -35,7 +31,7 @@ function StarIcon({ size = 10 }: { size?: number }) {
 }
 
 export function TierBadge({ tier, showLabel = true, size = 'md', className }: TierBadgeProps) {
-  const config = tierConfig[tier] ?? tierConfig[1]
+  const t = TIERS.find(x => x.id === tier) ?? TIERS[0]
   return (
     <span
       className={cn(
@@ -47,15 +43,11 @@ export function TierBadge({ tier, showLabel = true, size = 'md', className }: Ti
       )}
     >
       <StarIcon size={size === 'lg' ? 11 : 9} />
-      {showLabel && <span>{config.label}</span>}
+      {showLabel && <span>{t.name}</span>}
     </span>
   )
 }
 
 export function getTierFromKarma(karma: number): Tier {
-  if (karma < 500)   return 1
-  if (karma < 2000)  return 2
-  if (karma < 5000)  return 3
-  if (karma < 10000) return 4
-  return 5
+  return getTierByKarma(karma).id
 }

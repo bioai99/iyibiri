@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     url: 'https://www.iyibiri.app/app-start',
+    allowNavigation: ['iyibiri.app', 'www.iyibiri.app', '*.iyibiri.app'],
     cleartext: false,
   },
   ios: {

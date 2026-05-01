@@ -71,14 +71,15 @@ set
   status = 'active'
 where id = 'm-tema-temizlik-full';
 
+-- m-tema-fidan (TEMA Beykoz fidan dikimi) — gelecek 7 gün
 update public.missions
 set
   event_date = (now() + interval '7 days')::timestamptz,
-  date_label = '3 May Cumartesi 09:00',
+  date_label = '3 May Cumartesi 10:00',
   status = 'active'
-where id = 'm-tema-sahil';
+where id = 'm-tema-fidan';
 
--- m-tegv-okuma (geçmişte kalmış) — gelecek 21 gün
+-- m-tegv-okuma — gelecek 21 gün
 update public.missions
 set
   event_date = (now() + interval '21 days')::timestamptz,
@@ -86,13 +87,21 @@ set
   status = 'active'
 where id = 'm-tegv-okuma';
 
--- m-cydd-fidan (geçmişte kalmış) — gelecek 10 gün
+-- m-haytap-mama — gelecek 5 gün
 update public.missions
 set
-  event_date = (now() + interval '10 days')::timestamptz,
-  date_label = '6 May Salı 10:00',
+  event_date = (now() + interval '5 days')::timestamptz,
+  date_label = '1 May Perşembe 14:00',
   status = 'active'
-where id = 'm-cydd-fidan';
+where id = 'm-haytap-mama';
+
+-- m-online-digital-literacy — gelecek 21 gün (online, esnek)
+update public.missions
+set
+  event_date = (now() + interval '21 days')::timestamptz,
+  date_label = 'Mayıs sonu — online',
+  status = 'active'
+where id = 'm-online-digital-literacy';
 
 commit;
 

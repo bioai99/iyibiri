@@ -26,7 +26,16 @@ Bir ADR `Proposed` → `Accepted` transition'ında agent **5 adımı atomic yapa
 - 🟡 **Important** — scope'u etkiler, varsayımla devam edilebilir.
 - 🟢 **Info** — iyi bilinse iyi, iş beklemiyor.
 
-## Açık (14 soru)
+## Açık (16 soru — 2 ADR Proposed)
+
+### ADR Proposed kuyruğu (system-architect — 2026-04-26)
+
+| # | Seviye | Konu | ADR | Durum |
+|---|---|---|---|---|
+| Q48 | 🔴 | V1 bağış akışı statüsü (donate route'lar canlı mı?) | ADR-006 v2 revize | Mevcut `app/dashboard/donate/*` 3 route + migration 040 ile V1'de aktif görünüyor; ADR-006 niyet "V1'de yok". Banner mı, ADR revize mi? Product-analyst kararı. |
+| Q49 | 🔴 | Payment processor priority roadmap | ADR-008 v3 revize | V1 fonzip-only (production-ready), V1.5 + iyzico (1-2 hafta dev), V2 + PayTR (1-2 hafta dev). v2 audit S-005. Product-analyst + system-architect ortak karar. |
+
+
 
 ### Hukuki / Dış iş (kullanıcı + avukat)
 

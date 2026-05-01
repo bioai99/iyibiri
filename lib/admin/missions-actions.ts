@@ -2,6 +2,10 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireNgoAdmin, AuthError, authErrorToResult } from '@/lib/auth/guards'
+
+// ADR-015 Accepted (2026-04-26): Tüm admin server action'lar `requireNgoAdmin(ngoId)` ile başlar.
+// Defense-in-depth — middleware bypass durumunda son güvenlik katmanı.
 
 interface MissionData {
   title: string
@@ -29,7 +33,14 @@ function statusToActive(status: 'draft' | 'active' | 'cancelled' | 'completed'):
 export async function createMission(
   ngoId: string,
   data: MissionData
-): Promise<{ success: boolean; missionId?: string; error?: string }> {
+): Promise<{ success: boolean; missionId?: string; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -73,7 +84,14 @@ export async function updateMission(
   ngoId: string,
   missionId: string,
   data: Partial<MissionData>
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -118,7 +136,14 @@ export async function updateMissionStatus(
   ngoId: string,
   missionId: string,
   status: 'draft' | 'active' | 'cancelled' | 'completed'
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -152,7 +177,14 @@ export async function updateMissionStatus(
 export async function deleteMission(
   ngoId: string,
   missionId: string
-): Promise<{ success: boolean; softDeleted?: boolean; error?: string }> {
+): Promise<{ success: boolean; softDeleted?: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {

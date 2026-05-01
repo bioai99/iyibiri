@@ -42,3 +42,9 @@
 Hukuki mütalaa bekleyen: Q10 (BDDK/KDV), Q11 (makbuz veri akışı), Q13 (bağış cayma hakkı), Q37 (fonzip ToS), Q38 (trademark), Q39 (NDA).
 Workstream içi kararlar: Q6 (domain migration), Q7 (Karma impact), Q16 (auto-renew), Q17 (STK admin kapsam), Q20 (vergi checkbox yeri), Q26 (TEGV pre-screening).
 İleri zaman: Q8-Q9 (SDG/Karma geçmiş), Q14 (kurumsal bağış), Q18-Q19 (bundle/isim), Q21-Q22 (makbuz/muhasebeci), Q24 (Kızılay), Q29-Q30 (SaaS tier, attribution), Q31-Q32 (API key/mobile iframe), Q34-Q35 (admin kapsam/migration).
+
+## 2026-04-26 — system-architect ADR Accept (3)
+
+- ✅ Q45 — TIERS canonical naming + threshold — **ADR-014 Accepted** — 5 tier, Set A naming ("İyi Biri/Çok İyi Biri/Çoook İyi Biri/Gerçekten İyi Biri/İyiliğin Öncüsü"), karma-tabanlı threshold 500/2000/5000/10000. Canonical: `lib/tiers.ts`. TD-001 fix.
+- ✅ Q46 — Server action defense-in-depth + auth template — **ADR-015 Accepted** — `lib/auth/guards.ts` + (opsiyonel) `createServerAction` template + 3 lint rule. 35 server action auth guard'a alınacak. TD-019/020/026 fix.
+- ✅ Q47 — Migration template zorunluluğu — **ADR-016 Accepted** — `docs/eng/templates/migration-template.sql` baseline. Yeni migration'lar begin/commit + if-not-exists + RLS + index pattern'lerini takip eder. TD-014 fix.

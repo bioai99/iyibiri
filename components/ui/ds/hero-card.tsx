@@ -6,16 +6,15 @@ import { Flame, Zap, Trophy } from 'lucide-react'
 import { KarmaDotToken } from './karma-dot-token'
 import { BrandLogo } from '@/components/ui/brand-logo'
 import { useTheme } from '@/lib/theme'
+import { getTierByKarma } from '@/lib/tiers'
 
-const TIER_THRESHOLDS = [0, 500, 2000, 5000, 10000]
-const TIER_NAMES = ['İyi Biri', 'İyi Yürekli', 'İyilik Elçisi', 'İyilik Savaşçısı', 'İyiliğin Işığı']
+// ADR-014 Accepted (2026-04-26): TIER_NAMES + TIER_THRESHOLDS hardcoded array kaldırıldı.
+// Eski drift: "İyi Yürekli/İyilik Elçisi/İyilik Savaşçısı/İyiliğin Işığı" Set C — atlas Bölüm 6 ile uyumsuzdu.
+// Şimdi canonical Set A `lib/tiers.ts` kullanılıyor.
 
 function computeTier(karma: number) {
-  let tierLevel = 1
-  for (let i = TIER_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (karma >= TIER_THRESHOLDS[i]) { tierLevel = i + 1; break }
-  }
-  return { tierLevel, tierName: TIER_NAMES[tierLevel - 1] }
+  const tier = getTierByKarma(karma)
+  return { tierLevel: tier.id, tierName: tier.name }
 }
 
 interface HeroCardProps {

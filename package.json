@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
+    "test:run": "vitest --run",
+    "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit",
     "seed": "ts-node --project tsconfig.json scripts/seed.ts"
   },
   "dependencies": {
@@ -30,7 +34,6 @@
     "html5-qrcode": "^2.3.8",
     "lottie-react": "^2.4.1",
     "lucide-react": "^1.6.0",
-    "motion": "^12.38.0",
     "next": "14.2.35",
     "qrcode": "^1.5.4",
     "react": "^18",
@@ -57,6 +60,12 @@
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/user-event": "^14.5.2",
+    "jsdom": "^25.0.1"
   }
 }

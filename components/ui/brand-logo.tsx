@@ -13,25 +13,28 @@ interface BrandLogoProps {
 }
 
 // Wing fold angles (rotateY degrees): 0°=open, 65°=nearly closed
-// Left wing uses positive rotateY, right wing uses negated values
+// Left wing uses positive rotateY, right wing uses negated values.
+//
+// ADR-014 Accepted (2026-04-26): tier name'leri canonical `lib/tiers.ts`'ten gelir.
+// Aşağıdaki yorumlar metamorfoz aşamalarını anlatır; isim referansları Set A.
 const TIER_CONFIG = [
   // Tier 1 — İyi Biri: gentle sway
   { size: 120, glowOpacity: 0,    particles: 0,
     foldPattern: [0, 15, 0],                                        foldDuration: 3.0,
     wL: ['#E8D9A8', '#D4C488', '#B8A56A'], wR: ['#D4A090', '#BC7A6A', '#9E6050'] },
-  // Tier 2 — İyi Yürekli: breathe + one fold
+  // Tier 2 — Çok İyi Biri: breathe + one fold
   { size: 128, glowOpacity: 0.15, particles: 0,
     foldPattern: [0, 10, 0, 0, 55, 10, 0, 10, 0],                  foldDuration: 5.0,
     wL: ['#F4D98A', '#E8C268', '#C89E3D'], wR: ['#E07A6A', '#C8553D', '#A84030'] },
-  // Tier 3 — İyilik Elçisi: confident fold
+  // Tier 3 — Çoook İyi Biri: confident fold
   { size: 136, glowOpacity: 0.3,  particles: 0,
     foldPattern: [0, 10, 0, 55, 10, 50, 0, 10, 0],                 foldDuration: 4.0,
     wL: ['#F0D070', '#D4A838', '#B08820'], wR: ['#D45A4A', '#B83828', '#982818'] },
-  // Tier 4 — İyilik Savaşçısı: active folding
+  // Tier 4 — Gerçekten İyi Biri: active folding
   { size: 144, glowOpacity: 0.4,  particles: 4,
     foldPattern: [0, 60, 10, 55, 10, 0, 10, 0],                    foldDuration: 3.2,
     wL: ['#7ECFB8', '#4DB896', '#2E9E7A'], wR: ['#E8965A', '#D07038', '#B05020'] },
-  // Tier 5 — İyiliğin Işığı: dramatic multi-fold
+  // Tier 5 — İyiliğin Öncüsü: dramatic multi-fold
   { size: 152, glowOpacity: 0.6,  particles: 8,
     foldPattern: [0, 65, 10, 60, 8, 55, 0, 10, 0],                 foldDuration: 2.8,
     wL: ['#C4A0E8', '#9B6ED0', '#7A4CB8'], wR: ['#F4D98A', '#E8C268', '#C89E3D'] },

@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireNgoAdmin, AuthError, authErrorToResult } from '@/lib/auth/guards'
 
 interface PaymentConfigData {
   donation_url?: string | null
@@ -15,7 +16,14 @@ interface PaymentConfigData {
 export async function updatePaymentConfig(
   ngoId: string,
   data: PaymentConfigData,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {

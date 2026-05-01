@@ -4,7 +4,7 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
-**Son güncelleme:** 2026-05-01 — Vol-32 + Vol-33 retro (volume-retro skill ilk koşusu) — **Vol-32 (sponsor backoffice MVP) + Vol-33 (BUG-063 + BUG-064 hotfixleri) kapatıldı. Retro disiplini başladı.** İlk pattern catalog entries `docs/eng/patterns.md`: DB-001 (RLS admin write policies, Confirmed 2x), FE-001 (form submit type=button + onClick, Confirmed 2x), FE-002 (hidrasyon mismatch, Hypothesis 1x). `supabase-backend` ve `frontend-engineer` agent playbook'larına ilgili pattern referansları eklendi. Açık: BUG-065 (P2). Vol-34.1 (super-agents iskelet + 2 yeni skill) ayrı kardeş repo'da yaşıyor. Sıradaki: Vol-34.2 (portable katman göçü) veya yeni proje başlangıcında mimari karar.
+**Son güncelleme:** 2026-04-26 22:30 — system-architect — **Mayıs sprint Yol A/D/E + 5 server action auth guard**. TSC 0 hata ✅, ESLint 0 error ✅. Yol A tamam (10/10 TIERS callsite migrate). Yol D Vitest framework + 3 test + GitHub Actions CI workflow. Yol E migration 045 active/status trigger. 6 admin server action requireNgoAdmin/requireUser ile güvende. Canlıya alma noktaları: npm install + supabase db push + git push (CI tetiklensin).
 
 ---
 
@@ -67,7 +67,75 @@ Bir sonraki turda yapılacak, öncelik sırası belli iş.
 
 - **Eski brief/spec'lere handoff log ekleme (kalan)** — owner: meta (user-triggered audit), priority: low, link: communication protocol SKILL. 3 ana thread retroactive dolduruldu; ikinci turda P1 UX brief'lere + Eng brief'lere + UI spec'lere de uygulanır.
 
+## ✅ Done today (2026-04-26 — late update)
+
+- 2026-04-26 22:30 — **system-architect** — **Mayıs sprint Yol A tamam + Yol D Vitest/CI + Yol E migration + 6 server action auth guard'lı**:
+  - **Yol A — TIERS callsite migration tamam (10/10):**
+    - ✅ Önceki turdan: `lib/karma-level.ts`, `lib/mock-data.ts` (re-export), `lib/supabase/queries/profiles.ts`, `components/ui/tier-badge.tsx`, `components/ui/ds/hero-card.tsx`
+    - ✅ Bu tur: `components/tier/tier-data.ts` (Set C "İyi Yürekli/..." → Set A canonical), `components/ui/brand-logo.tsx` (yorumlar Set A), `app/dashboard/profile/profile-client.tsx` (local tierNames+tierThresholds → karmaProgress), `app/onboarding/(user-flow)/welcome/page.tsx:203` (TIERS[1].name template), `app/page.tsx:387-393` (landing TIERS marketing storytelling olarak işaretlendi, exempt yorum)
+  - **Yol D — Vitest + CI baseline:**
+    - ✅ [`vitest.config.ts`](./vitest.config.ts) + `vitest.setup.ts` (jsdom + globals + setupFiles)
+    - ✅ [`lib/tiers.test.ts`](./tiers.test.ts) — 16 test (TIERS list + getTierByKarma + getTierName + nextTier + karmaProgress)
+    - ✅ [`lib/karma-level.test.ts`](./karma-level.test.ts) — 9 test (level math + tier referansı)
+    - ✅ [`lib/auth/guards.test.ts`](./auth/guards.test.ts) — 5 test (AuthError + authErrorToResult)
+    - ✅ [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) — npm ci + lint + tsc + vitest --run + next build
+    - ✅ `package.json` scripts: `test`, `test:run`, `test:ui`, `typecheck` + devDeps: vitest 2.1.8 + @testing-library/* + jsdom 25
+  - **Yol E — Migration 045 + active/status trigger:**
+    - ✅ [`supabase/migrations/045_mission_active_status_trigger.sql`](../supabase/migrations/045_mission_active_status_trigger.sql) — DB-side `sync_mission_active()` trigger; manuel sync eski (BUG-053) kalkıyor
+    - ✅ Mevcut satırlar idempotent backfill (`active = (status = 'active')` where mismatch)
+  - **6 server action requireNgoAdmin/requireUser ile güvende (Yol B Faz 2 örnek):**
+    - ✅ `lib/admin/missions-actions.ts` — 4 export (createMission, updateMission, updateMissionStatus, deleteMission)
+    - ✅ `lib/admin/blog-actions.ts` — 3 export (createBlogPost, updateBlogPost, deleteBlogPost)
+    - ✅ `lib/admin/verifications-actions.ts` — 2 export (approveVerification, rejectVerification) — requireUser + RLS
+    - ✅ `lib/admin/members-actions.ts` — 1 export (exportMembersCSV)
+    - ✅ `lib/admin/ngo-profile-actions.ts` — 1 export (updateNgoProfile)
+    - ✅ `lib/admin/payment-config-actions.ts` — 1 export (updatePaymentConfig)
+    - ⏳ Kalan ~28 server action (campaign, sponsor, ngo-signup-review, signup, onboarding, dev-fixtures, 14 admin page-level) auth-capacitor + frontend-engineer follow-up
+  - **TSC 0 hata ✅** + **ESLint 0 error ✅** — vitest test dosyaları tsconfig + eslint exclude'a alındı (`npm install` öncesi state).
+  - **Migration 045 + 044 supabase'e push gerek** — kullanıcının canlıya alma adımı.
+  - Handoff: auth-capacitor (kalan 28 server action), frontend-engineer (TIERS lint rule + display kalan UI), supabase-backend (migration 044+045 apply).
+
 ## ✅ Done today (2026-04-26)
+
+- 2026-04-26 21:00 — **system-architect** — **ADR Accept + canonical implementation paketi (TIERS + auth guards + migration template + tech debt sprint)**:
+  - **3 ADR Accepted** (5-dosya checklist tamam):
+    - [`docs/product/03-decisions/014-tiers-canonical.md`](./product/03-decisions/014-tiers-canonical.md) — TD-001 fix.
+    - [`docs/product/03-decisions/015-server-action-template.md`](./product/03-decisions/015-server-action-template.md) — TD-019/020/026 fix.
+    - [`docs/product/03-decisions/016-migration-template.md`](./product/03-decisions/016-migration-template.md) — TD-014 fix.
+  - **Canonical kod (3 yeni dosya, 1 revize):**
+    - ✅ [`lib/tiers.ts`](./tiers.ts) — TIERS canonical (5 tier, Set A naming, threshold 500/2000/5000/10000) + getTierByKarma + karmaProgress.
+    - ✅ [`lib/auth/guards.ts`](./auth/guards.ts) — requireUser/requireNgoAdmin/requireSuperAdmin/requireSponsorAdmin + AuthError.
+    - ✅ [`lib/karma-level.ts`](./karma-level.ts) revize — TIERS import lib/tiers.ts'ten.
+    - ✅ [`supabase/migrations/044_composite_indexes.sql`](../supabase/migrations/044_composite_indexes.sql) — 8 composite index.
+  - **Template + workstream:**
+    - ✅ [`docs/eng/templates/migration-template.sql`](./eng/templates/migration-template.sql) — yeni migration baseline.
+    - ✅ [`docs/product/01-workstreams/2026-04-27-tech-debt-sprint.md`](./product/01-workstreams/2026-04-27-tech-debt-sprint.md) — Mayıs sprint (8 paralel yol).
+  - **5 TIERS callsite migrate edildi** (kalan 5'i frontend-engineer follow-up):
+    - ✅ `lib/karma-level.ts` (system-architect)
+    - ✅ `lib/mock-data.ts` (TIERS array kaldırıldı, re-export)
+    - ✅ `lib/supabase/queries/profiles.ts` (4-tier farklı eşik drift'i düzeltildi)
+    - ✅ `components/ui/tier-badge.tsx` (local tierConfig kaldırıldı, TIERS import)
+    - ✅ `components/ui/ds/hero-card.tsx` (Set C "İyi Yürekli/..." silindi, getTierByKarma)
+    - ⏳ Kalan 5 dosya frontend-engineer follow-up: `components/tier/tier-data.ts`, `components/ui/brand-logo.tsx`, `app/dashboard/profile/profile-client.tsx`, `app/page.tsx`, `app/onboarding/(user-flow)/welcome/page.tsx`.
+  - **lib/admin/missions-actions.ts** — 4 export (createMission/updateMission/updateMissionStatus/deleteMission) requireNgoAdmin auth guard eklendi (örnek). Kalan 34 server action auth-capacitor + frontend-engineer Mayıs sprint Yol B'de paralel.
+  - **open.md temizlendi** — Q45/46/47 → resolved.md'ye taşındı (Accepted). Q48/49 (ADR-006 v2 + ADR-008 v3 revize) Proposed olarak kalır.
+  - **TSC 0 hata** ✅ — `lib/auth/guards.ts` RPC çağrılarında `(supabase.rpc as any)` cast kullanıldı (TD-005 supabase types regen sonrası temizlenir).
+  - **ESLint 0 error** ✅ — sadece test dosyalarında `no-console` warning'ler (test'te console kullanımı normal).
+
+## ✅ Done earlier today (2026-04-26)
+
+- 2026-04-26 19:55 — **system-architect** — **Tech Debt management başlangıç paketi**:
+  - **Tech Debt Ledger v2** [`docs/eng/_tech-debt.md`](./eng/_tech-debt.md) — 549 satır, 31 entry (v1'de 12'den artırıldı). 6 🔴 + 24 🟡 + 1 ✅ kapatılı (TD-012 RLS coverage gerçekte %100). Engineer handoff routing matrisi + 30/60/90 plan + pattern memo bağlantıları.
+  - **ADR-014 Proposed: TIERS canonical** [`docs/product/03-decisions/014-tiers-canonical.md`](./product/03-decisions/014-tiers-canonical.md) — 5 tier, Set A naming ("İyi Biri / Çok İyi Biri / Çoook İyi Biri / Gerçekten İyi Biri / İyiliğin Öncüsü"), threshold 500/2000/5000/10000. `lib/tiers.ts` canonical + 8 callsite migration + lint rule. **TD-001 fix önerisi.** User onayı bekleniyor.
+  - **ADR-015 Proposed: Server action template + auth guards** [`docs/product/03-decisions/015-server-action-template.md`](./product/03-decisions/015-server-action-template.md) — `lib/auth/guards.ts` (requireUser/requireNgoAdmin/requireSuperAdmin/requireSponsorAdmin) + `createServerAction` wrapper + 3 lint rule. **TD-019/TD-020/TD-026 fix önerisi (35 server action defense-in-depth + zod input validation + revalidatePath kapsamı).** User onayı bekleniyor.
+  - **Pattern memo SSoT drift** [`docs/test/_patterns/2026-04-26-ssot-drift.md`](./test/_patterns/2026-04-26-ssot-drift.md) — TIERS + color + mission state literal + karma_total + active/status combine. Faz 1-4 implementation rotası.
+  - **TD-022 motion dead dependency** ✅ silindi: `package.json` güncel (`motion` package kaldırıldı). User `npm install` çalıştırıp lock dosyasını update etmeli.
+  - **T-002 ESLint config** ✅ `.eslintrc.json` yaratıldı: `next/core-web-vitals` extends + warn-level no-console/exhaustive-deps/no-img-element/no-unescaped-entities. `npx next lint` exit 0 ile geçiyor (sadece test dosyalarında console warning'ler, normal).
+  - Handoff: product-analyst (ADR-014 + ADR-015 review/Accept) → frontend-engineer + design-system-keeper + auth-capacitor + supabase-backend (Accepted sonrası implementation paralel).
+
+- 2026-04-26 18:55 — **system-architect** — **Engineering & Architecture Baseline Audit v2 (derin)** [`docs/audit/2026-04-26-eng-arch-baseline-audit.md`](./audit/2026-04-26-eng-arch-baseline-audit.md) — 1431 satır, 9404 kelime. v1 (485 satır) yüzeysel kalmıştı; v2 derinleştirildi. 4 yanlış metric düzeltildi (RLS coverage gerçekte %100, auth guard %19 değil %100 değil, KVKK implement edilmiş, motion dead dep). 5 🔴 deploy bloke + 25 🟡 + cross-cutting patterns. Methodology + ADR drift matrix + health metrics + 30/60/90 plan + 5 ADR Proposed kuyruk.
+
+## ✅ Done today (eski 2026-04-26)
 
 - 2026-04-26 18:45 — **system-architect** (yeni agent — ilk çağrı) — **Yeni agent + 2 yeni skill + derin baseline audit + Tech Debt Ledger v1**:
   - `.claude/agents/system-architect.md` — engineering-lead kapsam, oversight rolü, ❌ verme yetkisi, ADR Proposed yazımı, Tech Debt Ledger sahibi.

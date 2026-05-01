@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireNgoAdmin, AuthError, authErrorToResult } from '@/lib/auth/guards'
 
 interface NGOProfileData {
   logo_url?: string | null
@@ -23,7 +24,14 @@ interface NGOProfileData {
 export async function updateNgoProfile(
   ngoId: string,
   data: NGOProfileData,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireNgoAdmin(ngoId)
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {

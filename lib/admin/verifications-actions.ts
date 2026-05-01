@@ -2,6 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireUser, AuthError, authErrorToResult } from '@/lib/auth/guards'
+
+// ADR-015 Accepted (2026-04-26): Defense-in-depth.
+// Verifications NGO-bound; ngoId parametre olarak alınmıyor — verificationId →
+// missions.ngo_id join ile çıkarılır. NGO admin yetki kontrolü RLS policy'sinde
+// `is_ngo_admin(auth.uid(), ngo_id)` ile yapılır. Burada `requireUser` ile login zorunluluğu.
 
 /**
  * Doğrulama onaylama — status güncelleme + karma award (idempotent)
@@ -12,7 +18,14 @@ import { revalidatePath } from 'next/cache'
  */
 export async function approveVerification(
   verificationId: string
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireUser()
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   try {
@@ -74,7 +87,14 @@ export async function approveVerification(
 export async function rejectVerification(
   verificationId: string,
   feedback: string
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; code?: string }> {
+  try {
+    await requireUser()
+  } catch (err) {
+    if (err instanceof AuthError) return { success: false, ...authErrorToResult(err) }
+    throw err
+  }
+
   const supabase = await createClient()
 
   if (!feedback.trim()) {

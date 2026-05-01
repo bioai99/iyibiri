@@ -6,6 +6,7 @@ import { ArrowRight, MapPin, Clock, Users, Star, Gift, Heart, Sparkles } from 'l
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { BrandLogo } from '@/components/ui/brand-logo'
+import { TIERS } from '@/lib/tiers'
 
 export default function OnboardingWelcome() {
   const { colors: c } = useTheme()
@@ -200,7 +201,7 @@ export default function OnboardingWelcome() {
                 {/* Progress bar */}
                 <div style={{ marginTop: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: c.ink300, marginBottom: 6 }}>
-                    <span>Çok İyi Biri</span>
+                    <span>{TIERS[1].name}</span>
                     <span style={{ color: c.gold, fontWeight: 600 }}>716 kaldı</span>
                   </div>
                   <div style={{ height: 6, background: c.ink600, borderRadius: 999, overflow: 'hidden' }}>

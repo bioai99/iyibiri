@@ -188,18 +188,11 @@ export const ALL_MISSIONS_MAP: Record<string, Mission> = {};
 // Kullanıcıya sistem tarafından atanmış görevler
 export const ASSIGNED_MISSION_IDS = ["1", "2", "5", "tema-uye", "cydd-bagis"];
 
-export const TIERS = [
-  { minLevel: 1,  maxLevel: 2,  name: "İyi Biri"                },
-  { minLevel: 3,  maxLevel: 4,  name: "Oldukça İyi Biri"        },
-  { minLevel: 5,  maxLevel: 7,  name: "Çok İyi Biri"            },
-  { minLevel: 8,  maxLevel: 10, name: "Gerçekten İyi Biri"      },
-  { minLevel: 11, maxLevel: 15, name: "Çoook İyi Biri"          },
-  { minLevel: 16, maxLevel: 99, name: "İyiliğin Öncüsü"         },
-];
-
-export function getTierName(level: number): string {
-  return TIERS.find((t) => level >= t.minLevel && level <= t.maxLevel)?.name ?? "İyi Biri";
-}
+// ADR-014 Accepted (2026-04-26): TIERS canonical → `lib/tiers.ts`.
+// Eski 6-tier "Oldukça İyi Biri" eklenmiş + level-tabanlı sistem drift'ti.
+// Şimdi canonical 5-tier karma-tabanlı sistem `lib/tiers.ts`'ten gelir.
+// Geriye dönük uyum için TIERS + getTierName re-export edilir.
+export { TIERS, getTierName } from "./tiers";
 
 export const MOCK_USER = {
   name: "Ada Yılmaz",

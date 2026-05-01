@@ -1,10 +1,13 @@
 // lib/karma-level.ts
 //
-// Karma → level → tier name helper.
-// Basit, deterministic kural: 500 Karma = 1 level (daha sonra dynamic XP curve'ü ile değiştirilebilir).
-// TIERS tanımı `lib/mock-data.ts`'ten referans alınır — tek source of truth.
+// Karma → level → tier helper.
+// Basit, deterministic kural: 500 Karma = 1 level.
+// TIERS canonical → `lib/tiers.ts` (ADR-014 Accepted 2026-04-26).
+//
+// Bu dosya level kavramını tier kavramından ayrı tutar — level her 500 karma
+// (orta tutarda artış), tier ise 5 grup (geniş tutarda kategori).
 
-import { TIERS, getTierName } from './mock-data'
+import { TIERS, getTierByKarma, nextTier as nextTierByKarma } from './tiers'
 
 export const KARMA_PER_LEVEL = 500
 
@@ -18,26 +21,40 @@ export function karmaForLevel(level: number): number {
   return (level - 1) * KARMA_PER_LEVEL
 }
 
-/** Bir sonraki tier'ın başlangıç level'ı. Son tier'daysa null. */
+/**
+ * Bir sonraki tier'ın başlangıç karması ve ismi.
+ * Max tier'daysa null.
+ *
+ * @param currentLevel - Kullanıcının mevcut level'ı (legacy parametre).
+ *
+ * @deprecated Karma-tabanlı API tercih edilir; bu fonksiyon
+ * `lib/tiers.ts` `nextTier(tierId)` ile uyum için tutuluyor.
+ */
 export function nextTier(currentLevel: number): { name: string; minLevel: number } | null {
-  const currentTierIdx = TIERS.findIndex(
-    (t) => currentLevel >= t.minLevel && currentLevel <= t.maxLevel,
-  )
-  if (currentTierIdx === -1 || currentTierIdx === TIERS.length - 1) return null
-  const next = TIERS[currentTierIdx + 1]
-  return { name: next.name, minLevel: next.minLevel }
+  const karma = karmaForLevel(currentLevel)
+  const currentTier = getTierByKarma(karma)
+  const next = nextTierByKarma(currentTier.id)
+  if (!next) return null
+  return {
+    name: next.name,
+    minLevel: levelFromKarma(next.minKarma) + 1, // legacy: tier'ın başlangıç level'ı
+  }
 }
 
 /** HeroCardV2 için hazır snapshot. */
 export function karmaProgress(karma: number) {
   const level = levelFromKarma(karma)
-  const tierName = getTierName(level)
-  const nt = nextTier(level)
+  const tier = getTierByKarma(karma)
+  const next = nextTierByKarma(tier.id)
 
   return {
     level,
-    tierName,
-    nextTierName: nt?.name ?? null,
-    nextTierAt: nt ? karmaForLevel(nt.minLevel) : null,
+    tierName: tier.name,
+    nextTierName: next?.name ?? null,
+    nextTierAt: next?.minKarma ?? null,
   }
 }
+
+// TIERS re-export — geriye dönük uyum (lib/mock-data.ts eskiden TIERS export ediyordu).
+// Yeni callsite'lar `lib/tiers.ts`'ten import etmeli.
+export { TIERS }
