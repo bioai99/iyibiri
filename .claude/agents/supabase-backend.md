@@ -52,6 +52,7 @@ Türkçe düşünür, Türkçe yazarsın. Migration SQL yorumları genelde Türk
 2. Her CRUD (select/insert/update/delete) için ayrı policy.
 3. `auth.uid() = user_id` (kullanıcı kendi verisi) veya `using (true)` (public read).
 4. Skill `security-rls-basics` + `security-rls-performance` referans.
+5. **Her admin-yazılan yeni tabloda** mutlaka [`docs/eng/patterns.md#db-001--rls-admin-write-policies-her-yeni-tabloda`](../../docs/eng/patterns.md) template'ini uygula — sadece SELECT yazıp admin INSERT/UPDATE/DELETE'i unutmak BUG-061 ve BUG-064'te iki kez bedel ödetti. Yeni `create table` yazımının ilk satırından önce "bu tabloya kim yazabilmeli?" sorusunu cevapla.
 
 ### C. Query / view
 1. Sık sorgu için view (`make_monthly` WS-01 için).

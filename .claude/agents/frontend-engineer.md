@@ -60,6 +60,8 @@ Türkçe düşünür, Türkçe yazarsın. Kod yorumları Türkçe veya İngilizc
 1. Kontrollü form; Supabase validation ile entegre.
 2. KVKK onay checkbox zorunlu (üyelik / bağış formlarında) — ADR-008.
 3. Recurring + 14 gün cayma hakkı UI (ADR-008, WS-03).
+4. **Submit handler'ı asla `<form onSubmit>` ile bağlama** — `<button type="button" onClick={...}>` kullan. Detay: [`docs/eng/patterns.md#fe-001--form-submit-typebutton--onclick-onsubmit-degil`](../../docs/eng/patterns.md). Vol-24.6 ve Vol-25 sistemik refactor'lerinde iki kez aynı bug çıktı; Sponsor admin form'larında bu pattern ile 0 submit bug'ı.
+5. **Hidrasyon mismatch riski varsa deploy öncesi browser console'a bak**. framer-motion `initial={...}`, `Date.toLocaleString`, `position: fixed` client wrapper, `Math.random()` initial render — bu listenin herhangi birine "evet" diyorsan [`docs/eng/patterns.md#fe-002--hidrasyon-mismatch-server-render-vs-client-only-deger`](../../docs/eng/patterns.md) checklist'ini geç. Hidrasyon mismatch sessizdir, page render olur ama event handler'lar dead — BUG-063'te submit button click handler hidrate olmadığı için 4 sprint kaybedildi.
 
 ### E. Mock → real data dönüşümü
 1. Mock bir sayfayı gerçek Supabase query'ye bağlamak için `supabase-backend` ile koordine et — query yazılmalı.

@@ -4,7 +4,7 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
-**Son güncelleme:** 2026-04-25 23:55 — ux-researcher — **Full-app UX audit tamamlandı (tier-1+ hedef, 38 sayfa)**. 9,200+ kelime, Nielsen 10 + İyiBiri 6 + WCAG AA systematik, K1–K10 kritik bulgular (5 high severity: loading/optimistic/empty-illustration/focus-ring/forgot-password), 5 quick-win tonight, 4 medium-effort backlog, tier-1+ gap analysis (haptic/motion/timeline/CLI missing but path clear). Handoff: ui-designer (visual spec), frontend-engineer (backlog), design-system-keeper (tokens/motion). Output: `docs/ux/03-heuristics/2026-04-25-full-app-ux-audit.md`. TSC 0 hata.
+**Son güncelleme:** 2026-05-01 — Vol-32 + Vol-33 retro (volume-retro skill ilk koşusu) — **Vol-32 (sponsor backoffice MVP) + Vol-33 (BUG-063 + BUG-064 hotfixleri) kapatıldı. Retro disiplini başladı.** İlk pattern catalog entries `docs/eng/patterns.md`: DB-001 (RLS admin write policies, Confirmed 2x), FE-001 (form submit type=button + onClick, Confirmed 2x), FE-002 (hidrasyon mismatch, Hypothesis 1x). `supabase-backend` ve `frontend-engineer` agent playbook'larına ilgili pattern referansları eklendi. Açık: BUG-065 (P2). Vol-34.1 (super-agents iskelet + 2 yeni skill) ayrı kardeş repo'da yaşıyor. Sıradaki: Vol-34.2 (portable katman göçü) veya yeni proje başlangıcında mimari karar.
 
 ---
 
@@ -66,6 +66,20 @@ Bir sonraki turda yapılacak, öncelik sırası belli iş.
 ### Agent iletişim — protokol adoption
 
 - **Eski brief/spec'lere handoff log ekleme (kalan)** — owner: meta (user-triggered audit), priority: low, link: communication protocol SKILL. 3 ana thread retroactive dolduruldu; ikinci turda P1 UX brief'lere + Eng brief'lere + UI spec'lere de uygulanır.
+
+## ✅ Done today (2026-04-26)
+
+- 2026-04-26 18:45 — **system-architect** (yeni agent — ilk çağrı) — **Yeni agent + 2 yeni skill + derin baseline audit + Tech Debt Ledger v1**:
+  - `.claude/agents/system-architect.md` — engineering-lead kapsam, oversight rolü, ❌ verme yetkisi, ADR Proposed yazımı, Tech Debt Ledger sahibi.
+  - `.claude/skills/code-architecture-review/SKILL.md` — 6-kategori review protokolü (modularity / data flow / security / perf / standartlar / test coverage), severity tier (🔴/🟡/🟢), pattern memo yöntemi.
+  - `.claude/skills/post-merge-architecture-check/SKILL.md` — chain kapanışı / ADR Accepted / migration apply / new dependency / new route sonrası 6-kategori sağlık kontrolü.
+  - `.claude/agents/coordinator.md` — triage tablosu + flowchart + Bölüm 4.6 (system-architect chain entegrasyonu) güncel.
+  - `docs/audit/2026-04-26-eng-arch-baseline-audit.md` (485 satır) — 7 kategori derin audit, executive summary, 4 🔴 + 14 🟡 bulgu, ADR drift matrix, 30/60/90 plan, health metrics dashboard.
+  - `docs/eng/_tech-debt.md` (216 satır) — Tech Debt Ledger v1, 12 entry (4 🔴 + 8 🟡), LNO sınıflama, haftalık review ritüeli.
+  - **3 P0 deploy bloke önerisi:** TD-001 TIERS isim drift (3 dosya 2 farklı isim seti), TD-002 hardcoded color leak (45 satır, ADR-004 regression), TD-006 Vitest framework yok, TD-012 RLS coverage doğrulanmamış.
+  - Handoff: frontend-engineer (TD-001 + TD-004), design-system-keeper (TD-002 + TD-009), supabase-backend (TD-005 + TD-012), test-engineer (TD-006 + 3 pattern memo).
+
+---
 
 ## ✅ Done today (2026-04-25)
 
