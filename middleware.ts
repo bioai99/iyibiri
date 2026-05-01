@@ -1,6 +1,38 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Faz 6 (2026-04-26 perf-eng + system-architect): Middleware cookie cache.
+// 4 hot-path optimizasyonu:
+//  1. is_super_admin RPC → 5 dk cookie cache
+//  2. is_ngo_admin RPC (per-NGO) → 5 dk cookie cache
+//  3. interests query → 1 saat onboarding-done cookie (kullanıcı onboarding tamamladığında set edilir)
+//  4. Cookie hit her admin/dashboard route'ta DB roundtrip ortadan kaldırır
+//
+// Güvenlik: cookie httpOnly + secure + sameSite=lax. Cache TTL kısa (5 dk-1h).
+// Logout → session cookie silinir → role cookie'leri de invalidate olur (oturum bağlı).
+// Role değişirse 5 dk gecikme — kabul edilebilir trade-off.
+
+const CACHE_TTL_ROLE = 300 // 5 dk — super-admin / NGO admin
+const CACHE_TTL_ONBOARDING = 3600 // 1 saat — onboarding completed flag
+
+const COOKIE_OPTS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'lax' as const,
+  path: '/',
+}
+
+function getCachedFlag(request: NextRequest, key: string): boolean | null {
+  const v = request.cookies.get(key)?.value
+  if (v === '1') return true
+  if (v === '0') return false
+  return null
+}
+
+function setCachedFlag(response: NextResponse, key: string, value: boolean, maxAge: number) {
+  response.cookies.set(key, value ? '1' : '0', { ...COOKIE_OPTS, maxAge })
+}
+
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   const pathname = request.nextUrl.pathname
@@ -40,8 +72,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Super-admin bypass
-    const { data: isSuper } = await supabase.rpc('is_super_admin', { u: user.id })
+    // Super-admin bypass — Faz 6: 5 dk cookie cache (RPC roundtrip skip)
+    let isSuper: boolean
+    const cachedSuper = getCachedFlag(request, 'iyibiri_super')
+    if (cachedSuper !== null) {
+      isSuper = cachedSuper
+    } else {
+      const { data } = await supabase.rpc('is_super_admin', { u: user.id })
+      isSuper = !!data
+      setCachedFlag(response, 'iyibiri_super', isSuper, CACHE_TTL_ROLE)
+    }
     if (isSuper) {
       return response
     }
@@ -68,11 +108,17 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login?error=unauthorized', request.url))
     }
 
-    // Check if user is admin for this NGO
-    const { data: isAdmin } = await supabase.rpc('is_ngo_admin', {
-      u: user.id,
-      n: ngoId,
-    })
+    // Check if user is admin for this NGO — Faz 6: per-NGO 5 dk cookie cache
+    const ngoAdminKey = `iyibiri_ngoadmin_${ngoId}`
+    let isAdmin: boolean
+    const cachedNgoAdmin = getCachedFlag(request, ngoAdminKey)
+    if (cachedNgoAdmin !== null) {
+      isAdmin = cachedNgoAdmin
+    } else {
+      const { data } = await supabase.rpc('is_ngo_admin', { u: user.id, n: ngoId })
+      isAdmin = !!data
+      setCachedFlag(response, ngoAdminKey, isAdmin, CACHE_TTL_ROLE)
+    }
 
     if (!isAdmin) {
       const loginUrl = new URL('/admin/login', request.url)
@@ -145,20 +191,30 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  // Onboarding flow check (only for /dashboard requests)
+  // Onboarding flow check — Faz 6: 1 saat cookie cache; sub-route'larda DB query yok
   if (pathname.startsWith('/dashboard')) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('interests')
-      .eq('id', user.id)
-      .single()
+    const onboardedCached = getCachedFlag(request, 'iyibiri_onboarded')
+    if (onboardedCached === null) {
+      // Cookie yok → DB query (kullanıcı yeni login veya cookie expire)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('interests')
+        .eq('id', user.id)
+        .single()
 
-    // No onboarding flag in DB; check if interests array is empty or null
-    const hasCompleted = profile?.interests && Array.isArray(profile.interests) && profile.interests.length > 0
+      const hasCompleted = profile?.interests && Array.isArray(profile.interests) && profile.interests.length > 0
 
-    if (!hasCompleted) {
+      if (!hasCompleted) {
+        return NextResponse.redirect(new URL('/onboarding/welcome', request.url))
+      }
+
+      // Cookie set — bir sonraki sub-route DB query yapmasın (1 saat TTL)
+      setCachedFlag(supabaseResponse, 'iyibiri_onboarded', true, CACHE_TTL_ONBOARDING)
+    } else if (!onboardedCached) {
+      // Cache "0" — onboarding tamam değil; eski cookie var (rare race condition)
       return NextResponse.redirect(new URL('/onboarding/welcome', request.url))
     }
+    // Cache "1" → onboarding tamam, query atla, sayfayı render et
   }
 
   // Auth pages after email verified: skip onboarding check, go straight to dashboard
