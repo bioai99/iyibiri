@@ -17,12 +17,16 @@ async function getAllActiveNGOs(): Promise<NGO[]> {
   // Vol-30.5: NGORail için NGO'lar (mission count client'ta hesaplanır).
   // BUG-057 fix: Eski "sponsor-category NGO" hack'i kaldırıldı — sponsor markalar
   // ayrı public.sponsors entity'sinde. NGORail'de sadece gerçek STK'lar gösterilsin.
+  // Perf: 2026-04-26 audit (TD-035) — limit + minimal columns. Tüm STK'ları full
+  // data ile çekmek dashboard ilk yüklemede gereksiz transfer (binlerce STK varsa).
   const supabase = createClient()
   const { data } = await supabase
     .from('ngos')
-    .select('*')
+    .select('id, name, short_name, logo_url, color_accent, cover_image_url, category, tax_exempt, donation_url, membership_url, payment_mode')
     .neq('category', 'sponsor')
-  return data ?? []
+    .order('featured', { ascending: false })
+    .limit(50)
+  return (data ?? []) as NGO[]
 }
 
 async function getWeeklyKarmaGain(userId: string): Promise<number> {

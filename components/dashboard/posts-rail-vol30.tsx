@@ -6,6 +6,7 @@
 // Kart: 280px wide · 140px image · Category badge sol üst · ÜYE badge sağ üst.
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTheme } from '@/lib/theme'
 import { SectionHeaderVol30 } from './section-header-vol30'
 import type { PostWithAuthor } from '@/lib/supabase/types'
@@ -121,18 +122,28 @@ function PostCard({ post, subscribed }: PostCardProps) {
         display: 'block',
       }}
     >
-      {/* Cover image */}
+      {/* Cover image — Faz 1 (perf-eng 2026-04-26): backgroundImage → next/image (-WebP/AVIF + lazy) */}
       <div
         style={{
           width: '100%',
           height: 140,
-          backgroundImage: cover ? `url(${cover})` : undefined,
           backgroundColor: cover ? undefined : c.ink700,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
+        {cover && (
+          <Image
+            src={cover}
+            alt=""
+            fill
+            sizes="(max-width: 640px) 100vw, 320px"
+            style={{ objectFit: 'cover' }}
+            loading="lazy"
+            quality={75}
+            aria-hidden="true"
+          />
+        )}
         {catLabel && (
           <span
             style={{

@@ -11,10 +11,13 @@
 // - failed_verification  → AlertTriangle + clay, admin_feedback gösterilir
 //
 // Ortak anatomi: icon + başlık + açıklama + opsiyonel CTA + alt link
+//
+// Faz 1 (2026-04-26 perf-eng): hero photo next/image, lazy load + WebP/AVIF.
 
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   Lock,
@@ -80,12 +83,15 @@ export function MissionStateBanner({
       {/* Hero photo (muted) */}
       {photoUrl && (
         <div className="relative aspect-[4/3] w-full overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={photoUrl}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
             aria-hidden="true"
+            priority
+            quality={70}
           />
           <div
             className="absolute inset-0"

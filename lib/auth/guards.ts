@@ -16,8 +16,13 @@
 // Hata durumu — `AuthError` throw eder; `createServerAction` wrapper veya
 // outer try/catch'te yakalanır + UI'ya friendly TR mesaj döner.
 
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type { User } from '@supabase/supabase-js'
+
+// Perf (2026-04-26 audit TD-034): React `cache()` ile request-scoped memoize.
+// Aynı request içinde 2. çağrı DB'ye gitmez — middleware ile çift roundtrip kalkar.
+// `cache()` her request için ayrı instance üretir (server component scope).
 
 export type AuthErrorCode =
   | 'AUTH_REQUIRED'
@@ -34,8 +39,8 @@ export class AuthError extends Error {
   }
 }
 
-/** Tüm protected server action'ların başında çağrılır. Login değilse throw. */
-export async function requireUser(): Promise<User> {
+/** Tüm protected server action'ların başında çağrılır. Login değilse throw. Request-scoped cache. */
+export const requireUser = cache(async (): Promise<User> => {
   const supabase = await createClient()
   const {
     data: { user },
@@ -44,10 +49,10 @@ export async function requireUser(): Promise<User> {
     throw new AuthError('AUTH_REQUIRED', 'Önce giriş yap.')
   }
   return user
-}
+})
 
-/** NGO admin işlemleri için. RLS'e ek olarak server-side double-check. */
-export async function requireNgoAdmin(ngoId: string): Promise<User> {
+/** NGO admin işlemleri için. RLS'e ek olarak server-side double-check. Request-scoped cache. */
+export const requireNgoAdmin = cache(async (ngoId: string): Promise<User> => {
   const user = await requireUser()
   const supabase = await createClient()
   // RPC tanımları lib/supabase/types.ts'te eksik (TD-005); cast ile geçici çözüm.
@@ -60,10 +65,10 @@ export async function requireNgoAdmin(ngoId: string): Promise<User> {
     throw new AuthError('NGO_ADMIN_REQUIRED', 'Bu STK için yetkin yok.')
   }
   return user
-}
+})
 
-/** Super admin yetkisi gerek (devtools, NGO başvuru onaylama, vs.). */
-export async function requireSuperAdmin(): Promise<User> {
+/** Super admin yetkisi gerek. Request-scoped cache. */
+export const requireSuperAdmin = cache(async (): Promise<User> => {
   const user = await requireUser()
   const supabase = await createClient()
   const { data: isSuper, error } = await (supabase.rpc as any)('is_super_admin', {
@@ -73,10 +78,10 @@ export async function requireSuperAdmin(): Promise<User> {
     throw new AuthError('SUPER_ADMIN_REQUIRED', 'Bu işlem süper-admin yetkisi gerektirir.')
   }
   return user
-}
+})
 
-/** Sponsor admin işlemleri için. */
-export async function requireSponsorAdmin(sponsorId: string): Promise<User> {
+/** Sponsor admin işlemleri için. Request-scoped cache. */
+export const requireSponsorAdmin = cache(async (sponsorId: string): Promise<User> => {
   const user = await requireUser()
   const supabase = await createClient()
   // is_sponsor_admin RPC'si varsa kullan; yoksa sponsor_admin_users tablosundan kontrol.
@@ -89,7 +94,7 @@ export async function requireSponsorAdmin(sponsorId: string): Promise<User> {
     throw new AuthError('SPONSOR_ADMIN_REQUIRED', 'Bu sponsor için yetkin yok.')
   }
   return user
-}
+})
 
 /**
  * AuthError'ı server action result'a çevirme helper'ı.

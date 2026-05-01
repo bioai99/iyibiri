@@ -2,11 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Search, Leaf, BookOpen, Heart, Clock } from 'lucide-react'
 import { PawPrint } from 'lucide-react'
 import { MissionCard } from '@/components/ui/mission-card'
 import type { MissionWithNGO, NGO, PostWithNGO } from '@/lib/supabase/types'
 import { useTheme } from '@/lib/theme'
+
+// Faz 1 (2026-04-26 perf-eng): post cover + NGO logo next/image.
 
 interface DiscoverClientProps {
   missions: MissionWithNGO[]
@@ -54,12 +57,16 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
         boxShadow: isSubscribed ? '0 0 12px rgba(212,175,55,0.08), 0 1px 4px rgba(0,0,0,.06)' : '0 1px 4px rgba(0,0,0,.06)',
       }}
     >
-      <div style={{ height: 160, overflow: 'hidden' }}>
+      <div style={{ height: 160, overflow: 'hidden', position: 'relative' }}>
         {post.cover_image_url && (
-          <img
+          <Image
             src={post.cover_image_url}
             alt={post.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            fill
+            sizes="320px"
+            style={{ objectFit: 'cover' }}
+            loading="lazy"
+            quality={75}
           />
         )}
       </div>
@@ -79,10 +86,14 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
                 justifyContent: 'center',
               }}
             >
-              <img
+              <Image
                 src={post.ngos.logo_url}
                 alt={post.ngos.short_name ?? ''}
-                style={{ width: 16, height: 16, objectFit: 'contain' }}
+                width={16}
+                height={16}
+                style={{ objectFit: 'contain' }}
+                sizes="20px"
+                quality={80}
               />
             </div>
           ) : (

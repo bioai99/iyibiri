@@ -1,13 +1,18 @@
 import { createClient } from '../server'
 import type { Mission, MissionWithNGO, UserMission } from '../types'
 
-export async function getAllMissions(): Promise<MissionWithNGO[]> {
+// Perf: dashboard'da 11 paralel query'den biri. 2026-04-26 audit (TD-035) —
+// limit + future event filter eklendi. Production'da binlerce mission'ı
+// client'a göndermek JSON parse + render'ı yavaşlatıyordu.
+export async function getAllMissions(limit = 100): Promise<MissionWithNGO[]> {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('missions')
     .select('*, ngos(id, name, short_name, logo_url, color_accent, cover_image_url)')
     .eq('active', true)
     .order('featured', { ascending: false })
+    .order('event_date', { ascending: true })
+    .limit(limit)
   if (error) throw error
   return data as unknown as MissionWithNGO[]
 }

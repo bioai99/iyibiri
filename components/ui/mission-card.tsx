@@ -2,12 +2,16 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Clock, MapPin, Bookmark, Flame } from 'lucide-react'
 import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
 import { useTheme, getCardShadow } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
+
+// Faz 1 (2026-04-26 perf-eng): <img> → next/image. Sized variants + WebP/AVIF + lazy load.
+// Mission photo (Unsplash 850ms each) → 16:9 aspect, 400x250 hedef (mobile) - 768x432 (desktop).
 
 interface MissionCardProps {
   mission: MissionWithNGO
@@ -126,11 +130,14 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
         {/* ── Photo / Domain gradient header ── */}
         <motion.div layoutId={`mission-photo-${mission.id}`} style={{ position: 'relative', aspectRatio: style.imageAspectRatio, overflow: 'hidden' }}>
           {mission.photo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={mission.photo_url}
               alt={mission.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              style={{ objectFit: 'cover' }}
+              loading={variant === 'hero' ? 'eager' : 'lazy'}
+              quality={75}
             />
           ) : (
             <div
@@ -220,12 +227,14 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
                 boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
               }}>
                 {ngo.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={ngo.logo_url}
                     alt={ngo.name}
-                    style={{ width: '72%', height: '72%', objectFit: 'contain' }}
-                    onError={e => { e.currentTarget.style.display = 'none' }}
+                    width={19}
+                    height={19}
+                    style={{ objectFit: 'contain', width: '72%', height: '72%' }}
+                    sizes="32px"
+                    quality={80}
                   />
                 ) : (
                   <span style={{ fontSize: 11, fontWeight: 700, color: ngo.color_accent ?? c.gold }}>
