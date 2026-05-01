@@ -2,10 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Search, Users, Target } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
 import type { NGO } from '@/lib/supabase/types'
+
+// Faz 5 (2026-04-26 perf-eng): NGO list logo next/image.
 
 interface NGOsListClientProps {
   ngos: NGO[]
@@ -146,11 +149,14 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
                 border: `2px solid ${c.ink600}`,
               }}>
                 {ngo.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={ngo.logo_url}
                     alt={ngo.name}
-                    style={{ width: '72%', height: '72%', objectFit: 'contain' }}
+                    width={42}
+                    height={42}
+                    sizes="64px"
+                    style={{ objectFit: 'contain' }}
+                    quality={80}
                   />
                 ) : (
                   <span style={{

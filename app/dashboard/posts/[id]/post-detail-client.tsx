@@ -2,11 +2,14 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Heart, Clock, Share2, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 import type { PostWithNGO } from '@/lib/supabase/types'
+
+// Faz 5 (2026-04-26 perf-eng): post detay 3 <img> → <Image>. Cover (eager) + 2 NGO logo.
 
 interface Props {
   post: PostWithNGO
@@ -49,13 +52,17 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
 
   return (
     <div style={{ minHeight: '100vh', background: c.ink900, color: c.cream, paddingBottom: 100 }}>
-      {/* Cover image */}
+      {/* Cover image — Faz 5 next/image (priority for LCP) */}
       {post.cover_image_url && (
         <div style={{ position: 'relative', height: 280 }}>
-          <img
+          <Image
             src={post.cover_image_url}
             alt={post.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            fill
+            sizes="100vw"
+            style={{ objectFit: 'cover' }}
+            priority
+            quality={75}
           />
           <div style={{
             position: 'absolute', inset: 0,
@@ -85,7 +92,7 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
               width: 28, height: 28, borderRadius: '50%', background: 'white',
               overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <img src={ngo.logo_url} alt={ngo.name} style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
+              <Image src={ngo.logo_url} alt={ngo.name} width={20} height={20} sizes="28px" style={{ objectFit: 'contain' }} quality={80} />
             </div>
           ) : (
             <div style={{
@@ -153,7 +160,7 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
             }}>
               {ngo?.logo_url && (
                 <div style={{ width: 32, height: 32, borderRadius: 10, background: 'white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <img src={ngo.logo_url} alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
+                  <Image src={ngo.logo_url} alt="" width={22} height={22} sizes="32px" style={{ objectFit: 'contain' }} quality={80} />
                 </div>
               )}
               <div style={{ flex: 1 }}>

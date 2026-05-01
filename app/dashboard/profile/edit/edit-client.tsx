@@ -3,10 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Check, MapPin, Camera, Loader2 } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
+
+// Faz 5 (2026-04-26 perf-eng): profile edit avatar next/image.
 
 const causes = [
   { name: 'Çevre', sub: 'Ağaç, deniz, iklim' },
@@ -168,11 +171,14 @@ export function EditProfileClient({
               flexShrink: 0,
             }}>
               {avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={avatarUrl}
                   alt="Avatar"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  fill
+                  sizes="120px"
+                  style={{ objectFit: 'cover' }}
+                  priority
+                  quality={85}
                 />
               ) : (
                 <span style={{

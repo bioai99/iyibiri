@@ -2,9 +2,12 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Check } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import type { NGO } from '@/lib/supabase/types'
+
+// Faz 5 (2026-04-26 perf-eng): membership success NGO logo next/image.
 
 interface MembershipSuccessClientProps {
   ngo: NGO
@@ -120,11 +123,14 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
               }}
             >
               {ngo.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={ngo.logo_url}
                   alt={ngo.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  fill
+                  sizes="120px"
+                  style={{ objectFit: 'contain', padding: 14 }}
+                  priority
+                  quality={85}
                 />
               ) : (
                 <span style={{ fontWeight: 900, color: c.ink600, fontSize: 28 }}>

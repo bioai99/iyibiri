@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowLeft,
   Share2,
@@ -124,17 +125,14 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
       <div style={{ position: 'relative', aspectRatio: '3/2', width: '100%', overflow: 'hidden' }}>
         {/* Photo */}
         {mission.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={mission.photo_url}
             alt={mission.title}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
+            fill
+            sizes="100vw"
+            style={{ objectFit: 'cover' }}
+            priority
+            quality={75}
           />
         ) : (
           <div style={{ position: 'absolute', inset: 0, background: c.ink600 }} />
@@ -238,11 +236,13 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             }}
           >
             {mission.ngos.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={mission.ngos.logo_url}
                 alt={mission.ngos.name}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                fill
+                sizes="40px"
+                style={{ objectFit: 'contain' }}
+                quality={80}
               />
             ) : (
               <span

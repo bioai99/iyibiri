@@ -2,10 +2,13 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { ArrowLeft, Share2, MapPin, ArrowRight } from 'lucide-react'
 import type { Mission } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, KarmaDotToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
+
+// Faz 5 (2026-04-26 perf-eng): mission states hero + thumbnail next/image.
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -504,11 +507,14 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
                 borderRadius: i === 0 ? '14px 0 0 14px' : i === 2 ? '0 14px 14px 0' : 0,
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={url}
                 alt=""
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                fill
+                sizes="(max-width: 640px) 33vw, 200px"
+                style={{ objectFit: 'cover' }}
+                loading="lazy"
+                quality={70}
               />
             </div>
           ))}
@@ -614,18 +620,17 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
       <div style={{ position: 'relative', aspectRatio: '4/3', width: '100%', overflow: 'hidden' }}>
         {/* Photo */}
         {mission.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={mission.photo_url}
             alt={mission.title}
+            fill
+            sizes="100vw"
             style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
               objectFit: 'cover',
               ...(state === 'completed' ? { filter: 'saturate(.7) brightness(.7)' } : {}),
             }}
+            priority
+            quality={75}
           />
         ) : (
           <div style={{ position: 'absolute', inset: 0, background: c.ink600 }} />

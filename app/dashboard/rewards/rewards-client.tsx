@@ -2,9 +2,12 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from 'framer-motion'
 import { Lock } from 'lucide-react'
+
+// Faz 5 (2026-04-26 perf-eng): rewards-client 3 <img> → <Image>. Brand logo + featured + card cover.
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
 import { KarmaDotToken, BadgeDS, ChipDS } from '@/components/ui/ds'
 import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
@@ -247,18 +250,15 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                 border: `1px solid ${c.ink600}`,
               }}
             >
-              {/* Background photo */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              {/* Background photo — Faz 5 next/image */}
+              <Image
                 src={featuredReward.image_url ?? FALLBACK_IMAGE}
                 alt={featuredReward.title}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
+                fill
+                sizes="(max-width: 640px) 100vw, 768px"
+                style={{ objectFit: 'cover' }}
+                priority
+                quality={75}
               />
 
               {/* Left gradient overlay */}
@@ -404,17 +404,14 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                   }}
                 >
                   {reward.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={reward.image_url}
                       alt={reward.title}
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      style={{ objectFit: 'cover' }}
+                      loading="lazy"
+                      quality={70}
                     />
                   ) : null}
 
@@ -474,11 +471,14 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                       }}
                     >
                       {reward.brand_logo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={reward.brand_logo}
                           alt={reward.brand}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          width={18}
+                          height={18}
+                          sizes="20px"
+                          style={{ objectFit: 'contain' }}
+                          quality={80}
                         />
                       ) : (
                         <span

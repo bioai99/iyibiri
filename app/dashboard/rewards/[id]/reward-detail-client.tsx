@@ -9,10 +9,13 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Sparkles, CheckCircle2, Lock } from 'lucide-react'
 import type { Reward } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { useTheme } from '@/lib/theme'
+
+// Faz 5 (2026-04-26 perf-eng): reward detail brand logo next/image.
 
 interface Props {
   reward: Reward
@@ -124,13 +127,15 @@ export function RewardDetailClient({
           {/* Brand logo */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
             {reward.brand_logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={reward.brand_logo}
                 alt={reward.brand}
+                width={80}
+                height={80}
+                sizes="80px"
+                priority
+                quality={85}
                 style={{
-                  width: 80,
-                  height: 80,
                   borderRadius: 16,
                   objectFit: 'contain',
                   background: '#fff',

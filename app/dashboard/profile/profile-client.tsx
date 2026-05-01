@@ -1,11 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from 'framer-motion'
 import { Settings, Share2, MapPin, LogOut, ChevronRight, Footprints, Flower2, Heart, Zap, Diamond, Crown } from 'lucide-react'
 import { IconButtonDS, TierBadgeDS, KarmaDotToken } from '@/components/ui/ds'
 import { getTierFromKarma } from '@/components/ui/tier-badge'
+
+// Faz 5 (2026-04-26 perf-eng): profile avatar + NGO logo next/image.
 import { logoutAction } from './actions'
 import type { Profile } from '@/lib/supabase/types'
 import { useTheme } from '@/lib/theme'
@@ -148,11 +151,14 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
         >
           {(profile as { avatar_url?: string | null }).avatar_url ? (
             // Vol-23 BUG-043: avatar_url varsa göster
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={(profile as { avatar_url?: string | null }).avatar_url ?? ''}
               alt={displayName ?? 'Profil'}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              fill
+              sizes="88px"
+              style={{ objectFit: 'cover' }}
+              priority
+              quality={85}
             />
           ) : (
             <span
@@ -465,8 +471,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
                     overflow: 'hidden',
                   }}>
                     {m.ngos?.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={m.ngos.logo_url} alt={m.ngos.name} style={{ width: '65%', height: '65%', objectFit: 'contain' }} />
+                      <Image src={m.ngos.logo_url} alt={m.ngos.name} width={36} height={36} sizes="56px" style={{ objectFit: 'contain' }} quality={80} />
                     ) : (
                       <span style={{ fontSize: 18, fontWeight: 700, color: m.ngos?.color_accent ?? c.gold }}>
                         {(m.ngos?.short_name ?? '?')[0]}

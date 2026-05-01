@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Users, Calendar, Star, Shield, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -8,6 +9,8 @@ import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
 import type { NGO } from '@/lib/supabase/types'
+
+// Faz 5 (2026-04-26 perf-eng): membership form NGO logo next/image.
 
 interface FormField {
   key: string
@@ -111,8 +114,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
             padding: 10, marginBottom: 16, boxShadow: '0 4px 16px rgba(0,0,0,.1)',
           }}>
             {ngo.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={ngo.logo_url} alt={ngo.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <Image src={ngo.logo_url} alt={ngo.name} fill sizes="80px" style={{ objectFit: 'contain', padding: 8 }} priority quality={85} />
             ) : (
               <span style={{ fontWeight: 900, color: ngo.color_accent ?? c.gold, fontSize: 24 }}>
                 {(ngo.short_name ?? ngo.name).slice(0, 2).toUpperCase()}

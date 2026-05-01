@@ -18,6 +18,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { motion, useReducedMotion, animate } from 'framer-motion'
 import { Download, Heart, Sparkles } from 'lucide-react'
 import type { Options as ConfettiOptions } from 'canvas-confetti'
@@ -152,10 +153,14 @@ export function SuccessCelebration({
             style={{ background: '#fff' }}
           >
             {ngoLogoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={ngoLogoUrl}
                 alt={ngoName}
+                width={72}
+                height={72}
+                sizes="72px"
+                quality={85}
+                priority
                 className="h-[72px] w-[72px] object-contain"
               />
             ) : (

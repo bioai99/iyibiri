@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Heart, ChevronRight, Leaf } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
@@ -9,6 +10,8 @@ import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
 import { createClient } from '@/lib/supabase/client'
 import type { NGO, MissionWithNGO, NgoMembership } from '@/lib/supabase/types'
+
+// Faz 5 (2026-04-26 perf-eng): NGO profile cover (priority) + logo next/image.
 
 interface NGOProfileClientProps {
   ngo: NGO
@@ -64,13 +67,17 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
 
   return (
     <div style={{ background: c.ink900, color: c.cream, minHeight: '100%', paddingBottom: 140 }}>
-      {/* Cover */}
+      {/* Cover — Faz 5 next/image (priority for LCP) */}
       <div style={{ position: 'relative', height: 280 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={coverImageUrl ?? 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80'}
           alt=""
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          fill
+          sizes="100vw"
+          style={{ objectFit: 'cover' }}
+          priority
+          quality={75}
+          aria-hidden="true"
         />
         <div
           style={{
@@ -185,11 +192,13 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           }}
         >
           {ngo.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={ngo.logo_url}
               alt={ngo.name}
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              fill
+              sizes="80px"
+              style={{ objectFit: 'contain' }}
+              quality={80}
             />
           ) : (
             <span style={{ fontWeight: 900, color: c.ink600, fontSize: 18 }}>
