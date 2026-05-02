@@ -91,7 +91,10 @@ export default async function DashboardPage() {
     getWeeklyKarmaGain(user.id),
     getRecentStreakActivity(user.id, 7),
     getRecentNgoPosts(8),
-    getRecentSponsorPosts(4),
+    // Vol-46.1: 4 → 6, Vol-44 ile 5 sponsor post (Starbucks/Migros/Trendyol Go/
+    // Nike/Garanti BBVA) eklendi; 4 limit Garanti BBVA'yı kesiyor. 6 ile
+    // ileride 1 yeni marka eklendiğinde de carousel'da yer var.
+    getRecentSponsorPosts(6),
   ])
 
   if (!profile) redirect('/onboarding')
