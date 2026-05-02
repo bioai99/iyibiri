@@ -23,6 +23,27 @@ import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/co
 import { useTheme } from '@/lib/theme'
 import { takeMission } from '@/lib/missions/actions'
 
+// Vol-41: Kategori/domain TR çevirileri — admin/missions-client'taki
+// DOMAIN_LABELS ile uyumlu. Mission detail badge "nature" yerine "Doğa".
+const DOMAIN_LABELS_TR: Record<string, string> = {
+  nature: 'Doğa',
+  education: 'Eğitim',
+  health: 'Sağlık',
+  social: 'Sosyal',
+  environment: 'Çevre',
+  culture: 'Kültür',
+  animals: 'Hayvanlar',
+  disaster: 'Afet',
+  community: 'Topluluk',
+  // ek kategoriler
+  env: 'Çevre',
+  edu: 'Eğitim',
+  animal: 'Hayvanlar',
+  child: 'Çocuk',
+  crisis: 'Afet',
+  financial: 'Finans',
+}
+
 interface Props {
   mission: Mission & { ngos?: { name: string; short_name?: string | null; color_accent: string | null; logo_url: string | null } | null }
   userMission: UserMission | null
@@ -34,7 +55,11 @@ interface Props {
 }
 
 export function MissionDetailClient({ mission, userMission, userId, isMember = false, isSaved: initialSaved = false, isFollowing: initialFollowing = false }: Props) {
-  const { colors: c } = useTheme()
+  const { colors: c, mode } = useTheme()
+  // Vol-41: Header iconları — light mode'da theme="light" (cream glass), dark
+  // mode'da theme="dark" (warm dark glass). Önceden default 'dark' idi, light
+  // mode'da koyu kalıp okunamıyordu.
+  const headerIconTheme: 'light' | 'dark' = mode === 'light' ? 'light' : 'dark'
   // ADR-012 Yol D: Public mission için kullanıcı üye olmadan da alabilir,
   // hafif KVKK onayı yeterli. Members_only görev için state zaten
   // `requires_membership`'a düşer (page.tsx tarafından) — bu client hiç render olmaz.
@@ -165,11 +190,13 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             icon={<ArrowLeft size={18} />}
             onClick={() => router.back()}
             ariaLabel="Geri"
+            theme={headerIconTheme}
           />
           <div style={{ display: 'flex', gap: 8 }}>
             <IconButtonDS
               icon={<Share2 size={18} />}
               ariaLabel="Görevi paylaş"
+              theme={headerIconTheme}
               onClick={() => {
                 try {
                   if (navigator.share) {
@@ -179,8 +206,9 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
               }}
             />
             <IconButtonDS
-              icon={<Heart size={18} fill={saved ? c.cream : 'none'} />}
+              icon={<Heart size={18} fill={saved ? (mode === 'light' ? c.ink900 : c.cream) : 'none'} />}
               ariaLabel={saved ? 'Kaydı kaldır' : 'Kaydet'}
+              theme={headerIconTheme}
               onClick={toggleSave}
             />
           </div>
@@ -192,9 +220,14 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         {(() => {
           const cat = mission.category?.trim() || mission.domain?.trim() || null
           if (!cat) return null
+          // Vol-41: TR çeviri — "nature" yerine "Doğa" gibi.
+          // Map'te yoksa orijinal değeri capitalize ederek göster (fallback).
+          const catLabel =
+            DOMAIN_LABELS_TR[cat.toLowerCase()] ??
+            cat.charAt(0).toUpperCase() + cat.slice(1)
           return (
             <div style={{ marginBottom: 8 }}>
-              <BadgeDS variant="dark">{cat}</BadgeDS>
+              <BadgeDS variant="dark">{catLabel}</BadgeDS>
             </div>
           )
         })()}
@@ -224,7 +257,10 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             gap: 12,
           }}
         >
-          {/* NGO logo circle */}
+          {/* NGO logo circle — Vol-41 fix: Image fill için container'da
+              position:relative ZORUNLU. Yokken logo absolute olarak en yakın
+              positioned ancestor'a (sayfanın kendisi) genişledi → büyük TEMA
+              logosu sayfayı kapladı. */}
           <div
             style={{
               width: 40,
@@ -236,6 +272,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              position: 'relative',
             }}
           >
             {mission.ngos.logo_url ? (
@@ -243,8 +280,8 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
                 src={mission.ngos.logo_url}
                 alt={mission.ngos.name}
                 fill
-               
-                style={{ objectFit: 'contain' }}
+                sizes="40px"
+                style={{ objectFit: 'contain', padding: 4 }}
                 quality={80}
               />
             ) : (
