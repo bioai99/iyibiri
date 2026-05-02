@@ -45,13 +45,25 @@ export default function SignupPage() {
       options: { data: { full_name: name } },
     })
     if (error) {
+      // Vol-50: Production'da gerçek error message log'a + kullanıcıya görünür
+      // mesaj. Önceki "Bir aksaklık" generic'i debug için yetersizdi.
+      console.error('Signup error:', { message: error.message, status: error.status, name: error.name })
       const msg = error.message.toLowerCase()
       if (msg.includes('already registered') || msg.includes('already exists')) {
         setError('Bu e-posta zaten kayıtlı. Giriş yapmak ister misin?')
       } else if (msg.includes('password')) {
-        setError('Şifre en az 6 karakter olmalı')
+        setError('Şifre en az 8 karakter ve 1 rakam içermeli.')
+      } else if (msg.includes('rate limit') || msg.includes('too many') || msg.includes('exceeded')) {
+        setError('Çok fazla deneme yaptın. Birkaç dakika sonra tekrar dene.')
+      } else if (msg.includes('email') && (msg.includes('invalid') || msg.includes('format'))) {
+        setError('E-posta adresi geçersiz görünüyor.')
+      } else if (msg.includes('signup') && msg.includes('disabled')) {
+        setError('Yeni hesap kayıtları geçici olarak kapalı.')
+      } else if (msg.includes('database') || msg.includes('500')) {
+        setError('Sunucu tarafında bir sorun oldu. Birkaç dakika sonra tekrar dene.')
       } else {
-        setError('Bir aksaklık oldu, tekrar dener misin?')
+        // Debug amaçlı orijinal mesajı da göster — hızlıca root cause buluruz
+        setError(`Hesap oluşturulamadı: ${error.message}`)
       }
       setLoading(false)
       return
