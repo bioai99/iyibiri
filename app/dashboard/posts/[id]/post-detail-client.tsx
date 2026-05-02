@@ -70,7 +70,8 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
           }} />
           {/* Back button */}
           <div style={{ position: 'absolute', top: 'calc(env(safe-area-inset-top, 20px) + 12px)', left: 16 }}>
-            <Link href="/dashboard/discover" style={{ textDecoration: 'none' }}>
+            {/* Vol-45: Discover deprecated → back butonu dashboard'a düşer */}
+            <Link href="/dashboard" style={{ textDecoration: 'none' }}>
               <div style={{
                 width: 36, height: 36, borderRadius: '50%',
                 background: 'rgba(0,0,0,.45)', backdropFilter: 'blur(8px)',

@@ -156,13 +156,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   >
                     Ödüller
                   </Command.Item>
-                  <Command.Item
-                    value="discover"
-                    onSelect={() => handleSelect('/dashboard/discover', 'Keşfet')}
-                    className="px-4 py-2 cursor-pointer text-cream text-sm hover:bg-ink-700 aria-selected:bg-ink-700 aria-selected:text-cream"
-                  >
-                    Keşfet
-                  </Command.Item>
+                  {/* Vol-45: Keşfet item kaldırıldı — discover route deprecated */}
                   <Command.Item
                     value="notifications"
                     onSelect={() => handleSelect('/dashboard/notifications', 'Bildirimler')}

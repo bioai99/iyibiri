@@ -55,7 +55,10 @@ export function PostsRailVol30({
   subscribedNgoIds = [],
   eyebrow = 'ÖNCÜLERDEN',
   title = 'Haberler',
-  allHref = '/dashboard/discover',
+  // Vol-45: Discover route deprecated → dashboard'a düşer. HEPSI link'i de
+  // dashboard'a; ileride dedicated /dashboard/blog ya da /dashboard/news varsa
+  // override edilir.
+  allHref = '/dashboard',
 }: Props) {
   const { colors: c } = useTheme()
   if (!posts || posts.length === 0) return null
