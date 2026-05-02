@@ -11,11 +11,19 @@ async function getNGOWithMissions(id: string): Promise<{ ngo: NGO; missions: Mis
       .from('missions')
       .select('*, ngos(id, name, short_name, logo_url, color_accent, cover_image_url)')
       .eq('ngo_id', id)
-      .eq('active', true)
+      // Vol-36 fix: `active=true` filter, NULL active'li (eski seed'den) mission'ları
+      // dışarda atıyordu. Status-based filter daha güvenli — published/active iki
+      // alan arasında biri yeterli, archived ve draft hariç tüm görünür mission'lar
+      // hesaplanır.
+      .neq('status', 'archived')
       .order('created_at', { ascending: true }),
   ])
   if (!ngo) return null
-  return { ngo, missions: (missions ?? []) as unknown as MissionWithNGO[] }
+  // Client'ta ek filter: draft hariç, ya active=true ya status='published' olanlar.
+  const visibleMissions = ((missions ?? []) as unknown as MissionWithNGO[]).filter(
+    (m: any) => m.active !== false && m.status !== 'draft',
+  )
+  return { ngo, missions: visibleMissions }
 }
 
 export default async function NGODetailPage({ params }: { params: { id: string } }) {

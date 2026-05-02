@@ -17,16 +17,19 @@ async function getAllActiveNGOs(): Promise<NGO[]> {
   // Vol-30.5: NGORail için NGO'lar (mission count client'ta hesaplanır).
   // BUG-057 fix: Eski "sponsor-category NGO" hack'i kaldırıldı — sponsor markalar
   // ayrı public.sponsors entity'sinde. NGORail'de sadece gerçek STK'lar gösterilsin.
-  // Perf: 2026-04-26 audit (TD-035) — limit + minimal columns. Tüm STK'ları full
-  // data ile çekmek dashboard ilk yüklemede gereksiz transfer (binlerce STK varsa).
+  // Vol-36 fix: PostgreSQL'de `.neq('category', 'sponsor')` NULL category'li
+  // NGO'ları (TEMA, Kızılay, Haytap, Kodluyoruz vs. seed'de category null) da
+  // dışarda atıyordu — NULL ≠ 'sponsor' SQL'de NULL/falsy döner, satır eklenmez.
+  // Bu yüzden dashboard'da NGORail boş geliyor, render edilmiyordu.
+  // Çözüm: filter'ı client'a taşı — null category'liler dahil olur.
+  // Perf: 2026-04-26 audit (TD-035) — limit + minimal columns korunur.
   const supabase = createClient()
   const { data } = await supabase
     .from('ngos')
     .select('id, name, short_name, logo_url, color_accent, cover_image_url, category, tax_exempt, donation_url, membership_url, payment_mode')
-    .neq('category', 'sponsor')
     .order('featured', { ascending: false })
     .limit(50)
-  return (data ?? []) as NGO[]
+  return ((data ?? []) as NGO[]).filter((n) => n.category !== 'sponsor')
 }
 
 async function getWeeklyKarmaGain(userId: string): Promise<number> {

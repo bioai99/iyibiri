@@ -27,10 +27,14 @@ export function MissionListCardVol30({ mission, href }: Props) {
   const { colors: c } = useTheme()
   const ngoColor = mission.ngos?.color_accent || c.gold
   const ngoLabel = mission.ngos?.short_name || mission.ngos?.name || ''
+  // Vol-36 BUG-058 reopen: 4-aşamalı thumbnail fallback.
+  // image_url → photo_url → NGO cover → NGO logo. Mission'ın hiç kendi görseli
+  // olmadığında bile NGO kimliği thumb'da görünür, "boş daire" değil.
   const thumb =
     mission.image_url ||
     mission.photo_url ||
     mission.ngos?.cover_image_url ||
+    mission.ngos?.logo_url ||
     null
 
   // Why / impact statement — sırasıyla impact_statement → description fallback

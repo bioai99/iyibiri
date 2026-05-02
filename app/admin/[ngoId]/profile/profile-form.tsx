@@ -348,6 +348,75 @@ export function ProfileForm({ ngo, ngoId }: ProfileFormProps) {
               </div>
             )}
           </div>
+
+          {/* Vol-36: Profil tamlık göstergesi — public sayfada görünür alanların
+              hangileri doldurulmuş, hangileri boş. Backoffice "veri tamlık"
+              uyarısı: TEMA gibi büyük STK'lar bile başlangıçta sosyal/iletişim
+              alanlarını boş bırakıyor → public profile'da Bağlantılar section
+              hiç render olmuyor. Bu liste hatırlatıcı. */}
+          {(() => {
+            const fields: Array<[string, string]> = [
+              ['Logo', formData.logo_url],
+              ['Kapak görseli', formData.cover_image_url],
+              ['Kısa ad', formData.short_name],
+              ['Tagline', formData.tagline],
+              ['Açıklama', formData.description],
+              ['Web sitesi', formData.website],
+              ['E-posta', formData.email],
+              ['Telefon', formData.phone],
+              ['Instagram', formData.social_instagram],
+              ['Twitter', formData.social_twitter],
+              ['LinkedIn', formData.social_linkedin],
+            ]
+            const filled = fields.filter(([, v]) => v && v.trim().length > 0).length
+            const total = fields.length
+            const pct = Math.round((filled / total) * 100)
+            const missing = fields.filter(([, v]) => !v || v.trim().length === 0).map(([k]) => k)
+            return (
+              <div className="mt-6 bg-ink-800 rounded-2xl border border-ink-700 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-semibold text-cream">Profil tamlığı</h4>
+                  <span
+                    className={`text-sm font-bold ${
+                      pct === 100 ? 'text-green-400' : pct >= 60 ? 'text-gold' : 'text-orange-300'
+                    }`}
+                  >
+                    %{pct}
+                  </span>
+                </div>
+                <div className="w-full h-1.5 bg-ink-900 rounded-full overflow-hidden mb-3">
+                  <div
+                    className={`h-full transition-all ${
+                      pct === 100 ? 'bg-green-400' : pct >= 60 ? 'bg-gold' : 'bg-orange-400'
+                    }`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                {missing.length > 0 ? (
+                  <div>
+                    <p className="text-xs text-ink-300 mb-2">
+                      Eksik alanlar ({missing.length}):
+                    </p>
+                    <ul className="space-y-1">
+                      {missing.map((m) => (
+                        <li key={m} className="text-xs text-ink-400 flex items-center gap-2">
+                          <span className="text-orange-300">○</span> {m}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-xs text-ink-400 mt-3 italic">
+                      Bu alanlar public profilinde görünür (sosyal medya butonları,
+                      iletişim bağlantıları). Boş alanlar kullanıcıya gösterilmez.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-green-300">
+                    ✓ Tüm alanlar dolu — public profilin maksimum bilgi gösteriyor.
+                  </p>
+                )}
+              </div>
+            )
+          })()}
         </div>
       </div>
     </div>
