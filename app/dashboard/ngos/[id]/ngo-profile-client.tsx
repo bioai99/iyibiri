@@ -190,6 +190,11 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             padding: 8,
             flexShrink: 0,
             boxShadow: '0 8px 24px rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.1)',
+            // Vol-48: Image fill için ZORUNLU. Yokken logo absolute olarak en
+            // yakın positioned ancestor'a (sayfa kendisi) genişledi → büyük
+            // TEMA logosu sayfayı kapladı (mission-detail Vol-41'in aynısı).
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
           {ngo.logo_url ? (
@@ -197,7 +202,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
               src={ngo.logo_url}
               alt={ngo.name}
               fill
-             
+              sizes="88px"
               style={{ objectFit: 'contain' }}
               quality={80}
             />

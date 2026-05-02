@@ -120,6 +120,9 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 14,
+                // Vol-48: Image fill için container'da position:relative ZORUNLU
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
               {ngo.logo_url ? (
@@ -127,7 +130,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                   src={ngo.logo_url}
                   alt={ngo.name}
                   fill
-                 
+                  sizes="200px"
                   style={{ objectFit: 'contain', padding: 14 }}
                   priority
                   quality={85}
