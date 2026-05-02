@@ -42,6 +42,7 @@ export default async function MembershipPage({
     <MembershipFlowClient
       ngo={ngo}
       userAgeRange={profileRes.data?.age_range ?? null}
+      userId={user.id}
     />
   )
 }

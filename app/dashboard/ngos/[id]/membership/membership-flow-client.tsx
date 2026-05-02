@@ -60,6 +60,8 @@ interface MembershipFlowClientProps {
   ngo: NGO
   /** profiles.age_range → tier age filter için */
   userAgeRange?: string | null
+  /** Vol-52: free üyelik akışı için ngo_memberships insert'inde kullanılır */
+  userId?: string
 }
 
 type Step = 1 | 2 | 3 | 4
@@ -71,6 +73,7 @@ type Step = 1 | 2 | 3 | 4
 export function MembershipFlowClient({
   ngo,
   userAgeRange,
+  userId,
 }: MembershipFlowClientProps) {
   const { colors: c } = useTheme()
   const router = useRouter()
@@ -111,10 +114,10 @@ export function MembershipFlowClient({
     periodLabel: string
   } | null>(null)
 
-  // Fee config olmayan STK — eski tek-form akışa fallback
+  // Vol-52: fee_config NULL = ücretsiz gönüllü üyelik akışı (LegacyFallback)
   if (!feeConfig || !derived) {
     return (
-      <LegacyFallback ngo={ngo} />
+      <LegacyFallback ngo={ngo} userId={userId} />
     )
   }
 
@@ -667,53 +670,131 @@ function StickyCta({
  *  Legacy fallback — fee_config null ise eski tek-sayfalık akış
  * ───────────────────────────────────────────────────────────── */
 
-function LegacyFallback({ ngo }: { ngo: NGO }) {
+function LegacyFallback({ ngo, userId }: { ngo: NGO; userId?: string }) {
   const { colors: c } = useTheme()
-  // Vol-51: "Henüz hazır değil" dead-end yerine actionable fallback.
-  // Membership URL varsa STK'nın resmi sitesine yönlendir; yoksa
-  // takip edilebileceğini söyle + STK sayfasına geri dön.
-  const externalUrl = ngo.membership_url || null
+  const router = useRouter()
+  // Vol-52: fee_config NULL = ücretsiz gönüllü üyelik. Tek tıkla üye ol akışı:
+  // KVKK consent + ngo_memberships satırı insert (status='active', tier_id='free').
+  // Bu STK'lar para almıyor — sadece "gönüllü olarak takip etmek + görevlere
+  // erişim" için kayıt oluyor.
   const label = ngo.short_name ?? ngo.name
+  const externalUrl = ngo.membership_url || null
+  const [kvkkChecked, setKvkkChecked] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleFreeJoin() {
+    if (!kvkkChecked || !userId) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      const { error: insertError } = await supabase
+        .from('ngo_memberships')
+        .upsert(
+          {
+            user_id: userId,
+            ngo_id: ngo.id,
+            status: 'active',
+            tier: 'free',
+            joined_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id,ngo_id' },
+        )
+      if (insertError) {
+        console.error('Free membership insert error:', insertError)
+        setError('Üyelik kaydı oluşturulamadı, tekrar dener misin?')
+        setSubmitting(false)
+        return
+      }
+      router.push(`/dashboard/ngos/${ngo.id}/membership/success`)
+    } catch (e) {
+      console.error('Free membership error:', e)
+      setError('Beklenmedik bir hata oldu.')
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div
-      className="flex min-h-[100dvh] flex-col items-center justify-center px-6 text-center"
+      className="flex min-h-[100dvh] flex-col"
       style={{ background: c.ink900, color: c.cream }}
     >
-      <h1
-        className="font-display text-[22px] font-medium"
-        style={{ color: c.cream, letterSpacing: '-0.025em', maxWidth: 320 }}
-      >
-        {label} üyeliği iyiBiri üzerinden henüz açık değil
-      </h1>
-      <p className="mt-3 text-[14px] leading-relaxed" style={{ color: c.ink300, maxWidth: 320 }}>
-        {externalUrl
-          ? `Üyelik için ${label} resmi sitesini ziyaret edebilirsin. Bu arada STK'yı takip et — yeni görevlerden ilk sen haberdar ol.`
-          : `${label} henüz iyiBiri üzerinden üyelik planı tanımlamadı. Şimdilik STK'yı takip edip yeni görevlerden haberdar olabilirsin.`}
-      </p>
-      <div className="mt-6 flex flex-col gap-3 w-full max-w-[260px]">
+      <div className="px-6 pt-[calc(env(safe-area-inset-top,20px)+38px)]">
+        <Link
+          href={`/dashboard/ngos/${ngo.id}`}
+          className="inline-flex items-center gap-2 text-[13px]"
+          style={{ color: c.ink300 }}
+        >
+          ← Kuruluş sayfasına dön
+        </Link>
+      </div>
+
+      <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+        <div
+          className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+          style={{ background: `${c.gold}22`, color: c.gold }}
+        >
+          ÜCRETSİZ GÖNÜLLÜ ÜYELİK
+        </div>
+        <h1
+          className="font-display text-[26px] font-medium"
+          style={{ color: c.cream, letterSpacing: '-0.025em', maxWidth: 360 }}
+        >
+          {label} <span style={{ fontStyle: 'italic', color: c.gold }}>gönüllüsü</span> ol
+        </h1>
+        <p className="mt-3 text-[14px] leading-relaxed" style={{ color: c.ink300, maxWidth: 320 }}>
+          {label} ücretsiz gönüllü üyelik kabul ediyor. Görevlerden ilk sen haberdar olur, STK&apos;nın iyiBiri üzerindeki tüm aktivitelerine erişirsin.
+        </p>
+
+        <label
+          className="mt-6 flex items-start gap-3 rounded-xl px-4 py-3 text-left max-w-[360px] cursor-pointer"
+          style={{ background: c.ink800, border: `1px solid ${kvkkChecked ? c.gold : c.ink600}` }}
+        >
+          <input
+            type="checkbox"
+            checked={kvkkChecked}
+            onChange={(e) => setKvkkChecked(e.target.checked)}
+            className="mt-[2px]"
+            style={{ accentColor: c.gold }}
+          />
+          <span className="text-[12px] leading-relaxed" style={{ color: c.ink200 }}>
+            Adımın ve e-postanın {label} ile paylaşılmasını, KVKK Aydınlatma Metni&apos;ni okuduğumu kabul ediyorum.
+          </span>
+        </label>
+
+        {error && (
+          <div className="mt-3 text-[12px]" style={{ color: c.danger }}>
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={handleFreeJoin}
+          disabled={!kvkkChecked || submitting || !userId}
+          className="mt-5 w-full max-w-[360px] rounded-full px-6 py-4 text-[15px] font-bold"
+          style={{
+            background: kvkkChecked && !submitting ? c.gold : c.ink600,
+            color: kvkkChecked && !submitting ? c.ink : c.ink300,
+            cursor: kvkkChecked && !submitting ? 'pointer' : 'not-allowed',
+            transition: 'background 180ms',
+          }}
+        >
+          {submitting ? 'Kaydediliyor…' : 'Ücretsiz üye ol'}
+        </button>
+
         {externalUrl && (
           <a
             href={externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: c.gold, color: c.ink }}
+            className="mt-3 text-[12px] underline"
+            style={{ color: c.ink300 }}
           >
-            Resmi siteye git ↗
+            {label} resmi sitesi ↗
           </a>
         )}
-        <Link
-          href={`/dashboard/ngos/${ngo.id}`}
-          className="inline-block rounded-full px-5 py-3 text-[14px] font-bold"
-          style={{
-            background: externalUrl ? 'transparent' : c.gold,
-            color: externalUrl ? c.cream : c.ink,
-            border: externalUrl ? `1px solid ${c.ink600}` : 'none',
-          }}
-        >
-          Kuruluş sayfasına dön
-        </Link>
       </div>
     </div>
   )
