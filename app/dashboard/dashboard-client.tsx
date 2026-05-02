@@ -230,13 +230,6 @@ export function DashboardClient({
         discoverNgos={discoverNgosForRail}
       />
 
-      {/* DEBUG (Vol-47.1): membership data flow — geçici, sonraki commit'te kalkar */}
-      <div style={{ padding: '8px 16px', fontSize: 11, color: c.ink400, fontFamily: 'monospace' }}>
-        DEBUG memberNgoIds: [{memberNgoIds.join(', ')}] · count: {memberNgoIds.length} ·
-        memberNgosForRail count: {memberNgosForRail.length} ·
-        ngos count: {ngos.length}
-      </div>
-
       {/* 7. Impact strip */}
       <ImpactStripVol30 completed={completedCount} karma={karma} />
     </div>
