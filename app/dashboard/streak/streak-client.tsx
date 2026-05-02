@@ -63,6 +63,7 @@ export default function StreakClient({ currentStreak, longestStreak, activeDays 
         <IconButtonDS
           icon={<ChevronLeft size={18} />}
           onClick={() => router.back()}
+          ariaLabel="Geri"
         />
         <span
           style={{
@@ -77,6 +78,7 @@ export default function StreakClient({ currentStreak, longestStreak, activeDays 
         </span>
         <IconButtonDS
           icon={<Share2 size={18} />}
+          ariaLabel="Seri istatistiğini paylaş"
           onClick={() => {
             try {
               if (navigator.share) {

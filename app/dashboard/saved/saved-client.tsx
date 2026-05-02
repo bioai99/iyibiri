@@ -24,7 +24,7 @@ export function SavedMissionsClient({ missions, userId }: Props) {
         display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20,
       }}>
         <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
         </Link>
         <h1 style={{
           fontFamily: 'var(--font-display), serif', fontSize: 22, fontWeight: 500,

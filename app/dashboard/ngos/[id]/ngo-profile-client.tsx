@@ -101,10 +101,11 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             icon={<ArrowLeft size={16} />}
             onClick={() => router.back()}
             theme="dark"
+            ariaLabel="Geri"
           />
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <IconButtonDS icon={<Share2 size={16} />} theme="dark" />
-            <IconButtonDS icon={<Heart size={16} />} theme="dark" />
+            <IconButtonDS icon={<Share2 size={16} />} theme="dark" ariaLabel="Paylaş" />
+            <IconButtonDS icon={<Heart size={16} />} theme="dark" ariaLabel="Beğen" />
             {membership?.status === 'active' ? (
               showCancelConfirm ? (
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>

@@ -48,7 +48,7 @@ export default function MyMissionsClient({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <Link href="/dashboard" style={{ textDecoration: 'none', flexShrink: 0 }}>
-            <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+            <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
           </Link>
           <h1 style={{
             fontFamily: displayFont, fontSize: 20, fontWeight: 600,

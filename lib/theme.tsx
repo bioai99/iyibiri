@@ -64,8 +64,11 @@ const LIGHT: SemanticColors = {
   ink700: '#FFFCF4',        // surface elevated (featured kart, modal) — neredeyse beyaz, "yükselmiş" hissi
   ink600: '#D9C9A4',        // hairline border — daha belirgin warm tan, sınır gözle görünür
   ink500: '#C9A24A',        // saturated accent (progress fill, active states)
-  ink400: '#9E9580',        // muted text alt
-  ink300: '#7A6F5E',        // muted text
+  // Vol-37 P7: WCAG AA contrast bump (light mode)
+  // Önceki: #9E9580 (~2.8:1 on ink900) / #7A6F5E (~3.7:1 on ink900) — small text AA fail
+  // Şimdi:  #6B6253 (~4.5:1) / #524A3F (~5.5:1) — small text AA passing
+  ink400: '#6B6253',        // muted text alt — kontrast bump (önce #9E9580)
+  ink300: '#524A3F',        // muted text — kontrast bump (önce #7A6F5E)
   ink200: '#3E3830',        // body text alt
   ink100: '#241E18',        // body text
   cream: '#241E18',         // primary text (light mode'da koyu metin)

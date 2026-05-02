@@ -81,7 +81,7 @@ export default function OnboardingCity() {
       {/* Header */}
       <div style={{ padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
         <Link href="/onboarding/causes" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
         </Link>
         {/* Progress bar — 2 segments, adım 2 */}
         <div style={{ display: 'flex', flex: 1, gap: 4 }}>

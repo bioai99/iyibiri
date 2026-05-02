@@ -20,7 +20,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
       <div style={{ maxWidth: 720, margin: '0 auto', padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 24px 80px' }}>
         <div style={{ marginBottom: 24 }}>
           <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
-            <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+            <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
           </Link>
         </div>
         {children}

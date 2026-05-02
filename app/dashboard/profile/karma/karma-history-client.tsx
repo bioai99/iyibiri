@@ -59,7 +59,7 @@ export function KarmaHistoryClient({
         display: 'flex', alignItems: 'center', gap: 12,
       }}>
         <Link href="/dashboard/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
         </Link>
         <h1 style={{ fontFamily: displayFont, fontSize: 22, fontWeight: 500, margin: 0, color: c.cream }}>
           Karma Geçmişi

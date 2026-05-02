@@ -94,7 +94,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         padding: 'calc(env(safe-area-inset-top, 20px) + 38px) 20px 0',
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
-        <IconButtonDS icon={<ArrowLeft size={16} />} onClick={() => router.back()} />
+        <IconButtonDS icon={<ArrowLeft size={16} />} onClick={() => router.back()} ariaLabel="Geri" />
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: c.gold }}>
           {(ngo.short_name ?? ngo.name).toUpperCase()} · ÜYELİK
         </div>

@@ -164,10 +164,12 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
           <IconButtonDS
             icon={<ArrowLeft size={18} />}
             onClick={() => router.back()}
+            ariaLabel="Geri"
           />
           <div style={{ display: 'flex', gap: 8 }}>
             <IconButtonDS
               icon={<Share2 size={18} />}
+              ariaLabel="Görevi paylaş"
               onClick={() => {
                 try {
                   if (navigator.share) {
@@ -178,6 +180,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
             />
             <IconButtonDS
               icon={<Heart size={18} fill={saved ? c.cream : 'none'} />}
+              ariaLabel={saved ? 'Kaydı kaldır' : 'Kaydet'}
               onClick={toggleSave}
             />
           </div>

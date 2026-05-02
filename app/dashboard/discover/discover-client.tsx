@@ -248,10 +248,11 @@ export function DiscoverClient({ missions, ngos, posts, subscribedNgoIds, member
             }}
           />
           <input
-            type="text"
+            type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Öncü, kategori veya şehir"
+            aria-label="Öncüleri ara"
             style={{
               width: '100%',
               background: c.ink800,

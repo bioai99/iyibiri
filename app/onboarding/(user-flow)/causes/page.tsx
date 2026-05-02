@@ -68,7 +68,7 @@ export default function OnboardingCauses() {
         display: 'flex', alignItems: 'center', gap: 12,
       }}>
         <Link href="/onboarding/welcome" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
         </Link>
         {/* Progress bar — 2 segments, adım 1 */}
         <div style={{ display: 'flex', flex: 1, gap: 4 }}>

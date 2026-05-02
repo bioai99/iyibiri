@@ -9,9 +9,21 @@ interface IconButtonDSProps {
   size?: number
   theme?: 'dark' | 'light'
   style?: React.CSSProperties
+  /** Vol-37 P6: a11y — ekran okuyucu için icon-only button etiketi (TR) */
+  ariaLabel?: string
+  /** Form submission davranışı — default 'button' (icon-only nav typically not submit) */
+  type?: 'button' | 'submit' | 'reset'
 }
 
-export function IconButtonDS({ icon, onClick, size = 36, theme = 'dark', style = {} }: IconButtonDSProps) {
+export function IconButtonDS({
+  icon,
+  onClick,
+  size = 36,
+  theme = 'dark',
+  style = {},
+  ariaLabel,
+  type = 'button',
+}: IconButtonDSProps) {
   const { colors: c } = useTheme()
   const tokens =
     theme === 'dark'
@@ -20,7 +32,9 @@ export function IconButtonDS({ icon, onClick, size = 36, theme = 'dark', style =
 
   return (
     <button
+      type={type}
       onClick={onClick}
+      aria-label={ariaLabel}
       style={{
         width: size,
         height: size,

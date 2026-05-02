@@ -661,9 +661,10 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
           <IconButtonDS
             icon={<ArrowLeft size={18} />}
             onClick={() => router.back()}
+            ariaLabel="Geri"
           />
           {state === 'completed' && (
-            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} />
+            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} ariaLabel="Görev sonucunu paylaş" />
           )}
         </div>
 

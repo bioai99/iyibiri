@@ -112,10 +112,11 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
           }}
         >
           <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
-            <IconButtonDS icon={<Settings size={16} />} />
+            <IconButtonDS icon={<Settings size={16} />} ariaLabel="Ayarlar" />
           </Link>
           <IconButtonDS
             icon={<Share2 size={16} />}
+            ariaLabel="Profili paylaş"
             onClick={() => {
               try {
                 if (navigator.share) {

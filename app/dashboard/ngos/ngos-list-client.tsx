@@ -86,9 +86,11 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
         }}>
           <Search size={16} color={c.ink300} />
           <input
+            type="search"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Kuruluş ara..."
+            aria-label="Kuruluş ara"
             style={{
               flex: 1,
               border: 'none',

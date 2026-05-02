@@ -229,16 +229,17 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
                 {ngo.logo_url ? (
                   <Image
                     src={ngo.logo_url}
-                    alt={ngo.name}
+                    alt={ngo.name ?? ''}
                     width={19}
                     height={19}
                     style={{ objectFit: 'contain', width: '72%', height: '72%' }}
-                   
+
                     quality={80}
                   />
                 ) : (
                   <span style={{ fontSize: 11, fontWeight: 700, color: ngo.color_accent ?? c.gold }}>
-                    {(ngo.short_name ?? ngo.name)[0]}
+                    {/* Vol-37 P7: defensive — short_name/name ikisi de null ise '?' */}
+                    {(ngo.short_name ?? ngo.name ?? '?')[0]}
                   </span>
                 )}
               </div>
@@ -247,7 +248,7 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
                 color: c.cream,
                 textShadow: '0 1px 3px rgba(0,0,0,0.6)',
               }}>
-                {ngo.short_name ?? ngo.name}
+                {ngo.short_name ?? ngo.name ?? ''}
               </span>
             </div>
           )}

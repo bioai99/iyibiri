@@ -76,7 +76,7 @@ export default function InterestsClient({ userId, initialInterests }: InterestsC
         display: 'flex', alignItems: 'center', gap: 12,
       }}>
         <Link href="/dashboard/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} />
+          <IconButtonDS icon={<ArrowLeft size={18} />} size={36} ariaLabel="Geri" />
         </Link>
         <h1 style={{
           fontFamily: displayFont, fontSize: 18, fontWeight: 600,

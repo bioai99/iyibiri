@@ -198,8 +198,9 @@ export function DonateHubClient({ ngos, featured, supportersByNgo }: Props) {
             <Search size={14} color={searchActive ? c.gold : c.ink400} />
             <input
               ref={searchInputRef}
-              type="text"
+              type="search"
               placeholder="Vakıf, kategori, şehir…"
+              aria-label="STK ara — vakıf, kategori veya şehir"
               value={query}
               onFocus={() => setSearchActive(true)}
               onChange={(e) => setQuery(e.target.value)}
