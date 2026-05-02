@@ -158,7 +158,7 @@ export default function ForgotPasswordPage() {
               disabled={loading || !email}
               style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: c.ink, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: loading ? 'wait' : 'pointer', opacity: loading || !email ? 0.7 : 1 }}
             >
-              {loading ? 'Gönderiliyor...' : 'Sıfırlama linki gönder'}
+              {loading ? 'Gönderiliyor…' : 'Sıfırlama linki gönder'}
             </button>
 
             <p style={{ margin: '16px 0 0', fontFamily: uiFont, fontSize: 13, color: c.ink300, textAlign: 'center' }}>

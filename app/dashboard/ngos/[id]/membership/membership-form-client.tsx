@@ -355,7 +355,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
             boxShadow: canSubmit ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
           }}
         >
-          {submitting ? 'Kaydediliyor...' : 'Gönüllü Ol'}
+          {submitting ? 'Kaydediliyor…' : 'Gönüllü Ol'}
         </motion.button>
         </div>
       </div>

@@ -48,7 +48,7 @@ export function SkeletonBlock({
 
 /** Liste sayfaları için template (missions list, rewards list, ngos list vs.). */
 export function ListPageLoading({
-  title = 'Yükleniyor...',
+  title = 'Yükleniyor…',
   itemCount = 5,
   itemHeight = 120,
 }: {
@@ -104,7 +104,7 @@ export function ListPageLoading({
 
 /** Detail sayfası için template (NGO profil, mission detay, reward detay). */
 export function DetailPageLoading({
-  title = 'Yükleniyor...',
+  title = 'Yükleniyor…',
 }: {
   title?: string
 }) {

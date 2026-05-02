@@ -113,8 +113,8 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
           ) : (
             <EmptyStateV2
               illustration="heart"
-              title="Henüz kayıtlı kuruluş yok"
-              description="Kuruluşlar yakında burada yer alacak — ilk görevler de onlarla gelir."
+              title="Kuruluşlar yakında burada"
+              description="Yeni STK'lar onaylandıkça burada listelenir. Görevler de onlarla birlikte gelir."
             />
           )
         )}

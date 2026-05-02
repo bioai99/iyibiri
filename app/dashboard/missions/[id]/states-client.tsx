@@ -509,7 +509,7 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
             >
               <Image
                 src={url}
-                alt=""
+                alt={i === 0 ? 'Görev fotoğrafı' : `Görev anısı ${i + 1}`}
                 fill
                 sizes="(max-width: 640px) 33vw, 200px"
                 style={{ objectFit: 'cover' }}

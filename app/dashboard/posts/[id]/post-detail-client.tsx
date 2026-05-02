@@ -160,7 +160,7 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
             }}>
               {ngo?.logo_url && (
                 <div style={{ width: 32, height: 32, borderRadius: 10, background: 'white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Image src={ngo.logo_url} alt="" width={22} height={22} style={{ objectFit: 'contain' }} quality={80} />
+                  <Image src={ngo.logo_url} alt={ngo.short_name ?? ngo.name ?? ''} width={22} height={22} style={{ objectFit: 'contain' }} quality={80} />
                 </div>
               )}
               <div style={{ flex: 1 }}>

@@ -423,7 +423,7 @@ export function EditProfileClient({
           {saved ? (
             <><Check size={18} strokeWidth={2.5} /> Kaydedildi</>
           ) : saving ? (
-            'Kaydediliyor...'
+            'Kaydediliyor…'
           ) : (
             'Kaydet'
           )}

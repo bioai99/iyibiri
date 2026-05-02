@@ -350,7 +350,7 @@ export function RewardDetailClient({
               opacity: loading ? 0.6 : 1,
             }}
           >
-            {loading ? 'İşleniyor...' : 'Ödülü Kullan'}
+            {loading ? 'İşleniyor…' : 'Ödülü Kullan'}
           </motion.button>
         ) : (
           <div

@@ -219,7 +219,7 @@ export default function ResetPasswordPage() {
               disabled={loading || !password || !confirm || password !== confirm}
               style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: c.ink, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: loading ? 'wait' : 'pointer', opacity: loading || !password || !confirm || password !== confirm ? 0.6 : 1 }}
             >
-              {loading ? 'Güncelleniyor...' : 'Şifreyi güncelle'}
+              {loading ? 'Güncelleniyor…' : 'Şifreyi güncelle'}
             </button>
           </div>
         </>

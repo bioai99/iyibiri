@@ -249,7 +249,7 @@ export function NgoSignupForm() {
           disabled={isLoading}
           className="px-6 py-3 rounded-xl bg-gold text-ink-900 font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
         >
-          {isLoading ? 'Gönderiliyor...' : 'Başvuruyu Gönder'}
+          {isLoading ? 'Gönderiliyor…' : 'Başvuruyu Gönder'}
         </button>
         <p className="text-xs text-ink-300 self-center leading-relaxed">
           Gönder düğmesine basarak{' '}

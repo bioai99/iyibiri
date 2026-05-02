@@ -613,33 +613,64 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
         </div>
       )}
 
-      {/* Active missions */}
-      {missions.length > 0 && (
-        <div style={{ padding: '28px 16px 0' }}>
-          <div
+      {/* Active missions — Vol-37 P4: empty state explanatory copy */}
+      <div style={{ padding: '28px 16px 0' }}>
+        <div
+          style={{
+            padding: '0 4px 14px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+          }}
+        >
+          <h3
             style={{
-              padding: '0 4px 14px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'baseline',
+              margin: 0,
+              fontFamily: 'var(--font-fraunces, Georgia, serif)',
+              fontSize: 20,
+              fontWeight: 500,
+              letterSpacing: '-0.02em',
+              color: c.cream,
             }}
           >
-            <h3
-              style={{
-                margin: 0,
-                fontFamily: 'var(--font-fraunces, Georgia, serif)',
-                fontSize: 20,
-                fontWeight: 500,
-                letterSpacing: '-0.02em',
-                color: c.cream,
-              }}
-            >
-              Açık <span style={{ fontStyle: 'italic', color: c.gold }}>görevler</span>
-            </h3>
+            Açık <span style={{ fontStyle: 'italic', color: c.gold }}>görevler</span>
+          </h3>
+          {missions.length > 0 && (
             <span style={{ ...EYEBROW, color: c.gold, fontSize: 10 }}>
               {missions.length} GÖREV
             </span>
+          )}
+        </div>
+
+        {missions.length === 0 ? (
+          <div
+            style={{
+              padding: '24px 18px',
+              borderRadius: 16,
+              background: c.ink800,
+              border: `1px dashed ${c.ink600}`,
+              textAlign: 'center',
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: 13,
+                color: c.ink300,
+                lineHeight: 1.5,
+                fontFamily: 'var(--font-fraunces, Georgia, serif)',
+                fontStyle: 'italic',
+              }}
+            >
+              Şu an açık bir görev yok.<br />
+              {ngo.short_name ?? ngo.name} yeni görev hazırladığında burada listelenecek — STK&apos;yı takip ederek haberdar ol.
+            </p>
           </div>
+        ) : null}
+      </div>
+
+      {missions.length > 0 && (
+        <div style={{ padding: '0 16px 0' }}>
 
           {missions.map((mission) => {
             const diff = mission.difficulty ?? 'easy'

@@ -217,7 +217,7 @@ export default function OnboardingCauses() {
           }}
         >
           {saving
-            ? 'Kaydediliyor...'
+            ? 'Kaydediliyor…'
             : selected.length > 0
               ? `${selected.length} alan seçtin — Devam`
               : 'En az 1 alan seç'}

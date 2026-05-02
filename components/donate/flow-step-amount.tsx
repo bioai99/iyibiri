@@ -467,7 +467,7 @@ export function FlowStepAmount({
             fontFamily: 'inherit',
           }}
         >
-          Devam et
+          Bilgilerime geç
         </button>
       </div>
     </div>

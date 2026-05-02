@@ -32,7 +32,7 @@ export default function StreakClient({ currentStreak, longestStreak, activeDays 
 
   // Determine headline text based on streak
   function getHeadlineText(streak: number): string {
-    if (streak === 0) return 'Henüz seri yok.'
+    if (streak === 0) return 'Bugün ilk gününü başlat.'
     if (streak === 1) return 'Bir günlük başlangıç.'
     if (streak < 7) return `${streak} günlük iyi hal.`
     if (streak === 7) return 'Yedi günlük iyi hal.'

@@ -201,7 +201,7 @@ export default function OnboardingCity() {
             opacity: (saving || !selected) ? 0.6 : 1,
           }}
         >
-          {saving ? 'Kaydediliyor...' : selected ? (<>Bitir <ArrowRight size={16} strokeWidth={2.5} /></>) : 'Lütfen şehir seç'}
+          {saving ? 'Kaydediliyor…' : selected ? (<>Bitir <ArrowRight size={16} strokeWidth={2.5} /></>) : 'Lütfen şehir seç'}
         </motion.button>
       </div>
 

@@ -621,15 +621,17 @@ function StickyCta({
   const label = (() => {
     if (submitting) return 'Hazırlanıyor…'
     if (step === 1) {
+      // Vol-37 P5: context-specific CTA — "Devam et" yerine kullanıcının
+      // ne yaptığını gösteren etiket. Step 1'de tier/tutar seçilir.
       const amount = derived.isDonationBased
         ? typeof customAmount === 'number'
           ? formatPriceDisplay(customAmount, derived.currency)
           : ''
         : selectedTier?.priceDisplay ?? ''
-      return `Devam et · ${amount}`.trim()
+      return `Bilgilerime geç · ${amount}`.trim()
     }
-    if (step === 2) return 'Devam et'
-    if (step === 3) return 'Ödeme adımına geç'
+    if (step === 2) return 'Onaya geç'
+    if (step === 3) return 'Ödemeye geç'
     return 'Devam et'
   })()
 
