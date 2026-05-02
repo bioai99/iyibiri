@@ -49,8 +49,18 @@ export default function SignupPage() {
       // mesaj. Önceki "Bir aksaklık" generic'i debug için yetersizdi.
       console.error('Signup error:', { message: error.message, status: error.status, name: error.name })
       const msg = error.message.toLowerCase()
-      if (msg.includes('already registered') || msg.includes('already exists')) {
-        setError('Bu e-posta zaten kayıtlı. Giriş yapmak ister misin?')
+      // Vol-50.2: status 429 = rate limit (Supabase auth/v1/signup endpoint).
+      // Network panel'de status'u kontrol et — error.message bazen "Too Many
+      // Requests" döner, bazen başka body. Status code en güvenilir.
+      if (error.status === 429 || msg.includes('rate limit') || msg.includes('too many') || msg.includes('exceeded')) {
+        setError('Çok fazla deneme yaptın. ~1 saat sonra tekrar dene veya farklı bir e-posta dene.')
+        setLoading(false)
+        return
+      }
+      if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('user already')) {
+        setError('Bu e-posta zaten kayıtlı. Giriş yap veya doğrulama sayfasına git.')
+        setLoading(false)
+        return
       } else if (msg.includes('password')) {
         setError('Şifre en az 8 karakter ve 1 rakam içermeli.')
       } else if (msg.includes('rate limit') || msg.includes('too many') || msg.includes('exceeded')) {
