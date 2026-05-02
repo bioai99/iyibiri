@@ -7,9 +7,16 @@
 //   - Streak >= 1 ise sağ üstte glassmorphism rozet (🔥 X gün)
 //   - Tier progress bar + "next tier'a X kaldı" yazısı
 //   - Footer: 3 StatPill (Aktif / Tamamlanan / Tüm seviyeler X/5)
+//
+// Vol-39 (2026-05-02): StatPill artık Link + lucide icon + ChevronRight
+//   Aktif → /dashboard/my-missions (devam edenler)
+//   Tamamlanan → /dashboard/profile/karma (karma history)
+//   Tüm Seviyeler → /dashboard/tiers (tier journey)
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useReducedMotion } from 'framer-motion'
+import { Activity, CheckCircle2, Sparkles, ChevronRight, type LucideIcon } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { TIER_DATA, getTierByKarma, getNextTier } from '@/components/tier/tier-data'
 import { TierButterfly } from '@/components/tier/tier-butterfly'
@@ -239,12 +246,23 @@ export function HeroCardVol30({
             borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
           }}
         >
-          <StatPill label="Aktif" value={taken} icon="●" />
-          <StatPill label="Tamamlanan" value={completed} icon="✓" />
+          <StatPill
+            label="Aktif"
+            value={taken}
+            Icon={Activity}
+            href="/dashboard/my-missions"
+          />
+          <StatPill
+            label="Tamamlanan"
+            value={completed}
+            Icon={CheckCircle2}
+            href="/dashboard/profile/karma"
+          />
           <StatPill
             label="Tüm seviyeler"
             value={`${tier.id}/${TIER_DATA.length}`}
-            icon="✦"
+            Icon={Sparkles}
+            href="/dashboard/tiers"
             tinted={tintSolid}
           />
         </div>
@@ -256,51 +274,113 @@ export function HeroCardVol30({
 interface StatPillProps {
   label: string
   value: string | number
-  icon: string
+  Icon: LucideIcon
+  href: string
   tinted?: string
 }
 
-function StatPill({ label, value, icon, tinted }: StatPillProps) {
+function StatPill({ label, value, Icon, href, tinted }: StatPillProps) {
   const { colors: c, mode } = useTheme()
   const isDark = mode === 'dark'
+  const [pressed, setPressed] = useState(false)
+  const [hovered, setHovered] = useState(false)
+
+  const accent = tinted ?? c.gold
+  const baseBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)'
+  const hoverBg = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)'
+  const baseBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'
+  const hoverBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.10)'
+
   return (
-    <div
+    <Link
+      href={href}
+      aria-label={`${label}: ${value} — detayları gör`}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setPressed(false); setHovered(false) }}
+      onTouchStart={() => setPressed(true)}
+      onTouchEnd={() => setPressed(false)}
       style={{
         flex: 1,
-        padding: '10px 12px',
+        padding: '12px 12px 12px 14px',
         borderRadius: 14,
-        background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
-        border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+        background: hovered ? hoverBg : baseBg,
+        border: `1px solid ${hovered ? hoverBorder : baseBorder}`,
+        textDecoration: 'none',
+        cursor: 'pointer',
+        position: 'relative',
+        transform: pressed ? 'scale(0.98)' : 'scale(1)',
+        transition: 'transform 180ms cubic-bezier(.2,.8,.2,1), background 180ms, border-color 180ms',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+        minHeight: 64,
       }}
     >
+      {/* Top row: icon + chevron */}
       <div
         style={{
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: '0.16em',
-          color: tinted ?? c.ink300,
-          textTransform: 'uppercase',
-          marginBottom: 4,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontSize: 18,
-          fontWeight: 600,
-          color: c.cream,
-          fontVariantNumeric: 'tabular-nums',
           display: 'flex',
-          alignItems: 'baseline',
-          gap: 4,
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <span style={{ fontSize: 11, color: tinted ?? c.gold }} aria-hidden>
-          {icon}
+        <span
+          style={{
+            width: 26,
+            height: 26,
+            borderRadius: 8,
+            background: `${accent}1F`, // ~12% alpha tint
+            border: `1px solid ${accent}33`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: accent,
+          }}
+          aria-hidden
+        >
+          <Icon size={14} strokeWidth={2.2} />
         </span>
-        {value}
+        <ChevronRight
+          size={14}
+          color={c.ink400}
+          aria-hidden
+          style={{
+            opacity: hovered ? 1 : 0.55,
+            transform: hovered ? 'translateX(2px)' : 'translateX(0)',
+            transition: 'transform 180ms cubic-bezier(.2,.8,.2,1), opacity 180ms',
+          }}
+        />
       </div>
-    </div>
+
+      {/* Bottom row: label + value */}
+      <div style={{ marginTop: 'auto' }}>
+        <div
+          style={{
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: '0.16em',
+            color: tinted ?? c.ink300,
+            textTransform: 'uppercase',
+            marginBottom: 2,
+          }}
+        >
+          {label}
+        </div>
+        <div
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: c.cream,
+            fontVariantNumeric: 'tabular-nums',
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {value}
+        </div>
+      </div>
+    </Link>
   )
 }
