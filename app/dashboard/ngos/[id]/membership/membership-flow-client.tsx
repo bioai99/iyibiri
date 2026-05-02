@@ -669,6 +669,12 @@ function StickyCta({
 
 function LegacyFallback({ ngo }: { ngo: NGO }) {
   const { colors: c } = useTheme()
+  // Vol-51: "Henüz hazır değil" dead-end yerine actionable fallback.
+  // Membership URL varsa STK'nın resmi sitesine yönlendir; yoksa
+  // takip edilebileceğini söyle + STK sayfasına geri dön.
+  const externalUrl = ngo.membership_url || null
+  const label = ngo.short_name ?? ngo.name
+
   return (
     <div
       className="flex min-h-[100dvh] flex-col items-center justify-center px-6 text-center"
@@ -676,20 +682,39 @@ function LegacyFallback({ ngo }: { ngo: NGO }) {
     >
       <h1
         className="font-display text-[22px] font-medium"
-        style={{ color: c.cream, letterSpacing: '-0.025em' }}
+        style={{ color: c.cream, letterSpacing: '-0.025em', maxWidth: 320 }}
       >
-        {ngo.short_name ?? ngo.name} üyeliği henüz hazır değil
+        {label} üyeliği iyiBiri üzerinden henüz açık değil
       </h1>
-      <p className="mt-3 text-[14px]" style={{ color: c.ink300 }}>
-        Bu kuruluş için üyelik yapısı yakında eklenecek.
+      <p className="mt-3 text-[14px] leading-relaxed" style={{ color: c.ink300, maxWidth: 320 }}>
+        {externalUrl
+          ? `Üyelik için ${label} resmi sitesini ziyaret edebilirsin. Bu arada STK'yı takip et — yeni görevlerden ilk sen haberdar ol.`
+          : `${label} henüz iyiBiri üzerinden üyelik planı tanımlamadı. Şimdilik STK'yı takip edip yeni görevlerden haberdar olabilirsin.`}
       </p>
-      <Link
-        href={`/dashboard/ngos/${ngo.id}`}
-        className="mt-6 inline-block rounded-full px-5 py-3 text-[14px] font-bold"
-        style={{ background: c.gold, color: c.ink }}
-      >
-        Kuruluş sayfasına dön
-      </Link>
+      <div className="mt-6 flex flex-col gap-3 w-full max-w-[260px]">
+        {externalUrl && (
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded-full px-5 py-3 text-[14px] font-bold"
+            style={{ background: c.gold, color: c.ink }}
+          >
+            Resmi siteye git ↗
+          </a>
+        )}
+        <Link
+          href={`/dashboard/ngos/${ngo.id}`}
+          className="inline-block rounded-full px-5 py-3 text-[14px] font-bold"
+          style={{
+            background: externalUrl ? 'transparent' : c.gold,
+            color: externalUrl ? c.cream : c.ink,
+            border: externalUrl ? `1px solid ${c.ink600}` : 'none',
+          }}
+        >
+          Kuruluş sayfasına dön
+        </Link>
+      </div>
     </div>
   )
 }

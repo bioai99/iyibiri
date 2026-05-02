@@ -23,9 +23,11 @@ import type { MissionWithNGO } from '@/lib/supabase/types'
 interface Props {
   mission: MissionWithNGO
   href?: string
+  /** NGO profile sayfasında etiketi gizlemek için (zaten o NGO'dayız, redundant). */
+  hideAuthor?: boolean
 }
 
-export function MissionListCardVol30({ mission, href }: Props) {
+export function MissionListCardVol30({ mission, href, hideAuthor = false }: Props) {
   const { colors: c } = useTheme()
   const ngoColor = mission.ngos?.color_accent || c.gold
   const ngoLabel = mission.ngos?.short_name || mission.ngos?.name || ''
@@ -133,7 +135,7 @@ export function MissionListCardVol30({ mission, href }: Props) {
         }}
       >
         <div>
-          {ngoLabel && (
+          {ngoLabel && !hideAuthor && (
             <div
               style={{
                 fontSize: 9,

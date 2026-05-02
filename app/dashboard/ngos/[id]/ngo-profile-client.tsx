@@ -8,6 +8,7 @@ import { ArrowLeft, Share2, Heart, ChevronRight, Leaf, Globe, Mail, Phone, Exter
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
+import { MissionListCardVol30 } from '@/components/dashboard/mission-list-card-vol30'
 import { createClient } from '@/lib/supabase/client'
 import type { NGO, MissionWithNGO, NgoMembership } from '@/lib/supabase/types'
 
@@ -679,98 +680,16 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
       </div>
 
       {missions.length > 0 && (
-        <div style={{ padding: '0 16px 0' }}>
-
-          {missions.map((mission) => {
-            const diff = mission.difficulty ?? 'easy'
-            const diffColor = difficultyColor[diff] ?? difficultyColor.easy
-            const diffLabel = difficultyLabel[diff] ?? 'Kolay'
-
-            return (
-              <Link
-                key={mission.id}
-                href={`/dashboard/missions/${mission.id}`}
-                style={{ textDecoration: 'none' }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 14,
-                    background: c.ink800,
-                    border: `1px solid ${c.ink700}`,
-                    borderRadius: 16,
-                    padding: '14px 16px',
-                    marginBottom: 10,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 12,
-                      background: `${c.gold}22`,
-                      border: `1px solid ${c.gold}44`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Leaf size={18} color={c.gold} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontFamily: 'var(--font-fraunces, Georgia, serif)',
-                        fontSize: 15,
-                        fontWeight: 500,
-                        color: c.cream,
-                        letterSpacing: '-0.015em',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {mission.title}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                      <span
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 700,
-                          color: diffColor,
-                          letterSpacing: '0.04em',
-                        }}
-                      >
-                        {diffLabel}
-                      </span>
-                      <span
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          color: c.gold,
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                      >
-                        <KarmaDotToken size={10} />
-                        +{mission.karma} Karma
-                      </span>
-                      {mission.duration && (
-                        <span style={{ fontSize: 11, color: c.ink400 }}>{mission.duration}</span>
-                      )}
-                    </div>
-                  </div>
-                  <ChevronRight size={15} color={c.ink600} style={{ flexShrink: 0 }} />
-                </div>
-              </Link>
-            )
-          })}
+        <div style={{ padding: '0 16px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {/* Vol-51: Dashboard ile tutarlı MissionListCardVol30 — 84×84 thumb +
+              NGO color stripe + body. NGO sayfasında olduğumuz için hideAuthor
+              ile NGO etiketini gizle (redundant). */}
+          {missions.map((mission) => (
+            <MissionListCardVol30 key={mission.id} mission={mission} hideAuthor />
+          ))}
         </div>
       )}
+
     </div>
   )
 }
