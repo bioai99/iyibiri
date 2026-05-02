@@ -11,6 +11,8 @@ const nextConfig = {
       { protocol: "https", hostname: "www.haytap.org" },
       { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Vol-43: Clearbit Logo API — public/free brand logo CDN (sponsor logoları)
+      { protocol: "https", hostname: "logo.clearbit.com" },
       { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },
     ],
     formats: ["image/avif", "image/webp"],

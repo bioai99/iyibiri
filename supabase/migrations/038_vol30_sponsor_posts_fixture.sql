@@ -21,8 +21,8 @@ insert into public.sponsors (
     'Patagonia',
     'Patagonia',
     '#3D6A4E',          -- doğa yeşili
-    -- Vol-43 (2026-05-02): logo_url null → Wikipedia Commons resmi marka SVG
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Patagonia_logo.svg/2560px-Patagonia_logo.svg.png',
+    -- Vol-43 (2026-05-02): logo_url Clearbit Logo API (brand domain auto-fetch)
+    'https://logo.clearbit.com/patagonia.com',
     'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=80',
     'Doğa için iş yapan outdoor markası. Kazandığının yüzde birini gezegene bağışlar.',
     'https://www.patagonia.com.tr',
@@ -33,8 +33,8 @@ insert into public.sponsors (
     'Eczacıbaşı Topluluğu',
     'Eczacıbaşı',
     '#8B2D3E',          -- bordo
-    -- Vol-43: logo_url null → Wikipedia Commons resmi marka SVG
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Eczac%C4%B1ba%C5%9F%C4%B1_logo.svg/2560px-Eczac%C4%B1ba%C5%9F%C4%B1_logo.svg.png',
+    -- Vol-43: logo_url Clearbit Logo API
+    'https://logo.clearbit.com/eczacibasi.com.tr',
     'https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=900&q=80',
     'Türkiye''nin en köklü topluluklarından biri. Sağlık, eğitim ve kültür alanlarında 80 yılı aşkın sosyal yatırım.',
     'https://www.eczacibasi.com.tr',
