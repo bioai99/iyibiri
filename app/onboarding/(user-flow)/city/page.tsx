@@ -63,11 +63,15 @@ export default function OnboardingCity() {
       if (updateError) {
         console.error('Profile update failed:', updateError)
         setSaving(false)
+        // Vol-54: silent fail yerine kullanıcıya net mesaj — onboarding
+        // tamamlanmadan dashboard'a düşse middleware loop yapardı.
+        alert('Profilin kaydedilemedi: ' + updateError.message + '\nİnternet bağlantını kontrol edip tekrar dene.')
         return
       }
     } catch (err) {
       console.error('City completion endpoint failed:', err)
       setSaving(false)
+      alert('Beklenmedik bir hata oldu. Sayfayı yenileyip tekrar dene.')
       return
     }
 

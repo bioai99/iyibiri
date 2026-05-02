@@ -196,13 +196,19 @@ export async function middleware(request: NextRequest) {
     const onboardedCached = getCachedFlag(request, 'iyibiri_onboarded')
     if (onboardedCached === null) {
       // Cookie yok → DB query (kullanıcı yeni login veya cookie expire)
+      // Vol-54: onboarding_completed primary signal; interests fallback.
+      // Önceden sadece interests'e bakıyordu — city step onboarding_completed=true
+      // set etse bile interests=[] kalmışsa kullanıcı sonsuz onboarding/welcome
+      // loop'una düşüyordu (audit bulgu BUG-005).
       const { data: profile } = await supabase
         .from('profiles')
-        .select('interests')
+        .select('interests, onboarding_completed')
         .eq('id', user.id)
         .single()
 
-      const hasCompleted = profile?.interests && Array.isArray(profile.interests) && profile.interests.length > 0
+      const explicitlyCompleted = profile?.onboarding_completed === true
+      const hasInterests = profile?.interests && Array.isArray(profile.interests) && profile.interests.length > 0
+      const hasCompleted = explicitlyCompleted || hasInterests
 
       if (!hasCompleted) {
         return NextResponse.redirect(new URL('/onboarding/welcome', request.url))

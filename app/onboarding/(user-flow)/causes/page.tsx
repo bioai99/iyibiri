@@ -35,21 +35,33 @@ export default function OnboardingCauses() {
 
   async function handleContinue() {
     setSaving(true)
-    // Fallback: always localStorage for onboarding pre-auth flow
+    // Fallback: localStorage (post-auth city step DB sync için backup)
     try {
       localStorage.setItem('iyibiri_onboarding_interests', JSON.stringify(selected))
     } catch { /* localStorage disabled veya full */ }
 
-    // Eğer kullanıcı zaten auth'luysa (nadir, ama güvenli taraf) — profile'a doğrudan yaz
+    // Vol-54: Auth'lu kullanıcı için DB write sessiz fail etmesin —
+    // başarısızsa kullanıcıya görünür hata + retry imkanı.
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (user && selected.length > 0) {
-        await supabase.from('profiles').update({ interests: selected }).eq('id', user.id)
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ interests: selected })
+          .eq('id', user.id)
+        if (updateError) {
+          console.error('Interests save error:', updateError)
+          setSaving(false)
+          alert('İlgi alanların kaydedilemedi. İnternet bağlantını kontrol edip tekrar dene.')
+          return
+        }
       }
     } catch (err) {
-      console.warn('Interests direct save skipped:', err)
-      // Dashboard sync fallback devreye girer
+      console.error('Interests save exception:', err)
+      setSaving(false)
+      alert('Beklenmedik bir hata oldu. Sayfayı yenileyip tekrar dene.')
+      return
     }
 
     setSaving(false)
