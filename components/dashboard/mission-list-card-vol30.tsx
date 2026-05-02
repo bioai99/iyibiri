@@ -92,13 +92,16 @@ export function MissionListCardVol30({ mission, href }: Props) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 28,
+              background: `linear-gradient(135deg, ${ngoColor}33, ${ngoColor}11)`,
+              fontSize: 32,
+              fontWeight: 700,
+              fontFamily: "'Fraunces', ui-serif, Georgia, serif",
               color: ngoColor,
-              opacity: 0.7,
+              letterSpacing: '-0.02em',
             }}
             aria-hidden
           >
-            ✦
+            {(ngoLabel || '✦')[0]}
           </div>
         )}
       </div>
