@@ -63,7 +63,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
             src={post.cover_image_url}
             alt={post.title}
             fill
-            sizes="320px"
+           
             style={{ objectFit: 'cover' }}
             loading="lazy"
             quality={75}
@@ -92,7 +92,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
                 width={16}
                 height={16}
                 style={{ objectFit: 'contain' }}
-                sizes="20px"
+               
                 quality={80}
               />
             </div>

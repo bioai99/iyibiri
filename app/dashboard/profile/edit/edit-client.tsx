@@ -175,7 +175,7 @@ export function EditProfileClient({
                   src={avatarUrl}
                   alt="Avatar"
                   fill
-                  sizes="120px"
+                 
                   style={{ objectFit: 'cover' }}
                   priority
                   quality={85}

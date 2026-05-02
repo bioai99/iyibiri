@@ -127,7 +127,7 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                   src={ngo.logo_url}
                   alt={ngo.name}
                   fill
-                  sizes="120px"
+                 
                   style={{ objectFit: 'contain', padding: 14 }}
                   priority
                   quality={85}

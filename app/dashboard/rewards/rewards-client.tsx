@@ -476,7 +476,7 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
                           alt={reward.brand}
                           width={18}
                           height={18}
-                          sizes="20px"
+                         
                           style={{ objectFit: 'contain' }}
                           quality={80}
                         />

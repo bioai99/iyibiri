@@ -240,7 +240,7 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
                 src={mission.ngos.logo_url}
                 alt={mission.ngos.name}
                 fill
-                sizes="40px"
+               
                 style={{ objectFit: 'contain' }}
                 quality={80}
               />

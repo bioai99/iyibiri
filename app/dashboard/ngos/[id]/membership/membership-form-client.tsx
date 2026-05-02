@@ -114,7 +114,7 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
             padding: 10, marginBottom: 16, boxShadow: '0 4px 16px rgba(0,0,0,.1)',
           }}>
             {ngo.logo_url ? (
-              <Image src={ngo.logo_url} alt={ngo.name} fill sizes="80px" style={{ objectFit: 'contain', padding: 8 }} priority quality={85} />
+              <Image src={ngo.logo_url} alt={ngo.name} fill style={{ objectFit: 'contain', padding: 8 }} priority quality={85} />
             ) : (
               <span style={{ fontWeight: 900, color: ngo.color_accent ?? c.gold, fontSize: 24 }}>
                 {(ngo.short_name ?? ngo.name).slice(0, 2).toUpperCase()}

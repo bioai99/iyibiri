@@ -132,7 +132,7 @@ export function RewardDetailClient({
                 alt={reward.brand}
                 width={80}
                 height={80}
-                sizes="80px"
+               
                 priority
                 quality={85}
                 style={{

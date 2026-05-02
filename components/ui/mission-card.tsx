@@ -233,7 +233,7 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
                     width={19}
                     height={19}
                     style={{ objectFit: 'contain', width: '72%', height: '72%' }}
-                    sizes="32px"
+                   
                     quality={80}
                   />
                 ) : (

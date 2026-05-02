@@ -158,7 +158,7 @@ export function SuccessCelebration({
                 alt={ngoName}
                 width={72}
                 height={72}
-                sizes="72px"
+               
                 quality={85}
                 priority
                 className="h-[72px] w-[72px] object-contain"

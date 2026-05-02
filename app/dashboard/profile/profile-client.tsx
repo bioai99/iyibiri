@@ -155,7 +155,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
               src={(profile as { avatar_url?: string | null }).avatar_url ?? ''}
               alt={displayName ?? 'Profil'}
               fill
-              sizes="88px"
+             
               style={{ objectFit: 'cover' }}
               priority
               quality={85}
@@ -471,7 +471,7 @@ export function ProfileClient({ profile, completedCount, karma, memberships = []
                     overflow: 'hidden',
                   }}>
                     {m.ngos?.logo_url ? (
-                      <Image src={m.ngos.logo_url} alt={m.ngos.name} width={36} height={36} sizes="56px" style={{ objectFit: 'contain' }} quality={80} />
+                      <Image src={m.ngos.logo_url} alt={m.ngos.name} width={36} height={36} style={{ objectFit: 'contain' }} quality={80} />
                     ) : (
                       <span style={{ fontSize: 18, fontWeight: 700, color: m.ngos?.color_accent ?? c.gold }}>
                         {(m.ngos?.short_name ?? '?')[0]}

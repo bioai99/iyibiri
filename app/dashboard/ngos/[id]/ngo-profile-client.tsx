@@ -196,7 +196,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
               src={ngo.logo_url}
               alt={ngo.name}
               fill
-              sizes="80px"
+             
               style={{ objectFit: 'contain' }}
               quality={80}
             />

@@ -154,7 +154,7 @@ export function NGOsListClient({ ngos }: NGOsListClientProps) {
                     alt={ngo.name}
                     width={42}
                     height={42}
-                    sizes="64px"
+                   
                     style={{ objectFit: 'contain' }}
                     quality={80}
                   />
