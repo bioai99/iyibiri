@@ -16,10 +16,48 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useReducedMotion } from 'framer-motion'
-import { Activity, CheckCircle2, Sparkles, ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { TIER_DATA, getTierByKarma, getNextTier } from '@/components/tier/tier-data'
 import { TierButterfly } from '@/components/tier/tier-butterfly'
+
+// Vol-39.2: Custom SVG icon set — İyiBiri marka dili (Fraunces + butterfly +
+// gold accent). Lucide stock yerine app-specific motifler. currentColor ile
+// theme uyumlu, 18×18 native, stroke 1.6 — Fraunces serif weight'i ile uyumlu.
+
+type IconComponent = (props: { size?: number }) => JSX.Element
+
+const ActiveOrbit: IconComponent = ({ size = 16 }) => (
+  // "Devam eden" — yarım yay + dolu çekirdek. Hareketli, in-motion.
+  <svg width={size} height={size} viewBox="0 0 18 18" fill="none" aria-hidden>
+    <circle cx="9" cy="9" r="2.4" fill="currentColor" />
+    <path d="M3.5 9a5.5 5.5 0 0 1 5.5-5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M14.5 9a5.5 5.5 0 0 1-5.5 5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+)
+
+const CompletedSeal: IconComponent = ({ size = 16 }) => (
+  // "Tamamlanan" — başarı rozeti minimal hali. Soft tinted daire + iri check.
+  <svg width={size} height={size} viewBox="0 0 18 18" fill="none" aria-hidden>
+    <circle cx="9" cy="9" r="7" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M5.6 9.3l2.2 2.2L12.6 6.7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const TierButterflyMark: IconComponent = ({ size = 16 }) => (
+  // "Tüm Seviyeler" — mini butterfly silueti, TierButterfly motifinin
+  // ikonografik küçüğü. Tier journey ile semantik uyum + marka kimliği.
+  <svg width={size} height={size} viewBox="0 0 18 18" fill="none" aria-hidden>
+    {/* Body — dikey orta çizgi */}
+    <path d="M9 4.2v9.6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    {/* Üst antenler */}
+    <path d="M8 4.5c-.4-.7-1-1.2-1.6-1.4M10 4.5c.4-.7 1-1.2 1.6-1.4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    {/* Sol kanat */}
+    <path d="M9 6.5c-1.6-2.4-5-1.6-5 1.5 0 2.4 3 3.4 5 3z" fill="currentColor" fillOpacity="0.28" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+    {/* Sağ kanat */}
+    <path d="M9 6.5c1.6-2.4 5-1.6 5 1.5 0 2.4-3 3.4-5 3z" fill="currentColor" fillOpacity="0.28" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+  </svg>
+)
 
 interface HeroCardVol30Props {
   karma: number
@@ -249,19 +287,19 @@ export function HeroCardVol30({
           <StatPill
             label="Aktif"
             value={taken}
-            Icon={Activity}
+            Icon={ActiveOrbit}
             href="/dashboard/my-missions"
           />
           <StatPill
             label="Tamamlanan"
             value={completed}
-            Icon={CheckCircle2}
+            Icon={CompletedSeal}
             href="/dashboard/profile/karma"
           />
           <StatPill
             label="Tüm seviyeler"
             value={`${tier.id}/${TIER_DATA.length}`}
-            Icon={Sparkles}
+            Icon={TierButterflyMark}
             href="/dashboard/tiers"
             tinted={tintSolid}
           />
@@ -274,7 +312,7 @@ export function HeroCardVol30({
 interface StatPillProps {
   label: string
   value: string | number
-  Icon: LucideIcon
+  Icon: IconComponent
   href: string
   tinted?: string
 }
@@ -340,7 +378,7 @@ function StatPill({ label, value, Icon, href, tinted }: StatPillProps) {
           }}
           aria-hidden
         >
-          <Icon size={14} strokeWidth={2.2} />
+          <Icon size={16} />
         </span>
         <ChevronRight
           size={14}
