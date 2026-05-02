@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Vol-56-G: Next.js 14.2'de staleTimes.dynamic default 0 → dinamik sayfalar
+  // (dashboard/missions/donate/profile vs.) bottom nav'dan dönüşte ALWAYS
+  // fresh server-fetch yapıyor, 1 sn skeleton flicker user'ı yıpratıyordu.
+  // staleTimes.dynamic = 60 sn → tab switch'leri seamless (router cache aktif).
+  // Gerçek güncel data isteyen sayfalar (mission take sonrası vb.) zaten
+  // router.refresh() ile cache invalidate edebilir.
+  // Static (çoğu liste sayfası) 5 dk → daha uzun seamless cache.
+  experimental: {
+    staleTimes: {
+      dynamic: 60,
+      static: 300,
+    },
+  },
   images: {
     // Faz 1 (2026-04-26 perf-eng): Unsplash + Supabase Storage + AVIF/WebP eklendi.
     // Mission cover (Unsplash full-size 850ms) → Next Image Optimization API üzerinden

@@ -9,10 +9,20 @@ import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 import type { PostWithNGO } from '@/lib/supabase/types'
 
+// Vol-56-E: post hem NGO hem Sponsor postu olabilir; ortak author shape ile
+// avatar/isim render edilir. Sponsor postlarında ngos null gelir, sponsors dolu.
+type SponsorRel = {
+  id: string
+  name: string
+  short_name?: string | null
+  logo_url?: string | null
+  brand_color?: string | null
+}
+
 // Faz 5 (2026-04-26 perf-eng): post detay 3 <img> → <Image>. Cover (eager) + 2 NGO logo.
 
 interface Props {
-  post: PostWithNGO
+  post: PostWithNGO & { sponsors?: SponsorRel | null }
   userId: string
   initialLiked: boolean
   initialLikeCount: number
@@ -48,7 +58,30 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
     }
   }, [liked, likeCount, userId, post.id])
 
+  // Vol-56-E: ngos ya da sponsors — hangisi varsa author bilgisini ondan üret.
+  // PostsRail / Dashboard zaten author_type ayrımını yaptı; detay sayfası da
+  // aynı normalizasyona uymalı, yoksa avatar "?" + isim boş leak ediyor.
+  const sponsor = post.sponsors ?? null
   const ngo = post.ngos
+  const author = ngo
+    ? {
+        kind: 'ngo' as const,
+        id: ngo.id,
+        name: ngo.name,
+        shortName: ngo.short_name ?? ngo.name,
+        logoUrl: ngo.logo_url,
+        accent: ngo.color_accent,
+      }
+    : sponsor
+      ? {
+          kind: 'sponsor' as const,
+          id: sponsor.id,
+          name: sponsor.name,
+          shortName: sponsor.short_name ?? sponsor.name,
+          logoUrl: sponsor.logo_url ?? null,
+          accent: sponsor.brand_color ?? null,
+        }
+      : null
 
   return (
     <div style={{ minHeight: '100vh', background: c.ink900, color: c.cream, paddingBottom: 100 }}>
@@ -86,26 +119,34 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
 
       {/* Content */}
       <div style={{ padding: post.cover_image_url ? '20px 20px 0' : 'calc(env(safe-area-inset-top, 20px) + 60px) 20px 0' }}>
-        {/* NGO + meta */}
+        {/* Author (NGO veya Sponsor) + meta — Vol-56-E unified */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-          {ngo?.logo_url ? (
+          {author?.logoUrl ? (
             <div style={{
               width: 28, height: 28, borderRadius: '50%', background: 'white',
               overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative',
             }}>
-              <Image src={ngo.logo_url} alt={ngo.name} width={20} height={20} style={{ objectFit: 'contain' }} quality={80} />
+              <Image
+                src={author.logoUrl}
+                alt={author.name}
+                fill
+                sizes="28px"
+                style={{ objectFit: 'contain', padding: 3 }}
+                quality={85}
+              />
             </div>
           ) : (
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
-              background: ngo?.color_accent ?? c.gold,
+              background: author?.accent ?? c.gold,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 12, fontWeight: 700, color: '#fff',
             }}>
-              {(ngo?.short_name ?? '?')[0]}
+              {(author?.shortName ?? '?')[0]}
             </div>
           )}
-          <span style={{ fontSize: 13, fontWeight: 600, color: c.cream }}>{ngo?.short_name ?? ngo?.name}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: c.cream }}>{author?.shortName ?? ''}</span>
           <span style={{ fontSize: 12, color: c.ink300 }}>·</span>
           <Clock size={12} color={c.ink300} />
           <span style={{ fontSize: 12, color: c.ink300 }}>{post.read_time} dk okuma</span>

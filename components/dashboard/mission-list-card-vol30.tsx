@@ -25,9 +25,13 @@ interface Props {
   href?: string
   /** NGO profile sayfasında etiketi gizlemek için (zaten o NGO'dayız, redundant). */
   hideAuthor?: boolean
+  /** Vol-56-H: kullanıcı bu göreve katıldı mı — sağ üstte "✓ Katıldım" rozeti */
+  isTaken?: boolean
+  /** Vol-56-H: tamamlanmış katılım — rozet "✓ Tamamlandı" olur */
+  isCompleted?: boolean
 }
 
-export function MissionListCardVol30({ mission, href, hideAuthor = false }: Props) {
+export function MissionListCardVol30({ mission, href, hideAuthor = false, isTaken = false, isCompleted = false }: Props) {
   const { colors: c } = useTheme()
   const ngoColor = mission.ngos?.color_accent || c.gold
   const ngoLabel = mission.ngos?.short_name || mission.ngos?.name || ''
@@ -60,13 +64,38 @@ export function MissionListCardVol30({ mission, href, hideAuthor = false }: Prop
         padding: 12,
         borderRadius: 18,
         background: c.ink800,
-        border: `1px solid ${c.ink600}`,
+        // Vol-56-H: katıldıysa gold border ile görsel olarak öne çıkar
+        border: isTaken ? `1.5px solid ${c.gold}` : `1px solid ${c.ink600}`,
+        boxShadow: isTaken ? `0 0 0 1px ${c.goldSoft}` : 'none',
         cursor: 'pointer',
         alignItems: 'stretch',
         textDecoration: 'none',
         color: 'inherit',
+        position: 'relative',
       }}
     >
+      {/* Vol-56-H: "Katıldım" rozeti — kart sağ üst köşesi */}
+      {isTaken && (
+        <div
+          style={{
+            position: 'absolute',
+            top: -6,
+            right: 10,
+            background: isCompleted ? c.sage : c.gold,
+            color: isCompleted ? '#fff' : c.ink900,
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            padding: '3px 8px',
+            borderRadius: 999,
+            textTransform: 'uppercase',
+            zIndex: 2,
+            boxShadow: '0 2px 6px rgba(0,0,0,.15)',
+          }}
+        >
+          ✓ {isCompleted ? 'Tamamlandı' : 'Katıldın'}
+        </div>
+      )}
       {/* Thumbnail */}
       <div
         style={{

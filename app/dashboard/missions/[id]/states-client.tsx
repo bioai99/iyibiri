@@ -7,6 +7,9 @@ import { ArrowLeft, Share2, MapPin, ArrowRight } from 'lucide-react'
 import type { Mission } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, KarmaDotToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
+// Vol-56-D: kategori EN string'leri ("nature", "education", ...) state badge'inde
+// kullanıcıya leak ediyordu — ortak TR helper'dan map'leyelim.
+import { getCauseLabel } from '@/lib/labels'
 
 // Faz 5 (2026-04-26 perf-eng): mission states hero + thumbnail next/image.
 
@@ -121,13 +124,14 @@ function CheckIcon() {
 
 // ─── Status strip ───────────────────────────────────────────────────────────
 
-function StatusStrip({ state, karma }: { state: 'applied' | 'checkin' | 'completed'; karma: number }) {
+function StatusStrip({ state, karma, ngoName }: { state: 'applied' | 'checkin' | 'completed'; karma: number; ngoName: string }) {
   const { colors: c } = useTheme()
   const configs = {
     applied: {
       icon: <HourglassIcon />,
       title: 'Başvurun alındı',
-      sub: 'NGO 24 saat içinde yanıtlayacak.',
+      // Vol-56-D: generic "NGO" yerine STK'nın gerçek adı.
+      sub: `${ngoName} 24 saat içinde yanıtlayacak.`,
       containerStyle: {
         background: c.ink800,
         border: `1px solid ${c.ink600}`,
@@ -190,7 +194,8 @@ function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: str
     {
       num: 1,
       active: true,
-      title: 'NGO onayı',
+      // Vol-56-D: generic "NGO" yerine STK adı.
+      title: `${ngoName} onayı`,
       sub: `${ngoName} 24 saat içinde katılımını onaylar`,
     },
     {
@@ -285,7 +290,7 @@ function AppliedBody({ onCancel, ngoName }: { onCancel: () => void; ngoName: str
 
 // ─── CheckIn state body ─────────────────────────────────────────────────────
 
-function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
+function CheckInBody({ onMap, onQR, ngoName }: { onMap: () => void; onQR: () => void; ngoName: string }) {
   const { colors: c } = useTheme()
   return (
     <>
@@ -315,7 +320,8 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
             K7-3921
           </div>
           <div style={{ fontSize: 12, color: c.ink300, marginTop: 12, lineHeight: 1.4 }}>
-            NGO sorumlusu bu kodu kontrol edecek.
+            {/* Vol-56-D: generic "NGO sorumlusu" yerine STK adı. */}
+            {ngoName} sorumlusu bu kodu kontrol edecek.
           </div>
         </div>
       </div>
@@ -681,11 +687,17 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
             right: 20,
           }}
         >
-          {mission.category && (
-            <div style={{ marginBottom: 10 }}>
-              <BadgeDS variant="onImage">{mission.category}</BadgeDS>
-            </div>
-          )}
+          {(() => {
+            // Vol-56-D: category EN ham string yerine TR map ("nature" → "Doğa").
+            const cat = mission.category?.trim() || (mission as { domain?: string | null }).domain?.trim() || null
+            if (!cat) return null
+            const catLabel = getCauseLabel(cat)
+            return (
+              <div style={{ marginBottom: 10 }}>
+                <BadgeDS variant="onImage">{catLabel}</BadgeDS>
+              </div>
+            )
+          })()}
           <h1
             style={{
               fontFamily: 'Fraunces, serif',
@@ -704,7 +716,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
       </div>
 
       {/* ── Status strip ── */}
-      <StatusStrip state={state} karma={mission.karma} />
+      <StatusStrip state={state} karma={mission.karma} ngoName={mission.ngos?.name ?? 'STK'} />
 
       {/* ── State-specific body ── */}
       {state === 'applied' && (
@@ -717,6 +729,7 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
         <CheckInBody
           onMap={() => window.open('https://maps.google.com/maps?q=Kilyos+Sahili', '_blank')}
           onQR={() => router.push('/dashboard/missions/' + mission.id + '/complete')}
+          ngoName={mission.ngos?.name ?? 'STK'}
         />
       )}
       {state === 'completed' && (

@@ -96,11 +96,13 @@ export function PostsRailVol30({
           msOverflowStyle: 'none',
         }}
       >
-        {posts.map((post) => (
+        {posts.map((post, i) => (
           <PostCard
             key={post.id}
             post={post}
             subscribed={post.ngo_id ? subSet.has(post.ngo_id) : false}
+            // Vol-56-F: ilk 2 kart above-the-fold → priority cover + avatar
+            priority={i < 2}
           />
         ))}
       </div>
@@ -111,9 +113,11 @@ export function PostsRailVol30({
 interface PostCardProps {
   post: PostWithAuthor
   subscribed: boolean
+  /** Above-the-fold kartlar için priority loading (Vol-56-F) */
+  priority?: boolean
 }
 
-function PostCard({ post, subscribed }: PostCardProps) {
+function PostCard({ post, subscribed, priority = false }: PostCardProps) {
   const { colors: c } = useTheme()
 
   // Vol-40: Author tipini runtime'da tespit et — sponsor varsa sponsor, yoksa NGO.
@@ -147,6 +151,9 @@ function PostCard({ post, subscribed }: PostCardProps) {
   // Vol-43: onError state'leri — broken image URL'lerinde fallback'e düş.
   const [coverBroken, setCoverBroken] = useState(false)
   const [logoBroken, setLogoBroken] = useState(false)
+  // Vol-56-F: avatar logo decode bitene kadar background'ı brand renkte tut →
+  // beyaz daire flicker'ı yok.
+  const [logoLoaded, setLogoLoaded] = useState(false)
   const cover = coverBroken ? null : initialCover
   const showLogo = !!authorLogo && !logoBroken
 
@@ -193,7 +200,8 @@ function PostCard({ post, subscribed }: PostCardProps) {
             fill
             sizes="(max-width: 640px) 100vw, 320px"
             style={{ objectFit: 'cover' }}
-            loading="lazy"
+            // Vol-56-F: priority kartlar için eager + LCP candidate
+            {...(priority ? { priority: true } : { loading: 'lazy' as const })}
             quality={75}
             aria-hidden="true"
             onError={() => setCoverBroken(true)}
@@ -296,7 +304,8 @@ function PostCard({ post, subscribed }: PostCardProps) {
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                background: showLogo ? '#fff' : authorColor,
+                // Vol-56-F: logo decode'a kadar brand renk; load olunca beyaza fade.
+                background: showLogo && logoLoaded ? '#fff' : authorColor,
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -306,7 +315,8 @@ function PostCard({ post, subscribed }: PostCardProps) {
                 overflow: 'hidden',
                 position: 'relative',
                 flexShrink: 0,
-                border: showLogo ? `1px solid ${authorColor}33` : 'none',
+                border: showLogo && logoLoaded ? `1px solid ${authorColor}33` : 'none',
+                transition: 'background 220ms ease, border-color 220ms ease',
               }}
               aria-hidden
             >
@@ -316,8 +326,15 @@ function PostCard({ post, subscribed }: PostCardProps) {
                   alt=""
                   fill
                   sizes="20px"
-                  style={{ objectFit: 'contain', padding: 2 }}
+                  style={{
+                    objectFit: 'contain',
+                    padding: 2,
+                    opacity: logoLoaded ? 1 : 0,
+                    transition: 'opacity 200ms ease',
+                  }}
                   quality={85}
+                  {...(priority ? { priority: true } : {})}
+                  onLoad={() => setLogoLoaded(true)}
                   onError={() => setLogoBroken(true)}
                 />
               ) : (

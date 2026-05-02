@@ -7,9 +7,12 @@ export default async function PostDetailPage({ params }: { params: { id: string 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
+  // Vol-56-E: posts.author_type = 'sponsor' için sponsors join eksikti — detay
+  // sayfasında logo "?" fallback'e düşüyordu. Hem ngos hem sponsors join et,
+  // client'ta hangisi varsa o gösterilir.
   const { data: post } = await supabase
     .from('posts')
-    .select('*, ngos:ngo_id(id, name, short_name, logo_url, color_accent)')
+    .select('*, ngos:ngo_id(id, name, short_name, logo_url, color_accent), sponsors:sponsor_id(id, name, short_name, logo_url, brand_color)')
     .eq('id', params.id)
     .single()
 

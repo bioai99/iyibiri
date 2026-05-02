@@ -143,13 +143,38 @@ export function DashboardClient({
   // ── Mission tabs ─────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<MissionTabKey>('recommended')
 
+  // Vol-56-H: katıldıklarım Set + completed Set — kartlarda rozet ve sıralama için.
+  const takenMissionIds = useMemo(
+    () => new Set(userMissions.filter((m) => m.status === 'taken').map((m) => m.mission_id)),
+    [userMissions],
+  )
+  const completedMissionIds = useMemo(
+    () => new Set(userMissions.filter((m) => m.status === 'completed').map((m) => m.mission_id)),
+    [userMissions],
+  )
+
   // Vol-38: Dashboard mission listesi 4 ile sınırlı — özet rolü.
   // Tam liste /dashboard/missions'ta. TabCounts orijinal sayıyı korur (chip
   // 12 gösterir, "TÜMÜ →" CTA daha güçlü hissettirir, scroll fatigue azalır).
   const DASHBOARD_MISSION_LIMIT = 4
-  const allListMissions =
+  const baseListMissions =
     activeTab === 'recommended' ? recommendedMissions : activeMissionsWithNGO
-  const listMissions = allListMissions.slice(0, DASHBOARD_MISSION_LIMIT)
+  // Vol-56-H: önerilen listede katıldıklarım her zaman önce gelir (kullanıcı
+  // hatırlasın). "Katıldıklarım" tab'ında zaten hepsi taken, sıralama anlamsız.
+  const sortedListMissions = useMemo(() => {
+    if (activeTab !== 'recommended') return baseListMissions
+    const taken: typeof baseListMissions = []
+    const others: typeof baseListMissions = []
+    for (const m of baseListMissions) {
+      if (takenMissionIds.has(m.id) || completedMissionIds.has(m.id)) {
+        taken.push(m)
+      } else {
+        others.push(m)
+      }
+    }
+    return [...taken, ...others]
+  }, [baseListMissions, activeTab, takenMissionIds, completedMissionIds])
+  const listMissions = sortedListMissions.slice(0, DASHBOARD_MISSION_LIMIT)
 
   const tabCounts = {
     recommended: recommendedMissions.length,
@@ -194,7 +219,12 @@ export function DashboardClient({
       >
         {listMissions.length > 0 ? (
           listMissions.map((m) => (
-            <MissionListCardVol30 key={m.id} mission={m} />
+            <MissionListCardVol30
+              key={m.id}
+              mission={m}
+              isTaken={takenMissionIds.has(m.id) || completedMissionIds.has(m.id)}
+              isCompleted={completedMissionIds.has(m.id)}
+            />
           ))
         ) : (
           <div style={{ padding: '24px 0' }}>

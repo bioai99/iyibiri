@@ -9,6 +9,9 @@ import type { MissionWithNGO } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, MetaChip, KarmaPill } from '@/components/ui/ds'
 import { useTheme, getCardShadow } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
+// Vol-56-D: kategori EN ham string ("nature", vb.) kart üstünde leak ediyordu —
+// ortak getCauseLabel ile TR map'leyelim.
+import { getCauseLabel } from '@/lib/labels'
 
 // Faz 1 (2026-04-26 perf-eng): <img> → next/image. Sized variants + WebP/AVIF + lazy load.
 // Mission photo (Unsplash 850ms each) → 16:9 aspect, 400x250 hedef (mobile) - 768x432 (desktop).
@@ -20,6 +23,10 @@ interface MissionCardProps {
   isSaved?: boolean
   userId?: string
   isMember?: boolean
+  /** Vol-56-H: kullanıcı katıldı mı — kart üzerine "✓ Katıldın" rozeti */
+  isTaken?: boolean
+  /** Vol-56-H: katılım completed mi — rozet "✓ Tamamlandı" olur */
+  isCompleted?: boolean
 }
 
 // Domain gradient tokens moved to tailwind.config.ts → backgroundImage layer
@@ -30,7 +37,7 @@ const domainEmoji: Record<string, string> = {
   financial: '🪙', animals: '🐾', culture: '🎭', default: '✦',
 }
 
-export function MissionCard({ mission, variant = 'default', onClick, isSaved = false, userId, isMember = false }: MissionCardProps) {
+export function MissionCard({ mission, variant = 'default', onClick, isSaved = false, userId, isMember = false, isTaken = false, isCompleted = false }: MissionCardProps) {
   const { mode, colors: c } = useTheme()
   const [saved, setSaved] = useState(isSaved)
   const [pressed, setPressed] = useState(false)
@@ -119,14 +126,38 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
         style={{
           background: c.ink800,
           borderRadius: style.borderRadius,
-          border: `${style.borderWidth} solid ${style.borderColor}`,
+          // Vol-56-H: katıldıysa gold border (variant override)
+          border: isTaken ? `1.5px solid ${c.gold}` : `${style.borderWidth} solid ${style.borderColor}`,
           overflow: 'hidden',
           cursor: 'pointer',
           transform: pressed ? 'scale(0.985)' : 'scale(1)',
           transition: 'transform 220ms cubic-bezier(.2,.8,.2,1)',
-          boxShadow: getCardShadow(mode, 'sm'),
+          boxShadow: isTaken ? `0 0 0 1px ${c.goldSoft}, ${getCardShadow(mode, 'sm')}` : getCardShadow(mode, 'sm'),
+          position: 'relative',
         }}
       >
+        {/* Vol-56-H: "Katıldın" rozeti — kart sağ üst, photo'nun üstünde */}
+        {isTaken && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 56, // bookmark butonunun (right:8 + 36 + gap) yanına oturur
+              zIndex: 3,
+              background: isCompleted ? c.sage : c.gold,
+              color: isCompleted ? '#fff' : c.ink900,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              padding: '5px 10px',
+              borderRadius: 999,
+              textTransform: 'uppercase',
+              boxShadow: '0 2px 8px rgba(0,0,0,.25)',
+            }}
+          >
+            ✓ {isCompleted ? 'Tamamlandı' : 'Katıldın'}
+          </div>
+        )}
         {/* ── Photo / Domain gradient header ── */}
         <motion.div layoutId={`mission-photo-${mission.id}`} style={{ position: 'relative', aspectRatio: style.imageAspectRatio, overflow: 'hidden' }}>
           {mission.photo_url ? (
@@ -167,6 +198,8 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
           {(() => {
             const cat = mission.category?.trim() || domain?.trim() || null
             if (!cat) return null
+            // Vol-56-D: ham EN string ("nature", "education") yerine TR map.
+            const catLabel = getCauseLabel(cat)
             return (
               <div style={{ position: 'absolute', top: 10, left: 10 }}>
                 <div style={{
@@ -181,7 +214,7 @@ export function MissionCard({ mission, variant = 'default', onClick, isSaved = f
                   color: '#FFFFFF',
                   letterSpacing: '0.02em',
                 }}>
-                  {cat}
+                  {catLabel}
                 </div>
               </div>
             )

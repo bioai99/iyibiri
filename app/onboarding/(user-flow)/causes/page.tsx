@@ -159,11 +159,19 @@ export default function OnboardingCauses() {
                 border: `1.5px solid ${isSelected ? c.gold : c.ink600}`,
                 borderRadius: 16, padding: 0, overflow: 'hidden',
                 transition: 'border-color 200ms ease, background 200ms ease',
+                // Vol-56-B: Eğitim kartı (1-line text) ile Çevre/Hayvanlar (2-line text)
+                // arası grid stretch, icon strip optik olarak aşağı kaymış gibi
+                // hissettiriyordu. Card'ı flex column yapıp strip'i flex-shrink:0
+                // ile sabitle, body flex:1 ile boşluğu kaplasın → strip her kartta
+                // tam aynı hizada üstte.
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
-              {/* Icon strip */}
+              {/* Icon strip — Vol-56-B: flex-shrink:0 + sabit 48 px */}
               <div style={{
-                height: 48, minHeight: 48, maxHeight: 48,
+                height: 48,
+                flexShrink: 0,
                 background: isSelected ? cause.gradient : c.ink700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 200ms ease',
@@ -172,8 +180,8 @@ export default function OnboardingCauses() {
                 <Icon size={22} color={isSelected ? c.cream : c.ink300} strokeWidth={1.8} style={{ display: 'block' }} />
               </div>
 
-              {/* Text */}
-              <div style={{ padding: '10px 12px 12px' }}>
+              {/* Text — flex:1 kalan alanı kapsa */}
+              <div style={{ padding: '10px 12px 12px', flex: 1 }}>
                 <p style={{
                   fontFamily: displayFont, fontStyle: 'italic',
                   fontSize: 16, fontWeight: 500,

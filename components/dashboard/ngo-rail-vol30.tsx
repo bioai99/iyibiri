@@ -76,20 +76,25 @@ export function NGORailVol30({
           msOverflowStyle: 'none',
         }}
       >
-        {combined.map((r) => (
-          <NGOCard key={r.ngo.id} item={r} member={r.member} />
+        {combined.map((r, i) => (
+          // Vol-56-F: ilk 6 kart above-the-fold → priority (LCP), gerisi lazy.
+          <NGOCard key={r.ngo.id} item={r} member={r.member} priority={i < 6} />
         ))}
       </div>
     </section>
   )
 }
 
-function NGOCard({ item, member }: { item: RailNgo; member?: boolean }) {
+function NGOCard({ item, member, priority = false }: { item: RailNgo; member?: boolean; priority?: boolean }) {
   const { colors: c } = useTheme()
   const accent = item.ngo.color_accent || c.gold
   const label = item.ngo.short_name || item.ngo.name
   const logoUrl = item.ngo.logo_url || null
   const [logoBroken, setLogoBroken] = useState(false)
+  // Vol-56-F: logo decode bitene kadar "beyaz daire" flicker'ı oluşuyordu.
+  // loaded state ile background'ı brand renge bağlı tut, image hazır olunca
+  // beyaza geçir → kullanıcı "hiç beyaz görmedim" hisseder.
+  const [logoLoaded, setLogoLoaded] = useState(false)
   const showLogo = !!logoUrl && !logoBroken
 
   return (
@@ -128,7 +133,9 @@ function NGOCard({ item, member }: { item: RailNgo; member?: boolean }) {
         }}
         aria-hidden
       />
-      {/* Avatar — Vol-47: logo varsa Image, yoksa initial */}
+      {/* Avatar — Vol-47: logo varsa Image, yoksa initial.
+          Vol-56-F: logo decode'a kadar background brand renkte; image
+          load olunca beyaza fade — beyaz flicker yok. */}
       <div
         style={{
           position: 'relative',
@@ -136,7 +143,7 @@ function NGOCard({ item, member }: { item: RailNgo; member?: boolean }) {
           width: 44,
           height: 44,
           borderRadius: '50%',
-          background: showLogo
+          background: showLogo && logoLoaded
             ? '#fff'
             : `linear-gradient(135deg, ${accent}, ${accent}88)`,
           display: 'flex',
@@ -149,7 +156,8 @@ function NGOCard({ item, member }: { item: RailNgo; member?: boolean }) {
           color: '#fff',
           marginBottom: 10,
           overflow: 'hidden',
-          border: showLogo ? `1px solid ${accent}33` : 'none',
+          border: showLogo && logoLoaded ? `1px solid ${accent}33` : 'none',
+          transition: 'background 220ms ease, border-color 220ms ease',
         }}
         aria-hidden
       >
@@ -159,8 +167,16 @@ function NGOCard({ item, member }: { item: RailNgo; member?: boolean }) {
             alt=""
             width={36}
             height={36}
-            style={{ objectFit: 'contain', width: '82%', height: '82%' }}
+            style={{
+              objectFit: 'contain',
+              width: '82%',
+              height: '82%',
+              opacity: logoLoaded ? 1 : 0,
+              transition: 'opacity 200ms ease',
+            }}
             quality={85}
+            priority={priority}
+            onLoad={() => setLogoLoaded(true)}
             onError={() => setLogoBroken(true)}
           />
         ) : (

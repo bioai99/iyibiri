@@ -34,9 +34,24 @@ export function MissionsClient({ missions, userMissions, savedMissionIds = [], m
   const completedIds = new Set(userMissions.filter(m => m.status === 'completed').map(m => m.mission_id))
   const takenIds     = new Set(userMissions.filter(m => m.status === 'taken').map(m => m.mission_id))
 
-  const filtered = activeFilter === 'all'
+  const baseFiltered = activeFilter === 'all'
     ? missions
     : missions.filter(m => m.domain === activeFilter)
+
+  // Vol-56-H: katıldığım görevler her zaman listenin başında — kullanıcının
+  // takip etmesi gereken görevler en görünür yerde durur.
+  const filtered = (() => {
+    const taken: typeof baseFiltered = []
+    const others: typeof baseFiltered = []
+    for (const m of baseFiltered) {
+      if (takenIds.has(m.id) || completedIds.has(m.id)) {
+        taken.push(m)
+      } else {
+        others.push(m)
+      }
+    }
+    return [...taken, ...others]
+  })()
 
   return (
     <div style={{ minHeight: '100vh', background: c.ink900, paddingBottom: 96 }}>
@@ -99,6 +114,9 @@ export function MissionsClient({ missions, userMissions, savedMissionIds = [], m
                 isSaved={savedMissionIds.includes(mission.id)}
                 isMember={memberNgoIds.includes(mission.ngo_id ?? '')}
                 userId={userId}
+                // Vol-56-H
+                isTaken={takenIds.has(mission.id) || completedIds.has(mission.id)}
+                isCompleted={completedIds.has(mission.id)}
               />
             </motion.div>
           ))}
