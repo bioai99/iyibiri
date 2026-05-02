@@ -189,12 +189,12 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
             <Heart
               size={22}
               style={{
-                fill: liked ? '#C8553D' : 'none',
-                color: liked ? '#C8553D' : c.ink300,
+                fill: liked ? c.clay : 'none',
+                color: liked ? c.clay : c.ink300,
                 transition: 'all 200ms ease',
               }}
             />
-            <span style={{ fontSize: 14, fontWeight: 600, color: liked ? '#C8553D' : c.ink300 }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: liked ? c.clay : c.ink300 }}>
               {likeCount > 0 ? likeCount : ''}
             </span>
           </motion.button>

@@ -118,7 +118,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
           <span style={{ fontSize: 11, color: c.ink300, fontWeight: 500 }}>
             {post.ngos?.short_name ?? post.ngos?.name}
           </span>
-          <span style={{ fontSize: 10, color: '#7A6F5E' }}>
+          <span style={{ fontSize: 10, color: c.ink300 }}>
             · {post.read_time} dk
           </span>
           {badge && label && (

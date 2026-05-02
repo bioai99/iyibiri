@@ -262,7 +262,7 @@ function VerifyContent() {
         <button
           onClick={handleVerify}
           disabled={filled < otpLength || loading}
-          style={{ width: '100%', height: 52, borderRadius: 14, background: filled === otpLength ? c.gold : c.ink700, border: 'none', color: filled === otpLength ? '#241E18' : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === otpLength ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === otpLength ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
+          style={{ width: '100%', height: 52, borderRadius: 14, background: filled === otpLength ? c.gold : c.ink700, border: 'none', color: filled === otpLength ? c.ink100 : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: filled === otpLength ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: filled === otpLength ? '0 1px 2px rgba(26,22,18,.3), inset 0 1px 0 rgba(255,255,255,.3)' : 'none' }}
         >
           {loading ? 'Doğrulanıyor...' : 'Doğrula'}
         </button>

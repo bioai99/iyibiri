@@ -314,7 +314,7 @@ function CheckInBody({ onMap, onQR }: { onMap: () => void; onQR: () => void }) {
           >
             K7-3921
           </div>
-          <div style={{ fontSize: 12, color: '#7A7060', marginTop: 12, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 12, color: c.ink300, marginTop: 12, lineHeight: 1.4 }}>
             NGO sorumlusu bu kodu kontrol edecek.
           </div>
         </div>
