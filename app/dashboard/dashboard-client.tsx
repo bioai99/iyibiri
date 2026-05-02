@@ -144,8 +144,13 @@ export function DashboardClient({
   // ── Mission tabs ─────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<MissionTabKey>('recommended')
 
-  const listMissions =
+  // Vol-38: Dashboard mission listesi 4 ile sınırlı — özet rolü.
+  // Tam liste /dashboard/missions'ta. TabCounts orijinal sayıyı korur (chip
+  // 12 gösterir, "TÜMÜ →" CTA daha güçlü hissettirir, scroll fatigue azalır).
+  const DASHBOARD_MISSION_LIMIT = 4
+  const allListMissions =
     activeTab === 'recommended' ? recommendedMissions : activeMissionsWithNGO
+  const listMissions = allListMissions.slice(0, DASHBOARD_MISSION_LIMIT)
 
   const tabCounts = {
     recommended: recommendedMissions.length,
