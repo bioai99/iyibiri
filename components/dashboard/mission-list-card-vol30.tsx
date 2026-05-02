@@ -13,7 +13,9 @@
 //
 // Üstte 3px NGO color şerit, thumbnail içinde.
 
+import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, Clock } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import type { MissionWithNGO } from '@/lib/supabase/types'
@@ -30,12 +32,17 @@ export function MissionListCardVol30({ mission, href }: Props) {
   // Vol-36 BUG-058 reopen: 4-aşamalı thumbnail fallback.
   // image_url → photo_url → NGO cover → NGO logo. Mission'ın hiç kendi görseli
   // olmadığında bile NGO kimliği thumb'da görünür, "boş daire" değil.
-  const thumb =
+  // Vol-37 (live verify): backgroundImage onError tetiklemiyor — broken URL'de
+  // boş kalıyordu (örn. IBB Komşuma Yardım). Image + onError state ile inisyal
+  // fallback'e düşür.
+  const initialThumb =
     mission.image_url ||
     mission.photo_url ||
     mission.ngos?.cover_image_url ||
     mission.ngos?.logo_url ||
     null
+  const [thumbBroken, setThumbBroken] = useState(false)
+  const thumb = thumbBroken ? null : initialThumb
 
   // Why / impact statement — sırasıyla impact_statement → description fallback
   const why = mission.impact_statement || mission.description || ''
@@ -66,25 +73,22 @@ export function MissionListCardVol30({ mission, href }: Props) {
           borderRadius: 12,
           flexShrink: 0,
           position: 'relative',
-          backgroundImage: thumb ? `url(${thumb})` : undefined,
-          backgroundColor: thumb ? undefined : c.ink700,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundColor: c.ink700,
           overflow: 'hidden',
         }}
       >
-        {/* NGO color top stripe (3px) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 3,
-            background: ngoColor,
-          }}
-        />
-        {!thumb && (
+        {thumb ? (
+          <Image
+            src={thumb}
+            alt=""
+            fill
+            sizes="84px"
+            style={{ objectFit: 'cover' }}
+            onError={() => setThumbBroken(true)}
+            quality={70}
+            aria-hidden
+          />
+        ) : (
           <div
             style={{
               position: 'absolute',
@@ -104,6 +108,18 @@ export function MissionListCardVol30({ mission, href }: Props) {
             {(ngoLabel || '✦')[0]}
           </div>
         )}
+        {/* NGO color top stripe (3px) — thumbnail üstünde, image katmanının üzerinde */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: ngoColor,
+            zIndex: 1,
+          }}
+        />
       </div>
 
       {/* Body */}
