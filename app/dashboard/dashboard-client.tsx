@@ -30,7 +30,6 @@ import { HeroCardVol30 } from '@/components/dashboard/hero-card-vol30'
 import { MissionTabsVol30, type MissionTabKey } from '@/components/dashboard/mission-tabs-vol30'
 import { MissionListCardVol30 } from '@/components/dashboard/mission-list-card-vol30'
 import { PostsRailVol30 } from '@/components/dashboard/posts-rail-vol30'
-import { SponsorPostsRailVol30 } from '@/components/dashboard/sponsor-posts-rail-vol30'
 import { NGORailVol30 } from '@/components/dashboard/ngo-rail-vol30'
 import { ImpactStripVol30 } from '@/components/dashboard/impact-strip-vol30'
 import { EmptyStateV2, emptyPresets } from '@/components/ui/state'
@@ -208,11 +207,22 @@ export function DashboardClient({
         )}
       </div>
 
-      {/* 4. NGO posts rail */}
-      <PostsRailVol30 posts={ngoPosts} subscribedNgoIds={subscribedNgoIds} />
+      {/* 4. NGO posts rail (ÖNCÜLERDEN · Haberler) */}
+      <PostsRailVol30
+        posts={ngoPosts}
+        subscribedNgoIds={subscribedNgoIds}
+        eyebrow="ÖNCÜLERDEN"
+        title="Haberler"
+      />
 
-      {/* 5. Sponsor posts rail */}
-      <SponsorPostsRailVol30 posts={sponsorPosts} />
+      {/* 5. Sponsor posts rail (SPONSORLARDAN · Sosyal sorumluluk) — Vol-40
+          unified: aynı PostsRailVol30 component'i, farklı eyebrow/title.
+          Author tipi (sponsor vs NGO) post.sponsors/post.ngos'tan auto-tespit. */}
+      <PostsRailVol30
+        posts={sponsorPosts}
+        eyebrow="SPONSORLARDAN"
+        title="Sosyal sorumluluk"
+      />
 
       {/* 6. NGO rail (Üye + Keşfet) */}
       <NGORailVol30

@@ -1,9 +1,15 @@
 'use client'
 
-// Vol-30.4 NGO Posts Rail — "ÖNCÜLERDEN · Haberler" yatay scroll rail.
-// Subscribed NGO postları gold border + ÜYE rozet ile öne çıkar.
+// Vol-30.4 / Vol-40 unified Posts Rail.
 //
-// Kart: 280px wide · 140px image · Category badge sol üst · ÜYE badge sağ üst.
+// Tek kart yapısı, hem NGO hem sponsor postları aynı zenginlikte gösterir
+// (cover image, kategori badge, author avatar+isim, okuma süresi, başlık,
+// özet). Author tipi post.sponsors varsa sponsor, yoksa post.ngos kullanılır.
+//
+// Vol-40 öncesi: NGO ve sponsor için 2 farklı tasarım vardı —
+// SponsorPostsRail daha sadeydi (cover overlay + brand color, badge yok,
+// okuma süresi yok). Brand kimliği sergileme ihtiyacı vardı ama bu yan-yana
+// gösterimde tutarsızlık yarattı. Şimdi her ikisi de aynı tipografi/spacing.
 
 import Link from 'next/link'
 import Image from 'next/image'
@@ -28,13 +34,21 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 interface Props {
   posts: PostWithAuthor[]
+  /** NGO post railinde, kullanıcı subscribed olduğu NGO'lara gold-border + ÜYE rozeti gösterir. Sponsor postları için boş/atlanabilir. */
   subscribedNgoIds?: string[]
+  /** Section header eyebrow — örn. "ÖNCÜLERDEN" / "SPONSORLARDAN" */
+  eyebrow?: string
+  /** Section header başlığı — örn. "Haberler" / "Sosyal sorumluluk" */
+  title?: string
+  /** "HEPSİ →" link hedefi */
   allHref?: string
 }
 
 export function PostsRailVol30({
   posts,
   subscribedNgoIds = [],
+  eyebrow = 'ÖNCÜLERDEN',
+  title = 'Haberler',
   allHref = '/dashboard/discover',
 }: Props) {
   const { colors: c } = useTheme()
@@ -44,8 +58,8 @@ export function PostsRailVol30({
   return (
     <section style={{ padding: '32px 0 0' }}>
       <SectionHeaderVol30
-        eyebrow="ÖNCÜLERDEN"
-        title="Haberler"
+        eyebrow={eyebrow}
+        title={title}
         right={
           <Link
             href={allHref}
@@ -92,13 +106,36 @@ interface PostCardProps {
 
 function PostCard({ post, subscribed }: PostCardProps) {
   const { colors: c } = useTheme()
+
+  // Vol-40: Author tipini runtime'da tespit et — sponsor varsa sponsor, yoksa NGO.
+  // Sponsor postları için subscribed yoktur (kullanıcı sponsor'a üye olmaz).
+  const sponsor = post.sponsors
   const ngo = post.ngos
-  const ngoColor = ngo?.color_accent || c.gold
-  const ngoShort = ngo?.short_name || ngo?.name || ''
+  const isSponsorPost = !!sponsor && !ngo
+
+  const authorColor =
+    (isSponsorPost ? sponsor?.brand_color : ngo?.color_accent) || c.gold
+  const authorShort =
+    (isSponsorPost
+      ? sponsor?.short_name || sponsor?.name
+      : ngo?.short_name || ngo?.name) || ''
+  const authorName =
+    (isSponsorPost ? sponsor?.name : ngo?.name) || authorShort
+
   const cat = post.category ?? ''
   const catColor = CATEGORY_COLORS[cat] ?? c.gold
   const catLabel = CATEGORY_LABELS[cat] ?? ''
-  const cover = post.cover_image_url || ngo?.cover_image_url || null
+
+  // Sponsor için cover fallback yok (SponsorBrief type'ında cover_image_url
+  // yok); cover yoksa author renginden gradient + initial gösterilir.
+  const cover =
+    post.cover_image_url ||
+    (isSponsorPost ? null : ngo?.cover_image_url) ||
+    null
+
+  // Sponsor postları için subscribed badge yok; gold border'ı sadece subscribed
+  // NGO postlarında uygula.
+  const accentBorder = subscribed && !isSponsorPost
 
   return (
     <Link
@@ -109,10 +146,10 @@ function PostCard({ post, subscribed }: PostCardProps) {
         borderRadius: 18,
         overflow: 'hidden',
         background: c.ink800,
-        border: subscribed
+        border: accentBorder
           ? `1.5px solid ${c.gold}`
           : `1px solid ${c.ink600}`,
-        boxShadow: subscribed
+        boxShadow: accentBorder
           ? `0 0 12px ${c.goldSoft}, 0 2px 8px rgba(0,0,0,.05)`
           : '0 2px 8px rgba(0,0,0,.05)',
         scrollSnapAlign: 'start',
@@ -144,6 +181,28 @@ function PostCard({ post, subscribed }: PostCardProps) {
             aria-hidden="true"
           />
         )}
+        {!cover && authorShort && (
+          // Cover yoksa: author renginden gradient + büyük initial — boş
+          // dikdörtgen yerine author kimliğini sürdür.
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: `linear-gradient(135deg, ${authorColor}33, ${authorColor}11)`,
+              fontSize: 48,
+              fontWeight: 700,
+              fontFamily: "'Fraunces', ui-serif, Georgia, serif",
+              color: authorColor,
+              letterSpacing: '-0.02em',
+            }}
+            aria-hidden
+          >
+            {authorShort[0]}
+          </div>
+        )}
         {catLabel && (
           <span
             style={{
@@ -163,7 +222,7 @@ function PostCard({ post, subscribed }: PostCardProps) {
             {catLabel}
           </span>
         )}
-        {subscribed && (
+        {accentBorder && (
           <span
             style={{
               position: 'absolute',
@@ -192,13 +251,13 @@ function PostCard({ post, subscribed }: PostCardProps) {
             marginBottom: 8,
           }}
         >
-          {ngoShort && (
+          {authorShort && (
             <div
               style={{
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                background: ngoColor,
+                background: authorColor,
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -208,13 +267,13 @@ function PostCard({ post, subscribed }: PostCardProps) {
               }}
               aria-hidden
             >
-              {ngoShort[0]}
+              {authorShort[0]}
             </div>
           )}
           <span
             style={{ fontSize: 11, color: c.ink300, fontWeight: 500 }}
           >
-            {ngoShort}
+            {authorName}
           </span>
           {post.read_time > 0 && (
             <span style={{ fontSize: 10, color: c.ink400 }}>
