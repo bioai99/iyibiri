@@ -110,7 +110,8 @@ export function MembershipFormClient({ ngo, userId }: MembershipFormClientProps)
         >
           <div style={{
             width: 80, height: 80, borderRadius: 20,
-            background: c.cream, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            // Vol-48.1: c.cream light mode'da koyu (siyah) — sabit beyaz
+            background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 10, marginBottom: 16, boxShadow: '0 4px 16px rgba(0,0,0,.1)',
             // Vol-48: Image fill için container'da position:relative ZORUNLU
             position: 'relative', overflow: 'hidden',

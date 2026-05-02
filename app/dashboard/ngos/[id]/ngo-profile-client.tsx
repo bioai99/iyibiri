@@ -182,7 +182,10 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
             width: 88,
             height: 88,
             borderRadius: 20,
-            background: c.cream,
+            // Vol-48.1: Light mode'da c.cream = #241E18 (koyu metin) — siyah
+            // arka plana neden oluyordu. Logo container'ı her iki mode'da
+            // sabit beyaz: brand logoları beyaz arka plana göre tasarlanır.
+            background: '#fff',
             border: `3px solid ${c.ink900}`,
             display: 'flex',
             alignItems: 'center',

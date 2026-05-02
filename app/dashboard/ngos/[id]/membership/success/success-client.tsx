@@ -115,7 +115,8 @@ export function MembershipSuccessClient({ ngo, isPending = false }: MembershipSu
                 width: '100%',
                 height: '100%',
                 borderRadius: '50%',
-                background: c.cream,
+                // Vol-48.1: c.cream light mode'da siyah — sabit beyaz
+                background: '#fff',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
