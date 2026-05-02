@@ -10,7 +10,13 @@
 // SponsorPostsRail daha sadeydi (cover overlay + brand color, badge yok,
 // okuma süresi yok). Brand kimliği sergileme ihtiyacı vardı ama bu yan-yana
 // gösterimde tutarsızlık yarattı. Şimdi her ikisi de aynı tipografi/spacing.
+//
+// Vol-43 (2026-05-02): PostCard avatar artık logo + initial fallback chain
+// kullanıyor (önce sadece initial gösteriyordu — logo varken bile harf
+// görünüyordu). Cover image için onError state ile fallback gradient eklendi
+// (kırık image icon yerine author renk + büyük initial).
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from '@/lib/theme'
@@ -121,6 +127,8 @@ function PostCard({ post, subscribed }: PostCardProps) {
       : ngo?.short_name || ngo?.name) || ''
   const authorName =
     (isSponsorPost ? sponsor?.name : ngo?.name) || authorShort
+  const authorLogo =
+    (isSponsorPost ? sponsor?.logo_url : ngo?.logo_url) || null
 
   const cat = post.category ?? ''
   const catColor = CATEGORY_COLORS[cat] ?? c.gold
@@ -128,10 +136,16 @@ function PostCard({ post, subscribed }: PostCardProps) {
 
   // Sponsor için cover fallback yok (SponsorBrief type'ında cover_image_url
   // yok); cover yoksa author renginden gradient + initial gösterilir.
-  const cover =
+  const initialCover =
     post.cover_image_url ||
     (isSponsorPost ? null : ngo?.cover_image_url) ||
     null
+
+  // Vol-43: onError state'leri — broken image URL'lerinde fallback'e düş.
+  const [coverBroken, setCoverBroken] = useState(false)
+  const [logoBroken, setLogoBroken] = useState(false)
+  const cover = coverBroken ? null : initialCover
+  const showLogo = !!authorLogo && !logoBroken
 
   // Sponsor postları için subscribed badge yok; gold border'ı sadece subscribed
   // NGO postlarında uygula.
@@ -179,6 +193,7 @@ function PostCard({ post, subscribed }: PostCardProps) {
             loading="lazy"
             quality={75}
             aria-hidden="true"
+            onError={() => setCoverBroken(true)}
           />
         )}
         {!cover && authorShort && (
@@ -257,17 +272,33 @@ function PostCard({ post, subscribed }: PostCardProps) {
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                background: authorColor,
+                background: showLogo ? '#fff' : authorColor,
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: 10,
                 fontWeight: 700,
+                overflow: 'hidden',
+                position: 'relative',
+                flexShrink: 0,
+                border: showLogo ? `1px solid ${authorColor}33` : 'none',
               }}
               aria-hidden
             >
-              {authorShort[0]}
+              {showLogo ? (
+                <Image
+                  src={authorLogo!}
+                  alt=""
+                  fill
+                  sizes="20px"
+                  style={{ objectFit: 'contain', padding: 2 }}
+                  quality={85}
+                  onError={() => setLogoBroken(true)}
+                />
+              ) : (
+                authorShort[0]
+              )}
             </div>
           )}
           <span
