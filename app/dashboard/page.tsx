@@ -24,10 +24,16 @@ async function getAllActiveNGOs(): Promise<NGO[]> {
   // Çözüm: filter'ı client'a taşı — null category'liler dahil olur.
   // Perf: 2026-04-26 audit (TD-035) — limit + minimal columns korunur.
   const supabase = createClient()
+  // Vol-36.1 hotfix: önceki .order('featured', ...) ngos tablosunda olmayan
+  // bir column'a sıralama yaptığı için PostgreSQL hatası dönüyor, Supabase
+  // JS client `data: null` ile silently fail oluyordu — ngos boş array →
+  // NGORail null guard → section render edilmiyor (Vol-30.5'ten beri broken).
+  // Fix: member_count (büyük topluluklar önce) — anlamlı sıralama + var olan
+  // column.
   const { data } = await supabase
     .from('ngos')
-    .select('id, name, short_name, logo_url, color_accent, cover_image_url, category, tax_exempt, donation_url, membership_url, payment_mode')
-    .order('featured', { ascending: false })
+    .select('id, name, short_name, logo_url, color_accent, cover_image_url, category, tax_exempt, donation_url, membership_url, payment_mode, member_count')
+    .order('member_count', { ascending: false, nullsFirst: false })
     .limit(50)
   return ((data ?? []) as NGO[]).filter((n) => n.category !== 'sponsor')
 }
