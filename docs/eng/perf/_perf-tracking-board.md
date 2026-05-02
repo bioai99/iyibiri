@@ -135,12 +135,14 @@ Aktif perf entry'leri:
 | TD-038 | next/image audit + migration | **Faz 1 (aktif)** |
 | TD-039 | Suspense boundary kapsamı | Faz 5 |
 | TD-040 | Middleware overhead | Faz 6 |
-| TD-041 | Bundle analyzer kurulumu | Faz 7 |
-| TD-042 | Web Vitals reporting | Faz 7 |
+| TD-041 | Bundle analyzer kurulumu | ✅ Resolved (Faz 7, 2026-05-02) |
+| TD-042 | Web Vitals reporting | ✅ Resolved (Faz 7, 2026-05-02) |
 | TD-043 | Error.tsx kapsamı | Faz 2 (paralel) |
 
 ---
 
 ## Son güncelleme
+
+**2026-05-02 — performance-engineer** — Faz 7 + variance fix tamam ([rapor](./2026-05-02-faz-7-and-variance-fix.md)): Lighthouse CI + Web Vitals RUM + bundle analyzer + DNS preconnect + 3 legal sayfa ISR + profile/karma & streak Promise.all + donations NGO map sınırlama. Plus: `iyibiri-daily-perf` scheduled task kuruldu (her gün 19:00). Push sonrası after-faz-7 ölçüm bekleniyor.
 
 **2026-04-26 23:00 — performance-engineer** — Tracking board v2: 25 sayfa baseline tamamlandı (warm cache). Top kritik: /dashboard cold 4065ms, /ngos/[id]/membership 2049ms, /missions 3550KB. Faz 1 (image migration) başlamaya hazır; sprint deploy sonrası after-faz-3 ölçüm yapılacak.

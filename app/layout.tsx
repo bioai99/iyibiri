@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { CommandProvider } from "@/components/ui/command-provider";
 import { ThemeProvider } from "@/lib/theme";
+import { WebVitals } from "./web-vitals";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -61,7 +62,31 @@ export default function RootLayout({
       lang="tr"
       className={cn(jakarta.variable, fraunces.variable)}
     >
+      <head>
+        {/*
+          Faz 7 (2026-05-02 perf-eng) — DNS preconnect / preconnect resource hints.
+          Tarayıcıya kritik 3rd-party domain'lere TLS handshake'i image fetch'inden
+          ÖNCE yapmasını söylüyor. /missions ve /dashboard 5+ Unsplash image yüklüyor —
+          ilk image request'in TTFB'sinden 50-150ms tıraş. Sıfır UX riski.
+        */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+          <>
+            <link
+              rel="preconnect"
+              href={new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin}
+              crossOrigin="anonymous"
+            />
+            <link
+              rel="dns-prefetch"
+              href={new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin}
+            />
+          </>
+        ) : null}
+      </head>
       <body className="font-sans">
+        <WebVitals />
         <ThemeProvider initial="dark">
           <CommandProvider>
             {children}

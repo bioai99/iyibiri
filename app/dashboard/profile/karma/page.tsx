@@ -11,29 +11,31 @@ export default async function KarmaHistoryPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // Karma transactions — son 100
-  const { data: txs, error } = await supabase
-    .from('karma_transactions')
-    .select('id, amount, type, reference_id, description, created_at')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(100)
+  // Faz 7 (2026-05-02 perf-eng): karma_transactions ve profiles fetch'leri
+  // birbirinden bağımsız — Promise.all ile paralel çalıştır. Sequential
+  // await'te toplam ~300ms; paralel ~150ms. Variance'ın bir kısmı buradan.
+  const [txsResult, profileResult] = await Promise.all([
+    supabase
+      .from('karma_transactions')
+      .select('id, amount, type, reference_id, description, created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(100),
+    supabase
+      .from('profiles')
+      .select('karma_total')
+      .eq('id', user.id)
+      .single(),
+  ])
 
-  if (error) {
-    console.error('Karma transactions fetch error:', error)
+  if (txsResult.error) {
+    console.error('Karma transactions fetch error:', txsResult.error)
   }
-
-  // Profile karma_total
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('karma_total')
-    .eq('id', user.id)
-    .single()
 
   return (
     <KarmaHistoryClient
-      transactions={txs ?? []}
-      karmaTotal={profile?.karma_total ?? 0}
+      transactions={txsResult.data ?? []}
+      karmaTotal={profileResult.data?.karma_total ?? 0}
     />
   )
 }

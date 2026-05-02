@@ -11,6 +11,7 @@
     "test:run": "vitest --run",
     "test:ui": "vitest --ui",
     "typecheck": "tsc --noEmit",
+    "analyze": "ANALYZE=true next build",
     "seed": "ts-node --project tsconfig.json scripts/seed.ts"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.35",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",

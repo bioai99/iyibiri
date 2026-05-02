@@ -19,4 +19,16 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Faz 7 (2026-05-02 perf-eng): @next/bundle-analyzer opsiyonel entegrasyon.
+// `npm run analyze` → ANALYZE=true next build → .next/analyze/*.html.
+// ANALYZE=true değilse paket import edilmiyor — bu sayede `npm install`
+// öncesi prod build'leri kırılmaz.
+let configWithAnalyzer = nextConfig;
+if (process.env.ANALYZE === "true") {
+  const bundleAnalyzer = (await import("@next/bundle-analyzer")).default({
+    enabled: true,
+  });
+  configWithAnalyzer = bundleAnalyzer(nextConfig);
+}
+
+export default configWithAnalyzer;

@@ -2,6 +2,10 @@ export const metadata = {
   title: 'Kullanım Koşulları — İyiBiri',
 }
 
+// Faz 7 (2026-05-02 perf-eng): Statik markdown render, içerik günde 1'den
+// fazla değişmez. ISR ile edge cache'de servis edilir → server load = 0.
+export const revalidate = 86400 // 24 saat
+
 export default function TermsPage() {
   return (
     <article style={{ lineHeight: 1.7, fontSize: 15 }}>

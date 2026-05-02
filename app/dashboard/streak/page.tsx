@@ -8,25 +8,31 @@ export default async function StreakPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const profile = await getProfile(user.id)
-  if (!profile) redirect('/onboarding')
+  // Faz 7 (2026-05-02 perf-eng): getProfile() ve completedThisWeek query'si
+  // birbirinden bağımsız (ikisi de user.id'ye dayanıyor) — Promise.all ile
+  // paralel. Sequential await'te ~250-300ms toplam; paralel ~150ms.
 
-  // Fetch completed missions in the last 7 days to compute day dots
-  const now = new Date()
   // Get start of the current week (Monday)
+  const now = new Date()
   const dayOfWeek = now.getDay() // 0=Sun, 1=Mon, ...
   const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1
   const monday = new Date(now)
   monday.setDate(now.getDate() - mondayOffset)
   monday.setHours(0, 0, 0, 0)
 
-  const { data: completedThisWeek } = await supabase
-    .from('user_missions')
-    .select('completed_at')
-    .eq('user_id', user.id)
-    .eq('status', 'completed')
-    .gte('completed_at', monday.toISOString())
-    .order('completed_at', { ascending: true })
+  const [profile, completedResult] = await Promise.all([
+    getProfile(user.id),
+    supabase
+      .from('user_missions')
+      .select('completed_at')
+      .eq('user_id', user.id)
+      .eq('status', 'completed')
+      .gte('completed_at', monday.toISOString())
+      .order('completed_at', { ascending: true }),
+  ])
+
+  if (!profile) redirect('/onboarding')
+  const completedThisWeek = completedResult.data
 
   // Compute which days of the week (Mon=0 ... Sun=6) had completions
   const activeDays: number[] = []

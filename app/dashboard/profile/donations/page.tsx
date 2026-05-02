@@ -17,19 +17,29 @@ export default async function DonationsHistoryPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [donations, subscriptions, summary, ngoMapResult] = await Promise.all([
+  // Faz 7 (2026-05-02 perf-eng): NGO map'i tüm NGO'ları çekiyordu (~50 satır
+  // her sayfa yüklemesinde) — ama client sadece subscriptions için kullanıyor
+  // (donations'ın embedded ngos field'ı var). Subscription ngo_ids'leri ile
+  // sınırla → 50 satır yerine 1-3 satır. Decoded -%80 (NGO map portion).
+  const [donations, subscriptions, summary] = await Promise.all([
     getUserDonations(user.id, 100),
     getUserActiveSubscriptions(user.id),
     summarizeUserDonations(user.id),
-    // Subscription'ların ngo_id → NGOBrief lookup
-    supabase
-      .from('ngos')
-      .select('id, name, short_name, logo_url, color_accent, cover_image_url'),
   ])
 
+  const subscriptionNgoIds = Array.from(
+    new Set(subscriptions.map((s) => s.ngo_id)),
+  ).filter((id): id is string => Boolean(id))
+
   const ngosMap: Record<string, NGOBrief> = {}
-  for (const ngo of (ngoMapResult.data ?? []) as NGOBrief[]) {
-    ngosMap[ngo.id] = ngo
+  if (subscriptionNgoIds.length > 0) {
+    const { data: ngosData } = await supabase
+      .from('ngos')
+      .select('id, name, short_name, logo_url, color_accent, cover_image_url')
+      .in('id', subscriptionNgoIds)
+    for (const ngo of (ngosData ?? []) as NGOBrief[]) {
+      ngosMap[ngo.id] = ngo
+    }
   }
 
   return (
