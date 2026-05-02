@@ -218,3 +218,66 @@
     animation: none;
   }
 }
+
+/* ── Vol-57 Landing premium animations ── */
+
+/* Mesh gradient blob — yavaş float (45-60s döngü) */
+@keyframes lp-mesh-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(80px, 60px) scale(1.08); }
+  66%      { transform: translate(-40px, 90px) scale(0.95); }
+}
+@keyframes lp-mesh-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-60px, 80px) scale(1.10); }
+  66%      { transform: translate(70px, -40px) scale(0.92); }
+}
+@keyframes lp-mesh-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(50px, -60px) scale(0.95); }
+  66%      { transform: translate(-80px, 40px) scale(1.10); }
+}
+.animate-mesh-1 { animation: lp-mesh-1 48s ease-in-out infinite; }
+.animate-mesh-2 { animation: lp-mesh-2 56s ease-in-out infinite; }
+.animate-mesh-3 { animation: lp-mesh-3 62s ease-in-out infinite; }
+
+/* Marquee infinite scroll (Vol-57 NGO + sponsor rail) */
+@keyframes lp-marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes lp-marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* Spotlight pulse — final CTA için ambient gold halo */
+@keyframes lp-spotlight {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.08); }
+}
+.animate-spotlight { animation: lp-spotlight 5s ease-in-out infinite; }
+
+/* Soft float — hero phone, tier butterfly, badges */
+@keyframes lp-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.animate-float { animation: lp-float 6s ease-in-out infinite; }
+
+/* Shimmer — gold accent line subtle sweep */
+@keyframes lp-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: lp-shimmer 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-mesh-1, .animate-mesh-2, .animate-mesh-3,
+  .animate-spotlight, .animate-float, .animate-shimmer {
+    animation: none;
+  }
+}
