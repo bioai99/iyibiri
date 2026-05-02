@@ -2,9 +2,13 @@
 
 // Vol-31 NGO list card — bağış sekmesindeki dikey STK listesi.
 // 52x52 logo (gradient bg) + name (verified ✓) + tagline + cat badge + supporters + Bağış CTA.
+//
+// Vol-58 (2026-05-03): logo_url varsa gerçek logo render (beyaz arkaplan + padding).
+// Yoksa initial gradient fallback. Logo loaded state ile beyaz flicker önlenir.
 
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import Image from 'next/image'
+import { useState, type ReactNode } from 'react'
 import { useTheme } from '@/lib/theme'
 import { getCauseLabel } from '@/lib/labels'
 import type { NGO } from '@/lib/supabase/types'
@@ -48,6 +52,11 @@ export function NgoListCard({ ngo, highlightTerm, supporterCount }: Props) {
   const catKey = (ngo.category ?? '').toLowerCase()
   const catLabel = catKey ? getCauseLabel(catKey) : null
   const verified = ngo.tax_exempt === true
+  const logoUrl = ngo.logo_url || null
+  // Vol-58: logo_url broken olursa initial fallback'e düş.
+  const [logoBroken, setLogoBroken] = useState(false)
+  const [logoLoaded, setLogoLoaded] = useState(false)
+  const showLogo = !!logoUrl && !logoBroken
 
   return (
     <Link
@@ -64,12 +73,15 @@ export function NgoListCard({ ngo, highlightTerm, supporterCount }: Props) {
         alignItems: 'stretch',
       }}
     >
+      {/* Vol-58: logo_url varsa Image (beyaz arkaplan + padding), yoksa initial gradient */}
       <div
         style={{
           width: 52,
           height: 52,
           borderRadius: 14,
-          background: `linear-gradient(135deg, ${accent}, ${accent}88)`,
+          background: showLogo && logoLoaded
+            ? '#fff'
+            : `linear-gradient(135deg, ${accent}, ${accent}88)`,
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -79,10 +91,32 @@ export function NgoListCard({ ngo, highlightTerm, supporterCount }: Props) {
           fontWeight: 600,
           flexShrink: 0,
           boxShadow: `0 4px 12px ${accent}33`,
+          overflow: 'hidden',
+          position: 'relative',
+          border: showLogo && logoLoaded ? `1px solid ${accent}33` : 'none',
+          transition: 'background 220ms ease, border-color 220ms ease',
         }}
         aria-hidden
       >
-        {initial}
+        {showLogo ? (
+          <Image
+            src={logoUrl!}
+            alt=""
+            fill
+            sizes="52px"
+            style={{
+              objectFit: 'contain',
+              padding: 6,
+              opacity: logoLoaded ? 1 : 0,
+              transition: 'opacity 200ms ease',
+            }}
+            quality={85}
+            onLoad={() => setLogoLoaded(true)}
+            onError={() => setLogoBroken(true)}
+          />
+        ) : (
+          initial
+        )}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div

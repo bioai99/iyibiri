@@ -127,6 +127,9 @@ export function DonateHubClient({ ngos, featured, supportersByNgo }: Props) {
               >
                 BAĞIŞ
               </p>
+              {/* Vol-58: "Tüm STK'lar" → daha sıcak, kullanıcı odaklı bir başlık.
+                  STK kısaltması generic ve teknik; "öncülere destek" hem brand
+                  ("İyiliğin öncüleri") tutarlı hem warm. */}
               <h1
                 style={{
                   margin: '4px 0 0',
@@ -138,11 +141,11 @@ export function DonateHubClient({ ngos, featured, supportersByNgo }: Props) {
                   lineHeight: 1.1,
                 }}
               >
-                Tüm{' '}
+                İyiliğin{' '}
                 <em style={{ fontStyle: 'italic', color: c.gold }}>
-                  STK
-                </em>
-                &apos;lar
+                  öncülerine
+                </em>{' '}
+                destek
               </h1>
             </div>
             <div
@@ -382,6 +385,9 @@ function HubContent({
 }) {
   return (
     <>
+      {/* Vol-58: Intro tanıtım kartı — bu bölümde ne yapabilirsin? */}
+      <IntroCard c={c} />
+
       {/* Featured carousel */}
       {featured.length > 0 && (
         <section style={{ padding: '20px 0 0' }}>
@@ -456,7 +462,9 @@ function HubContent({
         </section>
       )}
 
-      {/* PRIMARY — Tüm STK listesi */}
+      {/* PRIMARY — STK listesi
+          Vol-58: "Tüm kurumlar" → "İyiliğin öncüleri" (dashboard NGORail ile
+          tutarlı brand language). */}
       <section style={{ padding: '32px 16px 0' }}>
         <div
           style={{
@@ -477,7 +485,8 @@ function HubContent({
                 letterSpacing: '-0.02em',
               }}
             >
-              Tüm kurumlar
+              İyiliğin{' '}
+              <em style={{ fontStyle: 'italic', color: c.gold }}>öncüleri</em>
             </h2>
             <p style={{ margin: '3px 0 0', fontSize: 11, color: c.ink400 }}>
               Sıralama:{' '}
@@ -601,5 +610,68 @@ function SearchActiveContent({
         </div>
       </section>
     </>
+  )
+}
+
+// ─── Vol-58: Intro tanıtım kartı ─────────────────────────────────
+// Kullanıcı bağış sekmesine ilk geldiğinde "ne yapabilirim?" sorusuna 1
+// satırda yanıt verir. Üç pil — tek seferlik, düzenli, vergi indirimli —
+// ile değer önermesi hızlıca okunur.
+function IntroCard({ c }: { c: ReturnType<typeof useTheme>['colors'] }) {
+  return (
+    <section style={{ padding: '14px 16px 0' }}>
+      <div
+        style={{
+          padding: '14px 16px',
+          borderRadius: 16,
+          background: `linear-gradient(135deg, ${c.goldSoft}, ${c.ink800})`,
+          border: `1px solid ${c.goldLine}`,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontSize: 13,
+            lineHeight: 1.55,
+            color: c.cream,
+          }}
+        >
+          Sevdiğin{' '}
+          <em style={{ fontStyle: 'italic', color: c.gold, fontFamily: "'Fraunces', ui-serif, serif" }}>
+            öncüye
+          </em>{' '}
+          tek seferlik veya düzenli bağış yap.
+          Aracı olmadan, doğrudan kuruma.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {[
+            { label: 'Tek seferlik', icon: '⚡' },
+            { label: 'Düzenli bağışçı', icon: '↻' },
+            { label: 'Vergi indirimli', icon: '✓' },
+          ].map((p) => (
+            <span
+              key={p.label}
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                padding: '4px 10px',
+                borderRadius: 999,
+                background: `${c.gold}1A`,
+                color: c.gold,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+              }}
+            >
+              <span aria-hidden style={{ fontSize: 10 }}>{p.icon}</span>
+              {p.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
