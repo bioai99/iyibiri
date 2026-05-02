@@ -20,9 +20,8 @@
  * └──────────────────────────────┘
  */
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { KarmaCounterPro } from '@/components/ui/karma-counter-pro'
@@ -42,11 +41,17 @@ export function WelcomeCelebration({
   onDismiss,
 }: WelcomeCelebrationProps) {
   const { colors: c } = useTheme()
-  const router = useRouter()
   const shouldReduceMotion = useReducedMotion()
+  const [navigating, setNavigating] = useState(false)
 
+  // BUG-005 fix: router.push() RSC navigation kullanıyor — middleware fresh
+  // session/cookie state göremediği için onboarding loop oluyordu.
+  // window.location.assign() full document reload tetikliyor; middleware
+  // taze auth ile çalışıp iyibiri_onboarded cookie'sini doğru set ediyor.
   const handleStart = () => {
-    router.push('/dashboard')
+    if (navigating) return
+    setNavigating(true)
+    window.location.assign('/dashboard')
   }
 
   if (!open) return null
@@ -257,10 +262,11 @@ export function WelcomeCelebration({
           <motion.button
             type="button"
             onClick={handleStart}
+            disabled={navigating}
             initial={shouldReduceMotion ? {} : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 1.4 }}
-            whileTap={{ scale: 0.97 }}
+            whileTap={navigating ? undefined : { scale: 0.97 }}
             style={{
               width: '100%',
               padding: '14px 24px',
@@ -270,11 +276,12 @@ export function WelcomeCelebration({
               borderRadius: 14,
               fontSize: 15,
               fontWeight: 700,
-              cursor: 'pointer',
+              cursor: navigating ? 'wait' : 'pointer',
+              opacity: navigating ? 0.7 : 1,
               boxShadow: '0 4px 16px rgba(232,194,104,0.3)',
             }}
           >
-            Hadi başlayalım →
+            {navigating ? 'Hazırlanıyor…' : 'Hadi başlayalım →'}
           </motion.button>
         </motion.div>
       </motion.div>
