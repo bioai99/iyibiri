@@ -102,7 +102,7 @@ function PostCard({ post, isSubscribed, c }: { post: PostWithNGO; isSubscribed: 
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                background: post.ngos?.color_accent ?? '#6B6154',
+                background: post.ngos?.color_accent ?? c.ink500,
                 flexShrink: 0,
                 display: 'flex',
                 alignItems: 'center',

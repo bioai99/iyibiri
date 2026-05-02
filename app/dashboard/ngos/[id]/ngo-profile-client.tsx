@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Share2, Heart, ChevronRight, Leaf } from 'lucide-react'
+import { ArrowLeft, Share2, Heart, ChevronRight, Leaf, Globe, Mail, Phone, Instagram, Twitter, Linkedin, ExternalLink } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
@@ -317,6 +317,172 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
               Devamını oku
             </button>
           )}
+        </div>
+      )}
+
+      {/* İletişim & sosyal medya — backoffice'ten doldurulan field'lar */}
+      {(ngo.website ||
+        ngo.email ||
+        ngo.phone ||
+        ngo.social_instagram ||
+        ngo.social_twitter ||
+        ngo.social_linkedin) && (
+        <div style={{ padding: '24px 20px 0' }}>
+          <h3
+            style={{
+              margin: 0,
+              fontFamily: 'var(--font-fraunces, Georgia, serif)',
+              fontSize: 16,
+              fontWeight: 500,
+              color: c.cream,
+              fontStyle: 'italic',
+              marginBottom: 12,
+            }}
+          >
+            Bağlantılar
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {ngo.website && (
+              <a
+                href={ngo.website.startsWith('http') ? ngo.website : `https://${ngo.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  color: c.gold,
+                  textDecoration: 'none',
+                }}
+              >
+                <Globe size={14} />
+                <span>{ngo.website.replace(/^https?:\/\/(www\.)?/, '')}</span>
+                <ExternalLink size={11} />
+              </a>
+            )}
+            {ngo.email && (
+              <a
+                href={`mailto:${ngo.email}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  color: c.ink200,
+                  textDecoration: 'none',
+                }}
+              >
+                <Mail size={14} />
+                <span>{ngo.email}</span>
+              </a>
+            )}
+            {ngo.phone && (
+              <a
+                href={`tel:${ngo.phone.replace(/\s/g, '')}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  color: c.ink200,
+                  textDecoration: 'none',
+                }}
+              >
+                <Phone size={14} />
+                <span>{ngo.phone}</span>
+              </a>
+            )}
+            {(ngo.social_instagram || ngo.social_twitter || ngo.social_linkedin) && (
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 10,
+                  marginTop: 4,
+                  flexWrap: 'wrap',
+                }}
+              >
+                {ngo.social_instagram && (
+                  <a
+                    href={
+                      ngo.social_instagram.startsWith('http')
+                        ? ngo.social_instagram
+                        : `https://instagram.com/${ngo.social_instagram.replace(/^@/, '')}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: c.ink800,
+                      border: `1px solid ${c.ink600}`,
+                      color: c.ink200,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <Instagram size={16} />
+                  </a>
+                )}
+                {ngo.social_twitter && (
+                  <a
+                    href={
+                      ngo.social_twitter.startsWith('http')
+                        ? ngo.social_twitter
+                        : `https://twitter.com/${ngo.social_twitter.replace(/^@/, '')}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: c.ink800,
+                      border: `1px solid ${c.ink600}`,
+                      color: c.ink200,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <Twitter size={16} />
+                  </a>
+                )}
+                {ngo.social_linkedin && (
+                  <a
+                    href={
+                      ngo.social_linkedin.startsWith('http')
+                        ? ngo.social_linkedin
+                        : `https://linkedin.com/company/${ngo.social_linkedin}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: c.ink800,
+                      border: `1px solid ${c.ink600}`,
+                      color: c.ink200,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <Linkedin size={16} />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

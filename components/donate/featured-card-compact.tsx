@@ -37,23 +37,35 @@ export function FeaturedCardCompact({ campaign }: Props) {
     daysLeft = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   }
 
+  // Eğer kampanyanın bağlı NGO'su yoksa (data anomali / cascade silinmiş),
+  // kart pasif gösterilir — kırık link yerine span'e düşer.
+  const cardStyle = {
+    width: 320,
+    flexShrink: 0,
+    borderRadius: 18,
+    overflow: 'hidden',
+    background: c.ink800,
+    border: `1px solid ${c.ink600}`,
+    position: 'relative' as const,
+    scrollSnapAlign: 'center' as const,
+    textDecoration: 'none',
+    color: 'inherit',
+    display: 'block',
+  }
+  const Wrapper = ngo?.id
+    ? ({ children }: { children: React.ReactNode }) => (
+        <Link href={`/dashboard/donate/${ngo.id}`} style={cardStyle}>
+          {children}
+        </Link>
+      )
+    : ({ children }: { children: React.ReactNode }) => (
+        <div style={{ ...cardStyle, opacity: 0.6 }} aria-label="NGO bulunamadı">
+          {children}
+        </div>
+      )
+
   return (
-    <Link
-      href={`/dashboard/donate/${ngo?.id ?? '#'}`}
-      style={{
-        width: 320,
-        flexShrink: 0,
-        borderRadius: 18,
-        overflow: 'hidden',
-        background: c.ink800,
-        border: `1px solid ${c.ink600}`,
-        position: 'relative',
-        scrollSnapAlign: 'center',
-        textDecoration: 'none',
-        color: 'inherit',
-        display: 'block',
-      }}
-    >
+    <Wrapper>
       <div
         style={{
           height: 130,
@@ -211,6 +223,6 @@ export function FeaturedCardCompact({ campaign }: Props) {
           Bağışla →
         </span>
       </div>
-    </Link>
+    </Wrapper>
   )
 }
