@@ -199,27 +199,48 @@ function PostCard({ post, subscribed }: PostCardProps) {
             onError={() => setCoverBroken(true)}
           />
         )}
-        {!cover && authorShort && (
-          // Cover yoksa: author renginden gradient + büyük initial — boş
-          // dikdörtgen yerine author kimliğini sürdür.
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: `linear-gradient(135deg, ${authorColor}33, ${authorColor}11)`,
-              fontSize: 48,
-              fontWeight: 700,
-              fontFamily: "'Fraunces', ui-serif, Georgia, serif",
-              color: authorColor,
-              letterSpacing: '-0.02em',
-            }}
-            aria-hidden
-          >
-            {authorShort[0]}
-          </div>
+        {!cover && (
+          // Vol-46: Cover yoksa logo'yu büyük göster (sponsor brand identity
+          // ön planda). Logo da yoksa author renginden gradient + initial.
+          showLogo ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: `linear-gradient(135deg, ${authorColor}1A, ${authorColor}0A)`,
+              }}
+              aria-hidden
+            >
+              <Image
+                src={authorLogo!}
+                alt={authorName}
+                fill
+                sizes="280px"
+                style={{ objectFit: 'contain', padding: 32 }}
+                quality={85}
+                onError={() => setLogoBroken(true)}
+              />
+            </div>
+          ) : authorShort ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: `linear-gradient(135deg, ${authorColor}33, ${authorColor}11)`,
+                fontSize: 48,
+                fontWeight: 700,
+                fontFamily: "'Fraunces', ui-serif, Georgia, serif",
+                color: authorColor,
+                letterSpacing: '-0.02em',
+              }}
+              aria-hidden
+            >
+              {authorShort[0]}
+            </div>
+          ) : null
         )}
         {catLabel && (
           <span
