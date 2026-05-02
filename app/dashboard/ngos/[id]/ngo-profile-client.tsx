@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Share2, Heart, ChevronRight, Leaf, Globe, Mail, Phone, Instagram, Twitter, Linkedin, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Share2, Heart, ChevronRight, Leaf, Globe, Mail, Phone, ExternalLink, Camera, AtSign, Link2 } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import { KarmaDotToken } from '@/components/ui/ds'
@@ -425,7 +425,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                       textDecoration: 'none',
                     }}
                   >
-                    <Instagram size={16} />
+                    <Camera size={16} />
                   </a>
                 )}
                 {ngo.social_twitter && (
@@ -451,7 +451,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                       textDecoration: 'none',
                     }}
                   >
-                    <Twitter size={16} />
+                    <AtSign size={16} />
                   </a>
                 )}
                 {ngo.social_linkedin && (
@@ -477,7 +477,7 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
                       textDecoration: 'none',
                     }}
                   >
-                    <Linkedin size={16} />
+                    <Link2 size={16} />
                   </a>
                 )}
               </div>
