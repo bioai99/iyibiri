@@ -15,7 +15,7 @@ async function getNGOWithMissions(id: string): Promise<{ ngo: NGO; missions: Mis
       // dışarda atıyordu. Status-based filter daha güvenli — published/active iki
       // alan arasında biri yeterli, archived ve draft hariç tüm görünür mission'lar
       // hesaplanır.
-      .neq('status', 'archived')
+      .neq('status', 'archived' as any)
       .order('created_at', { ascending: true }),
   ])
   if (!ngo) return null
