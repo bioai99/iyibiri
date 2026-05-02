@@ -596,8 +596,11 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
 // ─── Main export ────────────────────────────────────────────────────────────
 
 export function MissionStatesClient({ mission, state }: MissionStatesProps) {
-  const { colors: c } = useTheme()
+  const { colors: c, mode } = useTheme()
   const router = useRouter()
+  // Vol-42: Light mode'da koyu glass icon görünmez kalıyordu — mode'a
+  // göre dinamik theme.
+  const headerIconTheme: 'light' | 'dark' = mode === 'light' ? 'light' : 'dark'
 
   function handleShare() {
     try {
@@ -662,9 +665,10 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
             icon={<ArrowLeft size={18} />}
             onClick={() => router.back()}
             ariaLabel="Geri"
+            theme={headerIconTheme}
           />
           {state === 'completed' && (
-            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} ariaLabel="Görev sonucunu paylaş" />
+            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} ariaLabel="Görev sonucunu paylaş" theme={headerIconTheme} />
           )}
         </div>
 

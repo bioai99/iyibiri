@@ -5,16 +5,8 @@
 
 import Link from 'next/link'
 import { useTheme } from '@/lib/theme'
+import { getCauseLabel } from '@/lib/labels'
 import type { Campaign } from '@/lib/supabase/types'
-
-const CAUSE_LABELS: Record<string, string> = {
-  env: 'Çevre',
-  edu: 'Eğitim',
-  animal: 'Hayvan',
-  health: 'Sağlık',
-  child: 'Çocuk',
-  crisis: 'Afet',
-}
 
 const CAUSE_COLORS: Record<string, string> = {
   env: '#5DC395',
@@ -33,7 +25,7 @@ interface Props {
 export function CampaignCard({ campaign, ngoId }: Props) {
   const { colors: c } = useTheme()
   const causeKey = campaign.cause ?? ''
-  const causeLabel = CAUSE_LABELS[causeKey] ?? campaign.cause
+  const causeLabel = getCauseLabel(causeKey)
   const causeColor = CAUSE_COLORS[causeKey] ?? c.gold
 
   let daysLeft: number | null = null

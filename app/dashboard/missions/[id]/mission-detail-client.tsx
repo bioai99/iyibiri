@@ -22,27 +22,8 @@ import { createClient } from '@/lib/supabase/client'
 import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
 import { useTheme } from '@/lib/theme'
 import { takeMission } from '@/lib/missions/actions'
-
-// Vol-41: Kategori/domain TR çevirileri — admin/missions-client'taki
-// DOMAIN_LABELS ile uyumlu. Mission detail badge "nature" yerine "Doğa".
-const DOMAIN_LABELS_TR: Record<string, string> = {
-  nature: 'Doğa',
-  education: 'Eğitim',
-  health: 'Sağlık',
-  social: 'Sosyal',
-  environment: 'Çevre',
-  culture: 'Kültür',
-  animals: 'Hayvanlar',
-  disaster: 'Afet',
-  community: 'Topluluk',
-  // ek kategoriler
-  env: 'Çevre',
-  edu: 'Eğitim',
-  animal: 'Hayvanlar',
-  child: 'Çocuk',
-  crisis: 'Afet',
-  financial: 'Finans',
-}
+// Vol-42: Ortak helper'dan import — local map yerine tek doğruluk kaynağı.
+import { getCauseLabel } from '@/lib/labels'
 
 interface Props {
   mission: Mission & { ngos?: { name: string; short_name?: string | null; color_accent: string | null; logo_url: string | null } | null }
@@ -220,11 +201,8 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
         {(() => {
           const cat = mission.category?.trim() || mission.domain?.trim() || null
           if (!cat) return null
-          // Vol-41: TR çeviri — "nature" yerine "Doğa" gibi.
-          // Map'te yoksa orijinal değeri capitalize ederek göster (fallback).
-          const catLabel =
-            DOMAIN_LABELS_TR[cat.toLowerCase()] ??
-            cat.charAt(0).toUpperCase() + cat.slice(1)
+          // Vol-42: Ortak helper'dan TR etiket — "nature" → "Doğa" vb.
+          const catLabel = getCauseLabel(cat)
           return (
             <div style={{ marginBottom: 8 }}>
               <BadgeDS variant="dark">{catLabel}</BadgeDS>

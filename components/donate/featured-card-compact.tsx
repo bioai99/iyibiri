@@ -5,19 +5,11 @@
 
 import Link from 'next/link'
 import { useTheme } from '@/lib/theme'
+import { getCauseLabel } from '@/lib/labels'
 import type { CampaignWithNGO } from '@/lib/supabase/types'
 
 interface Props {
   campaign: CampaignWithNGO
-}
-
-const CAUSE_LABELS: Record<string, string> = {
-  env: 'Çevre',
-  edu: 'Eğitim',
-  animal: 'Hayvan',
-  health: 'Sağlık',
-  child: 'Çocuk',
-  crisis: 'Afet',
 }
 
 export function FeaturedCardCompact({ campaign }: Props) {
@@ -27,7 +19,7 @@ export function FeaturedCardCompact({ campaign }: Props) {
   const ngoShort = ngo?.short_name || ngo?.name || ''
   const ngoInitial = (ngoShort || '?')[0]
   const cover = campaign.image_url || ngo?.cover_image_url || null
-  const causeLabel = campaign.cause ? CAUSE_LABELS[campaign.cause] ?? campaign.cause : null
+  const causeLabel = campaign.cause ? getCauseLabel(campaign.cause) : null
 
   // Kalan gün hesabı
   let daysLeft: number | null = null

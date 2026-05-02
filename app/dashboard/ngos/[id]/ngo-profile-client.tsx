@@ -40,7 +40,7 @@ const difficultyColor: Record<string, string> = {
 }
 
 export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfileClientProps) {
-  const { colors: c } = useTheme()
+  const { colors: c, mode } = useTheme()
   const router = useRouter()
   const [cancelling, setCancelling] = useState(false)
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
@@ -100,12 +100,12 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           <IconButtonDS
             icon={<ArrowLeft size={16} />}
             onClick={() => router.back()}
-            theme="dark"
+            theme={mode === 'light' ? 'light' : 'dark'}
             ariaLabel="Geri"
           />
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <IconButtonDS icon={<Share2 size={16} />} theme="dark" ariaLabel="Paylaş" />
-            <IconButtonDS icon={<Heart size={16} />} theme="dark" ariaLabel="Beğen" />
+            <IconButtonDS icon={<Share2 size={16} />} theme={mode === 'light' ? 'light' : 'dark'} ariaLabel="Paylaş" />
+            <IconButtonDS icon={<Heart size={16} />} theme={mode === 'light' ? 'light' : 'dark'} ariaLabel="Beğen" />
             {membership?.status === 'active' ? (
               showCancelConfirm ? (
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>

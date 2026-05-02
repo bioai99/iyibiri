@@ -6,6 +6,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { useTheme } from '@/lib/theme'
+import { getCauseLabel } from '@/lib/labels'
 import type { NGO } from '@/lib/supabase/types'
 
 interface Props {
@@ -13,19 +14,6 @@ interface Props {
   highlightTerm?: string
   /** Destekçi sayısı opsiyonel — campaigns.supporter_count toplamı veya member_count */
   supporterCount?: number
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  environment: 'Çevre',
-  education: 'Eğitim',
-  animal: 'Hayvan',
-  health: 'Sağlık',
-  child: 'Çocuk',
-  crisis: 'Afet',
-  social: 'Sosyal',
-  culture: 'Kültür',
-  arts: 'Sanat',
-  emergency: 'Acil',
 }
 
 function highlightMatch(text: string, term: string | undefined, color: string): ReactNode {
@@ -58,7 +46,7 @@ export function NgoListCard({ ngo, highlightTerm, supporterCount }: Props) {
   const initial = label[0] ?? '?'
   const taglineRaw = ngo.tagline || ngo.description || ''
   const catKey = (ngo.category ?? '').toLowerCase()
-  const catLabel = CATEGORY_LABELS[catKey] ?? ngo.category ?? null
+  const catLabel = catKey ? getCauseLabel(catKey) : null
   const verified = ngo.tax_exempt === true
 
   return (
