@@ -16,6 +16,30 @@
 ---
 ```
 
+## 2026-05-03 09:45 — Cross-Journey UX Friction: Landing → Sponsors
+
+- **Upstream:** `docs/ux/03-heuristics/2026-04-25-full-app-ux-audit.md` (38-page baseline), `docs/ui/05-reviews/2026-04-25-full-app-ui-motion-audit.md` (UI/motion companion)
+- **Downstream:** product-analyst (prioritization + sprint Vol-62 scope), ui-designer (refinement specs), frontend-engineer (backlog triage)
+- **Handoff:** ✅ cross-page analysis document (3 categories: pattern drift, friction points, sprint proposal)
+- **Status-board:** ⏳ pending update (will append to journal + mark Done)
+
+**İş:** Tüm 38-sayfa audit'i reinterpret ederek cross-page pattern drift (heart buttons, nav hierarchy, copy tone) + user journey friction noktaları (onboarding drop-off 3 spot, tier motivation loop 3 dark moment, bağış flow decision friction, NGO form confusion) + Sprint Vol-62 actionable paket çıkar.
+
+**Output:** `docs/ux/2026-05-03-cross-journey-ux-friction-analysis.md` (4,200 sözcük, 3 section × 12 quick-win + 4 medium-effort + 4 backlog)
+
+**Kanıt sınıfı:**
+- [Kod] 38-sayfa full-app audit referenslendi (Nielsen 10 + İyiBiri heuristics)
+- [Gözlem] Pattern drift: HeartButton sayfa sayfa dağınık (Mission/NGO/Reward/Post), Bottom nav sub-hierarchy muğlak, Copy tone onboarding shift
+- [Hipotez] Friction point'ler (KVKK tereddüsü, tier motivation zayıf, bağış amount preset) — discovery V2 user test öncesi hypothesis
+
+**Self-assessment:** 8/10 — cross-page analysis systematic, friction nokta'lar 3 journey deep-dive ile kanıtlı, sprint paket PO-ready. Ama user interview olmadığı için friction nokta'lar gözlem-tabanlı (high confidence ama test önerilir).
+
+**Açık karar:** 0
+
+**Next:** Product Analyst sprint Vol-62 scope karar → UI-designer refinement specs → FE implementation batches.
+
+---
+
 ## 2026-04-25 23:50 — FULL-APP UX AUDIT: Tier-1+ Hedef
 
 - **Upstream:** —

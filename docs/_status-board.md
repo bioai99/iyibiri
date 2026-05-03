@@ -4,6 +4,8 @@
 >
 > **Protokol:** `.claude/skills/agent-communication-protocol/SKILL.md` Katman B.
 
+**Son güncelleme:** 2026-05-03 03:15 — **COORDINATOR: Vol-62 MASTER PLAN RELEASED** — 12 paket, 3 track, critical path 20 days. Pkg-1/5/7/2-prep start Bu Hafta. Handoff: Frontend-Engineer + System-Architect Day 1.
+
 **Son güncelleme:** 2026-04-26 22:30 — system-architect — **Mayıs sprint Yol A/D/E + 5 server action auth guard**. TSC 0 hata ✅, ESLint 0 error ✅. Yol A tamam (10/10 TIERS callsite migrate). Yol D Vitest framework + 3 test + GitHub Actions CI workflow. Yol E migration 045 active/status trigger. 6 admin server action requireNgoAdmin/requireUser ile güvende. Canlıya alma noktaları: npm install + supabase db push + git push (CI tetiklensin).
 
 ---
@@ -51,6 +53,7 @@ Bir sonraki turda yapılacak, öncelik sırası belli iş.
 
 - **P0 #9 — STK admin UI V0 (Min+ 10 sayfa)** — owner: ux-researcher (next) → ui-designer → frontend-engineer + supabase-backend + auth-capacitor, priority: P0, link: master plan [`docs/product/01-workstreams/2026-04-24-v1-improvement-master-plan.md`](./product/01-workstreams/2026-04-24-v1-improvement-master-plan.md) #9, effort: 2-2.5 hafta (1 FE) / 1.5 hafta (FE+BE paralel). ✅ UX brief done (`docs/product/02-briefs/ux/2026-04-24-stk-admin-ui-min-plus.md`), ux-researcher heuristik audit başlayabilir (S0).
 - **P0 #10 — Design system reconciliation (atlas ↔ README ↔ kod tutarlılığı)** — owner: design-system-keeper, priority: P0, link: master plan #10, effort: M. Önceki turda kısmi çalışıldı (xp-bar shim, mission-card canonical) — xp-bar duplicate + hardcoded renk grep kalıntısı var.
+- **P0 #11 — UI Discipline: Inline Padding Normalization + Loading State Gap (Vol-62 sprint spike)** — owner: frontend-engineer + ui-designer, priority: P0, link: audit [`docs/ui/05-reviews/2026-05-03-ui-discipline-audit.md`](./ui/05-reviews/2026-05-03-ui-discipline-audit.md), effort: 6 hours (2h padding normalize 10 component + 2h loading.tsx template auth/onboarding + 2h Fraunces accent + h2 hierarchy). **Scope:** All inline padding → Tailwind utility/CSS var (P0), `/auth/loading.tsx` + `/onboarding/loading.tsx` (P0), dashboard hero italic accent (P1), h2 weight/color differentiate (P1).
 
 ### P1 — V1 Kapsam (orta öncelik)
 

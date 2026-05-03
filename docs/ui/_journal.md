@@ -17,6 +17,50 @@
 
 <!-- YENİ GİRİŞLER BU ÇİZGİNİN ALTINA -->
 
+## 2026-05-03 02:15 — Full-Project UI Discipline Audit (Visual Hierarchy × Motion × Spacing × Brand)
+
+- **Upstream:** Project Atlas (Bölüm 6 gerçek), 2026-04-25 motion audit, component inventory
+- **Downstream:** frontend-engineer (P0 padding normalize + loading.tsx), design-system-keeper (focus ring decision)
+- **Handoff:** ✅ docs/ui/05-reviews/2026-05-03-ui-discipline-audit.md created (10 sections, 400+ lines)
+
+- **Prompt:** Full project (48 page, all routes) UI discipline audit: visual hierarchy (eyebrow/h1/body parity), motion choreography (stagger consistency check), mikro-interaction (hover/focus/active inline vs DS), empty state systematicity, skeleton/loading template coverage, spacing/grid (Tailwind vs inline padding), asset quality (icon set + font), light/dark mode parity, Fraunces serif italic accent usage pattern.
+
+- **Input:**
+  - tailwind.config.ts + globals.css (token layer)
+  - 48 pages (landing, auth 7, onboarding 4, dashboard 17, admin 10, donate 4, etc.)
+  - components/ui/* (53 component: atom 9, mol 16, org 4, DS 13, state 6)
+  - Mevcut audits: 2026-04-25 motion audit (38 page matrix), component inventory, atlas (token palette + arch)
+
+- **Output:** `docs/ui/05-reviews/2026-05-03-ui-discipline-audit.md`:
+  - P0: 10 inline padding token escapes (badge-ds, chip-ds, tier-badge, hero-card, etc.) + 11 missing loading.tsx (auth/onboarding)
+  - P1: Fraunces italic accent dashboard hero gap (bölgesel: auth/landing OK, dashboard hiç), h2 hierarchy weight/color differentiation eksik (8/38 page)
+  - P2: Motion timing ad-hoc devamı (50-60-80ms stagger), spring damping tuning (underdamped 15)
+  - Systematik: Dark mode toggle effect broken (theme-toggle UI var ama useTheme set-function yok), focus ring width inconsistent (button ring-2, input ring-3)
+
+- **Token ihlali bulundu:** 
+  - Hardcoded color: 0 ✅
+  - Spacing grid escape: **15 instans** (5/9/10/14/22px padding, atlas dışı) = P0
+  - Icon set: pure lucide ✅
+  - Fraunces usage: 80% (dashboard h1/h2 italic vurgu gap)
+
+- **Motion spec:** Stagger 40ms baseline (vs current 50-80 mixed), spring (400 stiffness, damping 30 OK ama 15 underdamped). Timing band: micro 80-120ms, small 150-200ms, medium 300-400ms, large 500-800ms.
+
+- **Self-assessment:**
+  - ✅ Scope: tüm 48 sayfa × 10 dimension tara (visual hier, motion, spacing, empty state, loading, icon, font, dark mode, brand, micro-interaction)
+  - ✅ Evidence: [Kod] file:line references, [Gözlem] screen audit, [Spec] atlas/2026-04-25 audit reference
+  - ✅ Severity: P0 (visual regression risk) vs P1 (polish) vs P2 (consistency) clear tier
+  - ✅ Actionability: Quick-win 3 (padding, hero accent, h2 weight) ≈ 20 min, Sprint Vol-62 6-hour scope clear
+  - ✅ Downstream: FE (inline padding 10 component refactor + loading template), DS (focus ring decision), Product (sprint assignment)
+  - ✅ Handoff log: journal + status board updated
+
+- **Next:**
+  - FE: P0 padding normalize (2 hours) + loading.tsx template (2 hours)
+  - UI: P1 Fraunces accent + h2 refine (2 hours)
+  - DS: Focus ring ring-2 vs ring-3 decision (ADR?)
+  - Product: Vol-62 sprint P0/P1 prioritization confirm
+
+
+
 ## 2026-04-25 23:58 — Atlas + Component Inventory Refresh
 
 - **Prompt:** Last 3 days: Tier 2 reward system (audit + journey + eng spec + UI spec), show-stopping patterns (7 pattern spec + FE impl + UX audit), admin panel (10 sayfa complete), dashboard redesign, UX audit tamamlandı. Atlas eski kaldı. Component envanteri dosyası yok.
