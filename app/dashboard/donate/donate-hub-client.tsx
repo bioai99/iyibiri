@@ -11,7 +11,9 @@ import { useMemo, useRef, useState, useEffect } from 'react'
 import { Search, X } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
 import type { CampaignWithNGO, NGO } from '@/lib/supabase/types'
-import { HundredManifesto } from '@/components/donate/hundred-manifesto'
+// Vol-58.1: HundredManifesto kaldırıldı — IntroCard zaten "Aracı olmadan,
+// doğrudan kuruma" mesajını veriyor. Liste altındaki tekrar görsel
+// kalabalık yapıyordu.
 import { FeaturedCardCompact } from '@/components/donate/featured-card-compact'
 import { NgoListCard } from '@/components/donate/ngo-list-card'
 
@@ -475,6 +477,7 @@ function HubContent({
           }}
         >
           <div>
+            {/* Vol-58.1: "Sıralama: Önerilen" satırı kaldırıldı — UI temiz. */}
             <h2
               style={{
                 margin: 0,
@@ -488,10 +491,6 @@ function HubContent({
               İyiliğin{' '}
               <em style={{ fontStyle: 'italic', color: c.gold }}>öncüleri</em>
             </h2>
-            <p style={{ margin: '3px 0 0', fontSize: 11, color: c.ink400 }}>
-              Sıralama:{' '}
-              <span style={{ color: c.cream, fontWeight: 600 }}>Önerilen</span>
-            </p>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -505,9 +504,8 @@ function HubContent({
         </div>
       </section>
 
-      <section style={{ padding: '32px 0 0' }}>
-        <HundredManifesto compact />
-      </section>
+      {/* Vol-58.1: HundredManifesto kaldırıldı — IntroCard'da zaten "Aracı
+          olmadan, doğrudan kuruma" mesajı var, tekrar görsel kalabalık. */}
     </>
   )
 }
