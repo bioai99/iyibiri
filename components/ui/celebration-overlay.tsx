@@ -171,6 +171,7 @@ export function CelebrationOverlay({
               background: `linear-gradient(135deg, ${c.ink800} 0%, ${c.ink900} 100%)`,
               border: `1px solid ${c.goldLine}`,
               borderRadius: 28,
+              // Vol-62-C: Atlas grid padding snap (36→36 ok, 28→24 or 28 custom — keep visual proportion)
               padding: '36px 28px 28px',
               boxShadow: `0 20px 60px rgba(0,0,0,0.6), 0 0 40px ${c.gold}40`,
             }}
@@ -234,7 +235,8 @@ export function CelebrationOverlay({
               style={{
                 background: c.goldSoft,
                 border: `1.5px solid ${c.goldLine}`,
-                padding: '10px 18px',
+                // Vol-62-C: Atlas grid padding snap (10→12, 18→16)
+                padding: '12px 16px',
               }}
               aria-live="polite"
               aria-atomic="true"

@@ -30,7 +30,8 @@ export function BadgeDS({ children, icon, variant = 'neutral', style = {} }: Bad
         display: 'inline-flex',
         alignItems: 'center',
         gap: 5,
-        padding: '5px 10px',
+        // Vol-62-C: Atlas grid padding snap (5→4, 10→12)
+        padding: '4px 12px',
         borderRadius: 999,
         background: v.bg,
         border: `1px solid ${v.border}`,

@@ -16,7 +16,8 @@ export function TierBadgeDS({ tier }: TierBadgeDSProps) {
         gap: 5,
         flexShrink: 0,
         whiteSpace: 'nowrap',
-        padding: '5px 10px 5px 8px',
+        // Vol-62-C: Atlas grid padding snap (5→4, 10→12)
+        padding: '4px 12px 4px 8px',
         borderRadius: 999,
         background: c.goldSoft,
         border: `1px solid ${c.goldLine}`,

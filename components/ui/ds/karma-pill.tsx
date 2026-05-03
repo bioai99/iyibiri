@@ -17,7 +17,8 @@ export function KarmaPill({ amount, variant = 'dark' }: KarmaPillProps) {
         display: 'inline-flex',
         alignItems: 'center',
         gap: 5,
-        padding: '6px 10px 6px 8px',
+        // Vol-62-C: Atlas grid padding snap (6→8, 10→12, keep 8)
+        padding: '8px 12px 8px 8px',
         borderRadius: 999,
         background: dark ? c.goldSoft : 'rgba(232,194,104,.18)',
         border: `1px solid ${dark ? 'rgba(232,194,104,.35)' : 'rgba(181,143,61,.45)'}`,

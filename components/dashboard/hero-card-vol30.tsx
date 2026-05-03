@@ -152,7 +152,8 @@ export function HeroCardVol30({
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            padding: '6px 11px',
+            // Vol-62-C: Atlas grid padding snap (6→8, 11→12)
+            padding: '8px 12px',
             borderRadius: 999,
             background: isDark ? 'rgba(0,0,0,0.30)' : 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(8px)',
@@ -173,7 +174,8 @@ export function HeroCardVol30({
         style={{
           position: 'relative',
           zIndex: 1,
-          padding: '28px 24px 22px',
+          // Vol-62-C: Atlas grid padding snap (28→28 ok, 24→24 ok, 22→20)
+          padding: '28px 24px 20px',
         }}
       >
         <div
@@ -341,7 +343,8 @@ function StatPill({ label, value, Icon, href, tinted }: StatPillProps) {
       onTouchEnd={() => setPressed(false)}
       style={{
         flex: 1,
-        padding: '12px 12px 12px 14px',
+        // Vol-62-C: Atlas grid padding snap (12→12 ok, 14→16)
+        padding: '12px 12px 12px 16px',
         borderRadius: 14,
         background: hovered ? hoverBg : baseBg,
         border: `1px solid ${hovered ? hoverBorder : baseBorder}`,

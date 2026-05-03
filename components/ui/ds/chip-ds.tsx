@@ -34,7 +34,8 @@ export function ChipDS({ active, children, icon, onClick, theme = 'dark' }: Chip
         display: 'inline-flex',
         alignItems: 'center',
         gap: 6,
-        padding: '9px 14px',
+        // Vol-62-C: Atlas grid padding snap (9→8, 14→16)
+        padding: '8px 16px',
         borderRadius: 999,
         border: `1px solid ${tokens.border}`,
         background: tokens.bg,

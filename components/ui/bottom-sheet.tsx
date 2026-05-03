@@ -64,6 +64,7 @@ export function BottomSheet({
           {title && (
             <Drawer.Title
               style={{
+                // Vol-62-C: Atlas grid padding snap (8→8 ok, 20→20 ok, 16→16 ok) — keep
                 padding: '8px 20px 16px',
                 fontFamily: 'var(--font-display), serif',
                 fontSize: 18,
@@ -80,6 +81,7 @@ export function BottomSheet({
             style={{
               flex: 1,
               overflowY: 'auto',
+              // Vol-62-C: Atlas grid padding snap (0→0 ok, 20→20 ok, 32→32 ok) — keep
               padding: '0 20px 32px',
               paddingBottom: 'calc(32px + env(safe-area-inset-bottom, 0px))',
             }}

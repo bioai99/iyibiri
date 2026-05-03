@@ -20,7 +20,8 @@ export function MetaChip({ icon, children }: MetaChipProps) {
         fontWeight: 500,
         color: c.ink200,
         background: 'rgba(255,255,255,.03)',
-        padding: '5px 9px',
+        // Vol-62-C: Atlas grid padding snap (5→4, 9→8)
+        padding: '4px 8px',
         borderRadius: 999,
         border: `1px solid ${c.ink600}`,
         letterSpacing: '0',

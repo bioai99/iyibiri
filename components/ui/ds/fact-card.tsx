@@ -18,7 +18,8 @@ export function FactCard({ label, value, icon, urgent }: FactCardProps) {
         background: c.ink800,
         border: `1px solid ${urgent ? c.goldLine : c.ink600}`,
         borderRadius: 14,
-        padding: '14px 14px 12px',
+        // Vol-62-C: Atlas grid padding snap (14→16, 12→12 ok)
+        padding: '16px 16px 12px',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>

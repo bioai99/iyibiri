@@ -66,6 +66,37 @@ export function FlowStepAmount({
   const [intent, setIntent] = useState<'self' | 'gift' | 'memorial'>('self')
   const [intentLabel, setIntentLabel] = useState<string>('')
   const [anonymous, setAnonymous] = useState(false)
+  // Vol-62-B: Custom amount input state.
+  // PRESETS readonly tuple olduğu için includes() literal-only narrow yapar;
+  // initialAmount: number ile uyumsuzluk düşmesin diye explicit cast.
+  const [showCustomInput, setShowCustomInput] = useState<boolean>(
+    !(PRESETS as readonly number[]).includes(initialAmount),
+  )
+  const [customAmountError, setCustomAmountError] = useState<string>('')
+
+  // Vol-62-B: Custom amount validation (10-10000 TL)
+  const handleCustomAmountChange = (value: string) => {
+    const num = Math.floor(Number(value) || 0)
+    setCustomAmountError('')
+
+    if (value === '' || value === '0') {
+      setAmount(0)
+      return
+    }
+
+    if (num < 10) {
+      setCustomAmountError('En az 10 TL')
+      setAmount(0)
+      return
+    }
+    if (num > 10000) {
+      setCustomAmountError('Maks 10.000 TL')
+      setAmount(10000)
+      return
+    }
+
+    setAmount(num)
+  }
 
   // Karma preview
   const baseKarma = Math.floor(amount / 10)
@@ -233,22 +264,26 @@ export function FlowStepAmount({
           )}
         </div>
 
-        {/* Preset chips */}
+        {/* Vol-62-B: Preset chips (4 presets + custom button) */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(5, 1fr)',
             gap: 8,
             marginBottom: 14,
           }}
         >
           {PRESETS.map((v) => {
-            const active = amount === v
+            const active = amount === v && !showCustomInput
             return (
               <button
                 type="button"
                 key={v}
-                onClick={() => setAmount(v)}
+                onClick={() => {
+                  setAmount(v)
+                  setShowCustomInput(false)
+                  setCustomAmountError('')
+                }}
                 style={{
                   padding: '12px 8px',
                   borderRadius: 12,
@@ -261,52 +296,94 @@ export function FlowStepAmount({
                   cursor: 'pointer',
                   fontVariantNumeric: 'tabular-nums',
                   fontFamily: 'inherit',
+                  transition: 'all 200ms',
                 }}
               >
                 {v} ₺
               </button>
             )
           })}
+          {/* Vol-62-B: Custom amount button */}
+          <button
+            type="button"
+            onClick={() => setShowCustomInput(true)}
+            style={{
+              padding: '12px 8px',
+              borderRadius: 12,
+              textAlign: 'center',
+              background: showCustomInput ? c.gold : c.ink800,
+              color: showCustomInput ? c.ink900 : c.cream,
+              border: `1px solid ${showCustomInput ? c.gold : c.ink600}`,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              transition: 'all 200ms',
+            }}
+          >
+            Başka
+          </button>
         </div>
 
-        {/* Custom amount input */}
-        <div
-          style={{
-            padding: '12px 14px',
-            borderRadius: 12,
-            background: c.ink800,
-            border: `1px solid ${c.ink600}`,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-          }}
-        >
-          <span style={{ fontSize: 12, color: c.ink400 }}>Özel tutar</span>
-          <input
-            type="number"
-            min={1}
-            step={1}
-            value={amount}
-            onChange={(e) => {
-              const v = Math.max(1, Math.floor(Number(e.target.value) || 0))
-              setAmount(v)
-            }}
+        {/* Vol-62-B: Custom amount input (inline) */}
+        {showCustomInput && (
+          <div
             style={{
-              flex: 1,
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: c.cream,
-              fontSize: 15,
-              fontWeight: 600,
-              textAlign: 'right',
-              fontVariantNumeric: 'tabular-nums',
-              fontFamily: 'inherit',
-              minWidth: 0,
+              padding: '12px 14px',
+              borderRadius: 12,
+              background: c.ink800,
+              border: `1px solid ${customAmountError ? c.ink500 : c.ink600}`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: customAmountError ? 6 : 0,
             }}
-          />
-          <span style={{ fontSize: 13, color: c.gold }}>₺</span>
-        </div>
+          >
+            <span style={{ fontSize: 12, color: c.ink400 }}>Tutar</span>
+            <input
+              type="number"
+              min={10}
+              max={10000}
+              step={1}
+              inputMode="numeric"
+              value={amount}
+              onChange={(e) => handleCustomAmountChange(e.target.value)}
+              placeholder="10 - 10000"
+              autoFocus
+              style={{
+                flex: 1,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: c.cream,
+                fontSize: 15,
+                fontWeight: 600,
+                textAlign: 'right',
+                fontVariantNumeric: 'tabular-nums',
+                fontFamily: 'inherit',
+                minWidth: 0,
+              }}
+            />
+            <span style={{ fontSize: 13, color: c.gold }}>₺</span>
+          </div>
+        )}
+
+        {/* Vol-62-B: Validation error */}
+        {showCustomInput && customAmountError && (
+          <div
+            style={{
+              padding: '8px 12px',
+              borderRadius: 8,
+              background: `${c.ink700}33`,
+              border: `1px solid ${c.ink600}`,
+              fontSize: 12,
+              color: c.cream,
+              marginBottom: 8,
+            }}
+          >
+            {customAmountError}
+          </div>
+        )}
       </div>
 
       {/* Niyet — kim için? */}

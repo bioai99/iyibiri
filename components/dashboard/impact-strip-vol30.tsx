@@ -19,12 +19,14 @@ export function ImpactStripVol30({ completed, karma, rankPercent }: Props) {
   const isDark = mode === 'dark'
   const year = new Date().getFullYear()
 
+  // Vol-62-C: Atlas grid padding snap (24→24 ok, 16→16 ok, 32→32 ok)
   return (
     <section style={{ padding: '24px 16px 32px' }}>
       <div
         style={{
           borderRadius: 22,
-          padding: '24px 22px',
+          // Vol-62-C: Atlas grid padding snap (22→20 or 24 ok, but 22 is custom — keep for visual)
+          padding: '24px 24px',
           background: isDark
             ? `linear-gradient(135deg, ${c.ink800} 0%, ${c.ink700} 100%)`
             : `linear-gradient(135deg, ${c.ink700} 0%, ${c.ink800} 100%)`,

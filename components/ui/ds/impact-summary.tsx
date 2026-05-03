@@ -15,7 +15,8 @@ export function ImpactSummary({ completed, karma }: ImpactSummaryProps) {
         background: 'linear-gradient(135deg, rgba(233,207,194,.12), rgba(196,203,172,.08))',
         border: `1px solid ${c.ink600}`,
         borderRadius: 18,
-        padding: '22px 22px',
+        // Vol-62-C: Atlas grid padding snap (22 already aligns with grid: 4/8/12/16/20/24 → keep 20x20)
+        padding: '20px 20px',
         position: 'relative',
         overflow: 'hidden',
       }}

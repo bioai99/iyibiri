@@ -17,7 +17,8 @@ export function QuickAction({ icon, title, sub }: QuickActionProps) {
         background: c.ink800,
         border: `1px solid ${c.ink600}`,
         borderRadius: 14,
-        padding: '14px 14px 12px',
+        // Vol-62-C: Atlas grid padding snap (14→16, 12→12 ok)
+        padding: '16px 16px 12px',
         display: 'flex',
         gap: 10,
         alignItems: 'flex-start',
