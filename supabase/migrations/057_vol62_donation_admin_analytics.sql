@@ -31,7 +31,7 @@ create policy "ngo_admins_view_donations"
   );
 
 comment on policy "ngo_admins_view_donations" on public.donations is
-  'Vol-62 Pkg-3: NGO admin'leri kendi STK'larına yapılan bağışları analytics paneline görüntüleyebilir.';
+  'Vol-62 Pkg-3: NGO adminleri kendi STK larına yapılan bagislari analytics panelinde goruntuleyebilir.';
 
 -- ──────────────────────────────────────────────────────────────────
 -- B) Composite FK Index: Campaign progress queries (raised_amount + donor list)
@@ -129,10 +129,10 @@ begin
   ) into v_audit_log_exists;
 
   -- Check audit_log RLS enabled
-  select rls_enabled into v_audit_log_rls_enabled
-    from information_schema.tables
-    where table_name = 'audit_log'
-    and table_schema = 'public'
+  select relrowsecurity into v_audit_log_rls_enabled
+    from pg_class
+    where relname = 'audit_log'
+    and relnamespace = 'public'::regnamespace
     limit 1;
 
   raise notice '[057_vol62] RLS policy: %, campaign index: %, ngo_campaign index: %, audit_log: %, audit_log RLS: %',

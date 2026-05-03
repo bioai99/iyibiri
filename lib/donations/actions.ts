@@ -155,17 +155,12 @@ export async function createDonation(
     }
   }
 
-  // 3. Karma transaction (trigger profiles.karma_total günceller)
+  // 3. Karma — Vol-62 BUG-067 fix: DB trigger devraldı (Migration 056 on_donation_completed).
+  // Önceden burada manuel insert vardı ama donation_id set etmiyordu → her bağışta 2 satır:
+  // 1 trigger'dan (donation_id dolu, doğru), 1 burada (donation_id NULL, duplicate).
+  // Trigger artık tek source-of-truth. karmaAwarded UI return için hesaplanıyor;
+  // formula app+trigger aynı: floor(amount/10) + 20% bonus regular_supporter.
   const karmaAwarded = computeKarmaFromDonation(amount, input.scenarioType)
-  if (karmaAwarded > 0) {
-    await supabase.from('karma_transactions').insert({
-      user_id: user.id,
-      amount: karmaAwarded,
-      type: 'donation',
-      reference_id: donation.id,
-      description: `${ngo.short_name ?? ngo.name} bağışı (${amount.toFixed(0)} ₺)`,
-    })
-  }
 
   // 4. Referral attribution (ADR-008)
   await supabase.from('referrals').insert({
