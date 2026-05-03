@@ -201,8 +201,12 @@ export default function SignupPage() {
         <div style={{ flex: 1, height: 1, background: c.ink600 }} />
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSignup} style={{ padding: '20px 24px 0', display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+      {/* Vol-62-A BUG-066 fix: form id + button form="signup-form" type="submit"
+          ile HTML5 form association — hydration-safe. Önceden button "type=button"
+          + onClick={handleSignup} dual-binding kullanıyordu, hidrasyon delay'inde
+          listener mount olmadan kullanıcı bastığında hiçbir şey olmuyordu (Vol-56-I
+          Chrome MCP'de tespit edilmişti, network'e hiç istek gitmiyordu). */}
+      <form id="signup-form" onSubmit={handleSignup} style={{ padding: '20px 24px 0', display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
         <input
           type="text"
           value={name}
@@ -278,8 +282,8 @@ export default function SignupPage() {
       {/* Footer */}
       <div style={{ padding: '16px 24px calc(env(safe-area-inset-bottom, 20px) + 16px)' }}>
         <button
-          type="button"
-          onClick={handleSignup}
+          type="submit"
+          form="signup-form"
           disabled={!kvkk || loading}
           style={{ width: '100%', height: 52, borderRadius: 14, background: kvkk ? c.gold : c.ink700, border: 'none', color: kvkk ? c.ink : c.ink400, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: kvkk ? 'pointer' : 'not-allowed' }}
         >

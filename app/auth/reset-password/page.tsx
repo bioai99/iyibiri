@@ -145,7 +145,8 @@ export default function ResetPasswordPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ padding: '28px 24px 0', display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+          {/* Vol-62-A BUG-066 fix: form id + button form="reset-form" type="submit" (hidrasyon-safe, double submit kapanır) */}
+          <form id="reset-form" onSubmit={handleSubmit} style={{ padding: '28px 24px 0', display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
             {/* Yeni şifre */}
             <div>
               <div style={labelStyle}>YENİ ŞİFRE</div>
@@ -215,7 +216,8 @@ export default function ResetPasswordPage() {
 
           <div style={{ padding: '18px 24px 28px' }}>
             <button
-              onClick={handleSubmit as any}
+              type="submit"
+              form="reset-form"
               disabled={loading || !password || !confirm || password !== confirm}
               style={{ width: '100%', height: 52, borderRadius: 14, background: c.gold, border: 'none', color: c.ink, fontFamily: uiFont, fontSize: 15, fontWeight: 700, cursor: loading ? 'wait' : 'pointer', opacity: loading || !password || !confirm || password !== confirm ? 0.6 : 1 }}
             >
