@@ -80,14 +80,17 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           quality={75}
           aria-hidden="true"
         />
+        {/* Vol-59.2: Hero scrim mode-aware — light mode'da c.ink900 cream token (görünmez scrim). */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: `linear-gradient(180deg, ${c.ink900}73 0%, transparent 30%, transparent 60%, ${c.ink900} 100%)`,
+            background: mode === 'light'
+              ? 'linear-gradient(180deg, rgba(36,30,24,0.45) 0%, transparent 30%, transparent 60%, rgba(36,30,24,1) 100%)'
+              : `linear-gradient(180deg, ${c.ink900}73 0%, transparent 30%, transparent 60%, ${c.ink900} 100%)`,
           }}
         />
-        {/* Top buttons */}
+        {/* Vol-59.2: Top buttons — Vol-59.1 fix'ten sonra theme="dark" semantic doğru (her zaman cream icon). */}
         <div
           style={{
             position: 'absolute',
@@ -101,12 +104,12 @@ export function NGOProfileClient({ ngo, missions, userId, membership }: NGOProfi
           <IconButtonDS
             icon={<ArrowLeft size={16} />}
             onClick={() => router.back()}
-            theme={mode === 'light' ? 'light' : 'dark'}
+            theme="dark"
             ariaLabel="Geri"
           />
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <IconButtonDS icon={<Share2 size={16} />} theme={mode === 'light' ? 'light' : 'dark'} ariaLabel="Paylaş" />
-            <IconButtonDS icon={<Heart size={16} />} theme={mode === 'light' ? 'light' : 'dark'} ariaLabel="Beğen" />
+            <IconButtonDS icon={<Share2 size={16} />} theme="dark" ariaLabel="Paylaş" />
+            <IconButtonDS icon={<Heart size={16} />} theme="dark" ariaLabel="Beğen" />
             {membership?.status === 'active' ? (
               showCancelConfirm ? (
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>

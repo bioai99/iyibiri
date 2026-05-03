@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
+import { IconButtonDS } from '@/components/ui/ds'
 import type { PostWithAuthor, Reward, Sponsor } from '@/lib/supabase/types'
 
 interface Props {
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export function SponsorPublicClient({ sponsor, posts, rewards }: Props) {
-  const { colors: c } = useTheme()
+  const { colors: c, mode } = useTheme()
   const router = useRouter()
   const accent = sponsor.brand_color || c.gold
   const initial = (sponsor.short_name ?? sponsor.name)[0]
@@ -41,37 +42,34 @@ export function SponsorPublicClient({ sponsor, posts, rewards }: Props) {
           backgroundPosition: 'center',
         }}
       >
+        {/* Vol-59.2: Hero scrim mode-aware — light mode'da koyu text (rgba(36,30,24,...)) */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: `linear-gradient(180deg, rgba(15,11,8,0.55) 0%, transparent 35%, rgba(15,11,8,0.95) 100%), linear-gradient(135deg, ${accent}33, transparent 60%)`,
+            background: `linear-gradient(180deg, ${mode === 'light' ? 'rgba(36,30,24,0.55)' : 'rgba(15,11,8,0.55)'} 0%, transparent 35%, ${mode === 'light' ? 'rgba(36,30,24,0.95)' : 'rgba(15,11,8,0.95)'} 100%), linear-gradient(135deg, ${accent}33, transparent 60%)`,
           }}
         />
-        <button
-          type="button"
-          onClick={() => router.back()}
-          aria-label="Geri"
+        {/* Vol-59.2: Back button → IconButtonDS theme="dark" */}
+        <div
           style={{
             position: 'absolute',
             top: 'calc(env(safe-area-inset-top, 20px) + 38px)',
             left: 16,
-            width: 36,
-            height: 36,
-            borderRadius: '50%',
-            background: 'rgba(15,11,8,0.7)',
-            backdropFilter: 'blur(8px)',
-            color: c.cream,
-            border: `1px solid ${c.ink600}`,
-            cursor: 'pointer',
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
-          <ArrowLeft size={16} />
-        </button>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            style={{ all: 'unset' } as React.CSSProperties}
+          >
+            <IconButtonDS
+              icon={<ArrowLeft size={16} />}
+              theme="dark"
+              ariaLabel="Geri"
+            />
+          </button>
+        </div>
         <div
           style={{
             position: 'absolute',

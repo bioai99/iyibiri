@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ArrowLeft, Share2, MapPin, ArrowRight } from 'lucide-react'
 import type { Mission } from '@/lib/supabase/types'
 import { BadgeDS, IconButtonDS, KarmaDotToken } from '@/components/ui/ds'
+import { PageHeroBar } from '@/components/ui/page-hero-bar'
 import { useTheme } from '@/lib/theme'
 // Vol-56-D: kategori EN string'leri ("nature", "education", ...) state badge'inde
 // kullanıcıya leak ediyordu — ortak TR helper'dan map'leyelim.
@@ -604,9 +605,6 @@ function CompletedBody({ karma, photoUrl, impactStatement, ngoName, onShare, onN
 export function MissionStatesClient({ mission, state }: MissionStatesProps) {
   const { colors: c, mode } = useTheme()
   const router = useRouter()
-  // Vol-42: Light mode'da koyu glass icon görünmez kalıyordu — mode'a
-  // göre dinamik theme.
-  const headerIconTheme: 'light' | 'dark' = mode === 'light' ? 'light' : 'dark'
 
   function handleShare() {
     try {
@@ -655,28 +653,13 @@ export function MissionStatesClient({ mission, state }: MissionStatesProps) {
           }}
         />
 
-        {/* Top row: back + share (completed only) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 58,
-            left: 16,
-            right: 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <IconButtonDS
-            icon={<ArrowLeft size={18} />}
-            onClick={() => router.back()}
-            ariaLabel="Geri"
-            theme={headerIconTheme}
-          />
-          {state === 'completed' && (
-            <IconButtonDS icon={<Share2 size={18} />} onClick={handleShare} ariaLabel="Görev sonucunu paylaş" theme={headerIconTheme} />
-          )}
-        </div>
+        {/* Vol-59.2: PageHeroBar adoption — ArrowLeft + Share2 (completed state'te). */}
+        <PageHeroBar
+          backHref="/dashboard/missions"
+          onShare={state === 'completed' ? handleShare : undefined}
+          theme="dark"
+          shareAriaLabel="Görev sonucunu paylaş"
+        />
 
         {/* Bottom: badge + title — raw #F4EEDF on photo overlay per v2.1 spec */}
         <div

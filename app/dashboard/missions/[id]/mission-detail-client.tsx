@@ -20,6 +20,7 @@ import {
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
+import { PageHeroBar } from '@/components/ui/page-hero-bar'
 import { useTheme } from '@/lib/theme'
 import { takeMission } from '@/lib/missions/actions'
 // Vol-42: Ortak helper'dan import — local map yerine tek doğruluk kaynağı.
@@ -37,10 +38,6 @@ interface Props {
 
 export function MissionDetailClient({ mission, userMission, userId, isMember = false, isSaved: initialSaved = false, isFollowing: initialFollowing = false }: Props) {
   const { colors: c, mode } = useTheme()
-  // Vol-41: Header iconları — light mode'da theme="light" (cream glass), dark
-  // mode'da theme="dark" (warm dark glass). Önceden default 'dark' idi, light
-  // mode'da koyu kalıp okunamıyordu.
-  const headerIconTheme: 'light' | 'dark' = mode === 'light' ? 'light' : 'dark'
   // ADR-012 Yol D: Public mission için kullanıcı üye olmadan da alabilir,
   // hafif KVKK onayı yeterli. Members_only görev için state zaten
   // `requires_membership`'a düşer (page.tsx tarafından) — bu client hiç render olmaz.
@@ -154,45 +151,34 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
           }}
         />
 
-        {/* Top row: back + share/heart */}
+        {/* Vol-59.2: PageHeroBar adoption — ArrowLeft + Share2 → reusable bar. Heart inline kalır. */}
+        <PageHeroBar
+          onShare={() => {
+            try {
+              if (navigator.share) {
+                navigator.share({ title: mission.title, url: window.location.href })
+              }
+            } catch { /* silent */ }
+          }}
+          theme="dark"
+          shareAriaLabel="Görevi paylaş"
+        />
+
+        {/* Vol-59.2: Heart buton inline — toggleSave state'i ile bağlı */}
         <div
           style={{
             position: 'absolute',
             top: 58,
-            left: 16,
-            right: 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            right: 60,
             zIndex: 10,
           }}
         >
           <IconButtonDS
-            icon={<ArrowLeft size={18} />}
-            onClick={() => router.back()}
-            ariaLabel="Geri"
-            theme={headerIconTheme}
+            icon={<Heart size={18} fill={saved ? (mode === 'light' ? c.ink900 : c.cream) : 'none'} />}
+            ariaLabel={saved ? 'Kaydı kaldır' : 'Kaydet'}
+            theme="dark"
+            onClick={toggleSave}
           />
-          <div style={{ display: 'flex', gap: 8 }}>
-            <IconButtonDS
-              icon={<Share2 size={18} />}
-              ariaLabel="Görevi paylaş"
-              theme={headerIconTheme}
-              onClick={() => {
-                try {
-                  if (navigator.share) {
-                    navigator.share({ title: mission.title, url: window.location.href })
-                  }
-                } catch { /* silent */ }
-              }}
-            />
-            <IconButtonDS
-              icon={<Heart size={18} fill={saved ? (mode === 'light' ? c.ink900 : c.cream) : 'none'} />}
-              ariaLabel={saved ? 'Kaydı kaldır' : 'Kaydet'}
-              theme={headerIconTheme}
-              onClick={toggleSave}
-            />
-          </div>
         </div>
       </div>
 

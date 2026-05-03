@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
+import { IconButtonDS } from '@/components/ui/ds'
 import type { Campaign, NGO } from '@/lib/supabase/types'
 import { RegularDonorCard } from '@/components/donate/regular-donor-card'
 import { CampaignCard } from '@/components/donate/campaign-card'
@@ -26,7 +27,7 @@ interface Props {
 }
 
 export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
-  const { colors: c } = useTheme()
+  const { colors: c, mode } = useTheme()
   const router = useRouter()
 
   const accent = ngo.color_accent || c.gold
@@ -60,16 +61,17 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
           backgroundPosition: 'center',
         }}
       >
+        {/* Vol-59.2: Hero scrim mode-aware — light mode'da koyu text (rgba(36,30,24,...)) */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg, rgba(15,11,8,0.55) 0%, transparent 35%, rgba(15,11,8,0.95) 100%)',
+              `linear-gradient(180deg, ${mode === 'light' ? 'rgba(36,30,24,0.55)' : 'rgba(15,11,8,0.55)'} 0%, transparent 35%, ${mode === 'light' ? 'rgba(36,30,24,0.95)' : 'rgba(15,11,8,0.95)'} 100%)`,
           }}
         />
 
-        {/* Bezel: back + heart */}
+        {/* Vol-59.2: Bezel: back + heart → IconButtonDS theme="dark" */}
         <div
           style={{
             position: 'absolute',
@@ -80,49 +82,18 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
             justifyContent: 'space-between',
           }}
         >
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label="Geri"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              background: 'rgba(15,11,8,0.7)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: c.cream,
-              border: `1px solid ${c.ink600}`,
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <ArrowLeft size={16} />
+          <button type="button" onClick={() => router.back()} style={{ all: 'unset' } as React.CSSProperties}>
+            <IconButtonDS
+              icon={<ArrowLeft size={16} />}
+              theme="dark"
+              ariaLabel="Geri"
+            />
           </button>
-          <button
-            type="button"
-            aria-label="Favorilere ekle"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              background: 'rgba(15,11,8,0.7)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: c.cream,
-              border: `1px solid ${c.ink600}`,
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <Heart size={14} />
-          </button>
+          <IconButtonDS
+            icon={<Heart size={14} />}
+            theme="dark"
+            ariaLabel="Favorilere ekle"
+          />
         </div>
 
         {/* Identity row */}

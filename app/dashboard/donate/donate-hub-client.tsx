@@ -361,6 +361,7 @@ export function DonateHubClient({ ngos, featured, supportersByNgo }: Props) {
           supportersByNgo={supportersByNgo}
           c={c}
           isDark={isDark}
+          mode={mode}
         />
       )}
     </div>
@@ -376,6 +377,7 @@ function HubContent({
   railRef,
   supportersByNgo,
   c,
+  mode,
 }: {
   ngos: NGO[]
   featured: CampaignWithNGO[]
@@ -384,11 +386,12 @@ function HubContent({
   supportersByNgo: Record<string, number>
   c: ReturnType<typeof useTheme>['colors']
   isDark: boolean
+  mode: 'light' | 'dark'
 }) {
   return (
     <>
       {/* Vol-58: Intro tanıtım kartı — bu bölümde ne yapabilirsin? */}
-      <IntroCard c={c} />
+      <IntroCard c={c} mode={mode} />
 
       {/* Featured carousel */}
       {featured.length > 0 && (
@@ -615,14 +618,17 @@ function SearchActiveContent({
 // Kullanıcı bağış sekmesine ilk geldiğinde "ne yapabilirim?" sorusuna 1
 // satırda yanıt verir. Üç pil — tek seferlik, düzenli, vergi indirimli —
 // ile değer önermesi hızlıca okunur.
-function IntroCard({ c }: { c: ReturnType<typeof useTheme>['colors'] }) {
+function IntroCard({ c, mode }: { c: ReturnType<typeof useTheme>['colors']; mode: 'light' | 'dark' }) {
   return (
     <section style={{ padding: '14px 16px 0' }}>
       <div
         style={{
           padding: '14px 16px',
           borderRadius: 16,
-          background: `linear-gradient(135deg, ${c.goldSoft}, ${c.ink800})`,
+          // Vol-59.2: Light mode'da iki cream tonu çakışıyor (görsel hafif) — koyu tone ekle
+          background: mode === 'light'
+            ? `linear-gradient(135deg, ${c.goldSoft}, rgba(232,194,104,0.18))`
+            : `linear-gradient(135deg, ${c.goldSoft}, ${c.ink800})`,
           border: `1px solid ${c.goldLine}`,
           display: 'flex',
           flexDirection: 'column',

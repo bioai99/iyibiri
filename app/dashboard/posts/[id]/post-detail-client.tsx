@@ -7,6 +7,7 @@ import { ArrowLeft, Heart, Clock, Share2, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
+import { IconButtonDS } from '@/components/ui/ds'
 import type { PostWithNGO } from '@/lib/supabase/types'
 
 // Vol-56-E: post hem NGO hem Sponsor postu olabilir; ortak author shape ile
@@ -101,17 +102,15 @@ export function PostDetailClient({ post, userId, initialLiked, initialLikeCount,
             position: 'absolute', inset: 0,
             background: 'linear-gradient(180deg, rgba(0,0,0,.3) 0%, transparent 40%, rgba(0,0,0,.5) 100%)',
           }} />
-          {/* Back button */}
+          {/* Vol-59.2: Back button → IconButtonDS theme="dark" (cream icon light mode'da sabit). */}
           <div style={{ position: 'absolute', top: 'calc(env(safe-area-inset-top, 20px) + 12px)', left: 16 }}>
             {/* Vol-45: Discover deprecated → back butonu dashboard'a düşer */}
             <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: '50%',
-                background: 'rgba(0,0,0,.45)', backdropFilter: 'blur(8px)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <ArrowLeft size={18} color="#F4EEDF" />
-              </div>
+              <IconButtonDS
+                icon={<ArrowLeft size={18} />}
+                theme="dark"
+                ariaLabel="Geri"
+              />
             </Link>
           </div>
         </div>
