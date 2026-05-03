@@ -488,27 +488,30 @@ export interface Database {
           id: string
           user_id: string
           amount: number
-          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
+          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation' | 'welcome_bonus'
           reference_id: string | null
           description: string | null
+          donation_id: string | null
           created_at: string
         }
         Insert: {
           id?: string
           user_id: string
           amount: number
-          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
+          type: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation' | 'welcome_bonus'
           reference_id?: string | null
           description?: string | null
+          donation_id?: string | null
           created_at?: string
         }
         Update: {
           id?: string
           user_id?: string
           amount?: number
-          type?: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation'
+          type?: 'mission_complete' | 'reward_redemption' | 'ngo_membership' | 'donation' | 'welcome_bonus'
           reference_id?: string | null
           description?: string | null
+          donation_id?: string | null
           created_at?: string
         }
         Relationships: []
