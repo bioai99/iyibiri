@@ -11,12 +11,12 @@
 begin;
 
 update public.ngos
-set logo_url = '/losev-logo.svg', updated_at = now()
+set logo_url = '/losev-logo.svg'
 where (short_name ilike 'LÖSEV' or short_name ilike 'LOSEV' or name ilike '%LÖSEV%' or name ilike '%Lösemili%')
   and (logo_url is null or logo_url = '' or logo_url like '/losev%');
 
 update public.ngos
-set logo_url = '/tegv-logo.svg', updated_at = now()
+set logo_url = '/tegv-logo.svg'
 where (short_name ilike 'TEGV' or name ilike '%TEGV%' or name ilike '%Türkiye Eğitim Gönüllüleri%')
   and (logo_url is null or logo_url = '' or logo_url like '/tegv%');
 

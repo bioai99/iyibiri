@@ -39,6 +39,14 @@ interface Props {
   initialAmount?: number
   initialFrequency?: 'once' | 'monthly'
   campaignId?: string | null
+  /**
+   * Vol-59: Kampanyaya özel akış için frekansı kilitler.
+   * Kampanya bağışı = tek seferlik (kampanyalar geçici/spesifik).
+   * Locked olduğunda toggle gizlenir, frekans seçili olarak kalır.
+   */
+  frequencyLocked?: 'once' | 'monthly' | null
+  /** Vol-59: Kampanya başlığı — Step 1 üstünde "Bu kampanyaya bağış" rozeti */
+  campaignTitle?: string | null
   onContinue: (out: FlowStep1Output) => void
 }
 
@@ -46,11 +54,15 @@ export function FlowStepAmount({
   initialAmount = 250,
   initialFrequency = 'once',
   campaignId,
+  frequencyLocked = null,
+  campaignTitle = null,
   onContinue,
 }: Props) {
   const { colors: c } = useTheme()
   const [amount, setAmount] = useState<number>(initialAmount)
-  const [frequency, setFrequency] = useState<'once' | 'monthly'>(initialFrequency)
+  const [frequency, setFrequency] = useState<'once' | 'monthly'>(
+    frequencyLocked ?? initialFrequency,
+  )
   const [intent, setIntent] = useState<'self' | 'gift' | 'memorial'>('self')
   const [intentLabel, setIntentLabel] = useState<string>('')
   const [anonymous, setAnonymous] = useState(false)
@@ -79,7 +91,54 @@ export function FlowStepAmount({
   return (
     <div style={{ paddingBottom: 220 }}>
       <div style={{ padding: '24px 20px 0' }}>
-        {/* Once / monthly toggle */}
+        {/* Vol-59: Kampanya bağış akışı — locked ise toggle yerine rozet */}
+        {frequencyLocked && campaignTitle && (
+          <div
+            style={{
+              padding: '12px 14px',
+              borderRadius: 14,
+              background: c.goldSoft,
+              border: `1px solid ${c.goldLine}`,
+              marginBottom: 18,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: c.gold,
+                textTransform: 'uppercase',
+                padding: '3px 8px',
+                borderRadius: 5,
+                background: `${c.gold}1F`,
+                flexShrink: 0,
+              }}
+            >
+              KAMPANYA
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: c.cream,
+                fontFamily: "'Fraunces', ui-serif, serif",
+                fontStyle: 'italic',
+                lineHeight: 1.3,
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {campaignTitle}
+            </span>
+          </div>
+        )}
+        {/* Once / monthly toggle — Vol-59: kampanya akışında gizli */}
+        {!frequencyLocked && (
         <div
           style={{
             display: 'grid',
@@ -123,6 +182,7 @@ export function FlowStepAmount({
             )
           })}
         </div>
+        )}
 
         {/* Big amount display */}
         <div style={{ textAlign: 'center', padding: '12px 0 24px' }}>

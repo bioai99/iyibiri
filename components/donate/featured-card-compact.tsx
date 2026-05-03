@@ -29,8 +29,15 @@ export function FeaturedCardCompact({ campaign }: Props) {
     daysLeft = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   }
 
-  // Eğer kampanyanın bağlı NGO'su yoksa (data anomali / cascade silinmiş),
-  // kart pasif gösterilir — kırık link yerine span'e düşer.
+  // Vol-59: Featured card tıklandığında NGO genel sayfasına değil, kampanya
+  // detay sayfasına yönlendirir. Kampanya hikayesi + ilerleme + tek-seferlik
+  // bağış flow ayrı bir narrative olarak çalışır.
+  // NGO yoksa fallback: STK detayına düş (eski davranış).
+  const targetHref = campaign.id
+    ? `/dashboard/donate/campaign/${campaign.id}`
+    : ngo?.id
+      ? `/dashboard/donate/${ngo.id}`
+      : '#'
   const cardStyle = {
     width: 320,
     flexShrink: 0,
@@ -44,14 +51,14 @@ export function FeaturedCardCompact({ campaign }: Props) {
     color: 'inherit',
     display: 'block',
   }
-  const Wrapper = ngo?.id
+  const Wrapper = targetHref !== '#'
     ? ({ children }: { children: React.ReactNode }) => (
-        <Link href={`/dashboard/donate/${ngo.id}`} style={cardStyle}>
+        <Link href={targetHref} style={cardStyle}>
           {children}
         </Link>
       )
     : ({ children }: { children: React.ReactNode }) => (
-        <div style={{ ...cardStyle, opacity: 0.6 }} aria-label="NGO bulunamadı">
+        <div style={{ ...cardStyle, opacity: 0.6 }} aria-label="Kampanya bulunamadı">
           {children}
         </div>
       )

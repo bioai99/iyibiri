@@ -27,6 +27,12 @@ interface Props {
   campaignId: string | null
   campaignTitle: string | null
   initialFrequency: 'once' | 'monthly'
+  /**
+   * Vol-59: Kampanya bağışı akışında frekans toggle'ı kilitlenir.
+   * Kampanyalar geçici/spesifik olduğu için "Aylık abonelik" mantığı
+   * yoktur; tek seferlik desteklenir.
+   */
+  frequencyLocked?: 'once' | 'monthly' | null
 }
 
 interface SuccessState {
@@ -41,6 +47,7 @@ export function GiveFlowClient({
   campaignId,
   campaignTitle,
   initialFrequency,
+  frequencyLocked = null,
 }: Props) {
   const { colors: c } = useTheme()
   const ngoShort = ngo.short_name ?? ngo.name
@@ -82,6 +89,8 @@ export function GiveFlowClient({
           initialAmount={250}
           initialFrequency={initialFrequency}
           campaignId={campaignId}
+          frequencyLocked={frequencyLocked}
+          campaignTitle={campaignTitle}
           onContinue={(out) => {
             setStep1(out)
             setStep(2)

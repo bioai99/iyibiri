@@ -768,6 +768,7 @@ export interface Database {
         Relationships: []
       }
       // Vol-31 Migration 040 — bağış altyapısı
+      // Vol-59 Migration 055 — goal_amount + raised_amount
       campaigns: {
         Row: {
           id: string
@@ -783,6 +784,8 @@ export interface Database {
           status: 'draft' | 'active' | 'closed' | 'archived'
           is_featured: boolean
           created_at: string
+          goal_amount: number | null
+          raised_amount: number
         }
         Insert: {
           id: string
@@ -798,6 +801,8 @@ export interface Database {
           status?: 'draft' | 'active' | 'closed' | 'archived'
           is_featured?: boolean
           created_at?: string
+          goal_amount?: number | null
+          raised_amount?: number
         }
         Update: {
           title?: string
@@ -809,6 +814,8 @@ export interface Database {
           supporter_count?: number
           status?: 'draft' | 'active' | 'closed' | 'archived'
           is_featured?: boolean
+          goal_amount?: number | null
+          raised_amount?: number
         }
         Relationships: []
       }

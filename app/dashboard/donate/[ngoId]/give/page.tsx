@@ -10,7 +10,7 @@ export default async function DonateGivePage({
   searchParams,
 }: {
   params: { ngoId: string }
-  searchParams: { campaign?: string; intent?: string }
+  searchParams: { campaign?: string; intent?: string; lock?: string }
 }) {
   const supabase = createClient()
   const {
@@ -35,12 +35,22 @@ export default async function DonateGivePage({
   const initialFrequency: 'once' | 'monthly' =
     searchParams.intent === 'regular' ? 'monthly' : 'once'
 
+  // Vol-59: Kampanya bağışı (?lock=once) veya STK düzenli akışı (?lock=monthly)
+  // frekansı kilitler. Kampanya akışında toggle gizlenir, sadece "Tek seferlik".
+  const frequencyLocked: 'once' | 'monthly' | null =
+    searchParams.lock === 'once'
+      ? 'once'
+      : searchParams.lock === 'monthly'
+        ? 'monthly'
+        : null
+
   return (
     <GiveFlowClient
       ngo={ngo}
       campaignId={campaign?.id ?? null}
       campaignTitle={campaign?.title ?? null}
-      initialFrequency={initialFrequency}
+      initialFrequency={frequencyLocked ?? initialFrequency}
+      frequencyLocked={frequencyLocked}
     />
   )
 }
