@@ -12,7 +12,9 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Heart } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft } from 'lucide-react'
+import { useState } from 'react'
 import { useTheme } from '@/lib/theme'
 import { IconButtonDS } from '@/components/ui/ds'
 import type { Campaign, NGO } from '@/lib/supabase/types'
@@ -28,6 +30,8 @@ interface Props {
 export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
   const { colors: c, mode } = useTheme()
   const router = useRouter()
+  // Vol-60.1 FIX 1: Logo identity row — logoLoaded state ile beyaz flicker önle
+  const [logoLoaded, setLogoLoaded] = useState(false)
 
   const accent = ngo.color_accent || c.gold
   const label = ngo.short_name || ngo.name
@@ -60,14 +64,15 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
           backgroundPosition: 'center',
         }}
       >
-        {/* Vol-60: Hero scrim güçlendirildi — light mode'da title visibility.
-            Vol-59.1 campaign-detail pattern'i: 0.25→0.55→0.95 gradient + alt %45 ekstra dark band */}
+        {/* Vol-60.1 FIX 5: Hero scrim — light mode contrast guarantee
+            Vol-59.1 pattern enhanced: 0.25→0.55→0.98 (alt daha agresif 0.95→0.98)
+            + ekstra dark band 0.85→0.92 title text visibility garantisi */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg, rgba(15,11,8,0.25) 0%, rgba(15,11,8,0.55) 50%, rgba(15,11,8,0.95) 100%)',
+              'linear-gradient(180deg, rgba(15,11,8,0.25) 0%, rgba(15,11,8,0.55) 50%, rgba(15,11,8,0.98) 100%)',
           }}
         />
         {/* Ekstra dark band alt bölüm — title okunabilirlik garantisi */}
@@ -79,20 +84,17 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
             bottom: 0,
             height: '45%',
             background:
-              'linear-gradient(180deg, transparent 0%, rgba(15,11,8,0.85) 100%)',
+              'linear-gradient(180deg, transparent 0%, rgba(15,11,8,0.92) 100%)',
             pointerEvents: 'none',
           }}
         />
 
-        {/* Bezel: back + heart → IconButtonDS theme="dark" */}
+        {/* Vol-60.1 FIX 3: Back button — heart icon kaldırıldı (toggleFollow Vol-61'de eklenecek) */}
         <div
           style={{
             position: 'absolute',
             top: 'calc(env(safe-area-inset-top, 20px) + 38px)',
             left: 16,
-            right: 16,
-            display: 'flex',
-            justifyContent: 'space-between',
             zIndex: 10,
           }}
         >
@@ -103,11 +105,6 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
               ariaLabel="Geri"
             />
           </button>
-          <IconButtonDS
-            icon={<Heart size={14} />}
-            theme="dark"
-            ariaLabel="Favorilere ekle"
-          />
         </div>
 
         {/* Vol-60: Title + supporters — hero üstünde, açık arka planda görünür */}
@@ -177,8 +174,93 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
         </div>
       </div>
 
-      {/* Purpose/Tagline */}
-      {ngo.tagline && (
+      {/* Vol-60.1 FIX 1: NGO Identity Row — hero altında logo + name + metadata
+          Pattern: campaign-detail-client.tsx lines 222-292 (NGO LOCKUP section) */}
+      <section
+        style={{
+          margin: '20px 16px 0',
+          padding: '14px 16px',
+          background: c.ink800,
+          border: `1px solid ${c.ink600}`,
+          borderRadius: 14,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
+        {/* Logo avatar 56x56 */}
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 12,
+            background: ngo.logo_url && logoLoaded ? '#fff' : `linear-gradient(135deg, ${accent}, ${accent}88)`,
+            border: ngo.logo_url && logoLoaded ? `1px solid ${accent}33` : 'none',
+            overflow: 'hidden',
+            position: 'relative',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontFamily: "'Fraunces', ui-serif, serif",
+            fontSize: 22,
+            fontWeight: 600,
+            transition: 'background 220ms ease, border-color 220ms ease',
+          }}
+        >
+          {ngo.logo_url ? (
+            <Image
+              src={ngo.logo_url}
+              alt={ngo.name ?? ''}
+              fill
+              sizes="56px"
+              style={{
+                objectFit: 'contain',
+                padding: 6,
+                opacity: logoLoaded ? 1 : 0,
+                transition: 'opacity 200ms ease',
+              }}
+              quality={85}
+              onLoad={() => setLogoLoaded(true)}
+            />
+          ) : (
+            initial
+          )}
+        </div>
+        {/* Identity metadata */}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 18,
+              fontWeight: 600,
+              fontFamily: "'Fraunces', ui-serif, serif",
+              color: c.cream,
+              marginBottom: 2,
+            }}
+          >
+            {ngo.name}
+          </h2>
+          <div
+            style={{
+              fontSize: 10,
+              color: c.ink400,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {verified && 'Doğrulanmış kurum'}
+            {verified && (yearsActive !== null || totalSupporters > 0) && ' · '}
+            {totalSupporters > 0 && `${totalSupporters.toLocaleString('tr-TR')} destekçi`}
+            {totalSupporters > 0 && yearsActive !== null && ' · '}
+            {yearsActive !== null && `${yearsActive} yıl`}
+          </div>
+        </div>
+      </section>
+
+      {/* Vol-60.1 FIX 4: Purpose/Tagline — conditional render */}
+      {ngo.tagline && !ngo.description && (
         <section style={{ padding: '24px 20px 0' }}>
           <p
             style={{
@@ -249,7 +331,10 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
         </Link>
       </section>
 
-      {/* Vol-60: HAKKINDA section — ngo.description uzun form */}
+      {/* Vol-60.1 FIX 4: HAKKINDA section — description source of truth, tagline redundancy önle
+          Logic: tagline varsa AND description varsa → description göster, tagline gizle.
+                 tagline var, description yok → tagline göster.
+                 her ikisi varsa → description göster (better content). */}
       {ngo.description && (
         <section style={{ padding: '32px 16px 0' }}>
           <p

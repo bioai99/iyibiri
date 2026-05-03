@@ -103,7 +103,8 @@ export function CampaignCard({ campaign, ngoId }: Props) {
             )}
             {daysLeft !== null && (
               <span style={{ fontSize: 9, color: c.ink400, fontWeight: 500 }}>
-                {daysLeft === 0 ? 'Son gün' : `${daysLeft}g`}
+                {/* Vol-60.1 FIX 2: days_left format — "117g" → "117 gün" */}
+                {daysLeft === 0 ? 'Son gün' : `${daysLeft} gün`}
               </span>
             )}
           </div>
