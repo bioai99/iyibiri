@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" role="img" aria-label="TEGV — Türkiye Eğitim Gönüllüleri Vakfı">
+  <!--
+    TEGV brand-identifiable seed logo (Vol-58.2).
+    NGO admin panel'inden gerçek logo yüklendiğinde DB.logo_url güncellenir,
+    bu placeholder otomatik kullanım dışı kalır.
+    Renkler: #F39200 (turuncu, eğitim/umut), #2E5A87 (lacivert, güven).
+    Sembol: kelebek (TEGV brand referansı).
+  -->
+  <defs>
+    <linearGradient id="tegvWing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F39200"/>
+      <stop offset="100%" stop-color="#D67400"/>
+    </linearGradient>
+  </defs>
+  <!-- Stylized butterfly (TEGV brand mark) -->
+  <g transform="translate(40 40)">
+    <!-- Sol kanat üst -->
+    <path d="M0,-2 C-10,-22 -22,-20 -24,-10 C-26,0 -16,-2 -2,-2 Z"
+          fill="url(#tegvWing)"/>
+    <!-- Sol kanat alt -->
+    <path d="M0,2 C-10,18 -20,14 -22,6 C-24,-2 -14,2 -2,2 Z"
+          fill="url(#tegvWing)" opacity="0.85"/>
+    <!-- Sağ kanat üst -->
+    <path d="M0,-2 C10,-22 22,-20 24,-10 C26,0 16,-2 2,-2 Z"
+          fill="url(#tegvWing)"/>
+    <!-- Sağ kanat alt -->
+    <path d="M0,2 C10,18 20,14 22,6 C24,-2 14,2 2,2 Z"
+          fill="url(#tegvWing)" opacity="0.85"/>
+    <!-- Vücut -->
+    <ellipse cx="0" cy="0" rx="2" ry="14" fill="#2E5A87"/>
+    <circle cx="0" cy="-15" r="2.4" fill="#2E5A87"/>
+  </g>
+  <!-- TEGV wordmark -->
+  <text x="80" y="44"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="28"
+        font-weight="800"
+        fill="#2E5A87"
+        letter-spacing="2.5">TEGV</text>
+  <text x="80" y="60"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="7.5"
+        font-weight="600"
+        fill="#2E5A87"
+        letter-spacing="0.5"
+        opacity="0.75">TÜRKİYE EĞİTİM GÖNÜLLÜLERİ VAKFI</text>
+</svg>

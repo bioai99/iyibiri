@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" role="img" aria-label="LÖSEV — Lösemili Çocuklar Sağlık ve Eğitim Vakfı">
+  <!--
+    LÖSEV brand-identifiable seed logo (Vol-58.2).
+    NGO admin panel'inden gerçek logo yüklendiğinde DB.logo_url güncellenir,
+    bu placeholder otomatik kullanım dışı kalır.
+    Renkler: #E30A17 (kırmızı, sağlık), #1E3A5F (lacivert, güven).
+  -->
+  <defs>
+    <linearGradient id="losevStar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E30A17"/>
+      <stop offset="100%" stop-color="#B5060F"/>
+    </linearGradient>
+  </defs>
+  <!-- 5-point star (lösemili çocuklar için umut sembolü) -->
+  <g transform="translate(40 40)">
+    <path d="M0,-26 L7,-8 L26,-8 L11,4 L17,22 L0,11 L-17,22 L-11,4 L-26,-8 L-7,-8 Z"
+          fill="url(#losevStar)"/>
+    <circle cx="0" cy="-2" r="6" fill="#FFFFFF" opacity="0.92"/>
+  </g>
+  <!-- LÖSEV wordmark -->
+  <text x="80" y="44"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="28"
+        font-weight="800"
+        fill="#1E3A5F"
+        letter-spacing="2">LÖSEV</text>
+  <text x="80" y="60"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="8"
+        font-weight="600"
+        fill="#1E3A5F"
+        letter-spacing="0.6"
+        opacity="0.75">LÖSEMİLİ ÇOCUKLAR VAKFI</text>
+</svg>
