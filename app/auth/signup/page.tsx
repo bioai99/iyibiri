@@ -88,10 +88,19 @@ export default function SignupPage() {
     setLoading(true)
     setError(null)
     const supabase = createClient()
+    // Vol-62 Pkg-4: KVKK onayını signup metadata'ya yazıyoruz; handle_new_user trigger
+    // (Migration 059) bu alanı profiles.kvkk_accepted_at + kvkk_version'a persist eder.
+    const KVKK_VERSION = '2026-05-03'
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: name } },
+      options: {
+        data: {
+          full_name: name,
+          kvkk_accepted_at: new Date().toISOString(),
+          kvkk_version: KVKK_VERSION,
+        },
+      },
     })
     if (error) {
       console.error('Signup error:', { message: error.message, status: error.status, name: error.name })

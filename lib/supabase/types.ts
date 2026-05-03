@@ -79,6 +79,9 @@ export interface Database {
           last_mission_week: string | null
           age_range: string | null
           onboarding_completed: boolean
+          // Vol-62 Pkg-4 (Migration 059) — KVKK consent capture
+          kvkk_accepted_at: string | null
+          kvkk_version: string | null
         }
         Insert: {
           id: string
@@ -99,6 +102,8 @@ export interface Database {
           last_mission_week?: string | null
           age_range?: string | null
           onboarding_completed?: boolean
+          kvkk_accepted_at?: string | null
+          kvkk_version?: string | null
         }
         Update: {
           id?: string
@@ -122,6 +127,8 @@ export interface Database {
           last_mission_week?: string | null
           age_range?: string | null
           onboarding_completed?: boolean
+          kvkk_accepted_at?: string | null
+          kvkk_version?: string | null
         }
         Relationships: []
       }

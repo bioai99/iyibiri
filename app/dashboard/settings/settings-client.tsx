@@ -23,9 +23,13 @@ import { createClient } from '@/lib/supabase/client'
 
 interface SettingsClientProps {
   userEmail: string
+  /** Vol-62 Pkg-4: KVKK kabul timestamp (Migration 059) */
+  kvkkAcceptedAt?: string | null
+  /** Vol-62 Pkg-4: KVKK metin versiyonu */
+  kvkkVersion?: string | null
 }
 
-export function SettingsClient({ userEmail }: SettingsClientProps) {
+export function SettingsClient({ userEmail, kvkkAcceptedAt, kvkkVersion }: SettingsClientProps) {
   const { colors: c, mode, toggleMode } = useTheme()
   const router = useRouter()
 
@@ -125,12 +129,22 @@ export function SettingsClient({ userEmail }: SettingsClientProps) {
       {/* 3. Yasal */}
       <p style={sectionLabel}>Yasal</p>
       <div style={stack}>
-        <Link href="/legal/kvkk" style={{ ...rowStyle, justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Shield size={18} color={c.ink300} />
-            <span>KVKK Aydınlatma Metni</span>
+        <Link href="/legal/kvkk" style={{ ...rowStyle, justifyContent: 'space-between', flexDirection: 'column', alignItems: 'stretch', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Shield size={18} color={c.ink300} />
+              <span>KVKK Aydınlatma Metni</span>
+            </div>
+            <ChevronRight size={18} color={c.ink400} />
           </div>
-          <ChevronRight size={18} color={c.ink400} />
+          {/* Vol-62 Pkg-4 — onay tarihi + versiyon (yasal trace) */}
+          {kvkkAcceptedAt && (
+            <span style={{ fontSize: 11, color: c.ink400, paddingLeft: 30 }}>
+              {kvkkVersion === 'legacy-pre-vol62'
+                ? 'Eski sürümden onaylı'
+                : `${new Date(kvkkAcceptedAt).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })} tarihinde onayladın${kvkkVersion ? ` (sürüm ${kvkkVersion})` : ''}`}
+            </span>
+          )}
         </Link>
         <Link href="/legal/privacy" style={{ ...rowStyle, justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
