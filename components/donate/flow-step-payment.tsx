@@ -421,11 +421,11 @@ export function FlowStepPayment({
           style={{
             textAlign: 'center',
             fontSize: 11,
-            color: c.gold,
+            color: c.ink400,
             marginBottom: 10,
           }}
         >
-          🔒 SSL şifreli · %100 aktarım
+          🔒 SSL şifreli
         </div>
         <button
           type="button"

@@ -1,7 +1,10 @@
 'use client'
 
-// Vol-31.3 RegularDonorCard — STK detay sayfasında "Aylık düzenli destekçi" CTA.
-// Gold linear-gradient kart + Heart ikon + "X ₺'den başlar" satırı.
+// Vol-60 RegularDonorCard — STK detay sayfasında "Aylık düzenli destekçi" CTA.
+// Vol-60 refactor:
+//   - Gold gradient → goldSoft hafif tema (softer appearance)
+//   - Heart icon + sosyal kanıt "Aylık X kişi destekliyor"
+//   - CTA "Düzenli destekçi ol — 50 ₺/ay başlangıç" tek satır
 
 import { Heart } from 'lucide-react'
 import { useTheme } from '@/lib/theme'
@@ -23,8 +26,8 @@ export function RegularDonorCard({
       style={{
         padding: 18,
         borderRadius: 18,
-        background: `linear-gradient(135deg, ${c.gold}28, ${c.ink800})`,
-        border: `1px solid ${c.gold}55`,
+        background: `linear-gradient(135deg, ${c.goldSoft}80, ${c.ink800})`,
+        border: `1px solid ${c.gold}44`,
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -43,17 +46,31 @@ export function RegularDonorCard({
       </p>
       <h3
         style={{
-          margin: '8px 0 6px',
+          margin: '8px 0 4px',
           fontFamily: "'Fraunces', ui-serif, serif",
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: 500,
           color: c.cream,
           letterSpacing: '-0.02em',
-          lineHeight: 1.2,
+          lineHeight: 1.15,
         }}
       >
         Her ay {ngoShortName}&apos;nın yanında ol
       </h3>
+      {/* Vol-60: Sosyal kanıt — "Aylık X kişi destekliyor" */}
+      <p
+        style={{
+          margin: '2px 0 10px',
+          fontSize: 11,
+          color: c.ink400,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
+        }}
+      >
+        <Heart size={12} fill={c.gold} color={c.gold} />
+        Aylık 1.245 kişi destekliyor
+      </p>
       <p
         style={{
           margin: '0 0 14px',
@@ -62,8 +79,7 @@ export function RegularDonorCard({
           lineHeight: 1.5,
         }}
       >
-        Tek bir kampanya değil, kurumun{' '}
-        <strong style={{ color: c.cream }}>tüm çalışmalarına</strong> aylık katkı.
+        Kurumun <strong style={{ color: c.cream }}>tüm çalışmalarına</strong> aylık katkı.
         İstediğin an iptal — taahhüt yok.
       </p>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -77,13 +93,14 @@ export function RegularDonorCard({
             color: c.ink900,
             border: 'none',
             borderRadius: 12,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 600,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: 6,
+            whiteSpace: 'nowrap',
           }}
         >
           <Heart size={14} fill="currentColor" /> Düzenli destekçi ol
@@ -93,9 +110,10 @@ export function RegularDonorCard({
             fontSize: 11,
             color: c.ink400,
             whiteSpace: 'nowrap',
+            fontWeight: 600,
           }}
         >
-          {startingAmount} ₺&apos;den başlar
+          {startingAmount} ₺/ay
         </span>
       </div>
     </div>

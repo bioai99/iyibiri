@@ -526,17 +526,6 @@ export function CampaignDetailClient({ campaign }: Props) {
           Bu kampanyaya bağışla
           <ArrowRight size={16} />
         </Link>
-        <div
-          style={{
-            textAlign: 'center',
-            fontSize: 10,
-            color: c.ink400,
-            marginTop: 6,
-            letterSpacing: '0.06em',
-          }}
-        >
-          Tek seferlik bağış &middot; %100 doğrudan {ngoShort}&apos;a aktarılır
-        </div>
       </div>
     </div>
   )

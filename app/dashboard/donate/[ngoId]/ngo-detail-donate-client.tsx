@@ -1,14 +1,14 @@
 'use client'
 
-// Vol-31.3 NGO Detail Client — donate sekmesinde STK detay.
+// Vol-60 NGO Detail Client — donate sekmesinde STK detay (systemik refactor).
 //
 // Akış:
-//   Hero (240px cover + back/heart bezel + identity row alt)
-//   → Purpose (italic Fraunces tagline)
-//   → RegularDonorCard (gold, /give?intent=regular)
-//   → Aktif kampanyalar listesi (CampaignCard)
-//   → Kurum hakkında (FactRow şeffaflık)
-//   → %100 manifesto compact
+//   Hero (240px cover + back/heart bezel)
+//   → Identity row (logo + name + supporters/years — light mode visible)
+//   → Purpose/Tagline (italic Fraunces)
+//   → Aktif kampanyalar listesi (CampaignCard → campaign detail route)
+//   → Kurum hakkında (HAKKINDA eyebrow + ngo.description uzun form)
+//   → FactRow şeffaflık (kuruluş, yetki, üye, web)
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -19,7 +19,6 @@ import type { Campaign, NGO } from '@/lib/supabase/types'
 import { RegularDonorCard } from '@/components/donate/regular-donor-card'
 import { CampaignCard } from '@/components/donate/campaign-card'
 import { FactRow } from '@/components/donate/fact-row'
-import { HundredManifesto } from '@/components/donate/hundred-manifesto'
 
 interface Props {
   ngo: NGO
@@ -47,7 +46,7 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
         minHeight: '100dvh',
         background: c.ink900,
         color: c.cream,
-        paddingBottom: 140, // sticky CTA + bottom nav
+        paddingBottom: 120, // bottom nav offset
       }}
     >
       {/* Hero */}
@@ -61,17 +60,31 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
           backgroundPosition: 'center',
         }}
       >
-        {/* Vol-59.2: Hero scrim mode-aware — light mode'da koyu text (rgba(36,30,24,...)) */}
+        {/* Vol-60: Hero scrim güçlendirildi — light mode'da title visibility.
+            Vol-59.1 campaign-detail pattern'i: 0.25→0.55→0.95 gradient + alt %45 ekstra dark band */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              `linear-gradient(180deg, ${mode === 'light' ? 'rgba(36,30,24,0.55)' : 'rgba(15,11,8,0.55)'} 0%, transparent 35%, ${mode === 'light' ? 'rgba(36,30,24,0.95)' : 'rgba(15,11,8,0.95)'} 100%)`,
+              'linear-gradient(180deg, rgba(15,11,8,0.25) 0%, rgba(15,11,8,0.55) 50%, rgba(15,11,8,0.95) 100%)',
+          }}
+        />
+        {/* Ekstra dark band alt bölüm — title okunabilirlik garantisi */}
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: '45%',
+            background:
+              'linear-gradient(180deg, transparent 0%, rgba(15,11,8,0.85) 100%)',
+            pointerEvents: 'none',
           }}
         />
 
-        {/* Vol-59.2: Bezel: back + heart → IconButtonDS theme="dark" */}
+        {/* Bezel: back + heart → IconButtonDS theme="dark" */}
         <div
           style={{
             position: 'absolute',
@@ -80,6 +93,7 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
             right: 16,
             display: 'flex',
             justifyContent: 'space-between',
+            zIndex: 10,
           }}
         >
           <button type="button" onClick={() => router.back()} style={{ all: 'unset' } as React.CSSProperties}>
@@ -96,88 +110,74 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
           />
         </div>
 
-        {/* Identity row */}
+        {/* Vol-60: Title + supporters — hero üstünde, açık arka planda görünür */}
         <div
           style={{
             position: 'absolute',
-            bottom: 16,
-            left: 16,
-            right: 16,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
+            bottom: 24,
+            left: 20,
+            right: 20,
+            zIndex: 5,
           }}
         >
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: "'Fraunces', ui-serif, serif",
+              fontSize: 24,
+              fontWeight: 600,
+              color: '#F4EEDF',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.15,
+              // Vol-60: Text shadow — light mode contrast
+              textShadow: '0 2px 12px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6)',
+              marginBottom: 8,
+            }}
+          >
+            {ngo.name}
+          </h1>
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 18,
-              background: `linear-gradient(135deg, ${accent}, ${accent}88)`,
-              color: '#fff',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Fraunces', ui-serif, serif",
-              fontSize: 28,
-              fontWeight: 600,
-              boxShadow: `0 8px 20px ${accent}88`,
-              flexShrink: 0,
+              gap: 8,
+              flexWrap: 'wrap',
             }}
-            aria-hidden
           >
-            {initial}
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <h1
-              style={{
-                margin: 0,
-                fontFamily: "'Fraunces', ui-serif, serif",
-                fontSize: 22,
-                fontWeight: 500,
-                color: c.cream,
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {ngo.name}
-            </h1>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                marginTop: 4,
-                flexWrap: 'wrap',
-              }}
-            >
-              {verified && (
-                <span
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    padding: '3px 7px',
-                    borderRadius: 6,
-                    background: `${c.success ?? '#5DC395'}22`,
-                    color: c.success ?? '#5DC395',
-                    border: `1px solid ${c.success ?? '#5DC395'}55`,
-                  }}
-                >
-                  ✓ VERGİ İNDİRİMLİ
-                </span>
-              )}
-              <span style={{ fontSize: 10, color: c.ink300 }}>
-                {totalSupporters > 0 &&
-                  `${totalSupporters.toLocaleString('tr-TR')} destekçi`}
-                {totalSupporters > 0 && yearsActive !== null && ' · '}
-                {yearsActive !== null && `${yearsActive} yıl`}
+            {verified && (
+              <span
+                style={{
+                  fontSize: 8,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  padding: '3px 6px',
+                  borderRadius: 5,
+                  background: 'rgba(93, 195, 149, 0.25)',
+                  color: '#5DC395',
+                  border: '1px solid rgba(93, 195, 149, 0.4)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                ✓ Vergi İndirmli
               </span>
-            </div>
+            )}
+            <span
+              style={{
+                fontSize: 12,
+                color: '#F4EEDF',
+                textShadow: '0 1px 4px rgba(0,0,0,0.4)',
+              }}
+            >
+              {totalSupporters > 0 &&
+                `${totalSupporters.toLocaleString('tr-TR')} destekçi`}
+              {totalSupporters > 0 && yearsActive !== null && ' · '}
+              {yearsActive !== null && `${yearsActive} yıl`}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Purpose */}
+      {/* Purpose/Tagline */}
       {ngo.tagline && (
         <section style={{ padding: '24px 20px 0' }}>
           <p
@@ -207,76 +207,23 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
         </section>
       )}
 
-      {/* RegularDonorCard */}
-      <section style={{ padding: '24px 16px 0' }}>
-        <Link
-          href={`/dashboard/donate/${ngo.id}/give?intent=regular`}
-          style={{ textDecoration: 'none', color: 'inherit' }}
-        >
-          <RegularDonorCard ngoShortName={label} startingAmount={50} />
-        </Link>
-      </section>
-
-      {/* Aktif kampanyalar */}
+      {/* Aktif kampanyalar — Vol-60: h2 başlık + subtitle kaldırıldı, sadece eyebrow */}
       {campaigns.length > 0 && (
         <section style={{ padding: '32px 0 0' }}>
-          <div
-            style={{
-              padding: '0 20px 4px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'baseline',
-              gap: 12,
-            }}
-          >
-            <div style={{ minWidth: 0 }}>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.22em',
-                  color: c.gold,
-                  textTransform: 'uppercase',
-                }}
-              >
-                AKTİF KAMPANYALAR
-              </p>
-              <h2
-                style={{
-                  margin: '4px 0 0',
-                  fontFamily: "'Fraunces', ui-serif, serif",
-                  fontSize: 20,
-                  fontWeight: 500,
-                  color: c.cream,
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                Hangi konuya bağışlamak istersin?
-              </h2>
-            </div>
-            <span
+          <div style={{ padding: '0 20px 12px' }}>
+            <p
               style={{
-                fontSize: 11,
-                color: c.ink400,
-                fontVariantNumeric: 'tabular-nums',
+                margin: 0,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                color: c.gold,
+                textTransform: 'uppercase',
               }}
             >
-              {campaigns.length}
-            </span>
+              AKTİF KAMPANYALAR
+            </p>
           </div>
-          <p
-            style={{
-              margin: '6px 20px 14px',
-              fontSize: 11,
-              color: c.ink400,
-              fontStyle: 'italic',
-              fontFamily: "'Fraunces', ui-serif, serif",
-              lineHeight: 1.4,
-            }}
-          >
-            Aynı anda farklı amaçlar için bağış toplanıyor — sen seç.
-          </p>
           <div
             style={{
               display: 'flex',
@@ -292,7 +239,46 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
         </section>
       )}
 
-      {/* Kurum hakkında */}
+      {/* Düzenli Destekçi Kartı — kampanyalar sonrası */}
+      <section style={{ padding: '32px 16px 0' }}>
+        <Link
+          href={`/dashboard/donate/${ngo.id}/give?intent=regular`}
+          style={{ textDecoration: 'none', color: 'inherit' }}
+        >
+          <RegularDonorCard ngoShortName={label} startingAmount={50} />
+        </Link>
+      </section>
+
+      {/* Vol-60: HAKKINDA section — ngo.description uzun form */}
+      {ngo.description && (
+        <section style={{ padding: '32px 16px 0' }}>
+          <p
+            style={{
+              margin: '0 4px 12px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              color: c.gold,
+              textTransform: 'uppercase',
+            }}
+          >
+            HAKKINDA
+          </p>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 14,
+              lineHeight: 1.6,
+              color: c.cream,
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {ngo.description}
+          </p>
+        </section>
+      )}
+
+      {/* Kurum hakkında — şeffaflık bilgileri */}
       <section style={{ padding: '32px 16px 0' }}>
         <p
           style={{
@@ -304,7 +290,7 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
             textTransform: 'uppercase',
           }}
         >
-          KURUM HAKKINDA
+          KURUM BİLGİLERİ
         </p>
         <div
           style={{
@@ -348,55 +334,6 @@ export function NgoDetailDonateClient({ ngo, campaigns }: Props) {
           )}
         </div>
       </section>
-
-      <section style={{ padding: '24px 0 0' }}>
-        <HundredManifesto compact />
-      </section>
-
-      {/* Sticky CTA footer */}
-      <div
-        style={{
-          position: 'fixed',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          background: `linear-gradient(180deg, transparent, ${c.ink900} 30%)`,
-          paddingTop: 24,
-          zIndex: 50,
-          pointerEvents: 'none',
-        }}
-      >
-        <div
-          style={{
-            margin: '0 16px 88px',
-            // 88px: bottom nav offset (64px) + 12px gap + 12px breathing
-            display: 'flex',
-            gap: 8,
-            pointerEvents: 'auto',
-          }}
-        >
-          <Link
-            href={`/dashboard/donate/${ngo.id}/give`}
-            style={{
-              flex: 1,
-              padding: '14px',
-              background: c.gold,
-              color: c.ink900,
-              border: 'none',
-              borderRadius: 14,
-              fontSize: 15,
-              fontWeight: 700,
-              cursor: 'pointer',
-              textDecoration: 'none',
-              textAlign: 'center',
-              boxShadow: `0 8px 24px ${c.gold}40`,
-            }}
-          >
-            Bağışla →
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }
