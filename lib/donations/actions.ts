@@ -15,6 +15,8 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { DonationScenarioType } from '@/lib/supabase/types'
+// Vol-62 BUG-067: karma formula tek source-of-truth (test edilebilir helper)
+import { computeKarmaFromDonation } from './karma-formula'
 
 // Vol-29 pattern — TIER_DATA ile aynı threshold
 const TIER_THRESHOLDS = [0, 500, 2000, 5000, 10000] as const
@@ -28,16 +30,6 @@ function tierIdForKarma(karma: number): number {
     }
   }
   return id
-}
-
-// Karma formula: floor(amount/10), regular_supporter +20% bonus
-function computeKarmaFromDonation(
-  amountTry: number,
-  scenario: DonationScenarioType,
-): number {
-  const base = Math.floor(amountTry / 10)
-  const bonus = scenario === 'regular_supporter' ? Math.floor(base * 0.2) : 0
-  return Math.max(0, base + bonus)
 }
 
 export interface CreateDonationInput {
