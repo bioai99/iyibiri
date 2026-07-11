@@ -7,6 +7,7 @@
 export { VerificationCodeInput } from './verification-code-input'
 export { VerificationPanel } from './verification-panel'
 export { MissionStateBanner } from './mission-state-banner'
+export { MissionJourney } from './mission-journey'
 // export { MissionStateBanner } from './mission-state-banner'
 // export { MissionHeroPhoto } from './mission-hero-photo'
 // export { MissionNgoLockup } from './mission-ngo-lockup'

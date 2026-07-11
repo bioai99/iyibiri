@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Bir Dilek Tut">
+  <defs>
+    <linearGradient id="bdtBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1AA7E8"/>
+      <stop offset="1" stop-color="#0060B6"/>
+    </linearGradient>
+    <linearGradient id="bdtTrail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#BFE9FF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#EAF7FF"/>
+    </linearGradient>
+    <radialGradient id="bdtGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Arka plan -->
+  <rect width="512" height="512" rx="116" fill="url(#bdtBg)"/>
+
+  <!-- Küçük dilek yıldızları -->
+  <circle cx="118" cy="150" r="5" fill="#EAF7FF" opacity="0.8"/>
+  <circle cx="392" cy="128" r="4" fill="#EAF7FF" opacity="0.7"/>
+  <circle cx="150" cy="360" r="4" fill="#EAF7FF" opacity="0.6"/>
+  <circle cx="405" cy="330" r="6" fill="#EAF7FF" opacity="0.65"/>
+
+  <!-- Kayan yıldız izi (bir dilek tut) -->
+  <path d="M120 388 C 210 320, 300 250, 372 150" stroke="url(#bdtTrail)" stroke-width="26" stroke-linecap="round" fill="none"/>
+
+  <!-- Parlama -->
+  <circle cx="336" cy="196" r="120" fill="url(#bdtGlow)"/>
+
+  <!-- Ana dilek yıldızı -->
+  <path fill="#FFFFFF" d="M336 96
+    l30 78 l82 6 l-63 53 l20 80 l-69 -45 l-69 45 l20 -80 l-63 -53 l82 -6 z"/>
+</svg>

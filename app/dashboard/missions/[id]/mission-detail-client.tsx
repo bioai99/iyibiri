@@ -20,6 +20,7 @@ import {
 import type { Mission, UserMission } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 import { BadgeDS, IconButtonDS, FactCard, KarmaDotToken, KarmaToken } from '@/components/ui/ds'
+import { MissionJourney } from '@/components/mission'
 import { PageHeroBar } from '@/components/ui/page-hero-bar'
 import { useTheme } from '@/lib/theme'
 import { takeMission } from '@/lib/missions/actions'
@@ -396,6 +397,9 @@ export function MissionDetailClient({ mission, userMission, userId, isMember = f
           )}
         </div>
       )}
+
+      {/* ── 4.5 Mission journey (Vol-63) — steps JSONB doluysa süreç timeline'ı ── */}
+      <MissionJourney steps={mission.steps} />
 
       {/* ── 5. Karma reward card ── */}
       <div style={{ padding: '24px 16px 0' }}>

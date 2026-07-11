@@ -281,3 +281,15 @@
     animation: none;
   }
 }
+
+/* ── Vol-63: Mission Journey timeline (components/mission/mission-journey.tsx) ── */
+@keyframes journeyStepIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-step {
+    animation: none !important;
+  }
+}
