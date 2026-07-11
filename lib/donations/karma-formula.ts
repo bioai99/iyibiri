@@ -28,3 +28,24 @@ export function computeKarmaFromDonation(
   const bonus = scenario === 'regular_supporter' ? Math.floor(base * 0.2) : 0
   return Math.max(0, base + bonus)
 }
+
+// ── Vol-64: Karma → Bağış (ters yön) ────────────────────────────────
+//
+// Kullanıcı biriktirdiği Karma'yı bir STK'ya bağışa çevirir; gerçek TL
+// katkısını sponsor fonu karşılar (kullanıcı para ödemez — araştırma
+// raporundaki "Karma→bağış crowding-out'u sıfırlıyor" tezi).
+//
+// ÜRÜN KARARI — dönüşüm oranı: 10 Karma = ₺1 (0.10 ₺/Karma).
+// Bu sabit ekonomik bir kaldıraçtır; sponsor bütçesine göre ayarlanabilir.
+// CRITICAL: Değişirse Migration 061 redeem_karma_as_donation() içindeki
+// v_rate ile birebir eşleşmeli (yoksa önizleme ↔ DB tutarsız olur).
+export const KARMA_TO_TRY_RATE = 0.1
+
+/** Karma'ya karşılık bağışlanacak TL tutarını hesaplar (2 ondalık). */
+export function computeTryFromKarma(karma: number): number {
+  if (!isFinite(karma) || karma <= 0) return 0
+  return Math.round(karma * KARMA_TO_TRY_RATE * 100) / 100
+}
+
+/** Karma→bağış için minimum Karma eşiği (₺1 alt sınırı ile uyumlu). */
+export const MIN_KARMA_FOR_DONATION = 100

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from 'framer-motion'
-import { Lock } from 'lucide-react'
+import { Lock, Heart, ChevronRight } from 'lucide-react'
 
 // Faz 5 (2026-04-26 perf-eng): rewards-client 3 <img> → <Image>. Brand logo + featured + card cover.
 import type { Reward, RewardRedemption } from '@/lib/supabase/types'
@@ -203,6 +203,53 @@ export function RewardsClient({ rewards, redemptions, currentKarma }: Props) {
             GEÇMİŞ
           </button>
         </div>
+      </motion.div>
+
+      {/* ── 2.5 Karma → Bağış girişi (Vol-64) ── */}
+      <motion.div
+        initial={{ opacity: 1, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: prefersReducedMotion ? 0 : 0.12 }}
+        style={{ padding: '14px 16px 0' }}
+      >
+        <Link href="/dashboard/rewards/bagisla" style={{ textDecoration: 'none' }}>
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              padding: '16px 18px',
+              borderRadius: 16,
+              background: c.ink800,
+              border: `1px solid ${c.goldLine}`,
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: c.goldSoft,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Heart size={20} color={c.gold} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: c.cream, lineHeight: 1.25 }}>
+                Karma&apos;nı bağışa çevir
+              </div>
+              <div style={{ fontSize: 12.5, color: c.ink300, marginTop: 3, lineHeight: 1.4 }}>
+                Biriktirdiğin Karma&apos;yı bir STK&apos;ya bağışla — cebinden para çıkmaz.
+              </div>
+            </div>
+            <ChevronRight size={20} color={c.ink300} style={{ flexShrink: 0 }} />
+          </motion.div>
+        </Link>
       </motion.div>
 
       {/* ── 3. Filter tabs ── */}
